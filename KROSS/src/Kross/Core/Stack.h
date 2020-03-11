@@ -81,8 +81,8 @@ namespace Kross {
 		static const bool Add(const Ref<T>& resource);
 		static const bool Del(const std::string& key);
 
-		static const Ref<T>& Get(const std::string& k) { return _Get(k, nullptr); }
-		static const Ref<T>& Get(const std::string& k, const std::string& filepath) { return _Get(k, &filepath); }
+		static Ref<T> Get(const std::string& k) { return _Get(k, nullptr); }
+		static Ref<T> Get(const std::string& k, const std::string& filepath) { return _Get(k, &filepath); }
 
 		static void Log() { KROSS_CORE_TRACE("[Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
 
@@ -96,14 +96,12 @@ namespace Kross {
 	private:
 		Stack() = default;
 
-		static const Ref<T>& _Get(const std::string& k, const std::string* filepath);
+		static Ref<T> _Get(const std::string& k, const std::string* filepath);
 
 		static auto location(const std::string& key)
 		{
 			return std::lower_bound(stack.begin(), stack.end(), key);
 		}
-
-		static const Ref<T> null_value;
 		static std::vector<Entry> stack;
 	};
 }

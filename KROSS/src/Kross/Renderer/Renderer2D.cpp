@@ -40,6 +40,13 @@ namespace Kross {
 	struct Quad
 	{
 		Quad() = default;
+		Quad(Vertex bl, Vertex br, Vertex tr, Vertex tl)
+			:
+			bl(bl),
+			br(br),
+			tr(tr),
+			tl(tl)
+		{}
 		Quad(const glm::vec3& pos, const glm::vec4& color, const glm::vec2& size, const float texture)
 			:
 			bl(pos, color, { 0.0f, 0.0f }, texture),
@@ -468,7 +475,67 @@ namespace Kross {
 				KROSS_CORE_WARN("Texture Cache at maximum capacity. New Textures discarted");
 			}
 		}
-		data->myBuffer[data->quadIndex] = Quad(position, color, size, texIndex);
+		//data->myBuffer[data->quadIndex] = Quad(position, color, size, texIndex);
+		data->myBuffer[data->quadIndex] = {
+			Vertex({position.x			, position.y			, position.z}, color, {0.0f, 0.0f}, texIndex),
+			Vertex({position.x + size.x	, position.y			, position.z}, color, {0.5f, 0.0f}, texIndex),
+			Vertex({position.x + size.x	, position.y + size.y	, position.z}, color, {0.5f, 0.5f}, texIndex),
+			Vertex({position.x			, position.y + size.y	, position.z}, color, {0.0f, 0.5f}, texIndex)
+		};
+		data->rendererStats.QuadCount++;
+	}
+
+	void Renderer2D::BatchQuad(const QuadParams& params)
+	{
+		KROSS_PROFILE_FUNC();
+		if (++data->quadIndex >= MaxQuadCount || data->texCacheIndex > Texture::Base::QueryMaxSlots())
+		{
+			BatchEnd();
+			BatchBegin();
+		}
+
+		if (params.texture)
+		{
+			float texIndex = 0.0f;
+			for (auto iter = data->texCache.begin() + 1; iter != data->texCache.end(); iter++)
+			{
+				if (*iter)
+				{
+					if ((*iter)->GetID() == params.texture->GetID())
+					{
+						texIndex = (float)std::distance(data->texCache.begin(), iter);
+						break;
+					}
+				}
+			}
+			if (texIndex == 0.0f)
+			{
+				int index = 0;
+				for (auto iter = data->texCache.begin() + 1; iter != data->texCache.end(); iter++)
+				{
+					index++;
+					if (!(*iter))
+					{
+						*iter = params.texture;
+						break;
+					}
+				}
+				if (index == (int)data->texCache.size())
+				{
+					KROSS_CORE_WARN("Texture Cache at maximum capacity. New Textures discarted");
+				}
+			}
+			data->myBuffer[data->quadIndex] = {
+				Vertex({params.position.x					, params.position.y					, 0.0f}, params.color, {params.texOffSet.x						, params.texOffSet.y					  }, texIndex),
+				Vertex({params.position.x + params.size.x	, params.position.y					, 0.0f}, params.color, {params.texOffSet.x + params.texSubSize.x, params.texOffSet.y					  }, texIndex),
+				Vertex({params.position.x + params.size.x	, params.position.y + params.size.y	, 0.0f}, params.color, {params.texOffSet.x + params.texSubSize.x, params.texOffSet.y + params.texSubSize.y}, texIndex),
+				Vertex({params.position.x					, params.position.y + params.size.y	, 0.0f}, params.color, {params.texOffSet.x						, params.texOffSet.y + params.texSubSize.y}, texIndex)
+			};
+		}
+		else
+		{
+			data->myBuffer[data->quadIndex] = Quad({ params.position, 0.0f }, params.color, params.size, 0.0f);
+		}
 		data->rendererStats.QuadCount++;
 	}
 

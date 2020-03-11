@@ -3,7 +3,8 @@
 Canvas::Canvas()
 	: Layer("Canvas"),
 	camera(ar, true)
-{}
+{
+}
 
 void Canvas::OnAttach()
 {
@@ -24,21 +25,24 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) / 10.0f;
 	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) / 10.0f;
 	vel += acc;
-	pos += vel *= 0.9f;
+	params.position += vel *= 0.9f;
+	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("cage");
 
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
 
 	Kross::Renderer2D::BatchBegin();
-	Kross::Renderer2D::BatchQuad(pos, 1, Kross::Stack<Kross::Texture::T2D>::get().Get("cage"));
+	Kross::Renderer2D::BatchQuad(params);
 	for (int i = 1; i < size; i++)
 		for (int j = 1; j < size; j++)
-			Kross::Renderer2D::BatchQuad({ i, j, 0.0f }, 1
-				, ((i + j) % 2 == 0 ?
-					Kross::Stack<Kross::Texture::T2D>::get().Get("cage") :
-					Kross::Stack<Kross::Texture::T2D>::get().Get("cage_mamma")
-					)
-			);
+			//Kross::Renderer2D::BatchQuad({ i, j, 0.0f }, 1
+			//	,{i/size*255, j/size*255, 1.0f, 1.0f}
+			//	//, ((i + j) % 2 == 0 ?
+			//	//	Kross::Stack<Kross::Texture::T2D>::get().Get("cage") :
+			//	//	Kross::Stack<Kross::Texture::T2D>::get().Get("cage_mamma")
+			//	//	)
+			//);
+			Kross::Renderer2D::BatchQuad({ {i, j}, {1.0f, 1.0f}, 0, {i / size, j / size, 1.0f, 1.0f} });
 	Kross::Renderer2D::BatchEnd();
 	Kross::Renderer2D::End();
 }

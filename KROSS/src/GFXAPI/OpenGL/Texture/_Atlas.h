@@ -31,6 +31,5 @@ namespace Kross::OpenGL::Texture {
 			_internal_format = 0,
 			_data_format = 0;
 		std::string _name = "", _path = "";
-
 	};
 }

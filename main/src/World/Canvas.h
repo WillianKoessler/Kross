@@ -23,5 +23,6 @@ private:
 	Kross::Ref<Kross::Buffer::Index> ib;
 	std::vector<Creature> entities;
 	glm::vec2 pos, vel, acc;
+	Kross::QuadParams params;
 };
 
