@@ -154,10 +154,6 @@ namespace Kross {
 			data->shader->SetFloat("u_Repeat", 1);
 			data->shader->SetFloat4("u_Color", { 1,1,1,1 });
 
-			//int* samples = new int[Texture::Base::QueryMaxSlots()];
-			//for (int i = 0; i < (int)Texture::Base::QueryMaxSlots(); i++)
-			//	samples[i] = i;
-
 			data->shader->SetIntV("u_Textures", Texture::Base::QueryMaxSlots(), nullptr);
 
 			uint32_t white = 0xffffffff;
@@ -167,20 +163,6 @@ namespace Kross {
 			const char* checker = "assets/textures/CheckerBoard.png";
 			const char* cage = "assets/textures/cage.png";
 			const char* cage_mamma = "assets/textures/cage_mamma.png";
-
-			//data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage), cage));
-			//Stack<Texture::T2D>::get().Get("blank")->Bind();
-			//
-			//data->TextureSlots[0] = data->whiteTex;
-			//for (size_t i = 1; i < Texture::QueryMaxSlots(); i++)
-			//	data->TextureSlots[i] = 0;
-			//
-			//data->texCache.insert(data->texCache.begin(), data->whiteTex);
-			//data->texCacheIndex++;
-			//data->texCache.insert(data->texCache.begin()+1, Stack<Texture::T2D>::get().Get(FileName(cage), cage));
-			//data->texCacheIndex++;
-			//data->texCache.insert(data->texCache.begin()+2, Stack<Texture::T2D>::get().Get(FileName(cage_mamma), cage_mamma));
-			//data->texCacheIndex++;
 
 			data->texArray->Add(Stack<Texture::T2D>::get().Get("blank"));
 			data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage), cage));
