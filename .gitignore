@@ -93,6 +93,8 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+*.lastbuildstate
+*.idb
 
 # Chutzpah Test files
 _Chutzpah*
