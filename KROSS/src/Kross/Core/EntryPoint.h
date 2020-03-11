@@ -8,16 +8,38 @@ extern Kross::Application* Kross::CreateApp();
 int main(int agrc, char** args)
 {
 	Kross::Log::Init();
-	//Kross::Log::GetCoreLogger()->info("\ntest1 {0}\n test2 {1}", __FUNCTION__, __FUNCSIG__);
+	Kross::Application* app;
 
 	KROSS_PROFILE_BEGIN("StartUp", "profiles/StartUp_Profile.json");
-	Kross::Application* app = Kross::CreateApp();
+	try
+	{
+		 app = Kross::CreateApp();
+	}
+	catch (const std::exception& e)
+	{
+		KROSS_MSGBOX(std::string("Unhandled exception at App Creation: ") + e.what(), __FUNCSIG__, _FATAL_);
+	}
 
 	KROSS_PROFILE_OVERRIDE("Runtime", "profiles/RunTime_Profile.json");
-	app->Run();
+	try
+	{
+		app->Run();
+	}
+	catch (const std::exception & e)
+	{
+		KROSS_MSGBOX(std::string("Unhandled exception at Runtime: ") + e.what(), __FUNCSIG__, _FATAL_);
+	}
 
 	KROSS_PROFILE_OVERRIDE("Shutdown", "profiles/Shutdown_Profile.json");
-	delete app;
+	try
+	{
+		delete app;
+	}
+	catch (const std::exception & e)
+	{
+		KROSS_MSGBOX(std::string("Unhandled exception at App Destruction: ") + e.what(), __FUNCSIG__, _FATAL_);
+}
+
 	KROSS_PROFILE_END;
 }
 #endif

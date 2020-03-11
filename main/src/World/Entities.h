@@ -4,12 +4,9 @@
 #include <string>
 #include <vector>
 
-//#include "Core/CoreMechanics.h"
 #include "Core/Items.h"
 
 #include "Kross.h"
-//#include "GFXAPI/OpenGL/Textures.h"
-//#include "GLAD/include/glad/glad.h"
 
 class Entity
 {
