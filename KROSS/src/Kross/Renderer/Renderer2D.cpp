@@ -10,12 +10,9 @@
 #include "Textures/Array.h"
 #include "Textures/Atlas.h"
 
-//#include <GLAD/glad.h>
-
 static constexpr size_t MaxQuadCount = 100;
 static constexpr size_t MaxVertexCount = MaxQuadCount * 4;
 static constexpr size_t MaxIndexCount = MaxQuadCount * 6;
-
 
 namespace Kross {
 	bool Renderer2D::SceneBegan = false;
