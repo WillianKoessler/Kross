@@ -20,7 +20,7 @@ bool Creature::tgm(bool set)
 
 bool Creature::applyDamage(int amount, Creature* victim) const
 {
-	if(!victim)
+	if (!victim)
 	{
 		char buff[256];
 		strcpy_s(buff, GetName().c_str());
@@ -48,9 +48,64 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 	return hp <= 0;
 }
 
-void Creature::DrawSelf(float ts)
+void Creature::OnUpdate(float ts)
 {
-	Kross::Renderer2D::BatchQuad(GetSprite());
+	timer += ts;
+	if (timer >= 0.2)
+	{
+		timer -= 0.2;
+		++gfxCounter %= 2;
+	}
+
+	auto& p = GetProps();
+	p.vel += p.acc;
+	p.vel *= 0.9f;
+	p.pos += p.vel;
+
+
+	
+	if (fabs(GetVel().x) > 0 || fabs(GetVel().y) > 0)
+		myState = Walking;
+	else
+		myState = Standing;
+
+	if (hp <= 0)
+		myState = Dead;
+
+
+	//if (v->x == 0.0f && v->y < 0.0f) myDirection = South;
+	//else if (v->x > 0.0f && v->y < 0.0f) myDirection = SouthEast;
+	//else if (v->x > 0.0f && v->y == 0.0f) myDirection = East;
+	//else if (v->x > 0.0f && v->y > 0.0f) myDirection = NorthEast;
+	//else if (v->x == 0.0f && v->y > 0.0f) myDirection = North;
+	//else if (v->x < 0.0f && v->y > 0.0f) myDirection = NorthWest;
+	//else if (v->x < 0.0f && v->y == 0.0f) myDirection = West;
+	//else if (v->x < 0.0f && v->y < 0.0f) myDirection = SouthWest;
+
+	if (GetVel().x > 0.0f) myDirection = East;
+	if (GetVel().x < 0.0f) myDirection = West;
+	if (GetVel().y < 0.0f) myDirection = South;
+	if (GetVel().y > 0.0f) myDirection = North;
+
+}
+
+void Creature::DrawSelf()
+{
+	glm::vec2 spr(0.0f);
+	switch (myState)
+	{
+	case Standing:
+		spr.y = myDirection;
+		break;
+	case Walking:
+		spr = { gfxCounter, myDirection};
+		break;
+	case Dead:
+		spr = { 4, 1 };
+		break;
+	}
+
+	Kross::Renderer2D::BatchQuad(GetSprite());//spr, {(spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256}));
 }
 
 void Creature::Log()

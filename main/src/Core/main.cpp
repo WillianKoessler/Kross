@@ -1,4 +1,3 @@
-//#include "Core/CoreMechanics.h"
 #define KROSS_MAIN 1
 #include "Kross.h"
 
@@ -8,7 +7,7 @@ class Game : public Kross::Application
 {
 public:
 	Game()
-		: Kross::Application("RPG", 640, 380)
+		: Kross::Application("RPG", 800, 400)
 	{
 		PushLayer(Kross::makeRef<Canvas>());
 	}

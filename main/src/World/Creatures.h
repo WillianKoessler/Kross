@@ -4,18 +4,19 @@
 
 class Creature final : public Entity
 {
+#define SPRITE_SIZE 64.0f
 	struct equipment
 	{
-		int* Rhand		= nullptr;
-		int* Lhand		= nullptr;
-		int* TopHead	= nullptr;
-		int* MiddleHead	= nullptr;
-		int* BottomHead	= nullptr;
-		int* Torso		= nullptr;
-		int* Legs		= nullptr;
-		int* Feets		= nullptr;
-		int* Accessory1	= nullptr;
-		int* Accessory2	= nullptr;
+		int* Rhand		= nullptr; // ref, scope, or weak?
+		int* Lhand		= nullptr; // ref, scope, or weak?
+		int* TopHead	= nullptr; // ref, scope, or weak?
+		int* MiddleHead	= nullptr; // ref, scope, or weak?
+		int* BottomHead	= nullptr; // ref, scope, or weak?
+		int* Torso		= nullptr; // ref, scope, or weak?
+		int* Legs		= nullptr; // ref, scope, or weak?
+		int* Feets		= nullptr; // ref, scope, or weak?
+		int* Accessory1	= nullptr; // ref, scope, or weak?
+		int* Accessory2	= nullptr; // ref, scope, or weak?
 	} eqp;
 	struct status
 	{
@@ -26,8 +27,26 @@ class Creature final : public Entity
 		short DES = 1;
 		short SOR = 1;
 	} stt;
+	enum state
+	{
+		Standing = 0,
+		Walking,
+		Dead
+	} myState = Standing;
+	enum direction
+	{
+		North = 0,
+		East,
+		South,
+		West,
+		//SouthEast,
+		//NorthEast,
+		//NorthWest,
+		//SouthWest,
+	} myDirection = South;
+	long double timer = 0.0;
+	size_t gfxCounter = 0;
 public:
-
 	Creature(const Entity::Props& prop) :
 		Entity(prop),
 		mhp(100), hp(mhp)
@@ -36,7 +55,8 @@ public:
 	bool tgm(bool set);
 	bool applyDamage(int amount, Creature* victim) const;
 	bool receiveDamage(int amount, const Creature* attacker);
-	void DrawSelf(float ts);
+	virtual void OnUpdate(float ts) override;
+	virtual void DrawSelf() override;
 	void Log();
 
 	int mhp, hp;

@@ -43,7 +43,7 @@ namespace Kross {
 		Quad(Vertex bl, Vertex br, Vertex tr, Vertex tl) : bl(bl), br(br), tr(tr), tl(tl) {}
 		Quad(const glm::vec3& pos, const glm::vec4& color, const glm::vec2& size, const float texture)
 			:
-			bl(  pos									   , color, { 0.0f, 0.0f }, texture),
+			bl(pos, color, { 0.0f, 0.0f }, texture),
 			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { 1.0f, 0.0f }, texture),
 			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { 1.0f, 1.0f }, texture),
 			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { 0.0f, 1.0f }, texture)
@@ -56,10 +56,10 @@ namespace Kross {
 			const glm::vec2& texSize,
 			const float texture)
 			:
-			bl(  pos									   , color, { texOff.x				, texOff.y				}, texture),
-			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { texOff.x + texSize.x	, texOff.y				}, texture),
-			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { texOff.x + texSize.x	, texOff.y + texSize.y	}, texture),
-			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { texOff.x				, texOff.y + texSize.y	}, texture)
+			bl(pos, color, { texOff.x				, texOff.y }, texture),
+			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { texOff.x + texSize.x	, texOff.y }, texture),
+			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { texOff.x + texSize.x	, texOff.y + texSize.y }, texture),
+			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { texOff.x				, texOff.y + texSize.y }, texture)
 		{}
 		Vertex bl;
 		Vertex br;
@@ -91,7 +91,7 @@ namespace Kross {
 
 		//Texture Array
 		Scope<Texture::T2DArray> texArray;
-		
+
 		//Renderer Status for ImGui window
 		Renderer2D::Stats rendererStats = Renderer2D::Stats();
 
@@ -494,36 +494,11 @@ namespace Kross {
 
 		if (params.texture)
 		{
-			//float texIndex = (float)data->texArray->Get(params.texture);
-			//for (auto iter = data->texCache.begin() + 1; iter != data->texCache.end(); iter++)
-			//{
-			//	if (*iter)
-			//	{
-			//		if ((*iter)->GetID() == params.texture->GetID())
-			//		{
-			//			texIndex = (float)std::distance(data->texCache.begin(), iter);
-			//			break;
-			//		}
-			//	}
-			//}
-			//if (texIndex == 0.0f)
-			//{
-			//	int index = 0;
-			//	for (auto iter = data->texCache.begin() + 1; iter != data->texCache.end(); iter++)
-			//	{
-			//		index++;
-			//		if (!(*iter))
-			//		{
-			//			*iter = params.texture;
-			//			break;
-			//		}
-			//	}
-			//	if (index == (int)data->texCache.size())
-			//	{
-			//		KROSS_CORE_WARN("Texture Cache at maximum capacity. New Textures discarted");
-			//	}
-			//}
-
+			float tex = (float)data->texArray->Get(params.texture);
+			if (tex < 0.0f)
+			{
+				data->texArray->Add(params.texture);
+			}
 			data->myBuffer[data->quadIndex] =
 				Quad(
 					{ params.position, 0.0f },
@@ -531,15 +506,8 @@ namespace Kross {
 					params.size,
 					params.texOffSet,
 					params.texSubSize,
-					(float)data->texArray->Get(params.texture)
+					tex
 				);
-
-			//data->myBuffer[data->quadIndex] = {
-			//	Vertex({params.position.x					, params.position.y					, 0.0f}, params.color, {params.texOffSet.x						, params.texOffSet.y					  }, texIndex),
-			//	Vertex({params.position.x + params.size.x	, params.position.y					, 0.0f}, params.color, {params.texOffSet.x + params.texSubSize.x, params.texOffSet.y					  }, texIndex),
-			//	Vertex({params.position.x + params.size.x	, params.position.y + params.size.y	, 0.0f}, params.color, {params.texOffSet.x + params.texSubSize.x, params.texOffSet.y + params.texSubSize.y}, texIndex),
-			//	Vertex({params.position.x					, params.position.y + params.size.y	, 0.0f}, params.color, {params.texOffSet.x						, params.texOffSet.y + params.texSubSize.y}, texIndex)
-			//};
 		}
 		else
 		{

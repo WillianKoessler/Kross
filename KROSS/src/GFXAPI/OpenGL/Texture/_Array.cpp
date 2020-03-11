@@ -25,7 +25,7 @@ namespace Kross::OpenGL::Texture {
 				glTex[i] = 0;
 		glCall(glBindTextures((GLuint)slot, (GLsizei)_size, (const GLuint*)glTex));
 	}
-	const unsigned int T2DArray::Get(const Ref<Kross::Texture::T2D> texture)
+	const int T2DArray::Get(const Ref<Kross::Texture::T2D> texture)
 	{
 		if (texture)
 			for (auto i = textures.begin(); i != textures.end(); i++)
@@ -34,12 +34,12 @@ namespace Kross::OpenGL::Texture {
 					if ((*i)->GetID() == texture->GetID())
 						return (unsigned int)std::distance(textures.begin(), i);
 				}
-				else
-				{
-					textures.emplace(i, texture);
-					return (unsigned int)std::distance(textures.begin(), i);
-				}
-		return 0;
+				//else
+				//{
+				//	textures.insert(i, texture);
+				//	return (unsigned int)std::distance(textures.begin(), i);
+				//}
+		return -1;
 	}
 	void T2DArray::Add(const Ref<Kross::Texture::Base> texture)
 	{
