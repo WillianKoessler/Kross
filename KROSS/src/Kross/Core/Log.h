@@ -12,16 +12,16 @@ namespace Kross {
 	public:
 		static void Init();
 		static void WindowBox(const std::string& message, const std::string& mode, unsigned int type);
-		inline static std::shared_ptr<spdlog::logger>& GetFileLogger() { return s_FileLogger; };
-		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; };
-		inline static std::shared_ptr<spdlog::logger>& GetClientFileLogger() { return s_ClientFileLogger; };
-		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; };
+		inline static Ref<spdlog::logger>& GetFileLogger() { return s_FileLogger; };
+		inline static Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; };
+		inline static Ref<spdlog::logger>& GetClientFileLogger() { return s_ClientFileLogger; };
+		inline static Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; };
 		//inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; };
 	private:
-		static std::shared_ptr<spdlog::logger> s_FileLogger;
-		static std::shared_ptr<spdlog::logger> s_CoreLogger;
-		static std::shared_ptr<spdlog::logger> s_ClientFileLogger;
-		static std::shared_ptr<spdlog::logger> s_ClientLogger;
+		static Ref<spdlog::logger> s_FileLogger;
+		static Ref<spdlog::logger> s_CoreLogger;
+		static Ref<spdlog::logger> s_ClientFileLogger;
+		static Ref<spdlog::logger> s_ClientLogger;
 	};
 }
 
@@ -42,23 +42,8 @@ else\
 	}\
 }
 
-
-//// Core Log Macros
-//#define KROSS_C_TRACE(...)			::Kross::Log::GetCoreLogger()->trace(__VA_ARGS__)
-//#define KROSS_C_INFO(...)			::Kross::Log::GetCoreLogger()->info(__VA_ARGS__)
-//#define KROSS_C_WARN(...)			::Kross::Log::GetCoreLogger()->warn(__VA_ARGS__)
-//#define KROSS_C_ERROR(...)			::Kross::Log::GetCoreLogger()->error("ERROR AT FILE {0}, LINE {1}",__FILE__, __LINE__);\
-//									::Kross::Log::GetCoreLogger()->error(__VA_ARGS__)
-//#define KROSS_C_FATAL(...)			::Kross::Log::GetCoreLogger()->critical(__VA_ARGS__)
-//
-//// Client Log Macros
-//#define KROSS_A_TRACE(...)			::Kross::Log::GetClientLogger()->trace(__VA_ARGS__)
-//#define KROSS_A_INFO(...)			::Kross::Log::GetClientLogger()->info(__VA_ARGS__)
-//#define KROSS_A_WARN(...)			::Kross::Log::GetClientLogger()->warn(__VA_ARGS__)
-//#define KROSS_A_ERROR(...)			::Kross::Log::GetClientLogger()->error("ERROR AT FILE {0}, LINE {1}",__FILE__, __LINE__);\
-//									::Kross::Log::GetClientLogger()->error(__VA_ARGS__)
-//#define KROSS_A_FATAL(...)			::Kross::Log::GetClientLogger()->critical(__VA_ARGS__)
-
+#undef KROSS_FILE_LOG
+#define KROSS_FILE_LOG 0
 #if KROSS_FILE_LOG
 	// Core File Log Macros
 	#define KROSS_CORE_FILE_TRACE(...)	::Kross::Log::GetFileLogger()->trace(__VA_ARGS__)
