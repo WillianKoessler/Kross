@@ -1,0 +1,16 @@
+#pragma once
+
+// from glfw3.h
+
+#define KROSS_MOUSE_BUTTON_1         0
+#define KROSS_MOUSE_BUTTON_2         1
+#define KROSS_MOUSE_BUTTON_3         2
+#define KROSS_MOUSE_BUTTON_4         3
+#define KROSS_MOUSE_BUTTON_5         4
+#define KROSS_MOUSE_BUTTON_6         5
+#define KROSS_MOUSE_BUTTON_7         6
+#define KROSS_MOUSE_BUTTON_8         7
+#define KROSS_MOUSE_BUTTON_LAST      KROSS_MOUSE_BUTTON_8
+#define KROSS_MOUSE_BUTTON_LEFT      KROSS_MOUSE_BUTTON_1
+#define KROSS_MOUSE_BUTTON_RIGHT     KROSS_MOUSE_BUTTON_2
+#define KROSS_MOUSE_BUTTON_MIDDLE    KROSS_MOUSE_BUTTON_3

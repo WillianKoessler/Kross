@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{4D25640E-B939-8CBF-82BB-2F1FEE8E88F0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Core\CoreMechanics.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Items.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Canvas.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Creatures.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Entities.h">
+      <Filter>World</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Core\main.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Canvas.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\Creatures.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
