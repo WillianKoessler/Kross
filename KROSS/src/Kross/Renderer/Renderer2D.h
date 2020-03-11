@@ -9,7 +9,7 @@ namespace Kross {
 		glm::vec2			position	= { 0.0f, 0.0f };
 		glm::vec2			size		= { 1.0f, 1.0f };
 		Ref<Texture::T2D>	texture		= NULL;
-		glm::vec4			color		= { 0.5f, 0.4f, 0.8f, 1.0f };
+		glm::vec4			color		= { 1.0f, 1.0f, 1.0f, 1.0f };
 		float				repeat		= 1;
 		glm::vec2			texOffSet	= { 0.0f, 0.0f };
 		glm::vec2			texSubSize	= { 1.0f, 1.0f };

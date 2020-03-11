@@ -51,7 +51,7 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 void Creature::DrawSelf(float ts)
 {
 
-	Kross::Renderer2D::DrawQuad(GetPos(), 1, GetSprite());
+	//Kross::Renderer2D::DrawQuad(GetPos(), 1, GetSprite());
 	//Kross::Renderer2D::DrawQuad(props.pos, 1, Kross::Renderer::Get2DTexStack().Get(props.spr));
 }
 

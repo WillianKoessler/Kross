@@ -33,7 +33,7 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 
 	Kross::Renderer2D::BatchBegin();
 	Kross::Renderer2D::BatchQuad(params);
-	for (int i = 1; i < size; i++)
+	for (int i = 1; i <= size; i++)
 		for (int j = 1; j < size; j++)
 			//Kross::Renderer2D::BatchQuad({ i, j, 0.0f }, 1
 			//	,{i/size*255, j/size*255, 1.0f, 1.0f}
@@ -42,7 +42,7 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 			//	//	Kross::Stack<Kross::Texture::T2D>::get().Get("cage_mamma")
 			//	//	)
 			//);
-			Kross::Renderer2D::BatchQuad({ {i, j}, {1.0f, 1.0f}, 0, {i / size, j / size, 1.0f, 1.0f} });
+			Kross::Renderer2D::BatchQuad({ {i, j}, {1.0f, 1.0f}, 0, {i / size, j / size, i / size, j / size} });
 	Kross::Renderer2D::BatchEnd();
 	Kross::Renderer2D::End();
 }
