@@ -486,7 +486,7 @@ namespace Kross {
 	void Renderer2D::BatchQuad(const QuadParams& params)
 	{
 		KROSS_PROFILE_FUNC();
-		if (++data->quadIndex >= MaxQuadCount)
+		if (data->quadIndex+1 >= MaxQuadCount)
 		{
 			BatchEnd();
 			BatchBegin();
@@ -513,6 +513,7 @@ namespace Kross {
 		{
 			data->myBuffer[data->quadIndex] = Quad({ params.position, 0.0f }, params.color, params.size, 0.0f);
 		}
+		data->quadIndex++;
 		data->rendererStats.QuadCount++;
 	}
 

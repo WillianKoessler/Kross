@@ -59,6 +59,7 @@ public:
 	inline void SetPos(const glm::vec2& newpos) { props.pos = { newpos.x, newpos.y, 0.0f }; }
 	inline const Kross::QuadParams& GetSprite(const glm::vec2& texoff = { 0.0f, 0.0f }, const glm::vec2& texsize = { 1.0f,1.0f })
 	{
+		props.sprite.position = props.pos;
 		props.sprite.texOffSet = texoff;
 		props.sprite.texSubSize = texsize;
 		return props.sprite;

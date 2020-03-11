@@ -51,23 +51,24 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 void Creature::OnUpdate(float ts)
 {
 	timer += ts;
-	if (timer >= 0.2)
+	if (timer >= 0.07)
 	{
-		timer -= 0.2;
-		++gfxCounter %= 2;
+		timer -= 0.07;
+		gfxCounter++;
+		gfxCounter %= 9;
 	}
 
 	auto& p = GetProps();
 	p.vel += p.acc;
-	p.vel *= 0.9f;
+	p.vel *= 0.7f;
 	p.pos += p.vel;
 
 
 	
-	if (fabs(GetVel().x) > 0 || fabs(GetVel().y) > 0)
-		myState = Walking;
-	else
+	if (fabsf(p.vel.x) < 0.01f && fabsf(p.vel.y) < 0.01f)
 		myState = Standing;
+	else
+		myState = Walking;
 
 	if (hp <= 0)
 		myState = Dead;
@@ -81,12 +82,16 @@ void Creature::OnUpdate(float ts)
 	//else if (v->x < 0.0f && v->y > 0.0f) myDirection = NorthWest;
 	//else if (v->x < 0.0f && v->y == 0.0f) myDirection = West;
 	//else if (v->x < 0.0f && v->y < 0.0f) myDirection = SouthWest;
-
-	if (GetVel().x > 0.0f) myDirection = East;
-	if (GetVel().x < 0.0f) myDirection = West;
-	if (GetVel().y < 0.0f) myDirection = South;
-	if (GetVel().y > 0.0f) myDirection = North;
-
+	if (!(p.vel.y < 0.001f && p.vel.y > -0.001f))
+	{
+		if (p.vel.y < 0.0001f) myDirection = North;
+		if (p.vel.y > 0.0001f) myDirection = South;
+	}
+	if (!(p.vel.x < 0.001f && p.vel.x > -0.001f))
+	{
+		if (p.vel.x < 0.0001f) myDirection = West;
+		if (p.vel.x > 0.0001f) myDirection = East;
+	}
 }
 
 void Creature::DrawSelf()
@@ -94,18 +99,20 @@ void Creature::DrawSelf()
 	glm::vec2 spr(0.0f);
 	switch (myState)
 	{
-	case Standing:
-		spr.y = myDirection;
-		break;
 	case Walking:
-		spr = { gfxCounter, myDirection};
+		spr = { (float)gfxCounter, (float)myDirection };
+		break;
+	case Standing:
+		spr = { 0.0f, (float)myDirection };
 		break;
 	case Dead:
 		spr = { 4, 1 };
 		break;
 	}
 
-	Kross::Renderer2D::BatchQuad(GetSprite());//spr, {(spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256}));
+	Kross::Renderer2D::BatchQuad(GetSprite(
+		{ (spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256 },
+		{ SPRITE_SIZE / 576, SPRITE_SIZE / 256 }));
 }
 
 void Creature::Log()

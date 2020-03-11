@@ -5,6 +5,7 @@
 class Creature final : public Entity
 {
 #define SPRITE_SIZE 64.0f
+public:
 	struct equipment
 	{
 		int* Rhand		= nullptr; // ref, scope, or weak?
@@ -29,16 +30,16 @@ class Creature final : public Entity
 	} stt;
 	enum state
 	{
-		Standing = 0,
+		Standing,
 		Walking,
 		Dead
 	} myState = Standing;
 	enum direction
 	{
-		North = 0,
-		East,
-		South,
+		East = 0,
+		North,
 		West,
+		South,
 		//SouthEast,
 		//NorthEast,
 		//NorthWest,
@@ -46,7 +47,7 @@ class Creature final : public Entity
 	} myDirection = South;
 	long double timer = 0.0;
 	size_t gfxCounter = 0;
-public:
+
 	Creature(const Entity::Props& prop) :
 		Entity(prop),
 		mhp(100), hp(mhp)
