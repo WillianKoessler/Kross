@@ -1,6 +1,6 @@
+#include "pch.h"
 #include "Creatures.h"
 
-#include <iostream>
 #include "Kross.h"
 
 bool Creature::tgm(bool set)
@@ -50,9 +50,7 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 
 void Creature::DrawSelf(float ts)
 {
-
-	//Kross::Renderer2D::DrawQuad(GetPos(), 1, GetSprite());
-	//Kross::Renderer2D::DrawQuad(props.pos, 1, Kross::Renderer::Get2DTexStack().Get(props.spr));
+	Kross::Renderer2D::BatchQuad(GetSprite());
 }
 
 void Creature::Log()
@@ -63,8 +61,8 @@ void Creature::Log()
 		log += "\nName: " + GetName();
 		log += "\nPosition: " + std::to_string(GetX()) + ", " + std::to_string(GetY());
 		log += "\nHealth: " + hp + '/' + mhp;
-		//std::cout << "Mana: " << sp << "/" << msp << std::endl;
-		//std::cout << "Weight: " << w << "/" << mw << std::endl;
+		//log += "\nMana: " + sp + '/' + msp;
+		//log += "\nWeight: " + w + '/' + mw;
 	}
 	else
 	{

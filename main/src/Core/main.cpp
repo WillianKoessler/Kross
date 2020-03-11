@@ -8,7 +8,7 @@ class Game : public Kross::Application
 {
 public:
 	Game()
-		//: Kross::Application("RPG", 640, 380)
+		: Kross::Application("RPG", 640, 380)
 	{
 		PushLayer(Kross::makeRef<Canvas>());
 	}
