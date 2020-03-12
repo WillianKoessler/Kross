@@ -67,7 +67,7 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 			Begin("Renderer Stats", &show_rendererStats);
 			Text("Quad Count: %d", Kross::Renderer2D::getStats().QuadCount);
 			Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
-			End();
+			End(); 
 		}
 
 		Begin("Main Window");
