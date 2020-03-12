@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Canvas.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 Canvas::Canvas()
 	: Layer("Canvas"),
 	camera(ar, true)
@@ -12,6 +14,7 @@ void Canvas::OnAttach()
 	Kross::Renderer::Command::SetClear({ 0.15f, 0.1f, 0.2f, 1.0f });
 	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/character.png"));
 	entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
+	entities[0].active = true;
 }
 void Canvas::OnDetach()
 {}
@@ -22,8 +25,8 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	Kross::Renderer2D::ResetStats();
 	camera.OnUpdate(ts);
 
-	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) / 100.0f;
-	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) / 100.0f;
+	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
+	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
 
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
@@ -60,7 +63,6 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		static float FrameRate = 0;
 		static float framerate_buffer = 0;
 
-
 		framerate_buffer += 1 / ts;
 		if (timer++ % 10 == 0) { FrameRate = framerate_buffer / 10; framerate_buffer = 0; }
 
@@ -72,6 +74,7 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 			Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
 			End(); 
 		}
+		Kross::Application::Get().GetWindow().FullScreen(fullscreen);
 
 		Begin("Main Window");
 		Text("FPS: %.1f", FrameRate); SameLine(); Checkbox("FullScreen: ", &fullscreen);
@@ -91,6 +94,7 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 				Checkbox("Inputs", &e.active);
 				SliderFloat("sprite_speed", &e.sprite_speed, 0.0f, 1.0f);
 				SliderFloat("dump", &e.dump, 0.0f, 1.0f);
+				SliderFloat2("vel", glm::value_ptr(acc), -0.01f, 0.01f);
 				End();
 			}
 		}

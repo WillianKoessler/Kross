@@ -37,9 +37,9 @@ public:
 	enum direction
 	{
 		East = 0,
-		North,
-		West,
 		South,
+		West,
+		North,
 		SouthEast,
 		NorthEast,
 		NorthWest,

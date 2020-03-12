@@ -233,10 +233,16 @@ namespace Kross {
 
 	void Win_Windows::FullScreen(bool enable) const
 	{
-		auto monitor = glfwGetPrimaryMonitor();
-		auto mode = glfwGetVideoMode(monitor);
-		if (enable);//glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-		else glfwSetWindowMonitor(m_Window, monitor, m_Data.x, m_Data.y, (int)m_Data.nWidth, (int)m_Data.nHeight, mode->refreshRate);
+		static bool previous_state = false;
+		if (enable != previous_state)
+		{
+			static int size[2] = { (int)m_Data.nWidth, (int)m_Data.nHeight };
+			auto monitor = glfwGetPrimaryMonitor();
+			auto mode = glfwGetVideoMode(monitor);
+			if (enable) { glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, 1); }
+			else glfwSetWindowMonitor(m_Window, nullptr, m_Data.x, m_Data.y, size[0], size[1], mode->refreshRate);
+		}
+		previous_state = enable;
 	}
 
 	void Win_Windows::SetVSync(bool enable)
