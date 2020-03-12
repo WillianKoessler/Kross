@@ -54,9 +54,13 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 	{
 		static bool show_demo_window = false;
 		static bool show_rendererStats = false;
+		static bool fullscreen = false;
+
 		static size_t timer = 0;
 		static float FrameRate = 0;
 		static float framerate_buffer = 0;
+
+
 		framerate_buffer += 1 / ts;
 		if (timer++ % 10 == 0) { FrameRate = framerate_buffer / 10; framerate_buffer = 0; }
 
@@ -70,7 +74,7 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		}
 
 		Begin("Main Window");
-		Text("FPS: %.1f", FrameRate);
+		Text("FPS: %.1f", FrameRate); SameLine(); Checkbox("FullScreen: ", &fullscreen);
 		Checkbox("Demo Window", &show_demo_window);
 		Checkbox("Show Renderer Stats", &show_rendererStats);
 		Text("Entities: ");

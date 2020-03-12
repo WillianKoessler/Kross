@@ -14,7 +14,7 @@ namespace Kross::OpenGL {
 		Context(Window* window);
 		~Context();
 
-		virtual void Init() override;
+		virtual void Init(unsigned int, unsigned int) override;
 		virtual void SwapBuffers() override;
 
 		static const float GetVersion();

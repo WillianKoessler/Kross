@@ -21,9 +21,10 @@ namespace Kross {
 		virtual inline unsigned int GetHeight() const override { return m_Data.nHeight; }
 
 		// Window attributes
+		virtual void FullScreen(bool) const override;
 		virtual inline void SetEventCallback(const EventCallbackFn& callback) override
 		{
-			KROSS_CORE_TRACE("[Kross::Win_Windows] Callback set");
+			KROSS_CORE_TRACE("[{0}] Callback set", __FUNCTION__);
 			m_Data.EventCallback = callback;
 		}
 		inline virtual void* GetNativeWindow() const override { return m_Window; }
@@ -39,16 +40,7 @@ namespace Kross {
 		GLFWwindow* m_Window;
 		Ref<Context> m_Context;
 
-		struct WindowData
-		{
-			std::string strTitle;
-			unsigned int nWidth;
-			unsigned int nHeight;
-
-			bool bVSync;
-			EventCallbackFn EventCallback;
-		};
-
+		using WindowData = WindowProps;
 		WindowProps m_Data;
 	};
 }
