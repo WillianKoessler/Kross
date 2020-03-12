@@ -38,7 +38,7 @@ int main(int agrc, char** args)
 	catch (const std::exception & e)
 	{
 		KROSS_MSGBOX(std::string("Unhandled exception at App Destruction: ") + e.what(), __FUNCSIG__, _FATAL_);
-}
+	}
 
 	KROSS_PROFILE_END;
 }
