@@ -24,6 +24,7 @@
     <ClInclude Include="src\World\Entities.h">
       <Filter>World</Filter>
     </ClInclude>
+    <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\main.cpp">
@@ -35,5 +36,6 @@
     <ClCompile Include="src\World\Creatures.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="src\pch.cpp" />
   </ItemGroup>
 </Project>

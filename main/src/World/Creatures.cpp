@@ -1,6 +1,6 @@
+#include "pch.h"
 #include "Creatures.h"
 
-#include <iostream>
 #include "Kross.h"
 
 bool Creature::tgm(bool set)
@@ -20,12 +20,15 @@ bool Creature::tgm(bool set)
 
 bool Creature::applyDamage(int amount, Creature* victim) const
 {
-	if(!victim)
+	if (!victim)
 	{
 		char buff[256];
 		strcpy_s(buff, GetName().c_str());
 		strcat_s(buff, " have no victim. (Creature* victim == nullptr)");
 		KROSS_MSGBOX(buff, __FUNCSIG__, _ERROR_);
+
+		KROSS_MSGBOX(GetName() + " have no victim. (Creature* victim == nullptr)", __FUNCTION__, _ERROR_);
+
 		return false;
 	}
 	else
@@ -48,11 +51,72 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 	return hp <= 0;
 }
 
-void Creature::DrawSelf(float ts)
+void Creature::OnUpdate(float ts)
 {
+	timer += ts;
+	if (timer >= 1 - sprite_speed)
+	{
+		timer -= 1 - sprite_speed;
+		gfxCounter++;
+		gfxCounter %= 9;
+	}
 
-	Kross::Renderer2D::DrawQuad(GetPos(), 1, GetSprite());
-	//Kross::Renderer2D::DrawQuad(props.pos, 1, Kross::Renderer::Get2DTexStack().Get(props.spr));
+	auto& p = GetProps();
+	p.vel += p.acc;
+	p.vel *= dump;
+	p.pos += p.vel;
+
+
+	
+	if (fabsf(p.vel.x) < 0.01f && fabsf(p.vel.y) < 0.01f)
+		myState = Standing;
+	else
+		myState = Walking;
+
+	if (hp <= 0)
+		myState = Dead;
+
+
+	//if (v->x == 0.0f && v->y < 0.0f) myDirection = South;
+	//else if (v->x > 0.0f && v->y < 0.0f) myDirection = SouthEast;
+	//else if (v->x > 0.0f && v->y == 0.0f) myDirection = East;
+	//else if (v->x > 0.0f && v->y > 0.0f) myDirection = NorthEast;
+	//else if (v->x == 0.0f && v->y > 0.0f) myDirection = North;
+	//else if (v->x < 0.0f && v->y > 0.0f) myDirection = NorthWest;
+	//else if (v->x < 0.0f && v->y == 0.0f) myDirection = West;
+	//else if (v->x < 0.0f && v->y < 0.0f) myDirection = SouthWest;
+
+	if (!(p.vel.y < 0.001f && p.vel.y > -0.001f))
+	{
+		if (p.vel.y < 0.0001f) myDirection = North;
+		if (p.vel.y > 0.0001f) myDirection = South;
+	}
+	if (!(p.vel.x < 0.001f && p.vel.x > -0.001f))
+	{
+		if (p.vel.x < 0.0001f) myDirection = West;
+		if (p.vel.x > 0.0001f) myDirection = East;
+	}
+}
+
+void Creature::DrawSelf()
+{
+	glm::vec2 spr(0.0f);
+	switch (myState)
+	{
+	case Walking:
+		spr = { (float)gfxCounter, (float)myDirection };
+		break;
+	case Standing:
+		spr = { 0.0f, (float)myDirection };
+		break;
+	case Dead:
+		spr = { 4, 1 };
+		break;
+	}
+
+	Kross::Renderer2D::BatchQuad(GetSprite(
+		{ (spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256 },
+		{ SPRITE_SIZE / 576, SPRITE_SIZE / 256 }));
 }
 
 void Creature::Log()
@@ -63,8 +127,8 @@ void Creature::Log()
 		log += "\nName: " + GetName();
 		log += "\nPosition: " + std::to_string(GetX()) + ", " + std::to_string(GetY());
 		log += "\nHealth: " + hp + '/' + mhp;
-		//std::cout << "Mana: " << sp << "/" << msp << std::endl;
-		//std::cout << "Weight: " << w << "/" << mw << std::endl;
+		//log += "\nMana: " + sp + '/' + msp;
+		//log += "\nWeight: " + w + '/' + mw;
 	}
 	else
 	{

@@ -59,6 +59,6 @@ void main()
 
 	// Texture + Tint (batch)
 	int index = int(v_texID);
-	color = texture(u_Textures[index], v_texCoord);
+	color = texture(u_Textures[index], v_texCoord) * v_Color;
 }
 

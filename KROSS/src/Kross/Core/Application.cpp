@@ -8,14 +8,13 @@ namespace Kross {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
-		: m_LayerStack()
+	void Application::Construct(const std::string& title, unsigned short width, unsigned short height)
 	{
 		KROSS_PROFILE_FUNC();
 		if (s_Instance) KROSS_MSGBOX("Application already exists!", "[Kross::Application]", _FATAL_);
 		s_Instance = this;
 
-		m_uptrWindow = Scope<Window>(Window::Create(WindowProps()));
+		m_uptrWindow = Scope<Window>(Window::Create(WindowProps(title, width, height)));
 		m_uptrWindow->SetVSync(true);
 		m_uptrWindow->SetEventCallback(KROSS_BIND_EVENT_FN(Application::OnEvent));
 		Renderer::Init();
@@ -25,7 +24,6 @@ namespace Kross {
 
 		KROSS_CORE_INFO("[Kross::Application] Application Contructed");
 	}
-
 	Application::~Application()
 	{
 		KROSS_PROFILE_FUNC();

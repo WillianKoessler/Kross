@@ -3,28 +3,49 @@
 #include "spdlog/sinks/basic_file_sink.h"
 
 namespace Kross {
-	std::shared_ptr<spdlog::logger> Log::s_FileLogger;
-	std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
-	std::shared_ptr<spdlog::logger> Log::s_ClientFileLogger;
-	std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
+	Ref<spdlog::logger> Log::s_FileLogger;
+	Ref<spdlog::logger> Log::s_CoreLogger;
+	Ref<spdlog::logger> Log::s_ClientFileLogger;
+	Ref<spdlog::logger> Log::s_ClientLogger;
 
 	void Log::Init()
 	{
 		try
 		{
-			spdlog::set_pattern("%^[%T] %n %v%$");
+			std::vector<spdlog::sink_ptr> logSinks(2);
+			logSinks[0] = (makeRef<spdlog::sinks::stdout_color_sink_mt>());
+			
+			logSinks[0]->set_pattern("%^[%T] %n: %v%$");
+			logSinks[1] = (makeRef<spdlog::sinks::basic_file_sink_mt>("logs/Kross.log", true));
+			logSinks[1]->set_pattern("[%T] [%l] %n: %v");
 
-			s_CoreLogger = spdlog::stdout_color_mt("KROSS");
+			s_CoreLogger = makeRef<spdlog::logger>("KROSS", logSinks.begin(), logSinks.end());
+			spdlog::register_logger(s_CoreLogger);
 			s_CoreLogger->set_level(spdlog::level::trace);
+			s_CoreLogger->flush_on(spdlog::level::trace);
 
-			s_FileLogger = spdlog::basic_logger_mt("ENGINE", "logs/core_engine_log.txt", true);
-			s_FileLogger->set_level(spdlog::level::trace);
+			logSinks[1] = makeRef<spdlog::sinks::basic_file_sink_mt>("logs/Client.log", true);
+			logSinks[1]->set_pattern("[%T] [%l] %n: %v");
 
-			s_ClientLogger = spdlog::stdout_color_mt("APP");
+			s_ClientLogger = makeRef<spdlog::logger>("APP", logSinks.begin(), logSinks.end());
+			spdlog::register_logger(s_ClientLogger);
 			s_ClientLogger->set_level(spdlog::level::trace);
+			s_ClientLogger->flush_on(spdlog::level::trace);
 
-			s_ClientFileLogger = spdlog::basic_logger_mt("CLIENT", "logs/client_application_log.txt", true);
-			s_ClientFileLogger->set_level(spdlog::level::trace);
+
+
+			//spdlog::set_pattern("%^[%T] %n %v%$");
+
+			//s_CoreLogger = spdlog::stdout_color_mt("KROSS");
+
+			//s_FileLogger = spdlog::basic_logger_mt("ENGINE", "logs/core_engine_log.txt", true);
+			//s_FileLogger->set_level(spdlog::level::trace);
+
+			//s_ClientLogger = spdlog::stdout_color_mt("APP");
+			//s_ClientLogger->set_level(spdlog::level::trace);
+
+			//s_ClientFileLogger = spdlog::basic_logger_mt("CLIENT", "logs/client_application_log.txt", true);
+			//s_ClientFileLogger->set_level(spdlog::level::trace);
 
 			KROSS_CORE_FATAL("Welcome to Kross Engine");
 			KROSS_CORE_INFO("Initialized Log");
