@@ -51,16 +51,16 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 void Creature::OnUpdate(float ts)
 {
 	timer += ts;
-	if (timer >= 0.07)
+	if (timer >= 1 - sprite_speed)
 	{
-		timer -= 0.07;
+		timer -= 1 - sprite_speed;
 		gfxCounter++;
 		gfxCounter %= 9;
 	}
 
 	auto& p = GetProps();
 	p.vel += p.acc;
-	p.vel *= 0.7f;
+	p.vel *= dump;
 	p.pos += p.vel;
 
 
@@ -82,6 +82,7 @@ void Creature::OnUpdate(float ts)
 	//else if (v->x < 0.0f && v->y > 0.0f) myDirection = NorthWest;
 	//else if (v->x < 0.0f && v->y == 0.0f) myDirection = West;
 	//else if (v->x < 0.0f && v->y < 0.0f) myDirection = SouthWest;
+
 	if (!(p.vel.y < 0.001f && p.vel.y > -0.001f))
 	{
 		if (p.vel.y < 0.0001f) myDirection = North;

@@ -47,6 +47,9 @@ public:
 	} myDirection = South;
 	long double timer = 0.0;
 	size_t gfxCounter = 0;
+	float sprite_speed = 0.955f;
+	float dump = 0.7f;
+	bool debugWindow = false;
 
 	Creature(const Entity::Props& prop) :
 		Entity(prop),

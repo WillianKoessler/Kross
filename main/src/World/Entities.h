@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "Core/Items.h"
-
 #include "Kross.h"
 
 class Entity

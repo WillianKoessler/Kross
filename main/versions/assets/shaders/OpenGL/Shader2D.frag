@@ -18,11 +18,11 @@ void main()
 	//color = vec4(v_texCoord, 0.0, 1.0);
 
 	// Solid Color
-	//color = v_Color;
+	color = v_Color;
 
 	// Texture + Tint
 	//color = texture(u_Texture, v_texCoord * u_Repeat) * v_Color;
 
 	// Texture + Tint (batch)
-	color = texture(u_Textures[int(v_TexIndex)], v_texCoord) * v_Color;
+	//color = texture(u_Textures[int(v_TexIndex)], v_texCoord) * v_Color;
 }
