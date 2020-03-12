@@ -14,14 +14,19 @@ public:
 	virtual void OnEvent(Kross::Event& event) override;
 
 private:
-	float size = 10;
+	// main camera
 	Kross::Camera::Ortho2DCtrl camera;
-	unsigned int uva, uvb, uib;
-	Kross::Ref<Kross::Shader> shader;
-	Kross::Ref<Kross::VertexArray> va;
-	Kross::Ref<Kross::Buffer::Vertex> vb;
-	Kross::Ref<Kross::Buffer::Index> ib;
+
+	// size for test grid
+	float size = 10;
+	
+	// vector of entities (now creatures. fix later)
 	std::vector<Creature> entities;
-	glm::vec2 pos, vel, acc;
+
+	// acceleration vector for main entity
+	glm::vec3 acc = { 0.0f, 0.0f, 0.0f };
+	
+	// parameter for batch rendering quads
+	Kross::QuadParams params;
 };
 
