@@ -72,7 +72,7 @@ namespace Kross {
 			}
 			else if ((props.nWidth > 0 && props.nHeight > 0) && !props.fullscreen)
 			{
-				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), NULL, NULL);
+				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), nullptr, NULL);
 			}
 			else
 			{
@@ -93,11 +93,9 @@ namespace Kross {
 		}
 		{
 			KROSS_PROFILE_SCOPE("makeScope<OpenGL::Context>");
-			//int x, y;
-			//glfwGetWindowSize(m_Window, &x, &y);
-
 			m_Context = makeRef<GraphicsAPI::Context>(this);
 			m_Context->Init(m_Data.nWidth, m_Data.nHeight);
+
 		}
 
 		{
@@ -236,11 +234,10 @@ namespace Kross {
 		static bool previous_state = false;
 		if (enable != previous_state)
 		{
-			static int size[2] = { (int)m_Data.nWidth, (int)m_Data.nHeight };
 			auto monitor = glfwGetPrimaryMonitor();
 			auto mode = glfwGetVideoMode(monitor);
-			if (enable) { glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, 1); }
-			else glfwSetWindowMonitor(m_Window, nullptr, m_Data.x, m_Data.y, size[0], size[1], mode->refreshRate);
+			if (enable) { glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate); }
+			else glfwSetWindowMonitor(m_Window, nullptr, 100, 100, 640, 320, mode->refreshRate);
 		}
 		previous_state = enable;
 	}

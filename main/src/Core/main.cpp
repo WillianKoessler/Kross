@@ -9,7 +9,6 @@ public:
 	Game()
 		: Kross::Application("RPG", 800, 400)
 	{
-		GetWindow().SetVSync(true);
 		PushLayer(Kross::makeRef<Canvas>());
 	}
 	~Game()
