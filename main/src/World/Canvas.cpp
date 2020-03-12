@@ -10,8 +10,8 @@ Canvas::Canvas()
 void Canvas::OnAttach()
 {
 	Kross::Renderer::Command::SetClear({ 0.15f, 0.1f, 0.2f, 1.0f });
-	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Friendly | Entity::EF::Solid, "Bob", "assets/textures/character.png"));
-	//entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "skelly", "assets/textures/Checkerboard.png"));
+	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/character.png"));
+	entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
 }
 void Canvas::OnDetach()
 {}
@@ -25,18 +25,17 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) / 100.0f;
 	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) / 100.0f;
 
-	entities[0].SetAcc(acc);
-	entities[0].OnUpdate(ts);
-
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
 	Kross::Renderer2D::BatchBegin();
-	entities[0].DrawSelf();
 
-	//params.position = pos;
-	//params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("cage");
-	//params.color = glm::vec4(1.0f);
-	//Kross::Renderer2D::BatchQuad(params);
+	for(auto& e : entities)
+	{
+		if(e.active) e.SetAcc(acc);
+		e.OnUpdate(ts);
+		e.DrawSelf();
+	}
+
 	for (int i = 1; i <= size; i++)
 		for (int j = 1; j < size; j++)
 		{
@@ -77,7 +76,7 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		Text("Entities: ");
 		for (auto& e : entities)
 		{
-			SameLine(); Checkbox((e.GetName() + " Window").c_str(), &e.debugWindow);
+			Text("    "); SameLine(); Checkbox((e.GetName() + " Window").c_str(), &e.debugWindow);
 			if(e.debugWindow){
 				Begin(e.GetName().c_str(), &e.debugWindow);
 				Text("Position: X=%.1f, Y=%.1f", e.GetX(), e.GetY());
@@ -85,8 +84,9 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 				Text("HP %d/%d", e.hp, e.mhp);
 				Text("State: %d", e.myState);
 				Text("Direction: %d", e.myDirection);
-				Text("sprite_speed: "); SameLine(); SliderFloat("", &e.sprite_speed, 0.0f, 1.0f);
-				Text("dump: "); SameLine(); SliderFloat("", &e.dump, 0.0f, 1.0f);
+				Checkbox("Inputs", &e.active);
+				SliderFloat("sprite_speed", &e.sprite_speed, 0.0f, 1.0f);
+				SliderFloat("dump", &e.dump, 0.0f, 1.0f);
 				End();
 			}
 		}

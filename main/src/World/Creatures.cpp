@@ -54,9 +54,9 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 void Creature::OnUpdate(float ts)
 {
 	timer += ts;
-	if (timer >= 1 - sprite_speed)
+	if (timer >= (1 - sprite_speed))
 	{
-		timer -= 1 - sprite_speed;
+		timer -= (1 - sprite_speed);
 		gfxCounter++;
 		gfxCounter %= 9;
 	}
@@ -67,7 +67,7 @@ void Creature::OnUpdate(float ts)
 	p.pos += p.vel;
 
 
-	
+
 	if (fabsf(p.vel.x) < 0.01f && fabsf(p.vel.y) < 0.01f)
 		myState = Standing;
 	else
@@ -76,16 +76,17 @@ void Creature::OnUpdate(float ts)
 	if (hp <= 0)
 		myState = Dead;
 
-
-	//if (v->x == 0.0f && v->y < 0.0f) myDirection = South;
-	//else if (v->x > 0.0f && v->y < 0.0f) myDirection = SouthEast;
-	//else if (v->x > 0.0f && v->y == 0.0f) myDirection = East;
-	//else if (v->x > 0.0f && v->y > 0.0f) myDirection = NorthEast;
-	//else if (v->x == 0.0f && v->y > 0.0f) myDirection = North;
-	//else if (v->x < 0.0f && v->y > 0.0f) myDirection = NorthWest;
-	//else if (v->x < 0.0f && v->y == 0.0f) myDirection = West;
-	//else if (v->x < 0.0f && v->y < 0.0f) myDirection = SouthWest;
-
+#define eight_directions 0
+#if eight_directions
+	if (p.vel.x == 0.0f && p.vel.y < 0.0f) myDirection = South;
+	else if (p.vel.x > 0.0f && p.vel.y < 0.0f) myDirection = SouthEast;
+	else if (p.vel.x > 0.0f && p.vel.y == 0.0f) myDirection = East;
+	else if (p.vel.x > 0.0f && p.vel.y > 0.0f) myDirection = NorthEast;
+	else if (p.vel.x == 0.0f && p.vel.y > 0.0f) myDirection = North;
+	else if (p.vel.x < 0.0f && p.vel.y >  0.0f) myDirection = NorthWest;
+	else if (p.vel.x < 0.0f && p.vel.y == 0.0f) myDirection = West;
+	else if (p.vel.x < 0.0f && p.vel.y < 0.0f) myDirection = SouthWest;
+#else
 	if (!(p.vel.y < 0.001f && p.vel.y > -0.001f))
 	{
 		if (p.vel.y < 0.0001f) myDirection = North;
@@ -96,6 +97,7 @@ void Creature::OnUpdate(float ts)
 		if (p.vel.x < 0.0001f) myDirection = West;
 		if (p.vel.x > 0.0001f) myDirection = East;
 	}
+#endif
 }
 
 void Creature::DrawSelf()
