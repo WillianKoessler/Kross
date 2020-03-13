@@ -20,17 +20,7 @@ bool Creature::tgm(bool set)
 
 bool Creature::applyDamage(int amount, Creature* victim) const
 {
-	if (!victim)
-	{
-		char buff[256];
-		strcpy_s(buff, GetName().c_str());
-		strcat_s(buff, " have no victim. (Creature* victim == nullptr)");
-		KROSS_MSGBOX(buff, __FUNCSIG__, _ERROR_);
-
-		KROSS_MSGBOX(GetName() + " have no victim. (Creature* victim == nullptr)", __FUNCTION__, _ERROR_);
-
-		return false;
-	}
+	if (!victim) { KROSS_MSGBOX(GetName() + " have no victim. (Creature* victim == nullptr)", __FUNCTION__, _ERROR_); return false; }
 	else
 	{
 		KROSS_TRACE("{0} attacks {1}", GetName(), victim->GetName());
@@ -102,23 +92,57 @@ void Creature::OnUpdate(float ts)
 
 void Creature::DrawSelf()
 {
-	glm::vec2 spr(0.0f);
+	auto& p = GetProps();
+	auto& sprite = GetSprite();
+
+	constexpr glm::vec2 ind = { 100.0f, 118.0f };
+	constexpr glm::vec2 sh = { 1003.0f, 1911.0f };
+	constexpr glm::vec2 sub = ind / sh;
+	constexpr float min_ = std::min(ind.x, ind.y), max_ = std::max(ind.x, ind.y);
+	constexpr float min_norm = min_ / max_;
+
+
+	sprite.texture = 0;
+	sprite.size = { 0.1f, 0.1f };
+	sprite.position = p.pos;
+	Kross::Renderer2D::BatchQuad(sprite);
+	sprite.texture = tex;
+	sprite.size = { 100/118.0f, 1.0f };
+
 	switch (myState)
 	{
-	case Walking:
-		spr = { (float)gfxCounter, (float)myDirection };
-		break;
 	case Standing:
-		spr = { 0.0f, (float)myDirection };
+	{
+		sprite.texSubSize = sub;
+
+		if (min_ == ind.x)
+			sprite.size = { min_norm, 1.0f };
+		else
+			sprite.size = { 1.0f, min_norm };
+
+		if (myDirection == East)
+		{
+			sprite.texOffSet = { West * sub.x, 1.0f - sub.y };
+			sprite.FlipX();
+		}
+		else
+			sprite.texOffSet = { myDirection * sub.x, 1.0f - sub.y };
+		break;
+	}
+	case Walking:
+
 		break;
 	case Dead:
-		spr = { 4, 1 };
+		//spr = { 4, 1 };
 		break;
 	}
 
-	Kross::Renderer2D::BatchQuad(GetSprite(
-		{ (spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256 },
-		{ SPRITE_SIZE / 576, SPRITE_SIZE / 256 }));
+	sprite.position = { p.pos.x - sprite.size.x / 2.0f, p.pos.y - 0.2f};
+	Kross::Renderer2D::BatchQuad(sprite);
+
+	//Kross::Renderer2D::BatchQuad(GetSprite(
+	//	{ (spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256 },
+	//	{ SPRITE_SIZE / 576, SPRITE_SIZE / 256 }));
 }
 
 void Creature::Log()

@@ -4,7 +4,7 @@
 
 class Creature final : public Entity
 {
-#define SPRITE_SIZE 64.0f
+
 public:
 	struct equipment
 	{
@@ -36,14 +36,14 @@ public:
 	} myState = Standing;
 	enum direction
 	{
-		East = 0,
-		South,
-		West,
-		North,
-		SouthEast,
-		NorthEast,
-		NorthWest,
+		South = 0,
 		SouthWest,
+		West,
+		NorthWest,
+		North,
+		NorthEast,
+		East,
+		SouthEast,
 	} myDirection = South;
 	long double timer = 0.0;
 	size_t gfxCounter = 0;
@@ -66,4 +66,5 @@ public:
 
 	int mhp, hp;
 	std::vector<Item*> inventory;
+	Kross::Ref<Kross::Texture::T2D> tex = GetSprite().texture;
 };

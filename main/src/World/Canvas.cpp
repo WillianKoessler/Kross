@@ -12,8 +12,8 @@ Canvas::Canvas()
 void Canvas::OnAttach()
 {
 	Kross::Renderer::Command::SetClear({ 0.15f, 0.1f, 0.2f, 1.0f });
-	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/character.png"));
-	entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
+	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/Oboro.png"));
+	//entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
 	entities[0].active = true;
 }
 void Canvas::OnDetach()
@@ -31,6 +31,12 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
 	Kross::Renderer2D::BatchBegin();
+
+	params.position = { -1.0f,-1.0f };
+	params.flip = { 1.0f, 0.0f };
+	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("ChernoLogo", "assets/textures/ChernoLogo.png");
+	params.color = { 1,1,1,1 };
+	Kross::Renderer2D::BatchQuad(params);
 
 	for(auto& e : entities)
 	{

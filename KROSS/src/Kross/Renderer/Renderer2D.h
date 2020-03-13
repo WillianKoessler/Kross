@@ -13,6 +13,10 @@ namespace Kross {
 		float				repeat		= 1;
 		glm::vec2			texOffSet	= { 0.0f, 0.0f };
 		glm::vec2			texSubSize	= { 1.0f, 1.0f };
+		glm::vec2			flip		= { 0.0f, 0.0f };
+
+		void FlipX();
+		void FlipY();
 	};
 
 	class Renderer2D
