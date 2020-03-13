@@ -12,7 +12,7 @@ namespace Kross::OpenGL::Texture {
 		T2DArray(const size_t size);
 		~T2DArray();
 
-		virtual const int Get(const Ref<Kross::Texture::T2D> texture) override;
+		virtual const unsigned int Get(const Ref<Kross::Texture::T2D> texture) override;
 		virtual void Bind(const size_t slot = 0) const override;
 		virtual void Add(const Ref<Kross::Texture::Base> texture) override;
 		virtual void Del(const Ref<Kross::Texture::Base> texture) override;

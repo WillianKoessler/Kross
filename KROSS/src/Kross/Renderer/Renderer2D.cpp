@@ -66,10 +66,10 @@ namespace Kross {
 		{}
 		Quad(const QuadParams& p, const float texture)
 			:
-			bl({ p.position.x,				p.position.y,				0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y						}, p.flip, texture),
-			br({ p.position.x + p.size.x,	p.position.y,				0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y						}, p.flip, texture),
-			tr({ p.position.x + p.size.x,	p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y + p.texSubSize.y	}, p.flip, texture),
-			tl({ p.position.x,				p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y + p.texSubSize.y	}, p.flip, texture)
+			bl({ p.position.x,				p.position.y,				0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y }, p.flip, texture),
+			br({ p.position.x + p.size.x,	p.position.y,				0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y }, p.flip, texture),
+			tr({ p.position.x + p.size.x,	p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y + p.texSubSize.y }, p.flip, texture),
+			tl({ p.position.x,				p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y + p.texSubSize.y }, p.flip, texture)
 		{}
 		Vertex bl;
 		Vertex br;
@@ -190,16 +190,16 @@ namespace Kross {
 			data->shader->SetIntV("u_Textures", Texture::Base::QueryMaxSlots(), nullptr);
 
 			uint32_t white = 0xffffffff;
-			Stack<Texture::T2D>::get().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white));
+			data->texArray->Add(Stack<Texture::T2D>::get().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white)));
 
 			const char* cherno = "assets/textures/ChernoLogo.png";
 			const char* checker = "assets/textures/CheckerBoard.png";
 			const char* cage = "assets/textures/cage.png";
 			const char* cage_mamma = "assets/textures/cage_mamma.png";
 
-			data->texArray->Add(Stack<Texture::T2D>::get().Get("blank"));
-			data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage), cage));
-			data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage_mamma), cage_mamma));
+			///*data->texArray->Add(*/Stack<Texture::T2D>::get().Get("blank")							;//);
+			///*data->texArray->Add(*/Stack<Texture::T2D>::get().Get(FileName(cage), cage)			;//);
+			///*data->texArray->Add(*/Stack<Texture::T2D>::get().Get(FileName(cage_mamma), cage_mamma);//);
 
 			SceneBegan = false;
 			called = true;
@@ -497,7 +497,7 @@ namespace Kross {
 	void Renderer2D::BatchQuad(const QuadParams& params)
 	{
 		KROSS_PROFILE_FUNC();
-		if (data->quadIndex+1 >= MaxQuadCount)
+		if (data->quadIndex + 1 >= MaxQuadCount)
 		{
 			BatchEnd();
 			BatchBegin();
@@ -505,13 +505,13 @@ namespace Kross {
 
 		if (params.texture)
 		{
-			float tex = (float)data->texArray->Get(params.texture);
-			if (tex < 0.0f)
-			{
-				data->texArray->Add(params.texture);
-			}
+			//float tex = (float)data->texArray->Get(params.texture);
+			//if (tex < 0.0f)
+			//{
+			//	data->texArray->Add(params.texture);
+			//}
 			data->myBuffer[data->quadIndex] =
-				Quad(params, tex);
+				Quad(params, (float)data->texArray->Get(params.texture));
 		}
 		else
 		{

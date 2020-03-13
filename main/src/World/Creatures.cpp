@@ -108,12 +108,12 @@ void Creature::DrawSelf()
 	Kross::Renderer2D::BatchQuad(sprite);
 	sprite.texture = tex;
 	sprite.size = { 100/118.0f, 1.0f };
+	sprite.texSubSize = sub;
 
 	switch (myState)
 	{
 	case Standing:
 	{
-		sprite.texSubSize = sub;
 
 		if (min_ == ind.x)
 			sprite.size = { min_norm, 1.0f };
@@ -130,8 +130,10 @@ void Creature::DrawSelf()
 		break;
 	}
 	case Walking:
+	{
 
 		break;
+	}
 	case Dead:
 		//spr = { 4, 1 };
 		break;

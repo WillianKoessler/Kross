@@ -78,7 +78,7 @@ namespace Kross {
 		}
 		~Stack() { clear(); }
 
-		static const bool Add(const Ref<T>& resource);
+		static const Ref<T> Add(const Ref<T>& resource);
 		static const bool Del(const std::string& key);
 
 		static Ref<T> Get(const std::string& k) { return _Get(k, nullptr); }

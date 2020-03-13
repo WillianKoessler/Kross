@@ -19,7 +19,7 @@ namespace Kross::Texture {
 	class KAPI T2DArray : public Array
 	{
 	public:
-		virtual const int Get(const Ref<T2D> texture) = 0;
+		virtual const unsigned int Get(const Ref<T2D> texture) = 0;
 		static Ref<T2DArray> CreateRef(const size_t size);
 		static Scope<T2DArray> CreateScope(const size_t size);
 	};
