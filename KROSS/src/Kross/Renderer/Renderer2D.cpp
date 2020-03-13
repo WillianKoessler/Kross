@@ -10,7 +10,7 @@
 #include "Textures/Array.h"
 #include "Textures/Atlas.h"
 
-static constexpr size_t MaxQuadCount = 100;
+static constexpr size_t MaxQuadCount = 65536/2;
 static constexpr size_t MaxVertexCount = MaxQuadCount * 4;
 static constexpr size_t MaxIndexCount = MaxQuadCount * 6;
 
@@ -115,7 +115,9 @@ namespace Kross {
 	}
 	void Renderer2D::ResetStats()
 	{
-		data->rendererStats = Stats();
+		data->rendererStats.maxQuads = MaxQuadCount;
+		data->rendererStats.DrawCount = 0;
+		data->rendererStats.QuadCount = 0;
 	}
 
 	void Renderer2D::Init()

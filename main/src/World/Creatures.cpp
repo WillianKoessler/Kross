@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Creatures.h"
-
-#include "Kross.h"
+#include <cmath>
 
 bool Creature::tgm(bool set)
 {
@@ -64,16 +63,19 @@ void Creature::OnUpdate(float ts)
 	}
 
 	auto& p = GetProps();
-	//p.vel += p.acc;
-	//p.vel *= dump;
-	p.pos += p.acc;
+	p.vel += p.acc;
+	p.vel *= dump;
+	p.pos += p.vel;
+	//if (!sit);
+		//walk(p);
 
 
-
-	if (fabsf(p.acc.x) < 0.0000000001f && fabsf(p.acc.y) < 0.0000000001f)
-		myState = Standing;
-	else
+	
+	//if (fabs(p.vel.x) * 1000.0 > 0.01 ||fabs(p.vel.y) * 1000.0 > .00001)
+	if(abs(p.vel.x) > (pt / (1/ts)) || abs(p.vel.y) > (pt / (1/ts)))
 		myState = Walking;
+	else
+		myState = Standing;
 
 	if (sit) myState = Sit;
 
@@ -117,12 +119,12 @@ void Creature::DrawSelf()
 	constexpr float walking_offset = 1.0f - sub.y * 2;
 	constexpr float sitting_offset = 5 * sub.x;
 
-	sprite.texture = 0;
-	sprite.size = { 0.1f, 0.1f };
-	sprite.position = p.pos;
-	Kross::Renderer2D::BatchQuad(sprite);
-
+	//sprite.texture = 0;
+	//sprite.size = { 0.1f, 0.1f };
+	//sprite.position = p.pos;
+	//Kross::Renderer2D::BatchQuad(sprite);
 	sprite.texture = p.tex;
+
 	sprite.texSubSize = sub;
 	if (min_ == ind.x)
 		sprite.size = { min_norm, 1.0f };
@@ -191,4 +193,9 @@ void Creature::Log()
 		log += "\nPosition: " + std::to_string(GetX()) + ", " + std::to_string(GetY());
 	}
 	KROSS_TRACE(log);
+}
+
+void Creature::walk(Props& p)
+{
+	p.pos += p.acc * speed;
 }

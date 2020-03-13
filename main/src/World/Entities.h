@@ -46,19 +46,19 @@ public:
 		props(props_)
 	{}
 
-	inline const unsigned char GetFlags(unsigned char mask) const { return props.EFs & mask; }
-	inline const unsigned char GetFlags() const { return props.EFs; }
+	inline const auto GetFlags(unsigned char mask) const { return props.EFs & mask; }
+	inline const auto GetFlags() const { return props.EFs; }
 	inline const void SetFlagsOn(unsigned char mask) { props.EFs |= mask; }
 	inline const void SetFlagsOff(unsigned char mask) { props.EFs &= ~mask; }
-	inline const std::string& GetName() const { return props.name; }
-	inline const glm::vec3& GetPos() const { return props.pos; }
-	inline const glm::vec3& GetVel() const { return props.vel; }
-	inline const float GetX() const { return props.pos.x; }
-	inline const float GetY() const { return props.pos.y; }
+	inline const auto& GetName() const { return props.name; }
+	inline const auto& GetPos() const { return props.pos; }
+	inline const auto& GetVel() const { return props.vel; }
+	inline const auto GetX() const { return props.pos.x; }
+	inline const auto GetY() const { return props.pos.y; }
 	inline void SetAcc(const glm::vec3& acc) { props.acc = acc; }
 	inline void SetPos(const glm::vec3& newpos) { props.pos = newpos; }
 	inline void SetPos(const glm::vec2& newpos) { props.pos = { newpos.x, newpos.y, 0.0f }; }
-	inline Kross::QuadParams& GetSprite(const glm::vec2& texoff = { 0.0f, 0.0f }, const glm::vec2& texsize = { 1.0f,1.0f })
+	inline auto& GetSprite(const glm::vec2& texoff = { 0.0f, 0.0f }, const glm::vec2& texsize = { 1.0f,1.0f })
 	{
 		props.sprite.Reset();
 		return props.sprite;
@@ -70,7 +70,7 @@ public:
 	virtual bool interact() { return false; }
 	virtual void DrawSelf() {}
 
-protected:
+//protected:
 	inline Props& GetProps() { return props; }
 
 private:

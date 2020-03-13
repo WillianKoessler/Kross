@@ -48,11 +48,15 @@ public:
 	} myDirection = South;
 	long double timer = 0.0;
 	size_t gfxCounter = 0;
-	float sprite_speed = 0.925f;
+	float sprite_speed = 0.87f;
 	float dump = 0.7f;
+	float speed = 0.7f;
 	bool debugWindow = false;
 	bool active = false;
 	bool sit = false;
+
+	//precision tolerance
+	float pt = 0.01f;
 
 	Creature(const Entity::Props& prop) :
 		Entity(prop),
@@ -66,6 +70,7 @@ public:
 	virtual void OnUpdate(float ts) override;
 	virtual void DrawSelf() override;
 	void Log();
+	void walk(Props& p);
 
 	int mhp, hp;
 	std::vector<Item*> inventory;

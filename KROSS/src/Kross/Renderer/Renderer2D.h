@@ -27,6 +27,7 @@ namespace Kross {
 	public:
 		struct Stats
 		{
+			size_t maxQuads = 0;
 			uint32_t DrawCount = 0;
 			uint32_t QuadCount = 0;
 		};

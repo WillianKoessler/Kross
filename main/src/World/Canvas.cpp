@@ -80,6 +80,7 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		if(show_rendererStats)
 		{
 			Begin("Renderer Stats", &show_rendererStats);
+			Text("MaxQuadCount: %d", Kross::Renderer2D::getStats().maxQuads);
 			Text("Quad Count: %d", Kross::Renderer2D::getStats().QuadCount);
 			Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
 			End(); 
@@ -95,16 +96,18 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		{
 			Text("    "); SameLine(); Checkbox((e.GetName() + " Window").c_str(), &e.debugWindow);
 			if(e.debugWindow){
+				auto& p = e.GetProps();
 				Begin(e.GetName().c_str(), &e.debugWindow);
-				Text("Position: X=%.1f, Y=%.1f", e.GetX(), e.GetY());
-				Text("Velocity: X=%.3f, Y=%.3f", e.GetVel().x, e.GetVel().y);
+				Text("Position: X=%.1f, Y=%.1f", p.pos.x, p.pos.y);
+				Text("Velocity: X=%.10f, Y=%.10f", p.vel.x, p.vel.y);
 				Text("HP %d/%d", e.hp, e.mhp);
 				Text("State: %d", e.myState);
 				Text("Direction: %d", e.myDirection);
 				Checkbox("Inputs", &e.active);
+				SliderFloat("Speed", &e.speed, 0.0f, 1.0f);
 				SliderFloat("sprite_speed", &e.sprite_speed, 0.0f, 1.0f);
 				SliderFloat("dump", &e.dump, 0.0f, 1.0f);
-				SliderFloat2("vel", glm::value_ptr(acc), -0.01f, 0.01f);
+				SliderFloat2("vel", glm::value_ptr(p.vel), -.1f, .1f);
 				End();
 			}
 		}
