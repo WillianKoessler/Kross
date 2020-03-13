@@ -15,7 +15,7 @@ namespace Kross {
 		Win_Windows(const WindowProps& props);
 		virtual ~Win_Windows() override;
 
-		virtual void OnUpdate() override;
+		virtual void OnUpdate(bool) override;
 
 		virtual inline unsigned int GetWidth() const override { return m_Data.nWidth; }
 		virtual inline unsigned int GetHeight() const override { return m_Data.nHeight; }

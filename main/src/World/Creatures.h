@@ -56,7 +56,7 @@ public:
 	bool sit = false;
 
 	//precision tolerance
-	float pt = 0.01f;
+	float pt = 0.001f;
 
 	Creature(const Entity::Props& prop) :
 		Entity(prop),

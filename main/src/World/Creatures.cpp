@@ -45,6 +45,11 @@ void Creature::Input(float ts)
 	if (active)
 	{
 		auto& p = GetProps();
+		if (Kross::Input::IsMouseButtonPressed(KROSS_MOUSE_BUTTON_1))
+		{
+			glm::vec2 mouse = { Kross::Input::GetMouseX(), Kross::Input::GetMouseY() };
+			glm::vec2 dir = {};
+		}
 		p.acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
 		p.acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
 		if (Kross::Input::IsKeyReleased(KROSS_KEY_INSERT)) sit = !sit;
@@ -63,16 +68,17 @@ void Creature::OnUpdate(float ts)
 	}
 
 	auto& p = GetProps();
-	p.vel += p.acc;
-	p.vel *= dump;
-	p.pos += p.vel;
-	//if (!sit);
-		//walk(p);
 
+	if (!sit)
+	{
+		p.vel += p.acc;
+		p.vel *= dump;
+		if (abs(p.vel.x) < pt) p.vel.x = 0;
+		if (abs(p.vel.y) < pt) p.vel.y = 0;
+		p.pos += p.vel;
+	}
 
-	
-	//if (fabs(p.vel.x) * 1000.0 > 0.01 ||fabs(p.vel.y) * 1000.0 > .00001)
-	if(abs(p.vel.x) > (pt / (1/ts)) || abs(p.vel.y) > (pt / (1/ts)))
+	if (p.vel.x || p.vel.y)
 		myState = Walking;
 	else
 		myState = Standing;
@@ -82,26 +88,27 @@ void Creature::OnUpdate(float ts)
 	if (hp <= 0)
 		myState = Dead;
 
-#define eight_directions 0
+#define eight_directions 1
 #if eight_directions
-	if (p.vel.x == 0.0f && p.vel.y < 0.0f) myDirection = South;
-	else if (p.vel.x > 0.0f && p.vel.y < 0.0f) myDirection = SouthEast;
-	else if (p.vel.x > 0.0f && p.vel.y == 0.0f) myDirection = East;
-	else if (p.vel.x > 0.0f && p.vel.y > 0.0f) myDirection = NorthEast;
-	else if (p.vel.x == 0.0f && p.vel.y > 0.0f) myDirection = North;
-	else if (p.vel.x < 0.0f && p.vel.y >  0.0f) myDirection = NorthWest;
-	else if (p.vel.x < 0.0f && p.vel.y == 0.0f) myDirection = West;
-	else if (p.vel.x < 0.0f && p.vel.y < 0.0f) myDirection = SouthWest;
+	if (p.acc.x == 0.0f && p.acc.y < 0.0f) myDirection = South;
+	else if (p.acc.x > 0.0f && p.acc.y < 0.0f) myDirection = SouthEast;
+	else if (p.acc.x > 0.0f && p.acc.y == 0.0f) myDirection = East;
+	else if (p.acc.x > 0.0f && p.acc.y > 0.0f) myDirection = NorthEast;
+	else if (p.acc.x == 0.0f && p.acc.y > 0.0f) myDirection = North;
+	else if (p.acc.x < 0.0f && p.acc.y >  0.0f) myDirection = NorthWest;
+	else if (p.acc.x < 0.0f && p.acc.y == 0.0f) myDirection = West;
+	else if (p.acc.x < 0.0f && p.acc.y < 0.0f) myDirection = SouthWest;
+
 #else
-	if (!(p.acc.y < 0.0000000001f && p.acc.y > -0.0000000001f))
+	if (abs(p.vel.y) > pt)
 	{
-		if (p.acc.y < -0.0000000001f) myDirection = South;
-		if (p.acc.y > 0.0000000001f) myDirection = North;
+		if (p.acc.y < -pt) myDirection = South;
+		if (p.acc.y > pt) myDirection = North;
 	}
-	if (!(p.acc.x < 0.0000000001f && p.acc.x > -0.0000000001f))
+	if (abs(p.acc.x) > pt)
 	{
-		if (p.acc.x < -0.0000000001f) myDirection = West;
-		if (p.acc.x > 0.0000000001f) myDirection = East;
+		if (p.acc.x < -pt) myDirection = West;
+		if (p.acc.x > pt) myDirection = East;
 	}
 #endif
 }
@@ -119,12 +126,7 @@ void Creature::DrawSelf()
 	constexpr float walking_offset = 1.0f - sub.y * 2;
 	constexpr float sitting_offset = 5 * sub.x;
 
-	//sprite.texture = 0;
-	//sprite.size = { 0.1f, 0.1f };
-	//sprite.position = p.pos;
-	//Kross::Renderer2D::BatchQuad(sprite);
 	sprite.texture = p.tex;
-
 	sprite.texSubSize = sub;
 	if (min_ == ind.x)
 		sprite.size = { min_norm, 1.0f };
@@ -135,32 +137,35 @@ void Creature::DrawSelf()
 	{
 	case Standing:
 	{
-		if (myDirection == East)
+		switch (myDirection)
 		{
-			sprite.texOffSet = { West * sub.x, 1.0f - sub.y };
-			sprite.FlipX();
+		case East: sprite.texOffSet = { West * sub.x, 1.0f - sub.y }; sprite.FlipX(); break;
+		case NorthEast: sprite.texOffSet = { NorthWest * sub.x, 1.0f - sub.y }; sprite.FlipX(); break;
+		case SouthEast: sprite.texOffSet = { SouthWest * sub.x, 1.0f - sub.y }; sprite.FlipX(); break;
+		default: sprite.texOffSet = { myDirection * sub.x, 1.0f - sub.y }; break;
 		}
-		else sprite.texOffSet = { myDirection * sub.x, 1.0f - sub.y };
 		break;
 	}
 	case Sit:
 	{
-		if (myDirection == East)
+		switch (myDirection)
 		{
-			sprite.texOffSet = { West * sub.x + sitting_offset, 1.0f };
-			sprite.FlipX();
+		case East: sprite.texOffSet = { West * sub.x + sitting_offset, 1.0f - sub.y }; sprite.FlipX(); break;
+		case NorthEast: sprite.texOffSet = { NorthWest * sub.x + sitting_offset, 1.0f - sub.y }; sprite.FlipX(); break;
+		case SouthEast: sprite.texOffSet = { SouthWest * sub.x + sitting_offset, 1.0f - sub.y }; sprite.FlipX(); break;
+		default: sprite.texOffSet = { myDirection * sub.x + sitting_offset, 1.0f - sub.y }; break;
 		}
-		else sprite.texOffSet = { myDirection * sub.x + sitting_offset, 1.0f };
 		break;
 	}
 	case Walking:
 	{
-		if (myDirection == East)
+		switch (myDirection)
 		{
-			sprite.texOffSet = { (float)gfxCounter * sub.x , walking_offset - West * sub.y };
-			sprite.FlipX();
+		case East: sprite.texOffSet = { (float)gfxCounter * sub.x , walking_offset - West * sub.y }; sprite.FlipX(); break;
+		case NorthEast: sprite.texOffSet = { (float)gfxCounter * sub.x , walking_offset - NorthWest * sub.y }; sprite.FlipX(); break;
+		case SouthEast: sprite.texOffSet = { (float)gfxCounter * sub.x , walking_offset - SouthWest * sub.y }; sprite.FlipX(); break;
+		default: sprite.texOffSet = { (float)gfxCounter * sub.x , walking_offset - myDirection * sub.y }; break;
 		}
-		else sprite.texOffSet = { (float)gfxCounter * sub.x , walking_offset - myDirection * sub.y};
 		break;
 	}
 	case Dead:
@@ -168,12 +173,8 @@ void Creature::DrawSelf()
 		break;
 	}
 
-	sprite.position = { p.pos.x - sprite.size.x / 2.0f, p.pos.y - 0.2f};
+	sprite.position = { p.pos.x - sprite.size.x / 2.0f, p.pos.y - 0.2f };
 	Kross::Renderer2D::BatchQuad(sprite);
-
-	//Kross::Renderer2D::BatchQuad(GetSprite(
-	//	{ (spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256 },
-	//	{ SPRITE_SIZE / 576, SPRITE_SIZE / 256 }));
 }
 
 void Creature::Log()
@@ -184,8 +185,6 @@ void Creature::Log()
 		log += "\nName: " + GetName();
 		log += "\nPosition: " + std::to_string(GetX()) + ", " + std::to_string(GetY());
 		log += "\nHealth: " + hp + '/' + mhp;
-		//log += "\nMana: " + sp + '/' + msp;
-		//log += "\nWeight: " + w + '/' + mw;
 	}
 	else
 	{

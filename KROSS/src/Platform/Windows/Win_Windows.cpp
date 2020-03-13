@@ -223,10 +223,17 @@ namespace Kross {
 		KROSS_CORE_INFO("[{0}] Windows window Destructed.", __FUNCTION__);
 	}
 
-	void Win_Windows::OnUpdate()
+	void Win_Windows::OnUpdate(bool minimized)
 	{
-		glfwPollEvents();
-		if (GetWidth() != 0 && GetHeight() != 0) m_Context->SwapBuffers();
+		if (!minimized)
+		{
+			// first plane
+			glfwPollEvents();
+			m_Context->SwapBuffers();
+		}
+		else
+			// second plane
+			glfwWaitEvents();
 	}
 
 	void Win_Windows::FullScreen(bool enable) const

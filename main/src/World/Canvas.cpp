@@ -25,8 +25,6 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	Kross::Renderer2D::ResetStats();
 	params.Reset();
 	camera.OnUpdate(ts);
-	//acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
-	//acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
 
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
@@ -89,6 +87,8 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 
 		Begin("Main Window");
 		Text("FPS: %.1f", FrameRate); SameLine(); Checkbox("FullScreen: ", &fullscreen);
+		auto& mouse = Kross::Input::GetMousePos();
+		Text("Mouse: %.1f, %.1f", mouse.x, mouse.y);
 		Checkbox("Demo Window", &show_demo_window);
 		Checkbox("Show Renderer Stats", &show_rendererStats);
 		Text("Entities: ");

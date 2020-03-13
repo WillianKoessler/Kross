@@ -43,6 +43,15 @@ namespace Kross {
 		);
 		return { (float)xpos, (float)ypos };
 	}
+	const glm::dvec2& WindowInput::GetMousePosImpl()
+	{
+		glfwGetCursorPos(
+			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
+			&mouse_position.x,
+			&mouse_position.y
+		);
+		return mouse_position;
+	}
 	float WindowInput::GetMouseXImpl()
 	{
 		auto[x, y] = GetMousePositionImpl();

@@ -72,27 +72,24 @@ namespace Kross {
 		while (m_bRunning)
 		{
 			KROSS_PROFILE_SCOPE("Run Loop");
-			float time = (float)glfwGetTime();
-			Timestep ts = time - previous_time;
-			previous_time = time;
-
 			if (!m_bMinimized)
 			{
+				float time = (float)glfwGetTime();
+				Timestep ts = time - previous_time;
+				previous_time = time;
+
 				KROSS_PROFILE_SCOPE("LayerStack OnUpdate");
 				for (Ref<Layer>& layer : m_LayerStack)
 					layer->OnUpdate(ts);
-			}
 
-			m_ptrImGuiLayer->Begin();
-			if(!m_bMinimized)
-			{
+				m_ptrImGuiLayer->Begin();
 				KROSS_PROFILE_SCOPE("LayerStack ImGuiRender");
 				for (Ref<Layer>& layer : m_LayerStack)
 					layer->OnImGuiRender(ts);
+				m_ptrImGuiLayer->End();
 			}
-			m_ptrImGuiLayer->End();
 
-			m_uptrWindow->OnUpdate();
+			m_uptrWindow->OnUpdate(m_bMinimized);
 		}
 		KROSS_CORE_FILE_TRACE("-----------------------RUNTIME ENDED-----------------------");
 

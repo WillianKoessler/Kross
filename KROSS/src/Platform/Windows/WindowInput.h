@@ -10,6 +10,7 @@ namespace Kross{
 
 		virtual bool IsMouseButtonPressedImpl(int button) override;
 		virtual std::pair<float, float> GetMousePositionImpl() override;
+		virtual const glm::dvec2& GetMousePosImpl() override;
 		virtual float GetMouseXImpl() override;
 		virtual float GetMouseYImpl() override;
 	};
