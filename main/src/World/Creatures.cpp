@@ -45,16 +45,10 @@ void Creature::Input(float ts)
 {
 	if (active)
 	{
-		static bool previous_sit = true;
 		auto& p = GetProps();
 		p.acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
 		p.acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
-		if (Kross::Input::IsKeyPressed(KROSS_KEY_INSERT) && sit != previous_sit)
-		{
-			Kross::Input::IsKeyPressed
-			previous_sit = sit;
-			sit = !sit;
-		}
+		if (Kross::Input::IsKeyReleased(KROSS_KEY_INSERT)) sit = !sit;
 	}
 }
 

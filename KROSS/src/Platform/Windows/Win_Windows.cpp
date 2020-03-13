@@ -106,7 +106,7 @@ namespace Kross {
 			KROSS_PROFILE_SCOPE("SetVSync");
 			SetVSync(true);
 		}
-
+		glfwSetInputMode(m_Window, GLFW_STICKY_KEYS, GLFW_TRUE);
 		// Set GLFW callbacks
 		{
 			KROSS_PROFILE_SCOPE("glfwSetWindowSizeCallback");

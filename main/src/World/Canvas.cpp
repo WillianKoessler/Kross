@@ -25,7 +25,6 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	Kross::Renderer2D::ResetStats();
 	params.Reset();
 	camera.OnUpdate(ts);
-
 	//acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
 	//acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
 
