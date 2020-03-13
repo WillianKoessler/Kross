@@ -23,24 +23,29 @@ void Canvas::OnDetach()
 void Canvas::OnUpdate(Kross::Timestep ts)
 {
 	Kross::Renderer2D::ResetStats();
+	params.Reset();
 	camera.OnUpdate(ts);
 
-	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
-	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
+	//acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
+	//acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
 
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
 	Kross::Renderer2D::BatchBegin();
 
 	params.position = { -1.0f,-1.0f };
-	params.flip = { 1.0f, 0.0f };
 	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("ChernoLogo", "assets/textures/ChernoLogo.png");
-	params.color = { 1,1,1,1 };
 	Kross::Renderer2D::BatchQuad(params);
+
+	params.position.x -= 0.5f;
+	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("cage", "assets/textures/cage.png");
+	params.FlipY();
+	Kross::Renderer2D::BatchQuad(params);
+	params.FlipY();
 
 	for(auto& e : entities)
 	{
-		if(e.active) e.SetAcc(acc);
+		//if(e.active) e.SetAcc(acc);
 		e.OnUpdate(ts);
 		e.DrawSelf();
 	}

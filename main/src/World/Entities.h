@@ -13,16 +13,18 @@ public:
 	struct Props {
 		Props(const glm::vec2& pos, const unsigned char efs, const std::string& name, const std::string& spr)
 			:
+			sprite(),
+			tex(Kross::Stack<Kross::Texture::T2D>::get().Get(Kross::FileName(spr), spr)),
 			pos({pos, 0.0f}),
 			EFs(efs),
-			name(name),
-			sprite()
+			name(name)
 		{
 			sprite.color = glm::vec4(1.0f);
 			sprite.position = pos;
-			sprite.texture = Kross::Stack<Kross::Texture::T2D>::get().Get(Kross::FileName(spr), spr);
+			sprite.texture = tex;
 		}
 		Kross::QuadParams sprite;
+		Kross::Ref<Kross::Texture::T2D> tex;
 		glm::vec3 pos = {0.0f, 0.0f, 0.0f};
 		glm::vec3 vel = {0.0f, 0.0f, 0.0f};
 		glm::vec3 acc = {0.0f, 0.0f, 0.0f};
@@ -58,9 +60,7 @@ public:
 	inline void SetPos(const glm::vec2& newpos) { props.pos = { newpos.x, newpos.y, 0.0f }; }
 	inline Kross::QuadParams& GetSprite(const glm::vec2& texoff = { 0.0f, 0.0f }, const glm::vec2& texsize = { 1.0f,1.0f })
 	{
-		props.sprite.flip = { 0.0f,0.0f };
-		props.sprite.texOffSet = texoff;
-		props.sprite.texSubSize = texsize;
+		props.sprite.Reset();
 		return props.sprite;
 	}
 

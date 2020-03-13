@@ -25,7 +25,6 @@ namespace Kross {
 			const glm::vec3& pos,
 			const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f },
 			const glm::vec2& texCoord = { 0.0f, 0.0f },
-			const glm::vec2& flip = { 0.0f, 0.0f },
 			float texIndex = 0.0f)
 			:
 			pos(pos),
@@ -36,19 +35,18 @@ namespace Kross {
 		glm::vec3 pos;
 		glm::vec4 color;
 		glm::vec2 texCoord;
-		glm::vec2 flip;
 		float texIndex;
 	};
 	struct Quad
 	{
 		Quad() = default;
 		Quad(Vertex bl, Vertex br, Vertex tr, Vertex tl) : bl(bl), br(br), tr(tr), tl(tl) {}
-		Quad(const glm::vec3& pos, const glm::vec4& color, const glm::vec2& size, const glm::vec2& flip, const float texture)
+		Quad(const glm::vec3& pos, const glm::vec4& color, const glm::vec2& size, const float texture)
 			:
-			bl(pos, color, { 0.0f, 0.0f }, flip, texture),
-			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { 1.0f, 0.0f }, flip, texture),
-			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { 1.0f, 1.0f }, flip, texture),
-			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { 0.0f, 1.0f }, flip, texture)
+			bl(pos, color, { 0.0f, 0.0f }, texture),
+			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { 1.0f, 0.0f }, texture),
+			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { 1.0f, 1.0f }, texture),
+			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { 0.0f, 1.0f }, texture)
 		{}
 		Quad(
 			const glm::vec2& pos,
@@ -59,17 +57,17 @@ namespace Kross {
 			const glm::vec2& flip,
 			const float texture)
 			:
-			bl({ pos.x,				pos.y,			0.0f }, color, { texOff.x				, texOff.y }, flip, texture),
-			br({ pos.x + size.x,	pos.y,			0.0f }, color, { texOff.x + texSize.x	, texOff.y }, flip, texture),
-			tr({ pos.x + size.x,	pos.y + size.y,	0.0f }, color, { texOff.x + texSize.x	, texOff.y + texSize.y }, flip, texture),
-			tl({ pos.x,				pos.y + size.y,	0.0f }, color, { texOff.x				, texOff.y + texSize.y }, flip, texture)
+			bl({ pos.x,			pos.y,			0.0f }, color, { texOff.x				, texOff.y				}, texture),
+			br({ pos.x + size.x,pos.y,			0.0f }, color, { texOff.x + texSize.x	, texOff.y				}, texture),
+			tr({ pos.x + size.x,pos.y + size.y,	0.0f }, color, { texOff.x + texSize.x	, texOff.y + texSize.y	}, texture),
+			tl({ pos.x,			pos.y + size.y,	0.0f }, color, { texOff.x				, texOff.y + texSize.y	}, texture)
 		{}
 		Quad(const QuadParams& p, const float texture)
 			:
-			bl({ p.position.x,				p.position.y,				0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y }, p.flip, texture),
-			br({ p.position.x + p.size.x,	p.position.y,				0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y }, p.flip, texture),
-			tr({ p.position.x + p.size.x,	p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y + p.texSubSize.y }, p.flip, texture),
-			tl({ p.position.x,				p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y + p.texSubSize.y }, p.flip, texture)
+			bl({ p.position.x,				p.position.y,				0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y					 }, texture),
+			br({ p.position.x + p.size.x,	p.position.y,				0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y					 }, texture),
+			tr({ p.position.x + p.size.x,	p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y + p.texSubSize.y }, texture),
+			tl({ p.position.x,				p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y + p.texSubSize.y }, texture)
 		{}
 		Vertex bl;
 		Vertex br;
@@ -108,6 +106,7 @@ namespace Kross {
 		//Cache for Texture (Performance Optimization)
 		std::vector<Ref<Texture::T2D>> texCache;
 	};
+	// Renderer2D data
 	static R2DData* data;
 
 	const Renderer2D::Stats& Renderer2D::getStats()
@@ -130,10 +129,10 @@ namespace Kross {
 			data->texArray = Texture::T2DArray::CreateScope(Texture::Base::QueryMaxSlots());
 
 			float sqrVertices[] = {
-				-0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f,		1.0f,
-				 0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 0.0f,		0.0f, 0.0f,		1.0f,
-				 0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 1.0f,		0.0f, 0.0f,		1.0f,
-				-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 1.0f,		0.0f, 0.0f,		1.0f
+				-0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		1.0f,
+				 0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 0.0f,		1.0f,
+				 0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 1.0f,		1.0f,
+				-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 1.0f,		1.0f
 			};
 			uint32_t sqrIndices[] = {
 				0, 1, 2, 2, 3, 0
@@ -145,7 +144,6 @@ namespace Kross {
 				{ Buffer::ShaderDataType::Float3, "a_Position" },
 				{ Buffer::ShaderDataType::Float4, "a_Color"},
 				{ Buffer::ShaderDataType::Float2, "a_TexCoord" },
-				{ Buffer::ShaderDataType::Float2, "a_TexFlip" },
 				{ Buffer::ShaderDataType::Float,  "a_TexIndex"}
 				});
 			data->NBva->AddVertex(data->NBsqrVB);
@@ -160,7 +158,6 @@ namespace Kross {
 				{ Buffer::ShaderDataType::Float3, "a_Position"	},
 				{ Buffer::ShaderDataType::Float4, "a_Color"		},
 				{ Buffer::ShaderDataType::Float2, "a_TexCoord"	},
-				{ Buffer::ShaderDataType::Float2, "a_TexFlip"	},
 				{ Buffer::ShaderDataType::Float,  "a_TexIndex"	}
 				});
 			data->va->AddVertex(data->vb);
@@ -185,21 +182,12 @@ namespace Kross {
 
 			Stack<Shader>::get().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D"));
 			data->shader->SetFloat("u_Repeat", 1);
-			data->shader->SetFloat4("u_Color", { 1,1,1,1 });
+			data->shader->SetFloat4("u_Color", glm::vec4(1));
 
 			data->shader->SetIntV("u_Textures", Texture::Base::QueryMaxSlots(), nullptr);
 
 			uint32_t white = 0xffffffff;
 			data->texArray->Add(Stack<Texture::T2D>::get().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white)));
-
-			const char* cherno = "assets/textures/ChernoLogo.png";
-			const char* checker = "assets/textures/CheckerBoard.png";
-			const char* cage = "assets/textures/cage.png";
-			const char* cage_mamma = "assets/textures/cage_mamma.png";
-
-			///*data->texArray->Add(*/Stack<Texture::T2D>::get().Get("blank")							;//);
-			///*data->texArray->Add(*/Stack<Texture::T2D>::get().Get(FileName(cage), cage)			;//);
-			///*data->texArray->Add(*/Stack<Texture::T2D>::get().Get(FileName(cage_mamma), cage_mamma);//);
 
 			SceneBegan = false;
 			called = true;
@@ -504,19 +492,10 @@ namespace Kross {
 		}
 
 		if (params.texture)
-		{
-			//float tex = (float)data->texArray->Get(params.texture);
-			//if (tex < 0.0f)
-			//{
-			//	data->texArray->Add(params.texture);
-			//}
-			data->myBuffer[data->quadIndex] =
-				Quad(params, (float)data->texArray->Get(params.texture));
-		}
+			data->myBuffer[data->quadIndex] = Quad(params, (float)data->texArray->Get(params.texture));
 		else
-		{
 			data->myBuffer[data->quadIndex] = Quad(params, 0.0f);
-		}
+
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;
 	}
@@ -594,6 +573,19 @@ namespace Kross {
 
 	void QuadParams::FlipY()
 	{
+		texOffSet.y += texSubSize.y;
+		texSubSize.y *= -1;
+	}
+
+	void QuadParams::Reset()
+	{
+		color = glm::vec4(1);
+		size = glm::vec2(1);
+		position = glm::vec2(0);
+		texture = NULL;
+		repeat = 1;
+		texOffSet = position;
+		texSubSize = size;
 	}
 }
 
