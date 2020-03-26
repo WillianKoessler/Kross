@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kross/Core/Core.h"
+#include "Kross/Core/KeyCodes.h"
 #include <glm/glm.hpp>
 
 namespace Kross {
@@ -18,6 +19,7 @@ namespace Kross {
 		inline static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
 	protected:
 		glm::dvec2 mouse_position = { 0.0, 0.0 };
+		bool Keys[KROSS_KEY_LAST] = { false };
 
 		virtual bool IsKeyPressedImpl(int keycode) = 0;
 		virtual bool IsKeyReleasedImpl(int keycode) = 0;

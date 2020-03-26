@@ -47,13 +47,13 @@ namespace Kross::OpenGL::Buffer {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Index::Index(uint32_t* indices, uint32_t count)
-		: m_Count(count / sizeof(uint32_t))
+		: m_Count(count)
 	{
 		KROSS_PROFILE_FUNC();
 		if (!indices) { KROSS_CORE_ERROR("{0} Creating buffer with nullptr data", __FUNCTION__); }
 		glCall(glGenBuffers(1, &m_RendererID));
 		glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
-		glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count, indices, GL_STATIC_DRAW));
+		glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW));
 	}
 	Index::~Index()
 	{

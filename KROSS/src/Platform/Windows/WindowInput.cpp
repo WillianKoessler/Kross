@@ -11,7 +11,10 @@ namespace Kross {
 		int state = glfwGetKey(
 			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
 			keycode);
-		return state == GLFW_PRESS || state == GLFW_REPEAT;
+		if (state == GLFW_PRESS || state == GLFW_REPEAT)
+			return Keys[keycode] = true;
+		else
+			return false;
 	}
 	bool WindowInput::IsKeyReleasedImpl(int keycode)
 	{
@@ -54,12 +57,12 @@ namespace Kross {
 	}
 	float WindowInput::GetMouseXImpl()
 	{
-		auto[x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePositionImpl();
 		return x;
 	}
 	float WindowInput::GetMouseYImpl()
 	{
-		auto[x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePositionImpl();
 		return y;
 	}
 }

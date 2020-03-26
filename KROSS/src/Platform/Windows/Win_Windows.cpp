@@ -108,6 +108,8 @@ namespace Kross {
 		}
 		glfwSetInputMode(m_Window, GLFW_STICKY_KEYS, GLFW_TRUE);
 		// Set GLFW callbacks
+
+		// Window Size
 		{
 			KROSS_PROFILE_SCOPE("glfwSetWindowSizeCallback");
 			glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
@@ -121,6 +123,7 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Window Close
 		{
 			KROSS_PROFILE_SCOPE("glfwSetWindowCloseCallback");
 			glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
@@ -130,6 +133,7 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Key
 		{
 			KROSS_PROFILE_SCOPE("glfwSetKeyCallback");
 			glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -159,6 +163,7 @@ namespace Kross {
 				}
 			});
 		}
+		// Char
 		{
 			KROSS_PROFILE_SCOPE("glfwSetCharCallback");
 			glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
@@ -169,6 +174,7 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Mouse Button
 		{
 			KROSS_PROFILE_SCOPE("glfwSetMouseButtonCallback");
 			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
@@ -192,6 +198,7 @@ namespace Kross {
 				}
 			});
 		}
+		// Scroll
 		{
 			KROSS_PROFILE_SCOPE("glfwSetScrollCallback");
 			glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
@@ -202,6 +209,7 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Cursor Position
 		{
 			KROSS_PROFILE_SCOPE("glfwSetCursorPosCallback");
 			glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)

@@ -20,10 +20,10 @@ namespace Kross::Camera {
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[Kross::Camera::Ortho2DCtrl] WARNING: Overriding previous camera: {0}", GetSelf()->GetName());
+			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(m_Camera.get());
 		}
-		KROSS_CORE_INFO("[Kross::Camera::Ortho2DCtrl] Camera Controller Created");
+		KROSS_CORE_INFO("[{0}] Camera Controller Created");
 	}
 
 	Ortho2DCtrl::Ortho2DCtrl(const std::string& name, float AR, bool rot)
@@ -34,10 +34,10 @@ namespace Kross::Camera {
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[Kross::Camera::Ortho2DCtrl] WARNING: Overriding previous camera: {0}", GetSelf()->GetName());
+			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(m_Camera.get());
 		}
-		KROSS_CORE_INFO("[Kross::Camera::Ortho2DCtrl] Camera Controller Created");
+		KROSS_CORE_INFO("[{0}] Camera Controller Created");
 	}
 
 	Ortho2DCtrl::Ortho2DCtrl(bool rot, const std::string& name, float AR)
@@ -48,10 +48,10 @@ namespace Kross::Camera {
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[Kross::Camera::Ortho2DCtrl] WARNING: Overriding previous camera: {0}", GetSelf()->GetName());
+			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(m_Camera.get());
 		}
-		KROSS_CORE_INFO("[Kross::Camera::Ortho2DCtrl] Camera Controller Created");
+		KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
 	}
 
 
@@ -61,7 +61,7 @@ namespace Kross::Camera {
 		m_Camera->~Ortho2D();
 		m_Camera.~shared_ptr();
 		SetSelf(nullptr);
-		KROSS_CORE_INFO("[Kross::Camera::Ortho2DCtrl] Camera Controller Deconstructed");
+		KROSS_CORE_INFO("[{0}] Camera Controller Deconstructed", __FUNCTION__);
 	}
 
 	void Ortho2DCtrl::OnUpdate(Timestep ts)
@@ -114,8 +114,9 @@ namespace Kross::Camera {
 	bool Ortho2DCtrl::OnWindowResized(WindowResizeEvent & e)
 	{
 		KROSS_PROFILE_FUNC();
-		m_fAR = (float)e.GetWidth() / (float)e.GetHeight();
-		m_Camera->SetProjMat(-m_fAR * m_fZoom, m_fAR * m_fZoom, -m_fZoom, m_fZoom);
+		size = { e.GetWidth(), e.GetHeight() };
+		m_fAR = size.x / (float)size.y;
+		m_Camera->SetProjMat(-m_fAR * m_fZoom, m_fAR * m_fZoom, -m_fAR * m_fZoom, m_fAR * m_fZoom);
 		return false;
 	}
 	

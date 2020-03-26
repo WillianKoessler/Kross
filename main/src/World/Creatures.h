@@ -66,7 +66,7 @@ public:
 	bool tgm(bool set);
 	bool applyDamage(int amount, Creature* victim) const;
 	bool receiveDamage(int amount, const Creature* attacker);
-	void Input(float ts);
+	void Input(const Kross::Camera::Ortho2DCtrl& camera, float ts);
 	virtual void OnUpdate(float ts) override;
 	virtual void DrawSelf() override;
 	void Log();

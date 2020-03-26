@@ -13,16 +13,16 @@ namespace Kross::Camera {
 		APIorder();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[Kross::Camera::Ortho2D] WARNING: Overriding previous camera: {0}", GetSelf()->GetName());
+			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(this);
 		}
-		KROSS_CORE_INFO("[Kross::Camera::Ortho2D] Camera Created");
+		KROSS_CORE_INFO("[{0}] Camera Created", __FUNCTION__);
 	}
 
 	Ortho2D::~Ortho2D()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("[Kross::Camera::Ortho2D] Camera Destroyed");
+		KROSS_CORE_INFO("[{0}] Camera Destroyed", __FUNCTION__);
 	}
 
 	void Ortho2D::SetProjMat(float left, float right, float bottom, float top)
@@ -56,7 +56,7 @@ namespace Kross::Camera {
 	{
 		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::None:	KROSS_MSGBOX("Renderer API (None) is not supported", "[Kross::Camera::Ortho2D]", _ERROR_);
+		case RendererAPI::API::None:	KROSS_MSGBOX("Renderer API (None) is not supported", __FUNCTION__, _ERROR_);
 		case RendererAPI::API::OpenGL:	m_VPM = m_ProjMat * m_ViewMat;
 		}
 	}

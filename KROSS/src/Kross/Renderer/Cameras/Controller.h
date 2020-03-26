@@ -19,6 +19,7 @@ namespace Kross::Camera {
 
 		virtual Ref<Camera> GetCamera() = 0;
 		virtual const Ref<Camera> GetCamera() const = 0;
+		virtual const float GetZoom() const = 0;
 
 		inline static Camera* GetSelf() { return self; }
 		inline static void SetSelf(Camera* other) { self = other; }

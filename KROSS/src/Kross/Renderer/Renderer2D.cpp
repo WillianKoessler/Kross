@@ -87,7 +87,11 @@ namespace Kross {
 		Ref<Buffer::Index> ib;
 
 		//Batch Buffer
-		Quad myBuffer[MaxQuadCount] = { Quad() };
+		//Quad myBuffer[MaxQuadCount] = { Quad() };
+		//Pointer to keep track of the Batch Buffer's fist Quad
+		Quad* BufferFirst = nullptr;
+		//Current Reading Head of the Batch Buffer
+		Quad* BufferHead = nullptr;
 
 		//Batch Quad Counter
 		unsigned int quadIndex = 0;
@@ -155,7 +159,10 @@ namespace Kross {
 
 			data->va = VertexArray::CreateScope();
 
-			data->vb = Buffer::Vertex::Create(nullptr, sizeof(Vertex) * MaxVertexCount, true);
+			data->BufferFirst = new Quad[MaxQuadCount];
+			data->BufferHead = data->BufferFirst;
+
+			data->vb = Buffer::Vertex::Create(nullptr, sizeof(Quad) * MaxQuadCount, true);
 			data->vb->SetLayout({
 				{ Buffer::ShaderDataType::Float3, "a_Position"	},
 				{ Buffer::ShaderDataType::Float4, "a_Color"		},
@@ -164,7 +171,7 @@ namespace Kross {
 				});
 			data->va->AddVertex(data->vb);
 
-			uint32_t indices[MaxIndexCount];
+			uint32_t* indices = new uint32_t[MaxIndexCount];
 			uint32_t offset = 0;
 			for (int i = 0; i < MaxIndexCount; i += 6)
 			{
@@ -179,8 +186,9 @@ namespace Kross {
 				offset += 4;
 			}
 
-			data->ib = Buffer::Index::Create(indices, sizeof(indices));
+			data->ib = Buffer::Index::Create(indices, MaxIndexCount);
 			data->va->SetIndex(data->ib);
+			delete[] indices;
 
 			Stack<Shader>::get().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D"));
 			data->shader->SetFloat("u_Repeat", 1);
@@ -207,6 +215,7 @@ namespace Kross {
 		{
 			Stack<Texture::T2D>::get().clear();
 			Stack<Shader>::get().clear();
+			delete[] data->BufferFirst;
 			delete data;
 		}
 		else
@@ -224,12 +233,14 @@ namespace Kross {
 		data->shader->Bind();
 		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
+		BatchBegin();
 	}
 	void Renderer2D::BatchBegin()
 	{
 		if (batch == false)
 		{
 			data->quadIndex = 0;
+			data->BufferHead = data->BufferFirst;
 			batch = true;
 		}
 		else
@@ -241,7 +252,7 @@ namespace Kross {
 	{
 		data->texArray->Bind(0);
 		data->va->Bind();
-		Renderer::Command::DrawIndexed(data->va);
+		Renderer::Command::DrawIndexed(data->va, data->quadIndex*6);
 		data->rendererStats.DrawCount++;
 
 		data->quadIndex = 0;
@@ -251,7 +262,8 @@ namespace Kross {
 	{
 		if (batch)
 		{
-			data->vb->upload(data->myBuffer, sizeof(Quad) * data->quadIndex);
+			//data->vb->upload(data->myBuffer, sizeof(Quad) * data->quadIndex);
+			data->vb->upload(data->BufferFirst, (char*)data->BufferHead - (char*)data->BufferFirst);
 			Flush();
 			batch = false;
 		}
@@ -264,6 +276,7 @@ namespace Kross {
 	{
 		if (SceneBegan)
 		{
+			BatchEnd();
 			SceneBegan = false;
 		}
 		else
@@ -487,16 +500,20 @@ namespace Kross {
 	void Renderer2D::BatchQuad(const QuadParams& params)
 	{
 		KROSS_PROFILE_FUNC();
-		if (data->quadIndex + 1 >= MaxQuadCount)
+		if (data->quadIndex >= MaxQuadCount)
 		{
 			BatchEnd();
 			BatchBegin();
 		}
 
-		if (params.texture)
-			data->myBuffer[data->quadIndex] = Quad(params, (float)data->texArray->Get(params.texture));
-		else
-			data->myBuffer[data->quadIndex] = Quad(params, 0.0f);
+		//data->BufferHead = &Quad(params, (float)data->texArray->Get(params.texture));
+		float texture = (float)data->texArray->Get(params.texture);
+		data->BufferHead->bl = {{ params.position.x,				params.position.y,					0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y }, texture};
+		data->BufferHead->br = {{ params.position.x + params.size.x,params.position.y,					0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y }, texture};
+		data->BufferHead->tr = {{ params.position.x + params.size.x,params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y + params.texSubSize.y }, texture};
+		data->BufferHead->tl = {{ params.position.x,				params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y + params.texSubSize.y }, texture};
+		data->BufferHead++;
+		//data->myBuffer[data->quadIndex] = Quad(params, (float)data->texArray->Get(params.texture));
 
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;

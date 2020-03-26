@@ -5,7 +5,7 @@
 namespace Kross::OpenGL {
 	void RendererAPI::Shutdown() const
 	{
-
+		KROSS_CORE_INFO("[{0}] Renderer Shutting Down", __FUNCTION__);
 	}
 	void RendererAPI::Init() const
 	{
@@ -22,13 +22,13 @@ namespace Kross::OpenGL {
 	{
 		glCall(glClearColor(color.r, color.g, color.b, color.a));
 	}
-	void RendererAPI::DrawIndexed(const Ref<VertexArray>& va) const
+	void RendererAPI::DrawIndexed(const Ref<VertexArray>& va, uint32_t indexCount) const
 	{
-		glDrawElements(GL_TRIANGLES, va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, indexCount ? va->GetIndex()->GetCount() : indexCount, GL_UNSIGNED_INT, nullptr);
 	}
-	void RendererAPI::DrawIndexed(const Scope<VertexArray>& va) const
+	void RendererAPI::DrawIndexed(const Scope<VertexArray>& va, uint32_t indexCount) const
 	{
-		glCall(glDrawElements(GL_TRIANGLES, va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr));
+		glCall(glDrawElements(GL_TRIANGLES, indexCount ? va->GetIndex()->GetCount() : indexCount, GL_UNSIGNED_INT, nullptr));
 	}
 	void RendererAPI::SetViewport(uint32_t width, uint32_t height) const
 	{

@@ -22,12 +22,12 @@ namespace Kross::OpenGL::Texture {
 		virtual const size_t* IDs() const override;
 
 		const Ref<Kross::Texture::T2D> operator[](const size_t pos) { if (textures[pos]->GetID()) return Ref<Kross::Texture::T2D>(textures[pos]); }
-		operator const Ref<Kross::Texture::T2D>* () { return textures.data(); }
+		operator const Ref<Kross::Texture::T2D>* () { return textures; }
 	private:
 		size_t nextAvailable = 0;
-		size_t iterator;
+		size_t currentHead;
 		const size_t _size;
-		std::vector<Ref<Kross::Texture::T2D>> textures;
+		Ref<Kross::Texture::T2D>* textures;
 		mutable unsigned int* glTex;
 	};
 }

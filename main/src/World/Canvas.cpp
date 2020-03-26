@@ -28,7 +28,6 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
-	Kross::Renderer2D::BatchBegin();
 
 	params.position = { -1.0f,-1.0f };
 	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("ChernoLogo", "assets/textures/ChernoLogo.png");
@@ -42,7 +41,9 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 
 	for(auto& e : entities)
 	{
-		//if(e.active) e.SetAcc(acc);
+		//if (Kross::Input::IsMouseButtonPressed(KROSS_MOUSE_BUTTON_1)) params.position = camera.GetCamera()->GetPosition();
+		//Kross::Renderer2D::BatchQuad(params);
+		e.Input(camera, ts);
 		e.OnUpdate(ts);
 		e.DrawSelf();
 	}
@@ -51,11 +52,10 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 		for (int j = 1; j < size; j++)
 		{
 			params.position = { i, j };
-			params.texture = 0;
+			//params.texture = 0;
 			params.color = { i / size, j / size, i / size, j / size };
 			Kross::Renderer2D::BatchQuad(params);
 		}
-	Kross::Renderer2D::BatchEnd();
 	Kross::Renderer2D::End();
 }
 
@@ -85,8 +85,12 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		}
 		Kross::Application::Get().GetWindow().FullScreen(fullscreen);
 
-		Begin("Main Window");
-		Text("FPS: %.1f", FrameRate); SameLine(); Checkbox("FullScreen: ", &fullscreen);
+		if (!Begin("Main Window", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize))
+		{
+			End();
+			return;
+		}
+		Text("FPS: %.1f", FrameRate); SameLine(); Checkbox("FullScreen", &fullscreen);
 		auto& mouse = Kross::Input::GetMousePos();
 		Text("Mouse: %.1f, %.1f", mouse.x, mouse.y);
 		Checkbox("Demo Window", &show_demo_window);

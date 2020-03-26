@@ -34,7 +34,7 @@ namespace Kross::OpenGL::Buffer {
 	class KAPI Index: public Kross::Buffer::Index
 	{
 	public:
-		Index(uint32_t* indices, uint32_t size);
+		Index(uint32_t* indices, uint32_t count);
 		virtual ~Index();
 
 		virtual void Bind() const override;

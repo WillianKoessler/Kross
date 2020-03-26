@@ -86,7 +86,7 @@ namespace Kross {
 
 		static void Log() { KROSS_CORE_TRACE("[Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
 
-		static void clear() { stack.clear(); }
+		static void clear() { stack.clear(); KROSS_CORE_TRACE("Clearing stack"); }
 		static const auto begin() { return stack.begin(); }
 		static const auto end() { return stack.end(); }
 

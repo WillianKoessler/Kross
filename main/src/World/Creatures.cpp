@@ -40,15 +40,18 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 	return hp <= 0;
 }
 
-void Creature::Input(float ts)
+void Creature::Input(const Kross::Camera::Ortho2DCtrl& camera, float ts)
 {
 	if (active)
 	{
 		auto& p = GetProps();
 		if (Kross::Input::IsMouseButtonPressed(KROSS_MOUSE_BUTTON_1))
 		{
-			glm::vec2 mouse = { Kross::Input::GetMouseX(), Kross::Input::GetMouseY() };
-			glm::vec2 dir = {};
+			//glm::vec3 mouse = { Kross::Input::GetMousePos() , 0.0f};
+			//glm::vec3 cam = { camera.GetSize().x * camera.GetZoom(), camera.GetSize().y * camera.GetZoom(), 0.0f};
+			//p.acc = camera.GetCamera()->GetPosition() + mouse - cam;
+			//p.acc /= sqrt(p.acc.x * p.acc.x + p.acc.y * p.acc.y);
+			//p.acc *= ts;
 		}
 		p.acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
 		p.acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
@@ -58,7 +61,6 @@ void Creature::Input(float ts)
 
 void Creature::OnUpdate(float ts)
 {
-	Input(ts);
 	timer += ts;
 	if (timer >= (1 - sprite_speed))
 	{
