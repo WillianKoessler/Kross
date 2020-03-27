@@ -17,6 +17,7 @@ namespace Kross::OpenGL {
 		else if (type == Kross::Buffer::ShaderDataType::Int3)	return GL_INT;
 		else if (type == Kross::Buffer::ShaderDataType::Int4)	return GL_INT;
 		else if (type == Kross::Buffer::ShaderDataType::Bool)	return GL_BOOL;
+		else if (type == Kross::Buffer::ShaderDataType::Bool2)	return GL_UNSIGNED_BYTE;
 		return NULL;
 	}
 

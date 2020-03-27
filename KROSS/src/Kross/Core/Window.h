@@ -9,19 +9,24 @@ namespace Kross {
 	struct WindowProps
 	{
 		std::string strTitle;
-		unsigned int nWidth;
-		unsigned int nHeight;
+		unsigned int nWidth, nHeight, x, y;
+		bool fullscreen;
 		bool bVSync;
-		
 		EventCallbackFn EventCallback;
 
 		WindowProps(const std::string& title = "Kross Engine",
 			unsigned int width = 380,
-			unsigned int height = 240)
-			: strTitle(title),
-				nWidth(width),
-				nHeight(height),
-				bVSync(true)
+			unsigned int height = 240,
+			bool fullscreen = false,
+			bool vsync = true)
+			:
+			strTitle(title),
+			nWidth(width),
+			nHeight(height),
+			x(0),
+			y(0),
+			fullscreen(fullscreen),
+			bVSync(vsync)
 		{
 		}
 
@@ -41,12 +46,13 @@ namespace Kross {
 	public:
 		virtual ~Window() {};
 
-		virtual void OnUpdate() = 0;
+		virtual void OnUpdate(bool) = 0;
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
-		
+
 		// Window attributes
+		virtual void FullScreen(bool) const = 0;
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;

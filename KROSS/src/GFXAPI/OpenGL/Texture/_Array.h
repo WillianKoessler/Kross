@@ -12,7 +12,7 @@ namespace Kross::OpenGL::Texture {
 		T2DArray(const size_t size);
 		~T2DArray();
 
-		virtual const int Get(const Ref<Kross::Texture::T2D> texture) override;
+		virtual const unsigned int Get(const Ref<Kross::Texture::T2D> texture) override;
 		virtual void Bind(const size_t slot = 0) const override;
 		virtual void Add(const Ref<Kross::Texture::Base> texture) override;
 		virtual void Del(const Ref<Kross::Texture::Base> texture) override;
@@ -22,12 +22,12 @@ namespace Kross::OpenGL::Texture {
 		virtual const size_t* IDs() const override;
 
 		const Ref<Kross::Texture::T2D> operator[](const size_t pos) { if (textures[pos]->GetID()) return Ref<Kross::Texture::T2D>(textures[pos]); }
-		operator const Ref<Kross::Texture::T2D>* () { return textures.data(); }
+		operator const Ref<Kross::Texture::T2D>* () { return textures; }
 	private:
 		size_t nextAvailable = 0;
-		size_t iterator;
+		size_t currentHead;
 		const size_t _size;
-		std::vector<Ref<Kross::Texture::T2D>> textures;
+		Ref<Kross::Texture::T2D>* textures;
 		mutable unsigned int* glTex;
 	};
 }

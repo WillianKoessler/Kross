@@ -13,20 +13,18 @@ namespace Kross {
 	__impl__STACK_TEMPLATE(Shader);
 	__impl__STACK_TEMPLATE(Texture::T2D);
 
-	template<typename T> const bool Stack<T>::Add(const Ref<T>& resource)
+	template<typename T> const Ref<T> Stack<T>::Add(const Ref<T>& resource)
 	{
 		const auto i = std::lower_bound(stack.begin(), stack.end(), resource->GetName());
 		if (i != stack.end() && !(resource->GetName() < i->key))
 		{
-			KROSS_CORE_WARN("Object already exists in stack.", __FUNCTION__);
-			return false;
+			KROSS_CORE_WARN("{0} Object already exists in stack.", __FUNCTION__);
 		}
 		else if (resource.get())
 		{
 			stack.emplace(i, resource->GetName(), resource);
-			return true;
 		}
-		else return false;
+		return resource;
 	}
 	template<typename T> const bool Stack<T>::Del(const std::string& key)
 	{

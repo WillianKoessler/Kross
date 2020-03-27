@@ -1,0 +1,2 @@
+C:\dev\C++\RPG Project\Game\Kross\vendor\Glad\bin\Debug-windows-x86_64\GLAD\GLAD.pdb
+C:\dev\C++\RPG Project\Game\Kross\vendor\Glad\bin-int\Debug-windows-x86_64\GLAD\GLAD.pdb

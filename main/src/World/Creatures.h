@@ -4,7 +4,7 @@
 
 class Creature final : public Entity
 {
-#define SPRITE_SIZE 64.0f
+
 public:
 	struct equipment
 	{
@@ -31,26 +31,32 @@ public:
 	enum state
 	{
 		Standing,
+		Sit,
 		Walking,
 		Dead
 	} myState = Standing;
 	enum direction
 	{
-		East = 0,
-		North,
-		West,
-		South,
-		SouthEast,
-		NorthEast,
-		NorthWest,
+		South = 0,
 		SouthWest,
+		West,
+		NorthWest,
+		North,
+		NorthEast,
+		East,
+		SouthEast,
 	} myDirection = South;
 	long double timer = 0.0;
 	size_t gfxCounter = 0;
-	float sprite_speed = 0.955f;
+	float sprite_speed = 0.87f;
 	float dump = 0.7f;
+	float speed = 0.7f;
 	bool debugWindow = false;
 	bool active = false;
+	bool sit = false;
+
+	//precision tolerance
+	float pt = 0.001f;
 
 	Creature(const Entity::Props& prop) :
 		Entity(prop),
@@ -60,9 +66,11 @@ public:
 	bool tgm(bool set);
 	bool applyDamage(int amount, Creature* victim) const;
 	bool receiveDamage(int amount, const Creature* attacker);
+	void Input(const Kross::Camera::Ortho2DCtrl& camera, float ts);
 	virtual void OnUpdate(float ts) override;
 	virtual void DrawSelf() override;
 	void Log();
+	void walk(Props& p);
 
 	int mhp, hp;
 	std::vector<Item*> inventory;

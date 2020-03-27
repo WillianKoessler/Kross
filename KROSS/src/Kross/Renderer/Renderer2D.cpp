@@ -10,7 +10,7 @@
 #include "Textures/Array.h"
 #include "Textures/Atlas.h"
 
-static constexpr size_t MaxQuadCount = 100;
+static constexpr size_t MaxQuadCount = 65536/2;
 static constexpr size_t MaxVertexCount = MaxQuadCount * 4;
 static constexpr size_t MaxIndexCount = MaxQuadCount * 6;
 
@@ -49,17 +49,25 @@ namespace Kross {
 			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { 0.0f, 1.0f }, texture)
 		{}
 		Quad(
-			const glm::vec3& pos,
+			const glm::vec2& pos,
 			const glm::vec4& color,
 			const glm::vec2& size,
 			const glm::vec2& texOff,
 			const glm::vec2& texSize,
+			const glm::vec2& flip,
 			const float texture)
 			:
-			bl(pos, color, { texOff.x				, texOff.y }, texture),
-			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { texOff.x + texSize.x	, texOff.y }, texture),
-			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { texOff.x + texSize.x	, texOff.y + texSize.y }, texture),
-			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { texOff.x				, texOff.y + texSize.y }, texture)
+			bl({ pos.x,			pos.y,			0.0f }, color, { texOff.x				, texOff.y				}, texture),
+			br({ pos.x + size.x,pos.y,			0.0f }, color, { texOff.x + texSize.x	, texOff.y				}, texture),
+			tr({ pos.x + size.x,pos.y + size.y,	0.0f }, color, { texOff.x + texSize.x	, texOff.y + texSize.y	}, texture),
+			tl({ pos.x,			pos.y + size.y,	0.0f }, color, { texOff.x				, texOff.y + texSize.y	}, texture)
+		{}
+		Quad(const QuadParams& p, const float texture)
+			:
+			bl({ p.position.x,				p.position.y,				0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y					 }, texture),
+			br({ p.position.x + p.size.x,	p.position.y,				0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y					 }, texture),
+			tr({ p.position.x + p.size.x,	p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y + p.texSubSize.y }, texture),
+			tl({ p.position.x,				p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y + p.texSubSize.y }, texture)
 		{}
 		Vertex bl;
 		Vertex br;
@@ -79,7 +87,11 @@ namespace Kross {
 		Ref<Buffer::Index> ib;
 
 		//Batch Buffer
-		Quad myBuffer[MaxQuadCount] = { Quad() };
+		//Quad myBuffer[MaxQuadCount] = { Quad() };
+		//Pointer to keep track of the Batch Buffer's fist Quad
+		Quad* BufferFirst = nullptr;
+		//Current Reading Head of the Batch Buffer
+		Quad* BufferHead = nullptr;
 
 		//Batch Quad Counter
 		unsigned int quadIndex = 0;
@@ -98,6 +110,7 @@ namespace Kross {
 		//Cache for Texture (Performance Optimization)
 		std::vector<Ref<Texture::T2D>> texCache;
 	};
+	// Renderer2D data
 	static R2DData* data;
 
 	const Renderer2D::Stats& Renderer2D::getStats()
@@ -106,7 +119,9 @@ namespace Kross {
 	}
 	void Renderer2D::ResetStats()
 	{
-		data->rendererStats = Stats();
+		data->rendererStats.maxQuads = MaxQuadCount;
+		data->rendererStats.DrawCount = 0;
+		data->rendererStats.QuadCount = 0;
 	}
 
 	void Renderer2D::Init()
@@ -119,13 +134,13 @@ namespace Kross {
 			data->texCache.resize(Texture::Base::QueryMaxSlots());
 			data->texArray = Texture::T2DArray::CreateScope(Texture::Base::QueryMaxSlots());
 
-			float sqrVertices[4 * (3 + 4 + 2 + 1)] = {
+			float sqrVertices[] = {
 				-0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		1.0f,
 				 0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 0.0f,		1.0f,
 				 0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 1.0f,		1.0f,
 				-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 1.0f,		1.0f
 			};
-			uint32_t sqrIndices[6] = {
+			uint32_t sqrIndices[] = {
 				0, 1, 2, 2, 3, 0
 			};
 
@@ -144,16 +159,19 @@ namespace Kross {
 
 			data->va = VertexArray::CreateScope();
 
-			data->vb = Buffer::Vertex::Create(nullptr, sizeof(Vertex) * MaxVertexCount, true);
+			data->BufferFirst = new Quad[MaxQuadCount];
+			data->BufferHead = data->BufferFirst;
+
+			data->vb = Buffer::Vertex::Create(nullptr, sizeof(Quad) * MaxQuadCount, true);
 			data->vb->SetLayout({
-				{ Buffer::ShaderDataType::Float3, "a_Position" },
-				{ Buffer::ShaderDataType::Float4, "a_Color"},
-				{ Buffer::ShaderDataType::Float2, "a_TexCoord" },
-				{ Buffer::ShaderDataType::Float,  "a_TexIndex"}
+				{ Buffer::ShaderDataType::Float3, "a_Position"	},
+				{ Buffer::ShaderDataType::Float4, "a_Color"		},
+				{ Buffer::ShaderDataType::Float2, "a_TexCoord"	},
+				{ Buffer::ShaderDataType::Float,  "a_TexIndex"	}
 				});
 			data->va->AddVertex(data->vb);
 
-			uint32_t indices[MaxIndexCount];
+			uint32_t* indices = new uint32_t[MaxIndexCount];
 			uint32_t offset = 0;
 			for (int i = 0; i < MaxIndexCount; i += 6)
 			{
@@ -168,26 +186,18 @@ namespace Kross {
 				offset += 4;
 			}
 
-			data->ib = Buffer::Index::Create(indices, sizeof(indices));
+			data->ib = Buffer::Index::Create(indices, MaxIndexCount);
 			data->va->SetIndex(data->ib);
+			delete[] indices;
 
-			Stack<Shader>::get().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D.glsl"));
+			Stack<Shader>::get().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D"));
 			data->shader->SetFloat("u_Repeat", 1);
-			data->shader->SetFloat4("u_Color", { 1,1,1,1 });
+			data->shader->SetFloat4("u_Color", glm::vec4(1));
 
 			data->shader->SetIntV("u_Textures", Texture::Base::QueryMaxSlots(), nullptr);
 
 			uint32_t white = 0xffffffff;
-			Stack<Texture::T2D>::get().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white));
-
-			const char* cherno = "assets/textures/ChernoLogo.png";
-			const char* checker = "assets/textures/CheckerBoard.png";
-			const char* cage = "assets/textures/cage.png";
-			const char* cage_mamma = "assets/textures/cage_mamma.png";
-
-			data->texArray->Add(Stack<Texture::T2D>::get().Get("blank"));
-			data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage), cage));
-			data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage_mamma), cage_mamma));
+			data->texArray->Add(Stack<Texture::T2D>::get().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white)));
 
 			SceneBegan = false;
 			called = true;
@@ -205,6 +215,7 @@ namespace Kross {
 		{
 			Stack<Texture::T2D>::get().clear();
 			Stack<Shader>::get().clear();
+			delete[] data->BufferFirst;
 			delete data;
 		}
 		else
@@ -222,13 +233,14 @@ namespace Kross {
 		data->shader->Bind();
 		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
+		BatchBegin();
 	}
 	void Renderer2D::BatchBegin()
 	{
 		if (batch == false)
 		{
-			//data->QuadBufferPtr = data->QuadBuffer;
 			data->quadIndex = 0;
+			data->BufferHead = data->BufferFirst;
 			batch = true;
 		}
 		else
@@ -240,7 +252,7 @@ namespace Kross {
 	{
 		data->texArray->Bind(0);
 		data->va->Bind();
-		Renderer::Command::DrawIndexed(data->va);
+		Renderer::Command::DrawIndexed(data->va, data->quadIndex*6);
 		data->rendererStats.DrawCount++;
 
 		data->quadIndex = 0;
@@ -250,7 +262,8 @@ namespace Kross {
 	{
 		if (batch)
 		{
-			data->vb->upload(data->myBuffer, sizeof(Quad) * data->quadIndex);
+			//data->vb->upload(data->myBuffer, sizeof(Quad) * data->quadIndex);
+			data->vb->upload(data->BufferFirst, (char*)data->BufferHead - (char*)data->BufferFirst);
 			Flush();
 			batch = false;
 		}
@@ -263,6 +276,7 @@ namespace Kross {
 	{
 		if (SceneBegan)
 		{
+			BatchEnd();
 			SceneBegan = false;
 		}
 		else
@@ -486,37 +500,24 @@ namespace Kross {
 	void Renderer2D::BatchQuad(const QuadParams& params)
 	{
 		KROSS_PROFILE_FUNC();
-		if (data->quadIndex+1 >= MaxQuadCount)
+		if (data->quadIndex >= MaxQuadCount)
 		{
 			BatchEnd();
 			BatchBegin();
 		}
 
-		if (params.texture)
-		{
-			float tex = (float)data->texArray->Get(params.texture);
-			if (tex < 0.0f)
-			{
-				data->texArray->Add(params.texture);
-			}
-			data->myBuffer[data->quadIndex] =
-				Quad(
-					{ params.position, 0.0f },
-					params.color,
-					params.size,
-					params.texOffSet,
-					params.texSubSize,
-					tex
-				);
-		}
-		else
-		{
-			data->myBuffer[data->quadIndex] = Quad({ params.position, 0.0f }, params.color, params.size, 0.0f);
-		}
+		//data->BufferHead = &Quad(params, (float)data->texArray->Get(params.texture));
+		float texture = (float)data->texArray->Get(params.texture);
+		data->BufferHead->bl = {{ params.position.x,				params.position.y,					0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y }, texture};
+		data->BufferHead->br = {{ params.position.x + params.size.x,params.position.y,					0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y }, texture};
+		data->BufferHead->tr = {{ params.position.x + params.size.x,params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y + params.texSubSize.y }, texture};
+		data->BufferHead->tl = {{ params.position.x,				params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y + params.texSubSize.y }, texture};
+		data->BufferHead++;
+		//data->myBuffer[data->quadIndex] = Quad(params, (float)data->texArray->Get(params.texture));
+
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;
 	}
-
 
 	//void Renderer2D::BatchRotatedQuad(const glm::vec2& position, float size, float rotation, const glm::vec4& color)
 	//{
@@ -582,5 +583,28 @@ namespace Kross {
 	//	data->NBva->Bind();
 	//	Renderer::Command::DrawIndexed(data->NBva);
 	//}
+
+	void QuadParams::FlipX()
+	{
+		texOffSet.x += texSubSize.x;
+		texSubSize.x *= -1;
+	}
+
+	void QuadParams::FlipY()
+	{
+		texOffSet.y += texSubSize.y;
+		texSubSize.y *= -1;
+	}
+
+	void QuadParams::Reset()
+	{
+		color = glm::vec4(1);
+		size = glm::vec2(1);
+		position = glm::vec2(0);
+		texture = NULL;
+		repeat = 1;
+		texOffSet = position;
+		texSubSize = size;
+	}
 }
 

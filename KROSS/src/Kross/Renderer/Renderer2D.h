@@ -13,6 +13,10 @@ namespace Kross {
 		float				repeat		= 1;
 		glm::vec2			texOffSet	= { 0.0f, 0.0f };
 		glm::vec2			texSubSize	= { 1.0f, 1.0f };
+
+		void FlipX();
+		void FlipY();
+		void Reset();
 	};
 
 	class Renderer2D
@@ -23,6 +27,7 @@ namespace Kross {
 	public:
 		struct Stats
 		{
+			size_t maxQuads = 0;
 			uint32_t DrawCount = 0;
 			uint32_t QuadCount = 0;
 		};

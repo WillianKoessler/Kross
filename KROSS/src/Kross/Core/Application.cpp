@@ -8,13 +8,13 @@ namespace Kross {
 
 	Application* Application::s_Instance = nullptr;
 
-	void Application::Construct(const std::string& title, unsigned short width, unsigned short height)
+	void Application::Construct(const settings& s)
 	{
 		KROSS_PROFILE_FUNC();
-		if (s_Instance) KROSS_MSGBOX("Application already exists!", "[Kross::Application]", _FATAL_);
+		if (s_Instance) KROSS_MSGBOX("Application already exists!", __FUNCTION__, _FATAL_);
 		s_Instance = this;
 
-		m_uptrWindow = Scope<Window>(Window::Create(WindowProps(title, width, height)));
+		m_uptrWindow = Scope<Window>(Window::Create(WindowProps(s.title, s.width, s.height, s.fullscreen)));
 		m_uptrWindow->SetVSync(true);
 		m_uptrWindow->SetEventCallback(KROSS_BIND_EVENT_FN(Application::OnEvent));
 		Renderer::Init();
@@ -22,7 +22,7 @@ namespace Kross {
 		m_ptrImGuiLayer = makeRef<ImGuiLayer>();
 		PushOverlay(m_ptrImGuiLayer);
 
-		KROSS_CORE_INFO("[Kross::Application] Application Contructed");
+		KROSS_CORE_INFO("[{0}] Application Contructed", __FUNCTION__);
 	}
 	Application::~Application()
 	{
@@ -31,7 +31,7 @@ namespace Kross {
 		Renderer::Shutdown();
 		m_uptrWindow->Shutdown();
 		m_uptrWindow.release();
-		KROSS_CORE_INFO("[Kross::Application] Application Destructed");
+		KROSS_CORE_INFO("[{0}] Application Destructed", __FUNCTION__);
 	}
 
 	void Application::PushLayer(const Ref<Layer>& layer)
@@ -39,7 +39,7 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
-		KROSS_CORE_TRACE("[Kross::Application] Application '{0}' Pushed", layer->GetName());
+		KROSS_CORE_TRACE("[{1}] Application '{0}' Pushed", layer->GetName(), __FUNCTION__);
 	}
 
 	void Application::PushOverlay(const Ref<Layer>& layer)
@@ -47,7 +47,7 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		m_LayerStack.PushOverlay(layer);
 		layer->OnAttach();
-		KROSS_CORE_TRACE("[Kross::Application] Application Overlay '{0}' Pushed", layer->GetName());
+		KROSS_CORE_TRACE("[{1}] Application Overlay '{0}' Pushed", layer->GetName(), __FUNCTION__);
 	}
 
 	void Application::OnEvent(Event& e)
@@ -72,31 +72,28 @@ namespace Kross {
 		while (m_bRunning)
 		{
 			KROSS_PROFILE_SCOPE("Run Loop");
-			float time = (float)glfwGetTime();
-			Timestep ts = time - previous_time;
-			previous_time = time;
-
 			if (!m_bMinimized)
 			{
+				float time = (float)glfwGetTime();
+				Timestep ts = time - previous_time;
+				previous_time = time;
+
 				KROSS_PROFILE_SCOPE("LayerStack OnUpdate");
 				for (Ref<Layer>& layer : m_LayerStack)
 					layer->OnUpdate(ts);
-			}
 
-			m_ptrImGuiLayer->Begin();
-			if(!m_bMinimized)
-			{
+				m_ptrImGuiLayer->Begin();
 				KROSS_PROFILE_SCOPE("LayerStack ImGuiRender");
 				for (Ref<Layer>& layer : m_LayerStack)
 					layer->OnImGuiRender(ts);
+				m_ptrImGuiLayer->End();
 			}
-			m_ptrImGuiLayer->End();
 
-			m_uptrWindow->OnUpdate();
+			m_uptrWindow->OnUpdate(m_bMinimized);
 		}
 		KROSS_CORE_FILE_TRACE("-----------------------RUNTIME ENDED-----------------------");
 
-		KROSS_CORE_TRACE("[Kross::Application] Application Finished");
+		KROSS_CORE_TRACE("[{0}] Application Finished", __FUNCTION__);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
@@ -112,7 +109,7 @@ namespace Kross {
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_bMinimized = true;
-			KROSS_CORE_TRACE("[Kross::Application] Application Minimized");
+			KROSS_CORE_TRACE("[{0}] Application Minimized", __FUNCTION__);
 			return false;
 		}
 		m_bMinimized = false;

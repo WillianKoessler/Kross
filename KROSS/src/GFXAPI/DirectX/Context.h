@@ -12,7 +12,7 @@ namespace Kross::DirectX {
 	public:
 		~Context();
 
-		virtual void Init() override;
+		virtual void Init(unsigned int, unsigned int) override;
 		virtual void SwapBuffers() override;
 
 		inline Microsoft::WRL::ComPtr<ID3D11Device> GetDevice() const { return m_Device; }

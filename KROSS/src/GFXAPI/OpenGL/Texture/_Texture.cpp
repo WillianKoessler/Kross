@@ -8,7 +8,7 @@ namespace Kross::OpenGL::Texture {
 	{
 		static int query = -1;
 		if (query != -1) return query;
-		glCall(glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &query));
+		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &query);
 		return query;
 	}
 
@@ -24,27 +24,24 @@ namespace Kross::OpenGL::Texture {
 		KROSS_PROFILE_FUNC();
 		if (Context::GetVersion() < 4.5)
 		{
-			glCall(glGenTextures(1, &m_RendererID));
-			glCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glGenTextures(1, &m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, m_RendererID);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		}
 		else
 		{
-			glCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
-
-			glCall(glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight));
-			glCall(glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight));
-
-			glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+			glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight);
+			glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
 
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Created", m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
 	T2D::T2D(uint32_t width, uint32_t height, void* data)
 		: m_unWidth(width),
@@ -56,27 +53,28 @@ namespace Kross::OpenGL::Texture {
 		KROSS_PROFILE_FUNC();
 		if (Context::GetVersion() < 4.5f)
 		{
-			glCall(glGenTextures(1, &m_RendererID));
-			glCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+			glGenTextures(1, &m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		}
 		else
 		{	 //------------OpenGL 4.5------------
-			glCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
+			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 
-			glCall(glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight));
-			glCall(glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight));
+			glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight);
+			glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight);
 
-			glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
 
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Created", m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
 	T2D::T2D(const std::string& path, const std::string& name)
 		:
@@ -101,7 +99,7 @@ namespace Kross::OpenGL::Texture {
 			KROSS_PROFILE_SCOPE("T2D::T2D(const std::string&) - stbi_load");
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 		}
-		if (!data) { KROSS_MSGBOX("Failed to load image!\nFILE: " + path, "[Kross::OpenGL::Texture::T2D]", _ERROR_); }
+		if (!data) { KROSS_MSGBOX("Failed to load image!\nFILE: " + path, __FUNCTION__, _ERROR_); }
 
 		m_unWidth = width;
 		m_unHeight = height;
@@ -118,50 +116,48 @@ namespace Kross::OpenGL::Texture {
 		}
 		else
 		{
-			KROSS_CORE_WARN("[Kross::OpenGL::Texture::T2D] Image format not suported!\nFILE: {0}", path);
+			KROSS_CORE_WARN("[{0}] Image format not suported!\nFILE: {1}", __FUNCTION__, path);
 		}
 
 		if (Context::GetVersion() < 4.5f)
 		{
-			glCall(glGenTextures(1, &m_RendererID));
-			glCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+			glGenTextures(1, &m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
+			if (data) glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data);
 		}
 		else
 		{	 //------------OpenGL 4.5------------
-			glCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
+			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 
-			glCall(glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight));
-			glCall(glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight));
+			glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight);
+			glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight);
 
-			glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-			glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			glCall(glTextureSubImage2D(m_RendererID, 0, 0, 0, m_unWidth, m_unHeight, GL_RGB, GL_UNSIGNED_BYTE, data));
+			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_unWidth, m_unHeight, GL_RGB, GL_UNSIGNED_BYTE, data);
 		}
 
 		stbi_image_free(data);
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Created", m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
 	T2D::~T2D()
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glDeleteTextures(1, &m_RendererID));
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Destructed", m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Destructed", __FUNCTION__, m_strName);
 	}
 	void T2D::SetData(void* data, uint32_t size)
 	{
 		KROSS_PROFILE_FUNC();
-		//if (size != m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3))
-		//{
-		//	KROSS_CORE_WARN("[Kross::OpenGL::Texture::T2D] Specified size does not match data size.");
-		//}
+		if (size > m_unWidth* m_unHeight* (m_unDataFormat == GL_RGBA ? 4 : 3)) {
+			KROSS_CORE_WARN("[{0}] Texture Overflow.", __FUNCTION__); }
 		Bind();
 		glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
 	}
@@ -172,20 +168,20 @@ namespace Kross::OpenGL::Texture {
 		{
 			if (Context::GetVersion() < 4.4)
 			{
-				if (slot) { glCall(glActiveTexture(GL_TEXTURE0 + slot)); }
-				else { glCall(glActiveTexture(GL_TEXTURE0 + m_CurrentSlot)); }
-				glCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+				if (slot) { glActiveTexture(GL_TEXTURE0 + slot); }
+				else { glActiveTexture(GL_TEXTURE0 + m_CurrentSlot); }
+				glBindTexture(GL_TEXTURE_2D, m_RendererID);
 			}
 			else if (Context::GetVersion() < 4.5)
 			{
-				if (slot) { glCall(glActiveTexture(GL_TEXTURE0 + slot)); }
-				else { glCall(glActiveTexture(GL_TEXTURE0 + m_CurrentSlot)); }
-				glCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
+				if (slot) { glActiveTexture(GL_TEXTURE0 + slot); }
+				else { glActiveTexture(GL_TEXTURE0 + m_CurrentSlot); }
+				glBindTexture(GL_TEXTURE_2D, m_RendererID);
 			}
 			else
 			{
-				if (slot) { glCall(glBindTextureUnit(slot, m_RendererID)); }
-				else { glCall(glBindTextureUnit(m_CurrentSlot, m_RendererID)); }
+				if (slot) { glBindTextureUnit(slot, m_RendererID); }
+				else { glBindTextureUnit(m_CurrentSlot, m_RendererID); }
 			}
 		}
 	}

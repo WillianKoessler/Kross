@@ -49,13 +49,13 @@ namespace Kross::Buffer {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	Ref<Index> Index::Create(uint32_t* indices, uint32_t size)
+	Ref<Index> Index::Create(uint32_t* indices, uint32_t count)
 	{
 		KROSS_CORE_INFO("{0} Creating IndexBufferObject...", __FUNCTION__);
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:		KROSS_MSGBOX("Renderer API (None) is not supported", __FUNCTION__, _FATAL_);return nullptr;
-		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Index>(indices, size);
+		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Index>(indices, count);
 		}
 
 		KROSS_MSGBOX("Renderer API (None) is not supported", __FUNCTION__, _FATAL_);

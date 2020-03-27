@@ -14,12 +14,12 @@ namespace Kross {
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
-		KROSS_CORE_ERROR("GLFW Error ({0}): {1}\nFILE: {2}\nLINE: {3}", error, description, __FILE__, __LINE__);
+		KROSS_CORE_ERROR_("GLFW Error ({0}): {1}", error, description);
 	}
 
 	Window* Window::Create(const WindowProps& props)
 	{
-		KROSS_CORE_INFO("[Kross::Window] Windows window Created.");
+		KROSS_CORE_INFO("[{0}] Windows window Created.", __FUNCTION__);
 		return new Win_Windows(props);
 	}
 
@@ -41,50 +41,77 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		m_Data = props;
 
-		KROSS_CORE_INFO("[Kross::Win_Windows] Creating window {0} ({1}, {2})", props.strTitle, props.nWidth, props.nHeight);
-
 		if (!s_GLFWInitialized)
 		{
 			{
-				KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwInit");
-				// TODO: glfwTerminate on system shutdown
+				KROSS_PROFILE_SCOPE("glfwInit");
 				int success = glfwInit();
 				if (!success)
 				{
-					KROSS_MSGBOX("Could not intialize GLFW!", "[Kross::Win_Windows]", _FATAL_);
+					KROSS_MSGBOX("Could not intialize GLFW!", __FUNCTION__, _FATAL_);
 				}
 			}
 			{
-				KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetErrorCallback");
+				KROSS_PROFILE_SCOPE("glfwSetErrorCallback");
 				glfwSetErrorCallback(GLFWErrorCallback);
 				s_GLFWInitialized = true;
 			}
 		}
+		auto monitor = glfwGetPrimaryMonitor();
+		auto mode = glfwGetVideoMode(monitor);
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwCreateWindow");
-			m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), nullptr, nullptr);
+			KROSS_PROFILE_SCOPE("glfwCreateWindow");
+			if ((props.nWidth == 0 || props.nHeight == 0) && props.fullscreen)
+			{
+				m_Window = glfwCreateWindow(mode->width, mode->height, props.strTitle.c_str(), monitor, NULL);
+			}
+			else if ((props.nWidth > 0 && props.nHeight > 0) && props.fullscreen)
+			{
+				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), monitor, NULL);
+				glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+			}
+			else if ((props.nWidth > 0 && props.nHeight > 0) && !props.fullscreen)
+			{
+				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), nullptr, NULL);
+			}
+			else
+			{
+				KROSS_CORE_ERROR(
+					"[{0}] Invalid Window Attributes.\nTitle: {1}\nWidth: {2}\nHeight: {3}\nFullcreen Mode: {4}",
+					__FUNCTION__, props.strTitle, props.nWidth, props.nHeight, props.fullscreen ? "ON" : "OFF"
+				);
+				KROSS_MSGBOX("Invalid Window Attributes.\n(Prompt Log or File Log, for more information.", __FUNCTION__, _FATAL_);
+			}
+
+			int x, y;
+			glfwGetWindowPos(m_Window, &x, &y);
+			m_Data.x = x; m_Data.y = y;
+			glfwGetWindowSize(m_Window, &x, &y);
+			m_Data.nWidth = x; m_Data.nHeight = y;
+
 			m_WindowHWND = glfwGetWin32Window(m_Window);
 		}
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init makeScope<OpenGL::Context>");
+			KROSS_PROFILE_SCOPE("makeScope<OpenGL::Context>");
 			m_Context = makeRef<GraphicsAPI::Context>(this);
+			m_Context->Init(m_Data.nWidth, m_Data.nHeight);
+
 		}
 
-		m_Context->Init();
-
-
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetWindowUserPointer");
+			KROSS_PROFILE_SCOPE("glfwSetWindowUserPointer");
 			glfwSetWindowUserPointer(m_Window, &m_Data);
 		}
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init SetVSync");
+			KROSS_PROFILE_SCOPE("SetVSync");
 			SetVSync(true);
 		}
-
+		glfwSetInputMode(m_Window, GLFW_STICKY_KEYS, GLFW_TRUE);
 		// Set GLFW callbacks
+
+		// Window Size
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetWindowSizeCallback");
+			KROSS_PROFILE_SCOPE("glfwSetWindowSizeCallback");
 			glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -96,8 +123,9 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Window Close
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetWindowCloseCallback");
+			KROSS_PROFILE_SCOPE("glfwSetWindowCloseCallback");
 			glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -105,8 +133,9 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Key
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetKeyCallback");
+			KROSS_PROFILE_SCOPE("glfwSetKeyCallback");
 			glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -134,8 +163,9 @@ namespace Kross {
 				}
 			});
 		}
+		// Char
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetCharCallback");
+			KROSS_PROFILE_SCOPE("glfwSetCharCallback");
 			glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -144,8 +174,9 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Mouse Button
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetMouseButtonCallback");
+			KROSS_PROFILE_SCOPE("glfwSetMouseButtonCallback");
 			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -167,8 +198,9 @@ namespace Kross {
 				}
 			});
 		}
+		// Scroll
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetScrollCallback");
+			KROSS_PROFILE_SCOPE("glfwSetScrollCallback");
 			glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -177,8 +209,9 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+		// Cursor Position
 		{
-			KROSS_PROFILE_SCOPE("Kross::Win_Windows::Init glfwSetCursorPosCallback");
+			KROSS_PROFILE_SCOPE("glfwSetCursorPosCallback");
 			glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -187,18 +220,41 @@ namespace Kross {
 				data.EventCallback(event);
 			});
 		}
+
+		KROSS_CORE_INFO("[{0}] Window Initialized {1} ({2}, {3})", __FUNCTION__, m_Data.strTitle, m_Data.nWidth, m_Data.nHeight);
 	}
 
 	void Win_Windows::Shutdown() const
 	{
 		glfwDestroyWindow(m_Window);
-		KROSS_CORE_INFO("[Kross::Win_Windows] Windows window Destructed.");
+		glfwTerminate();
+		KROSS_CORE_INFO("[{0}] Windows window Destructed.", __FUNCTION__);
 	}
 
-	void Win_Windows::OnUpdate()
+	void Win_Windows::OnUpdate(bool minimized)
 	{
-		glfwPollEvents();
-		if (GetWidth() != 0 && GetHeight() != 0) m_Context->SwapBuffers();
+		if (!minimized)
+		{
+			// first plane
+			glfwPollEvents();
+			m_Context->SwapBuffers();
+		}
+		else
+			// second plane
+			glfwWaitEvents();
+	}
+
+	void Win_Windows::FullScreen(bool enable) const
+	{
+		static bool previous_state = false;
+		if (enable != previous_state)
+		{
+			auto monitor = glfwGetPrimaryMonitor();
+			auto mode = glfwGetVideoMode(monitor);
+			if (enable) { glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate); }
+			else glfwSetWindowMonitor(m_Window, nullptr, 100, 100, 640, 320, mode->refreshRate);
+		}
+		previous_state = enable;
 	}
 
 	void Win_Windows::SetVSync(bool enable)

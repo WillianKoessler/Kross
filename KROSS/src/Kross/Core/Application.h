@@ -15,16 +15,24 @@
 namespace Kross {
 	class KAPI Application
 	{
-		void Construct(const std::string& title = "Kross Engine", unsigned short width = 640, unsigned short height = 320);
+		struct settings
+		{
+			std::string title = "Kross Engine";
+			unsigned short width = 640, height = 320;
+			bool fullscreen = false;
+		};
+		void Construct(const settings&);
 	public:
-		Application()
-			: m_LayerStack() {
-			Construct();
+		Application() { Construct({}); }
+		Application(const std::string& title, unsigned short width, unsigned short height, bool fullscreen = false)
+		{
+			Construct({ title, width, height, fullscreen });
 		}
-		Application(const std::string& title, unsigned short width, unsigned short height)
-			: m_LayerStack() {
-			Construct(title, width, height);
+		Application(const std::string& title, bool fullscreen = true)
+		{
+			Construct({title, 0, 0, fullscreen});
 		}
+
 		~Application();
 
 		void Run();
