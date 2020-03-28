@@ -118,14 +118,16 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		}
 		End();
 
-		//if (!Begin("Viewport", &show_viewport))
-		//	End();
-		//else
-		//{
-		//	uint32_t buffer = Kross::Renderer2D::GetFrameBuffer()->GetTexture();
-		//	//Image((void*)(&buffer), GetContentRegionAvail());
-		//	End();
-		//}
+		if (!Begin("Viewport", &show_viewport))
+			End();
+		else
+		{
+			Image((void*)(intptr_t)Kross::Renderer2D::GetFrameBuffer()->GetKrossTexture()->GetID(),
+				GetContentRegionAvail(),
+				ImVec2(0,1),
+				ImVec2(1,0));
+			End();
+		}
 	}
 }
 

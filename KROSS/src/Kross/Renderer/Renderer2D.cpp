@@ -285,7 +285,7 @@ namespace Kross {
 		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
 		BatchBegin();
-		data->framebuffer->Bind();
+		data->framebuffer->Bind(800,400);
 	}
 	void Renderer2D::BatchBegin()
 	{
@@ -334,10 +334,11 @@ namespace Kross {
 			data->framebuffer->unBind();
 			Renderer::Command::SetClear({ 0.2f, 0.2f, 0.2f, 1.0f });
 			Renderer::Command::Clear();
-			data->quad_programID->Bind();
+			//data->quad_programID->Bind();
+			//data->whiteTex->Bind();
 			//Stack<Texture::T2D>::get().Get("checker", "assets/textures/cage_mamma.png")->Bind();
-			data->framebuffer->GetKrossTexture()->Bind();
-			Renderer::Command::DrawIndexed(data->quad_VertexArrayID);
+			//data->framebuffer->GetKrossTexture()->Bind();
+			//Renderer::Command::DrawIndexed(data->quad_VertexArrayID);
 		}
 		else
 			KROSS_CORE_WARN("Calling {0} without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?", __FUNCTION__);
