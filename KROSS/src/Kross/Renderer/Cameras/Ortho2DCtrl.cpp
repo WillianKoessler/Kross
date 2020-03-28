@@ -20,10 +20,10 @@ namespace Kross::Camera {
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
+			KROSS_CORE_WARN("[ {0} ] |||| WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(m_Camera.get());
 		}
-		KROSS_CORE_INFO("[{0}] Camera Controller Created");
+		KROSS_CORE_INFO("[ {0} ] |||| Camera Controller Created", __FUNCTION__);
 	}
 
 	Ortho2DCtrl::Ortho2DCtrl(const std::string& name, float AR, bool rot)
@@ -34,10 +34,10 @@ namespace Kross::Camera {
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
+			KROSS_CORE_WARN("[ {0} ] |||| WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(m_Camera.get());
 		}
-		KROSS_CORE_INFO("[{0}] Camera Controller Created");
+		KROSS_CORE_INFO("[ {0} ] |||| Camera Controller Created", __FUNCTION__);
 	}
 
 	Ortho2DCtrl::Ortho2DCtrl(bool rot, const std::string& name, float AR)
@@ -48,10 +48,10 @@ namespace Kross::Camera {
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
+			KROSS_CORE_WARN("[ {0} ] |||| WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(m_Camera.get());
 		}
-		KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
+		KROSS_CORE_INFO("[ {0} ] |||| Camera Controller Created", __FUNCTION__);
 	}
 
 
@@ -61,7 +61,7 @@ namespace Kross::Camera {
 		m_Camera->~Ortho2D();
 		m_Camera.~shared_ptr();
 		SetSelf(nullptr);
-		KROSS_CORE_INFO("[{0}] Camera Controller Deconstructed", __FUNCTION__);
+		KROSS_CORE_INFO("[ {0} ] |||| Camera Controller Deconstructed", __FUNCTION__);
 	}
 
 	void Ortho2DCtrl::OnUpdate(Timestep ts)

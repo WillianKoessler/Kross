@@ -13,16 +13,16 @@ namespace Kross::Camera {
 		APIorder();
 		if (GetSelf())
 		{
-			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
+			KROSS_CORE_WARN("[ {0} ] |||| WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
 			SetSelf(this);
 		}
-		KROSS_CORE_INFO("[{0}] Camera Created", __FUNCTION__);
+		KROSS_CORE_INFO("[ {0} ] |||| Camera Created", __FUNCTION__);
 	}
 
 	Ortho2D::~Ortho2D()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("[{0}] Camera Destroyed", __FUNCTION__);
+		KROSS_CORE_INFO("[ {0} ] |||| Camera Destroyed", __FUNCTION__);
 	}
 
 	void Ortho2D::SetProjMat(float left, float right, float bottom, float top)

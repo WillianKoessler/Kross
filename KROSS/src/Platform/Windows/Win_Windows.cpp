@@ -19,7 +19,7 @@ namespace Kross {
 
 	Window* Window::Create(const WindowProps& props)
 	{
-		KROSS_CORE_INFO("[{0}] Windows window Created.", __FUNCTION__);
+		KROSS_CORE_INFO("[ {0} ] |||| Windows window Created.", __FUNCTION__);
 		return new Win_Windows(props);
 	}
 
@@ -77,7 +77,7 @@ namespace Kross {
 			else
 			{
 				KROSS_CORE_ERROR(
-					"[{0}] Invalid Window Attributes.\nTitle: {1}\nWidth: {2}\nHeight: {3}\nFullcreen Mode: {4}",
+					"[ {0} ] |||| Invalid Window Attributes.\nTitle: {1}\nWidth: {2}\nHeight: {3}\nFullcreen Mode: {4}",
 					__FUNCTION__, props.strTitle, props.nWidth, props.nHeight, props.fullscreen ? "ON" : "OFF"
 				);
 				KROSS_MSGBOX("Invalid Window Attributes.\n(Prompt Log or File Log, for more information.", __FUNCTION__, _FATAL_);
@@ -221,14 +221,14 @@ namespace Kross {
 			});
 		}
 
-		KROSS_CORE_INFO("[{0}] Window Initialized {1} ({2}, {3})", __FUNCTION__, m_Data.strTitle, m_Data.nWidth, m_Data.nHeight);
+		KROSS_CORE_INFO("[ {0} ] |||| Window Initialized {1} ({2}, {3})", __FUNCTION__, m_Data.strTitle, m_Data.nWidth, m_Data.nHeight);
 	}
 
 	void Win_Windows::Shutdown() const
 	{
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
-		KROSS_CORE_INFO("[{0}] Windows window Destructed.", __FUNCTION__);
+		KROSS_CORE_INFO("[ {0} ] |||| Windows window Destructed.", __FUNCTION__);
 	}
 
 	void Win_Windows::OnUpdate(bool minimized)

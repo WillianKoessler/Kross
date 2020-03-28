@@ -84,6 +84,8 @@ void glDebugMessage(
 	KROSS_CORE_ERROR_("SOURCE: {0}", csource);
 	KROSS_CORE_ERROR_("ID: {0}", cid);
 	KROSS_CORE_ERROR_("MESSAGE: {0}", message);
+
+	//KROSS_CORE_ASSERT(false, "GL ERROR");
 }
 
 glError::glError(const std::string& func_, const std::string& file_, int line_)
@@ -108,6 +110,10 @@ glError::glError(const std::string& func_, const std::string& file_, int line_, 
 	code(code_),
 	id(++count)
 {}
+glError::~glError()
+{
+	handle();
+}
 void glError::Begin()
 {
 	if (cache.empty() && !active && count == 0)

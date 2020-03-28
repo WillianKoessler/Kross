@@ -11,7 +11,6 @@ Canvas::Canvas()
 
 void Canvas::OnAttach()
 {
-	Kross::Renderer::Command::SetClear({ 0.15f, 0.1f, 0.2f, 1.0f });
 	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/Oboro.png"));
 	//entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
 	entities[0].active = true;
@@ -26,8 +25,9 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	params.Reset();
 	camera.OnUpdate(ts);
 
-	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera.GetCamera());
+	Kross::Renderer::Command::SetClear({ 0.15f, 0.1f, 0.2f, 1.0f });
+	Kross::Renderer::Command::Clear();
 
 	params.position = { -1.0f,-1.0f };
 	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("ChernoLogo", "assets/textures/ChernoLogo.png");
@@ -65,6 +65,7 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 	{
 		static bool show_demo_window = false;
 		static bool show_rendererStats = false;
+		static bool show_viewport = false;
 		static bool fullscreen = false;
 
 		static size_t timer = 0;
@@ -116,6 +117,15 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 			}
 		}
 		End();
+
+		//if (!Begin("Viewport", &show_viewport))
+		//	End();
+		//else
+		//{
+		//	uint32_t buffer = Kross::Renderer2D::GetFrameBuffer()->GetTexture();
+		//	//Image((void*)(&buffer), GetContentRegionAvail());
+		//	End();
+		//}
 	}
 }
 

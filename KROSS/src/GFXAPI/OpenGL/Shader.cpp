@@ -9,7 +9,7 @@ namespace Kross::OpenGL {
 	void Shader::CreateShader(const std::string& filepath)
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("[{0}] Creating Shader '{1}'...", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("[ {0} ] |||| Creating Shader '{1}'...", __FUNCTION__, m_strName);
 		if (filepath.rfind('.') != std::string::npos)
 		{
 			const std::string& src = ReadFile(filepath);
@@ -17,7 +17,7 @@ namespace Kross::OpenGL {
 			{
 				if (Compile(PreProcess(src)))
 				{
-					KROSS_CORE_INFO("[{0}] Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
+					KROSS_CORE_INFO("[ {0} ] |||| Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
 					return;
 				}
 			}
@@ -34,12 +34,12 @@ namespace Kross::OpenGL {
 				unsigned int fsh = Compile(program, GL_FRAGMENT_SHADER, fragment);
 				if (vsh && fsh && Link(program, { vsh, fsh }))
 				{
-					KROSS_CORE_INFO("[{0}] Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
+					KROSS_CORE_INFO("[ {0} ] |||| Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
 					return;
 				}
 			}
 		}
-		KROSS_CORE_WARN("[{0}] Shader '{1}' Failed to Create", __FUNCTION__, m_strName);
+		KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' Failed to Create", __FUNCTION__, m_strName);
 	}
 	Shader::Shader(const std::string& filepath)
 		: m_RendererID(UINT32_MAX)
@@ -60,38 +60,38 @@ namespace Kross::OpenGL {
 		m_strName(name)
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("[{0}] Creating Shader '{1}'...", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("[ {0} ] |||| Creating Shader '{1}'...", __FUNCTION__, m_strName);
 		unsigned int program;
 		glCall(program = glCreateProgram());
 		unsigned int vsh = Compile(program, GL_VERTEX_SHADER, vertexSource);
 		unsigned int fsh = Compile(program, GL_FRAGMENT_SHADER, fragmentSource);
 		if (vsh && fsh && Link(program, { vsh, fsh }))
-			KROSS_CORE_INFO("[{0}] Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
+			KROSS_CORE_INFO("[ {0} ] |||| Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
 		else
-			KROSS_CORE_WARN("[{0}] Shader '{1}' Failed to Create", __FUNCTION__, m_strName);
+			KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' Failed to Create", __FUNCTION__, m_strName);
 		//std::unordered_map<GLenum, std::string> sources;
 		//sources[GL_VERTEX_SHADER] = vertexSource;
 		//sources[GL_FRAGMENT_SHADER] = fragmentSource;
 		//if(Compile(sources))
-		//	KROSS_CORE_INFO("[{0}] Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
+		//	KROSS_CORE_INFO("[ {0} ] |||| Shader '{1}' Created Successfully", __FUNCTION__, m_strName);
 		//else
-		//	KROSS_CORE_WARN("[{0}] Shader '{1}' Failed to Create", __FUNCTION__, m_strName);
+		//	KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' Failed to Create", __FUNCTION__, m_strName);
 	}
 	Shader::~Shader()
 	{
 		KROSS_PROFILE_FUNC();
 		if (m_RendererID != UINT32_MAX)
 		{
-			KROSS_CORE_INFO("[{0}] Deleting Shader '{1}' ...", __FUNCTION__, m_strName);
+			KROSS_CORE_INFO("[ {0} ] |||| Deleting Shader '{1}' ...", __FUNCTION__, m_strName);
 			unBind();
 			glCall(glDeleteProgram(m_RendererID));
 			UniformCache.clear();
-			KROSS_CORE_INFO("[{0}] Shader '{1}' Deleted Successfully", __FUNCTION__, m_strName);
+			KROSS_CORE_INFO("[ {0} ] |||| Shader '{1}' Deleted Successfully", __FUNCTION__, m_strName);
 		}
 		else
 		{
 			UniformCache.clear();
-			KROSS_CORE_WARN("[{0}] Trying to delete a Invalid Shader '{1}'", __FUNCTION__, m_strName);
+			KROSS_CORE_WARN("[ {0} ] |||| Trying to delete a Invalid Shader '{1}'", __FUNCTION__, m_strName);
 		}
 	}
 	std::string Shader::ReadFile(const std::string& filepath)
@@ -167,11 +167,11 @@ namespace Kross::OpenGL {
 	bool Shader::Compile(const std::unordered_map<unsigned int, std::string>& sources)
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_TRACE("[{0}] Compiling Shader '{1}'...", __FUNCTION__, m_strName);
+		KROSS_CORE_TRACE("[ {0} ] |||| Compiling Shader '{1}'...", __FUNCTION__, m_strName);
 		
 		GLuint program;
 		glCall(program = glCreateProgram());
-		if(sources.size() > 2) KROSS_CORE_WARN("[{0}] {1} Shader Sources it's not supported. Maximum = 2", __FUNCTION__, sources.size());
+		if(sources.size() > 2) KROSS_CORE_WARN("[ {0} ] |||| {1} Shader Sources it's not supported. Maximum = 2", __FUNCTION__, sources.size());
 		std::array<GLenum, 2> shaderIDs;
 		int index = 0;
 		for (auto& kv : sources)
@@ -196,15 +196,15 @@ namespace Kross::OpenGL {
 				char* infoLog = new char[maxLength];
 				glCall(glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]));
 				glCall(glDeleteShader(shader));
-				if(!isCompiled) KROSS_CORE_WARN("[{0}] Shader '{1}' failed to Compile", __FUNCTION__, m_strName);
-				KROSS_CORE_ERROR("[{0}]\n{1}", __FUNCTION__,  infoLog);
+				if(!isCompiled) KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' failed to Compile", __FUNCTION__, m_strName);
+				KROSS_CORE_ERROR("[ {0} ] ||||\n{1}", __FUNCTION__,  infoLog);
 				return false;
 			}
 			glCall(glAttachShader(program, shader));
 			shaderIDs[index++] = shader;
 		}
 
-		KROSS_CORE_TRACE("[{0}] Shader '{1}' Compiled Successfully!", __FUNCTION__, m_strName);
+		KROSS_CORE_TRACE("[ {0} ] |||| Shader '{1}' Compiled Successfully!", __FUNCTION__, m_strName);
 		
 		glCall(glLinkProgram(program));
 
@@ -222,8 +222,8 @@ namespace Kross::OpenGL {
 				{
 					glCall(glDeleteShader(id));
 				}
-			KROSS_CORE_WARN("[{0}] Shader Failed to Link", __FUNCTION__);
-			KROSS_CORE_ERROR("[{0}]\n{1}", __FUNCTION__, infoLog);
+			KROSS_CORE_WARN("[ {0} ] |||| Shader Failed to Link", __FUNCTION__);
+			KROSS_CORE_ERROR("[ {0} ] ||||\n{1}", __FUNCTION__, infoLog);
 			return false;
 		}
 		else
@@ -260,12 +260,12 @@ namespace Kross::OpenGL {
 			char* log = new char[maxLength];
 			glCall(glGetShaderInfoLog(shader, maxLength, &maxLength, &log[0]));
 			glCall(glDeleteShader(shader));
-			KROSS_CORE_WARN("[{0}] Shader '{1}' failed to Compile. ({2})", __FUNCTION__, m_strName, shtype);
-			KROSS_CORE_ERROR("[{0}]{2}\n{1}", __FUNCTION__, log, shtype);
+			KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' failed to Compile. ({2})", __FUNCTION__, m_strName, shtype);
+			KROSS_CORE_ERROR("[ {0} ] ||||{2}\n{1}", __FUNCTION__, log, shtype);
 			return 0;
 		}
 		glCall(glAttachShader(program, shader));
-		KROSS_CORE_TRACE("[{0}] Shader '{1}' Compiled Successifuly. ({2})", __FUNCTION__, m_strName, shtype);
+		KROSS_CORE_TRACE("[ {0} ] |||| Shader '{1}' Compiled Successifuly. ({2})", __FUNCTION__, m_strName, shtype);
 		return shader;
 	}
 	bool Shader::Link(unsigned int program, const std::vector<unsigned int>& shaders)
@@ -285,8 +285,8 @@ namespace Kross::OpenGL {
 				{
 					glCall(glDeleteShader(id));
 				}
-			KROSS_CORE_WARN("[{0}] Shader '{1}' Failed to Link", __FUNCTION__, m_strName);
-			KROSS_CORE_ERROR("[{0}]\n{1}", __FUNCTION__, log);
+			KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' Failed to Link", __FUNCTION__, m_strName);
+			KROSS_CORE_ERROR("[ {0} ] ||||\n{1}", __FUNCTION__, log);
 			return false;
 		}
 		else
@@ -380,7 +380,7 @@ namespace Kross::OpenGL {
 			{
 				int* defaults = new int[count];
 				for (size_t i = 0; i < count; i++) defaults[i] = (int)i;
-				KROSS_CORE_WARN("[{0}] Nullptr value. Setting defaults.", __FUNCTION__);
+				KROSS_CORE_WARN("[ {0} ] |||| Nullptr value. Setting defaults.", __FUNCTION__);
 				glCall(glUniform1iv(GetUniformLocation(name), (GLsizei)count, defaults));
 			}
 			else

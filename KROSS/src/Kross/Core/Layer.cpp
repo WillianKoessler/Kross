@@ -7,12 +7,12 @@ namespace Kross{
 		: m_strDebugName(name),
 		ar((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight())
 	{
-		KROSS_CORE_INFO("[Kross::Layer] Layer '{0}' Created", name);
+		KROSS_CORE_INFO("[ {0} ] |||| Layer '{1}' Created", __FUNCTION__, name);
 	}
 
 	Layer::~Layer()
 	{
 		//__debugbreak();
-		KROSS_CORE_INFO("[Kross::Layer] Layer '{0}' Destructed", m_strDebugName);
+		KROSS_CORE_INFO("[ {0} ] |||| Layer '{1}' Destructed", __FUNCTION__, m_strDebugName);
 	}
 }

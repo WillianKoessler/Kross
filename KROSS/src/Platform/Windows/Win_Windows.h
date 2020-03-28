@@ -24,7 +24,7 @@ namespace Kross {
 		virtual void FullScreen(bool) const override;
 		virtual inline void SetEventCallback(const EventCallbackFn& callback) override
 		{
-			KROSS_CORE_TRACE("[{0}] Callback set", __FUNCTION__);
+			KROSS_CORE_TRACE("[ {0} ] |||| Callback set", __FUNCTION__);
 			m_Data.EventCallback = callback;
 		}
 		inline virtual void* GetNativeWindow() const override { return m_Window; }

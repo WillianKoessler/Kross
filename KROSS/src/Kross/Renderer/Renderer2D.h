@@ -2,6 +2,7 @@
 
 #include "Cameras/Camera.h"
 #include "Textures/Textures.h"
+#include "Textures/FrameBuffer.h"
 
 namespace Kross {
 	struct QuadParams
@@ -48,6 +49,7 @@ namespace Kross {
 		static void BatchEnd();
 		static void End();
 
+		static const Ref<Texture::FrameBuffer> GetFrameBuffer();
 
 		//static void DrawQuad(const glm::vec2& position, float size,				const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 		//static void DrawQuad(const glm::vec3& position, float size,				const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f });

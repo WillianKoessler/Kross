@@ -26,14 +26,14 @@ namespace Kross::OpenGL {
 		KROSS_PROFILE_FUNC();
 		glCall(glGenVertexArrays(1, &m_RendererID));
 		glBindVertexArray(m_RendererID);
-		KROSS_CORE_INFO("[Kross::OpenGL::VertexArray] Vertex Array Created");
+		KROSS_CORE_INFO("[ {0} ] |||| Vertex Array Created", __FUNCTION__);
 	}
 
 	VertexArray::~VertexArray()
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glDeleteVertexArrays(1, &m_RendererID));
-		KROSS_CORE_INFO("[Kross::OpenGL::VertexArray] Vertex Array Deleted");
+		KROSS_CORE_INFO("[ {0} ] |||| Vertex Array Deleted", __FUNCTION__);
 	}
 
 	void VertexArray::Bind() const
@@ -55,7 +55,7 @@ namespace Kross::OpenGL {
 		vertex->Bind();
 
 		if(vertex->GetLayout().GetElements().size() == 0)
-			KROSS_CORE_WARN("[Kross::OpenGL::VertexArray] Vertex Buffer has no layout");
+			KROSS_CORE_WARN("[ {0} ] Vertex Buffer has no layout", __FUNCTION__);
 		
 		uint32_t index = 0;
 		Buffer::Layout layout = vertex->GetLayout();
@@ -74,7 +74,7 @@ namespace Kross::OpenGL {
 		}
 
 		m_vecVertex.push_back(vertex);
-		KROSS_CORE_TRACE("[Kross::OpenGL::VertexArray] Vertex Buffer Added");
+		KROSS_CORE_TRACE("[ {0} ] |||| Vertex Buffer Added", __FUNCTION__);
 	}
 
 	void VertexArray::SetIndex(const Ref<Kross::Buffer::Index>& index)
@@ -83,7 +83,7 @@ namespace Kross::OpenGL {
 		this->Bind();
 		index->Bind();
 		m_Index = index;
-		KROSS_CORE_TRACE("[Kross::OpenGL::VertexArray] Index Buffer Setted");
+		KROSS_CORE_TRACE("[ {0} ] |||| Index Buffer Setted", __FUNCTION__);
 	}
 
 

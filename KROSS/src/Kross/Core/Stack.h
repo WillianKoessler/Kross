@@ -8,7 +8,7 @@
 
 namespace Kross {
 
-	// Kross::Shader || Kross::Texture::T2D  || Kross::Layer
+	// Kross::Shader || Kross::Texture::T2D
 	template<class T>
 	class Stack
 	{
@@ -24,6 +24,17 @@ namespace Kross {
 				resource(res)
 			{
 				table += "\n	" + key + " | " + path;
+				KROSS_CORE_TRACE(R"([ {0} ] |||| Stack New Entry:
+	Key: {1}
+	Path: {2}
+	Resource Name: {3}
+	Resource Type: {4})",
+					__FUNCTION__,
+					key,
+					path,
+					res->GetName(),
+					typeid(T).name()
+					);
 			}
 			~Entry() = default;
 			
@@ -73,8 +84,13 @@ namespace Kross {
 	public:
 		static const Stack<T>& get()
 		{
-			static Stack<T> instance;
-			return instance;
+			//static Stack<T> instance;
+			if (!self)
+			{
+				KROSS_CORE_WARN("[ {0} ] |||| Creating a new '{1}' Stack\n", __FUNCTION__, typeid(T).name());
+				self = new Stack<T>();
+			}
+			return *self;
 		}
 		~Stack() { clear(); }
 
@@ -84,9 +100,9 @@ namespace Kross {
 		static Ref<T> Get(const std::string& k) { return _Get(k, nullptr); }
 		static Ref<T> Get(const std::string& k, const std::string& filepath) { return _Get(k, &filepath); }
 
-		static void Log() { KROSS_CORE_TRACE("[Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
+		static void Log() { KROSS_CORE_TRACE("[ {0} ] |||| TABLE{1}", __FUNCTION__, Entry::GetTable()); }
 
-		static void clear() { stack.clear(); KROSS_CORE_TRACE("Clearing stack"); }
+		static void clear() { stack.clear(); KROSS_CORE_TRACE("[ {0} ] |||| Clearing stack", __FUNCTION__); }
 		static const auto begin() { return stack.begin(); }
 		static const auto end() { return stack.end(); }
 
@@ -103,5 +119,6 @@ namespace Kross {
 			return std::lower_bound(stack.begin(), stack.end(), key);
 		}
 		static std::vector<Entry> stack;
+		static Stack<T>* self;
 	};
 }

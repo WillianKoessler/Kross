@@ -1,6 +1,7 @@
 #include "Kross_pch.h"
 #include "_Array.h"
 #include "stb_image.h"
+#include "GFXAPI/OpenGL/GLErrors.h"
 #include "GFXAPI/OpenGL/Context.h"
 
 namespace Kross::OpenGL::Texture {
@@ -17,12 +18,13 @@ namespace Kross::OpenGL::Texture {
 	}
 	void T2DArray::Bind(const size_t slot) const
 	{
+		GLerror();
 		for (int i = 0; i < _size; i++)
 			if (textures[i])
 				glTex[i] = textures[i]->GetID();
 			else
 				glTex[i] = 0;
-		glCall(glBindTextures((GLuint)slot, (GLsizei)_size, (const GLuint*)glTex));
+		glBindTextures((GLuint)slot, (GLsizei)_size, (const GLuint*)glTex);
 	}
 	const unsigned int T2DArray::Get(const Ref<Kross::Texture::T2D> tex)
 	{
@@ -51,12 +53,12 @@ namespace Kross::OpenGL::Texture {
 				if (currentHead + 1 < _size)
 					textures[currentHead++] = tex;
 				else
-					KROSS_CORE_WARN("[{0}] Texture Array Overflow. Newer textures ignored!!!", __FUNCTION__);
+					KROSS_CORE_WARN("[ {0} ] |||| Texture Array Overflow. Newer textures ignored!!!", __FUNCTION__);
 			}
-			else { KROSS_CORE_ERROR("[{0}] Texture is not T2D.", __FUNCTION__); }
+			else { KROSS_CORE_ERROR("[ {0} ] |||| Texture is not T2D.", __FUNCTION__); }
 		}
 		else
-			KROSS_CORE_WARN("[{0}] Adding a texture which was not yet created.", __FUNCTION__);
+			KROSS_CORE_WARN("[ {0} ] |||| Adding a texture which was not yet created.", __FUNCTION__);
 	}
 	void T2DArray::Del(const Ref<Kross::Texture::Base> texture)
 	{
@@ -69,10 +71,10 @@ namespace Kross::OpenGL::Texture {
 						textures[i] = nullptr;
 			}
 			else
-				KROSS_CORE_ERROR_("[{0}] Texture is not a T2D texture.", __FUNCTION__);
+				KROSS_CORE_ERROR_("[ {0} ] |||| Texture is not a T2D texture.", __FUNCTION__);
 		}
 		else
-			KROSS_CORE_WARN("[{0}] Trying to delete with a nullptr texture.", __FUNCTION__);
+			KROSS_CORE_WARN("[ {0} ] |||| Trying to delete with a nullptr texture.", __FUNCTION__);
 	}
 	void T2DArray::Del(const size_t index)
 	{
@@ -80,7 +82,7 @@ namespace Kross::OpenGL::Texture {
 			if (textures[index]->GetID())
 				textures[index] = nullptr;
 			else
-				KROSS_CORE_WARN("[{0}] Trying to delete a non existing texture.", __FUNCTION__);
+				KROSS_CORE_WARN("[ {0} ] |||| Trying to delete a non existing texture.", __FUNCTION__);
 		else
 			KROSS_CORE_ERROR_("[Kross::OpenGL::Texture::T2DArray] Specified index is out of range.");
 	}

@@ -10,16 +10,19 @@
 #include <GLEW/glew.h>	// Initialize with glewInit()
 #endif
 
+#define GLerror
+
 #if KROSS_GL_DEBUG
     #define glCall(x)                                       \
         {                                                   \
             KROSS_PROFILE_SCOPE(#x);                        \
+           	glError error(#x, __FILE__, __LINE__);          \
             /*glError::glClearErrors();*/                   \
             x;                                              \
            /*glError::glGetErrors(#x, __FILE__, __LINE__);*/\
-           	glError error(#x, __FILE__, __LINE__);          \
-            error.handle();                                 \
         }                                                   
+    #undef GLerror
+    #define GLerror() glError error(__FUNCTION__, __FILE__, __LINE__)
 #elif KROSS_GLCALL_PROFILE
     #define glCall(x)                                       \
         {                                                   \
@@ -30,8 +33,9 @@
     #define glCall(x)                                       \
         {                                                   \
             x;                                              \
-        }                                                   
+        }
 #endif
+
 
 void GLAPIENTRY
 glDebugMessage(
@@ -57,6 +61,7 @@ public:
 
     glError(const std::string& func_, const std::string& file_, int line_);
     glError(const std::string& func_, const std::string& file_, int line_, unsigned int code_);
+    ~glError();
 
     static void glGetErrors(const char* function, const char* file, int line);
     static void Begin();

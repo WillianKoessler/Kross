@@ -1,27 +1,30 @@
 #include "Kross_pch.h"
 #include "_Texture.h"
 #include "stb_image.h"
+#include "GFXAPI/OpenGL/GLErrors.h"
 #include "GFXAPI/OpenGL/Context.h"
 
 namespace Kross::OpenGL::Texture {
 	const int Base::QueryMaxSlots()
 	{
+		GLerror();
 		static int query = -1;
 		if (query != -1) return query;
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &query);
 		return query;
 	}
 
-	T2D::T2D(uint32_t width, uint32_t height, const std::string& name, void* data)
+	T2D::T2D(uint32_t width, uint32_t height, const std::string& name, bool alpha, void* data)
 		:
 		m_strName(name),
 		m_unWidth(width),
 		m_unHeight(height),
 		m_CurrentSlot(IncSlot()),
-		m_unInternalFormat(GL_RGBA8),
-		m_unDataFormat(GL_RGBA)
+		m_unInternalFormat(alpha ? GL_RGBA8 : GL_RGB8),
+		m_unDataFormat(alpha ? GL_RGBA : GL_RGB)
 	{
 		KROSS_PROFILE_FUNC();
+		GLerror();
 		if (Context::GetVersion() < 4.5)
 		{
 			glGenTextures(1, &m_RendererID);
@@ -34,23 +37,23 @@ namespace Kross::OpenGL::Texture {
 		else
 		{
 			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
-			glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight);
-			glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight);
+			glTextureStorage2D(m_RendererID, 1, m_unInternalFormat, m_unWidth, m_unHeight);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
 
-		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
+		glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data);
+		KROSS_CORE_INFO("[ {0} ] |||| Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
-	T2D::T2D(uint32_t width, uint32_t height, void* data)
+	T2D::T2D(uint32_t width, uint32_t height, bool alpha, void* data)
 		: m_unWidth(width),
 		m_unHeight(height),
 		m_CurrentSlot(IncSlot()),
-		m_unInternalFormat(GL_RGBA8),
-		m_unDataFormat(GL_RGBA)
+		m_unInternalFormat(alpha ? GL_RGBA8 : GL_RGB8),
+		m_unDataFormat(alpha ? GL_RGBA : GL_RGB)
 	{
 		KROSS_PROFILE_FUNC();
+		GLerror();
 		if (Context::GetVersion() < 4.5f)
 		{
 			glGenTextures(1, &m_RendererID);
@@ -66,15 +69,47 @@ namespace Kross::OpenGL::Texture {
 		{	 //------------OpenGL 4.5------------
 			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 
-			glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight);
-			glTextureStorage2D(m_RendererID, 1, GL_RGB16, m_unWidth, m_unHeight);
+			glTextureStorage2D(m_RendererID, 1, m_unInternalFormat, m_unWidth, m_unHeight);
 
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		}
 
-		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
+		glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data);
+		KROSS_CORE_INFO("[ {0} ] |||| Texture '{1}' Created", __FUNCTION__, m_strName);
+	}
+	T2D::T2D(uint32_t width, uint32_t height, void* data)
+		: m_unWidth(width),
+		m_unHeight(height),
+		m_CurrentSlot(IncSlot()),
+		m_unInternalFormat(GL_RGBA8),
+		m_unDataFormat(GL_RGBA)
+	{
+		KROSS_PROFILE_FUNC();
+		GLerror();
+		if (Context::GetVersion() < 4.5f)
+		{
+			glGenTextures(1, &m_RendererID);
+			glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		}
+		else
+		{	 //------------OpenGL 4.5------------
+			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+
+			glTextureStorage2D(m_RendererID, 1, m_unInternalFormat, m_unWidth, m_unHeight);
+
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		}
+
+		glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data);
+		KROSS_CORE_INFO("[ {0} ] |||| Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
 	T2D::T2D(const std::string& path, const std::string& name)
 		:
@@ -85,7 +120,7 @@ namespace Kross::OpenGL::Texture {
 		m_CurrentSlot(IncSlot())
 	{
 		KROSS_PROFILE_FUNC();
-
+		GLerror();
 		if (name != "")
 		{
 			m_strName = FileName(path);
@@ -116,7 +151,7 @@ namespace Kross::OpenGL::Texture {
 		}
 		else
 		{
-			KROSS_CORE_WARN("[{0}] Image format not suported!\nFILE: {1}", __FUNCTION__, path);
+			KROSS_CORE_WARN("[ {0} ] |||| Image format not suported!\nFILE: {1}", __FUNCTION__, path);
 		}
 
 		if (Context::GetVersion() < 4.5f)
@@ -145,37 +180,34 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		stbi_image_free(data);
-		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("[ {0} ] |||| Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
 	T2D::~T2D()
 	{
 		KROSS_PROFILE_FUNC();
+		GLerror();
 		glCall(glDeleteTextures(1, &m_RendererID));
-		KROSS_CORE_INFO("[{0}] Texture '{1}' Destructed", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("[ {0} ] |||| Texture '{1}' Destructed", __FUNCTION__, m_strName);
 	}
 	void T2D::SetData(void* data, uint32_t size)
 	{
 		KROSS_PROFILE_FUNC();
+		GLerror();
 		if (size > m_unWidth* m_unHeight* (m_unDataFormat == GL_RGBA ? 4 : 3)) {
-			KROSS_CORE_WARN("[{0}] Texture Overflow.", __FUNCTION__); }
+			KROSS_CORE_WARN("[ {0} ] |||| Texture Overflow.", __FUNCTION__); }
 		Bind();
 		glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
 	}
 	void T2D::Bind(uint32_t slot) const
 	{
 		KROSS_PROFILE_FUNC();
+		GLerror();
 		if (m_RendererID)
 		{
-			if (Context::GetVersion() < 4.4)
+			if (Context::GetVersion() < 4.5)
 			{
 				if (slot) { glActiveTexture(GL_TEXTURE0 + slot); }
-				else { glActiveTexture(GL_TEXTURE0 + m_CurrentSlot); }
-				glBindTexture(GL_TEXTURE_2D, m_RendererID);
-			}
-			else if (Context::GetVersion() < 4.5)
-			{
-				if (slot) { glActiveTexture(GL_TEXTURE0 + slot); }
-				else { glActiveTexture(GL_TEXTURE0 + m_CurrentSlot); }
+				else { glActiveTexture(GL_TEXTURE0 + 0); }
 				glBindTexture(GL_TEXTURE_2D, m_RendererID);
 			}
 			else

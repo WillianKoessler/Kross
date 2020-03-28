@@ -10,7 +10,7 @@
 #include "Textures/Array.h"
 #include "Textures/Atlas.h"
 
-static constexpr size_t MaxQuadCount = 65536/2;
+static constexpr size_t MaxQuadCount = 65536 / 2;
 static constexpr size_t MaxVertexCount = MaxQuadCount * 4;
 static constexpr size_t MaxIndexCount = MaxQuadCount * 6;
 
@@ -57,15 +57,15 @@ namespace Kross {
 			const glm::vec2& flip,
 			const float texture)
 			:
-			bl({ pos.x,			pos.y,			0.0f }, color, { texOff.x				, texOff.y				}, texture),
-			br({ pos.x + size.x,pos.y,			0.0f }, color, { texOff.x + texSize.x	, texOff.y				}, texture),
-			tr({ pos.x + size.x,pos.y + size.y,	0.0f }, color, { texOff.x + texSize.x	, texOff.y + texSize.y	}, texture),
-			tl({ pos.x,			pos.y + size.y,	0.0f }, color, { texOff.x				, texOff.y + texSize.y	}, texture)
+			bl({ pos.x,			pos.y,			0.0f }, color, { texOff.x				, texOff.y }, texture),
+			br({ pos.x + size.x,pos.y,			0.0f }, color, { texOff.x + texSize.x	, texOff.y }, texture),
+			tr({ pos.x + size.x,pos.y + size.y,	0.0f }, color, { texOff.x + texSize.x	, texOff.y + texSize.y }, texture),
+			tl({ pos.x,			pos.y + size.y,	0.0f }, color, { texOff.x				, texOff.y + texSize.y }, texture)
 		{}
 		Quad(const QuadParams& p, const float texture)
 			:
-			bl({ p.position.x,				p.position.y,				0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y					 }, texture),
-			br({ p.position.x + p.size.x,	p.position.y,				0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y					 }, texture),
+			bl({ p.position.x,				p.position.y,				0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y }, texture),
+			br({ p.position.x + p.size.x,	p.position.y,				0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y }, texture),
 			tr({ p.position.x + p.size.x,	p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x + p.texSubSize.x	, p.texOffSet.y + p.texSubSize.y }, texture),
 			tl({ p.position.x,				p.position.y + p.size.y,	0.0f }, p.color, { p.texOffSet.x					, p.texOffSet.y + p.texSubSize.y }, texture)
 		{}
@@ -78,6 +78,7 @@ namespace Kross {
 	struct R2DData {
 		// Basic 2D Shader
 		Ref<Shader> shader;
+
 		// 1x1 White Texture
 		Ref<Texture::T2D> whiteTex;
 
@@ -109,6 +110,14 @@ namespace Kross {
 
 		//Cache for Texture (Performance Optimization)
 		std::vector<Ref<Texture::T2D>> texCache;
+
+		// FrameBuffer
+		Ref<Texture::FrameBuffer> framebuffer;
+
+		Ref<VertexArray> quad_VertexArrayID;
+		Ref<Buffer::Vertex> quad_vertexbuffer;
+		Ref<Buffer::Index> quad_indexbuffer;
+		Ref<Shader> quad_programID;
 	};
 	// Renderer2D data
 	static R2DData* data;
@@ -154,8 +163,48 @@ namespace Kross {
 				});
 			data->NBva->AddVertex(data->NBsqrVB);
 
-			data->NBsqrIB = Buffer::Index::Create(sqrIndices, sizeof(sqrIndices));
+			data->NBsqrIB = Buffer::Index::Create(sqrIndices, sizeof(sqrIndices) / sizeof(uint32_t));
 			data->NBva->SetIndex(data->NBsqrIB);
+
+
+
+
+			float g_quad_vertex_buffer_data[] = {
+				//-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,
+				// 1.0f, -1.0f, 0.0f,		1.0f, 0.0f,
+				// 1.0f,  1.0f, 0.0f,		1.0f, 1.0f,
+				//-1.0f,  1.0f, 0.0f,		0.0f, 1.0f
+
+
+				//-1.0f, -1.0f, 0.0f,
+				// 1.0f, -1.0f, 0.0f,
+				// 1.0f,  1.0f, 0.0f,
+				//-1.0f,  1.0f, 0.0f,
+
+				-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,
+				 1.0f, -1.0f, 0.0f,		1.0f, 0.0f,
+				-1.0f,  1.0f, 0.0f,		0.0f, 1.0f,
+				-1.0f,  1.0f, 0.0f,		0.0f, 1.0f,
+				 1.0f, -1.0f, 0.0f,		1.0f, 0.0f,
+				 1.0f,  1.0f, 0.0f,		1.0f, 1.0f
+			};
+			uint32_t g_quad_index_buffer_data[] = {
+				0, 1, 2, 2, 3, 0
+			};
+
+			data->quad_VertexArrayID = VertexArray::CreateRef();
+			data->quad_vertexbuffer = Buffer::Vertex::Create(g_quad_vertex_buffer_data, sizeof(g_quad_vertex_buffer_data));
+			data->quad_vertexbuffer->SetLayout({
+				{ Buffer::ShaderDataType::Float3, "a_Position" },
+				{ Buffer::ShaderDataType::Float2, "a_TexCoord" }
+				});
+			data->quad_VertexArrayID->AddVertex(data->quad_vertexbuffer);
+			data->quad_indexbuffer = Buffer::Index::Create(g_quad_index_buffer_data, sizeof(g_quad_index_buffer_data) / sizeof(uint32_t));
+			data->quad_VertexArrayID->SetIndex(data->quad_indexbuffer);
+			Stack<Shader>::get().Add(data->quad_programID = Shader::CreateRef("assets/shaders/OpenGL/framebuffer"));
+
+
+
 
 			data->va = VertexArray::CreateScope();
 
@@ -199,12 +248,14 @@ namespace Kross {
 			uint32_t white = 0xffffffff;
 			data->texArray->Add(Stack<Texture::T2D>::get().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white)));
 
+			data->framebuffer = Texture::FrameBuffer::Create("Renderer2D");
+
 			SceneBegan = false;
 			called = true;
 		}
 		else
 		{
-			KROSS_MSGBOX("Renderer2D is already initialized. Cannot call Renderer2D::Init(void) twice. Forget to call Renderer2D::Shutdown(void)?", __FUNCSIG__, _ERROR_);
+			KROSS_MSGBOX("Renderer2D is already initialized. Cannot call Renderer2D::Init(void) twice. Forget to call Renderer2D::Shutdown(void)?", __FUNCTION__, _ERROR_);
 		}
 	}
 	void Renderer2D::Shutdown()
@@ -220,7 +271,7 @@ namespace Kross {
 		}
 		else
 		{
-			KROSS_MSGBOX("Renderer2D is not initialized. Cannot call Renderer2D::Shutdown(void) while Renderer2D::Init(void) is not called.", __FUNCSIG__, _ERROR_);
+			KROSS_MSGBOX("Renderer2D is not initialized. Cannot call Renderer2D::Shutdown(void) while Renderer2D::Init(void) is not called.", __FUNCTION__, _ERROR_);
 		}
 	}
 	void Renderer2D::Begin(Camera::Camera& camera)
@@ -229,11 +280,12 @@ namespace Kross {
 		if (!SceneBegan)
 			SceneBegan = true;
 		else
-			KROSS_CORE_WARN("Calling Renderer2D::Begin(Camera::Camera&) without calling Renderer2D::End(void). Overriding previous scene!");
+			KROSS_CORE_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
 		data->shader->Bind();
 		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
 		BatchBegin();
+		data->framebuffer->Bind();
 	}
 	void Renderer2D::BatchBegin()
 	{
@@ -252,7 +304,7 @@ namespace Kross {
 	{
 		data->texArray->Bind(0);
 		data->va->Bind();
-		Renderer::Command::DrawIndexed(data->va, data->quadIndex*6);
+		Renderer::Command::DrawIndexed(data->va, data->quadIndex * 6);
 		data->rendererStats.DrawCount++;
 
 		data->quadIndex = 0;
@@ -278,9 +330,27 @@ namespace Kross {
 		{
 			BatchEnd();
 			SceneBegan = false;
+
+			data->framebuffer->unBind();
+			Renderer::Command::SetClear({ 0.2f, 0.2f, 0.2f, 1.0f });
+			Renderer::Command::Clear();
+			data->quad_programID->Bind();
+			//Stack<Texture::T2D>::get().Get("checker", "assets/textures/cage_mamma.png")->Bind();
+			data->framebuffer->GetKrossTexture()->Bind();
+			Renderer::Command::DrawIndexed(data->quad_VertexArrayID);
 		}
 		else
-			KROSS_CORE_WARN("Calling Renderer2D::End(void) without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?");
+			KROSS_CORE_WARN("Calling {0} without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?", __FUNCTION__);
+	}
+
+	const Ref<Texture::FrameBuffer> Renderer2D::GetFrameBuffer()
+	{
+		if (!data)
+		{
+			KROSS_CORE_ERROR("[ {0} ] |||| Renderer has not yet been initialized.", __FUNCTION__);
+			return nullptr;
+		}
+		return data->framebuffer;
 	}
 
 	//void Renderer2D::DrawQuad(const glm::vec2& position, float size, const glm::vec4& color)
@@ -508,10 +578,10 @@ namespace Kross {
 
 		//data->BufferHead = &Quad(params, (float)data->texArray->Get(params.texture));
 		float texture = (float)data->texArray->Get(params.texture);
-		data->BufferHead->bl = {{ params.position.x,				params.position.y,					0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y }, texture};
-		data->BufferHead->br = {{ params.position.x + params.size.x,params.position.y,					0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y }, texture};
-		data->BufferHead->tr = {{ params.position.x + params.size.x,params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y + params.texSubSize.y }, texture};
-		data->BufferHead->tl = {{ params.position.x,				params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y + params.texSubSize.y }, texture};
+		data->BufferHead->bl = { { params.position.x,				params.position.y,					0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y }, texture };
+		data->BufferHead->br = { { params.position.x + params.size.x,params.position.y,					0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y }, texture };
+		data->BufferHead->tr = { { params.position.x + params.size.x,params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y + params.texSubSize.y }, texture };
+		data->BufferHead->tl = { { params.position.x,				params.position.y + params.size.y,	0.0f }, params.color, { params.texOffSet.x							, params.texOffSet.y + params.texSubSize.y }, texture };
 		data->BufferHead++;
 		//data->myBuffer[data->quadIndex] = Quad(params, (float)data->texArray->Get(params.texture));
 

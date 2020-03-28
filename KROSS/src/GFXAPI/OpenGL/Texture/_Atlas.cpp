@@ -1,6 +1,7 @@
 #include "Kross_pch.h"
 #include "_Atlas.h"
 #include "stb_image.h"
+#include "GFXAPI/OpenGL/GLErrors.h"
 #include "GFXAPI/OpenGL/Context.h"
 
 namespace Kross::OpenGL::Texture {

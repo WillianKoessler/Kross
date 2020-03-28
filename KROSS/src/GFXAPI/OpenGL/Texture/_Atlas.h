@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GFXAPI/OpenGL/GLErrors.h"
 #include "Kross/Core/Core.h"
 #include "Kross/Renderer/Textures/Atlas.h"
 

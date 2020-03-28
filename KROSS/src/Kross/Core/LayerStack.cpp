@@ -4,7 +4,7 @@
 namespace Kross {
 	LayerStack::LayerStack()
 	{
-		KROSS_CORE_INFO("[Kross::LayerStack] LayerStack created");
+		KROSS_CORE_INFO("[ {0} ] |||| LayerStack created", __FUNCTION__);
 	}
 
 	LayerStack::~LayerStack()
@@ -13,10 +13,10 @@ namespace Kross {
 		for (Ref<Layer>& layer : m_vecLayers)
 		{
 			const std::string name = layer->GetName();
-			KROSS_CORE_INFO("[Kross::LayerStack] Deleting layer '{0}'", name);
+			KROSS_CORE_INFO("[ {0} ] |||| Deleting layer '{1}'", __FUNCTION__, name);
 			//layer->~Layer();
 			layer.~shared_ptr();
-			KROSS_CORE_INFO("[Kross::LayerStack] Layer '{0}' deleted", name);
+			KROSS_CORE_INFO("[ {0} ] |||| Layer '{1}' deleted", __FUNCTION__, name);
 		}
 		m_vecLayers.clear();
 	}

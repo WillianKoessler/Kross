@@ -140,6 +140,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GFXAPI\OpenGL\Texture\_FrameBuffer.h" />
+    <ClInclude Include="src\Kross\Renderer\Textures\FrameBuffer.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Atlas.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Array.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Buffers.h" />
@@ -554,6 +556,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_FrameBuffer.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Textures\FrameBuffer.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Atlas.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp" />

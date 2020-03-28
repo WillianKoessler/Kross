@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GFXAPI/OpenGL/GLErrors.h"
 #include "Kross/Core/Core.h"
 #include "Kross/Renderer/Textures/Textures.h"
 
@@ -15,9 +14,10 @@ namespace Kross::OpenGL::Texture {
 	{
 	public:
 		T2D() = default;
-		T2D(uint32_t width, uint32_t height, const std::string & name, void* data = nullptr);
-		T2D(uint32_t width, uint32_t height, void* data = nullptr);
-		T2D(const std::string& path, const std::string& name = "");
+		T2D(uint32_t width, uint32_t height, const std::string& name, bool alpha, void* data);
+		T2D(uint32_t width, uint32_t height, bool alpha, void* data);
+		T2D(uint32_t width, uint32_t height, void* data);
+		T2D(const std::string& path, const std::string& name);
 
 		virtual void SetData(void* data, uint32_t size) override;
 

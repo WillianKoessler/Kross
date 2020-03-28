@@ -1288,6 +1288,8 @@
     <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Texture.h">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Textures\FrameBuffer.h" />
+    <ClInclude Include="src\GFXAPI\OpenGL\Texture\_FrameBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
@@ -1383,5 +1385,7 @@
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Texture.cpp">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Textures\FrameBuffer.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_FrameBuffer.cpp" />
   </ItemGroup>
 </Project>

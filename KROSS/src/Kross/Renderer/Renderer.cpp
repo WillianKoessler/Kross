@@ -12,7 +12,7 @@ namespace Kross {
 	void Renderer::Init()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_TRACE("[Kross::Renderer] Renderer Initiated");
+		KROSS_CORE_TRACE("[ {0} ] |||| Renderer Initiated", __FUNCTION__);
 
 		Renderer::Command::Init();
 		Renderer2D::Init();
@@ -24,7 +24,7 @@ namespace Kross {
 		shaderLibrary->Clear();
 		Renderer::Command::Shutdown();
 		Renderer2D::Shutdown();
-		KROSS_CORE_TRACE("[Kross::Renderer] Renderer Finished");
+		KROSS_CORE_TRACE("[ {0} ] |||| Renderer Finished", __FUNCTION__);
 	}
 
 	void Renderer::Scene::Begin(Camera::Camera& camera)
@@ -76,7 +76,7 @@ namespace Kross {
 
 	void Renderer::ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
-		if (exist(name)) { KROSS_CORE_WARN("[Kross::Renderer::ShaderLibrary] Shader '{0}' already in library. ", name); }
+		if (exist(name)) { KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' already in library. ", __FUNCTION__, name); }
 		shaders[name] = shader;
 	}
 
@@ -102,7 +102,7 @@ namespace Kross {
 
 	Ref<Shader> Renderer::ShaderLibrary::Get(const std::string& name)
 	{
-		if (!exist(name)) { KROSS_CORE_WARN("[Kross::Renderer::ShaderLibrary] Shader '{0}' NOT FOUND in library. ", name); }
+		if (!exist(name)) { KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' NOT FOUND in library. ", __FUNCTION__, name); }
 		return shaders[name];
 	}
 }
