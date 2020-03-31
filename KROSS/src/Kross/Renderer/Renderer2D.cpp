@@ -285,7 +285,7 @@ namespace Kross {
 		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
 		BatchBegin();
-		data->framebuffer->Bind(800,400);
+		data->framebuffer->Bind();
 	}
 	void Renderer2D::BatchBegin()
 	{

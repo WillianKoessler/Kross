@@ -82,7 +82,6 @@ namespace Kross::Camera {
 		if (Input::IsKeyPressed(KROSS_KEY_O)) m_fZoom -= m_fZoomRate;
 
 		m_fZoom = std::max(m_fZoom, 0.005f);
-		m_Camera->SetProjMat(-m_fAR * m_fZoom, m_fAR * m_fZoom, -m_fZoom, m_fZoom);
 
 		if (m_bRotation) {
 			if (Input::IsKeyPressed(KROSS_KEY_Q)) fCameraRotation += fCameraRotationSpeed * ts;
@@ -116,7 +115,9 @@ namespace Kross::Camera {
 		KROSS_PROFILE_FUNC();
 		size = { e.GetWidth(), e.GetHeight() };
 		m_fAR = size.x / (float)size.y;
-		m_Camera->SetProjMat(-m_fAR * m_fZoom, m_fAR * m_fZoom, -m_fAR * m_fZoom, m_fAR * m_fZoom);
+		//m_Camera->SetProjMat(-m_fAR * m_fZoom, m_fAR * m_fZoom, -m_fAR * m_fZoom, m_fAR * m_fZoom);
+		//m_Camera->SetProjMat(-m_fAR * m_fZoom, m_fAR * m_fZoom, -m_fZoom, m_fZoom);
+		m_Camera->SetProjMat(-m_fAR, m_fAR, -m_fZoom, m_fZoom);
 		return false;
 	}
 	

@@ -22,8 +22,8 @@ namespace Kross::Camera {
 		virtual const Ref<Camera> GetCamera() const override;
 		virtual const float GetZoom() const override { return m_fZoom; }
 
-	private:
 		virtual bool OnWindowResized(WindowResizeEvent& e) override;
+	private:
 		virtual bool OnMouseScrolled(MouseScrolledEvent& e) override;
 
 	private:
