@@ -21,7 +21,7 @@ namespace Kross {
 		virtual inline unsigned int GetHeight() const override { return m_Data.nHeight; }
 
 		// Window attributes
-		virtual void FullScreen(bool) const override;
+		virtual bool FullScreen(bool) const override;
 		virtual inline void SetEventCallback(const EventCallbackFn& callback) override
 		{
 			KROSS_CORE_TRACE("[ {0} ] |||| Callback set", __FUNCTION__);

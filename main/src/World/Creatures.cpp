@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Creatures.h"
 #include <cmath>
+#include <glm/gtc/type_ptr.hpp>
 
 bool Creature::tgm(bool set)
 {
@@ -40,7 +41,7 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 	return hp <= 0;
 }
 
-void Creature::Input(const Kross::Camera::Ortho2DCtrl& camera, float ts)
+void Creature::Input()
 {
 	if (active)
 	{
@@ -53,8 +54,8 @@ void Creature::Input(const Kross::Camera::Ortho2DCtrl& camera, float ts)
 			//p.acc /= sqrt(p.acc.x * p.acc.x + p.acc.y * p.acc.y);
 			//p.acc *= ts;
 		}
-		p.acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
-		p.acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
+		p.acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN));
+		p.acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT));
 		if (Kross::Input::IsKeyReleased(KROSS_KEY_INSERT)) sit = !sit;
 	}
 }
@@ -73,8 +74,8 @@ void Creature::OnUpdate(float ts)
 
 	if (!sit)
 	{
-		p.vel += p.acc;
-		p.vel *= dump;
+		p.vel += p.acc * ts;
+		p.vel *= dump * speed;
 		if (abs(p.vel.x) < pt) p.vel.x = 0;
 		if (abs(p.vel.y) < pt) p.vel.y = 0;
 		p.pos += p.vel;
@@ -177,6 +178,28 @@ void Creature::DrawSelf()
 
 	sprite.position = { p.pos.x - sprite.size.x / 2.0f, p.pos.y - 0.2f };
 	Kross::Renderer2D::BatchQuad(sprite);
+}
+
+void Creature::ShowDebugWindow()
+{
+	if (!debugWindow) return;
+	if(!ImGui::Begin(GetName().c_str(), &debugWindow))
+	{
+		ImGui::End();
+		return;
+	}
+	auto& p = GetProps();
+	ImGui::Text("Position: X=%.1f, Y=%.1f", p.pos.x, p.pos.y);
+	ImGui::Text("Velocity: X=%.10f, Y=%.10f", p.vel.x, p.vel.y);
+	ImGui::Text("HP %d/%d", hp, mhp);
+	ImGui::Text("State: %d", myState);
+	ImGui::Text("Direction: %d", myDirection);
+	ImGui::Checkbox("Inputs", &active);
+	ImGui::SliderFloat("Speed", &speed, 0.0f, 1.0f);
+	ImGui::SliderFloat("sprite_speed", &sprite_speed, 0.0f, 1.0f);
+	ImGui::SliderFloat("dump", &dump, 0.0f, 1.0f);
+	ImGui::SliderFloat2("vel", glm::value_ptr(p.vel), -.1f, .1f);
+	ImGui::End();
 }
 
 void Creature::Log()

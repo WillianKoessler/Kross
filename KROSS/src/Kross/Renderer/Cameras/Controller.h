@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Kross/Core/Core.h"
 #include "Kross/Events/ApplicationEvent.h"
+#include "Kross/Events/KeyEvent.h"
 #include "Kross/Events/MouseEvent.h"
 #include "Kross/Core/Timestep.h"
 
@@ -13,6 +14,8 @@ namespace Kross::Camera {
 	public:
 		virtual void OnUpdate(Timestep ts) = 0;
 		virtual void OnEvent(Event& e) = 0;
+		virtual bool Input(std::function<bool(int)>) = 0;
+		virtual void DebugWindow() = 0;
 
 		virtual bool OnWindowResized(WindowResizeEvent& e) = 0;
 		virtual bool OnMouseScrolled(MouseScrolledEvent& e) = 0;

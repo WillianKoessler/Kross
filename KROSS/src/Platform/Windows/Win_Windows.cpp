@@ -244,7 +244,7 @@ namespace Kross {
 			glfwWaitEvents();
 	}
 
-	void Win_Windows::FullScreen(bool enable) const
+	bool Win_Windows::FullScreen(bool enable) const
 	{
 		static bool previous_state = false;
 		if (enable != previous_state)
@@ -255,6 +255,7 @@ namespace Kross {
 			else glfwSetWindowMonitor(m_Window, nullptr, 100, 100, 640, 320, mode->refreshRate);
 		}
 		previous_state = enable;
+		return enable;
 	}
 
 	void Win_Windows::SetVSync(bool enable)

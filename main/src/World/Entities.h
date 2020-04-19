@@ -69,6 +69,7 @@ public:
 	virtual void OnUpdate(float ts) {};
 	virtual bool interact() { return false; }
 	virtual void DrawSelf() {}
+	virtual void ShowDebugWindow() {};
 
 //protected:
 	inline Props& GetProps() { return props; }

@@ -27,7 +27,7 @@ namespace Kross {
 		ImGui::CreateContext();	// Setup Context
 		
 		ImGuiIO& io = ImGui::GetIO(); (void)io;							// Get IO
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;			// Enable Keyboard Controls
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;			// Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;			// Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;				// Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;				// Enable Multi-Viewports / Platform Windows
@@ -39,7 +39,7 @@ namespace Kross {
 		ImGuiStyle& style = ImGui::GetStyle();
 		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			style.WindowRounding = 0.0f;
+			style.WindowRounding = 8.0f;
 			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
 

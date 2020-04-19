@@ -16,13 +16,7 @@ namespace Kross::OpenGL::Texture {
 		glGenFramebuffers(1, &m_RendererID);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
-		texture = Kross::Texture::T2D::Create(_width, _height, name + " TEX", false, nullptr);
-
-		glGenTextures(1, &m_RenderTexture);
-		glBindTexture(GL_TEXTURE_2D, m_RenderTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _width, _height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		m_RenderTexture = Kross::Texture::T2D::Create(_width, _height, name + " | FrameBufferTexture", false, nullptr);
 
 		glGenRenderbuffers(1, &m_DepthBuffer);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_DepthBuffer);
@@ -30,13 +24,7 @@ namespace Kross::OpenGL::Texture {
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthBuffer);
 
-		// Set "renderedTexture" as our colour attachement #0
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture->GetID(), 0);
-		//glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, m_RenderTexture, 0);
-
-		// Set the list of draw buffers.
-		//m_DrawList[0] = GL_COLOR_ATTACHMENT1;
-		//glDrawBuffers(sizeof(m_DrawList) / sizeof(uint32_t), m_DrawList); // "1" is the size of DrawBuffers
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_RenderTexture->GetID(), 0);
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			KROSS_MSGBOX("Unexpected Error during FrameBuffer Creation", __FUNCTION__, _ERROR_);

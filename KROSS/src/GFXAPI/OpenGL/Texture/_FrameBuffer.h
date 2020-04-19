@@ -19,14 +19,13 @@ namespace Kross::OpenGL::Texture {
 		virtual uint32_t GetHeight() const override { return _height; }
 		virtual const std::string& GetName() const override { return _name; }
 		virtual const unsigned int GetID() const override { return m_RendererID; }
-		virtual const unsigned int GetTexture() const override { return m_RenderTexture; }
-		virtual const Ref<Kross::Texture::T2D> GetKrossTexture() const override { return texture; }
+		virtual const Ref<Kross::Texture::T2D> GetTexture() const override { return m_RenderTexture; }
 
 	private:
 		std::string _name;
-		uint32_t m_RendererID, m_DepthBuffer, m_DrawList[1], m_RenderTexture;
+		uint32_t m_RendererID, m_DepthBuffer, m_DrawList[1];
 		uint16_t _width, _height;
-		Ref<Kross::Texture::T2D> texture;
+		Ref<Kross::Texture::T2D> m_RenderTexture;
 	};
 }
 

@@ -11,10 +11,7 @@ namespace Kross {
 		int state = glfwGetKey(
 			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
 			keycode);
-		if (state == GLFW_PRESS || state == GLFW_REPEAT)
-			return Keys[keycode] = true;
-		else
-			return false;
+		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 	bool WindowInput::IsKeyReleasedImpl(int keycode)
 	{

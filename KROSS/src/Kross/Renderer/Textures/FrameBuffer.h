@@ -39,8 +39,7 @@ namespace Kross::Texture {
 		virtual uint32_t GetHeight() const = 0;
 		virtual const std::string& GetName() const = 0;
 		virtual const unsigned int GetID() const = 0;
-		virtual const unsigned int GetTexture() const = 0;
-		virtual const Ref<Kross::Texture::T2D> GetKrossTexture() const = 0;
+		virtual const Ref<Kross::Texture::T2D> GetTexture() const = 0;
 
 	};
 }
