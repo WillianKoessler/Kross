@@ -122,6 +122,11 @@ namespace Kross {
 	// Renderer2D data
 	static R2DData* data;
 
+	bool Renderer2D::Is_Initiated()
+	{
+		return data;
+	}
+
 	const Renderer2D::Stats& Renderer2D::getStats()
 	{
 		return data->rendererStats;
@@ -136,8 +141,8 @@ namespace Kross {
 	void Renderer2D::Init()
 	{
 		KROSS_PROFILE_FUNC();
-		static bool called = false;
-		if (!called)
+		KROSS_CORE_INFO("[ {0} ] |||| Renderer 2D Initiating...", __FUNCTION__);
+		if (!data)
 		{
 			data = new R2DData;
 			data->texCache.resize(Texture::Base::QueryMaxSlots());
@@ -170,17 +175,6 @@ namespace Kross {
 
 
 			float g_quad_vertex_buffer_data[] = {
-				//-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,
-				// 1.0f, -1.0f, 0.0f,		1.0f, 0.0f,
-				// 1.0f,  1.0f, 0.0f,		1.0f, 1.0f,
-				//-1.0f,  1.0f, 0.0f,		0.0f, 1.0f
-
-
-				//-1.0f, -1.0f, 0.0f,
-				// 1.0f, -1.0f, 0.0f,
-				// 1.0f,  1.0f, 0.0f,
-				//-1.0f,  1.0f, 0.0f,
-
 				-1.0f, -1.0f, 0.0f,		0.0f, 0.0f,
 				 1.0f, -1.0f, 0.0f,		1.0f, 0.0f,
 				-1.0f,  1.0f, 0.0f,		0.0f, 1.0f,
@@ -251,7 +245,6 @@ namespace Kross {
 			data->framebuffer = Texture::FrameBuffer::Create("Renderer2D");
 
 			SceneBegan = false;
-			called = true;
 		}
 		else
 		{
@@ -261,11 +254,12 @@ namespace Kross {
 	void Renderer2D::Shutdown()
 	{
 		KROSS_PROFILE_FUNC();
-		static bool called = false;
-		if (!called)
+		KROSS_CORE_INFO("[ {0} ] |||| Renderer 2D Shutting Down...", __FUNCTION__);
+
+		if (data)
 		{
 			Stack<Texture::T2D>::get().clear();
-			Stack<Shader>::get().clear();
+			Stack<Shader>::get().Del("Shader2D");
 			delete[] data->BufferFirst;
 			delete data;
 		}

@@ -15,27 +15,21 @@ namespace Kross {
 		KROSS_CORE_TRACE("[ {0} ] |||| Renderer Initiated", __FUNCTION__);
 
 		Renderer::Command::Init();
-		Renderer2D::Init();
 	}
-
 	void Renderer::Shutdown()
 	{
 		KROSS_PROFILE_FUNC();
 		shaderLibrary->Clear();
 		Renderer::Command::Shutdown();
-		Renderer2D::Shutdown();
 		KROSS_CORE_TRACE("[ {0} ] |||| Renderer Finished", __FUNCTION__);
 	}
-
 	void Renderer::Scene::Begin(Camera::Camera& camera)
 	{
 		Scene::m_Data->ViewProjectionMatrix = camera.GetVPM();
 	}
-
 	void Renderer::Scene::End()
 	{
 	}
-
 	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& va, const glm::mat4 transform)
 	{
 		shader->Bind();
@@ -46,7 +40,6 @@ namespace Kross {
 		va->Bind();
 		Renderer::Command::DrawIndexed(va);
 	}
-
 	void Renderer::Submit(const Ref<Shader>& shader, const Scope<VertexArray>& va, const glm::mat4 transform)
 	{
 		shader->Bind();
@@ -57,49 +50,59 @@ namespace Kross {
 		va->Bind();
 		Renderer::Command::DrawIndexed(va);
 	}
+	void Renderer::SetDims(Renderer::Dimentions dims)
+	{
+		switch (dims)
+		{
+		case D2: {
+			if (!Renderer2D::Is_Initiated())
+				Renderer2D::Init();
+			break;
+		}
+		case D3: {
+			if (Renderer2D::Is_Initiated())
+				Renderer2D::Shutdown();
+				break;
+		}
+		}
+	}
+
 
 	Ref<Renderer::ShaderLibrary> Renderer::GetShaderLibrary()
 	{
 		return shaderLibrary;
 	}
-
 	void Renderer::ShaderLibrary::Clear()
 	{
 		shaders.clear();
 	}
-
 	void Renderer::ShaderLibrary::Add(const Ref<Shader>& shader)
 	{
 		const std::string& name = shader->GetName();
 		Add(name, shader);
 	}
-
 	void Renderer::ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
 		if (exist(name)) { KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' already in library. ", __FUNCTION__, name); }
 		shaders[name] = shader;
 	}
-
 	Ref<Shader> Renderer::ShaderLibrary::Load(const Ref<Shader>& shader)
 	{
 		Add(shader);
 		return shader;
 	}
-
-	Ref<Shader> Renderer::ShaderLibrary::Load(const std::string & filepath)
+	Ref<Shader> Renderer::ShaderLibrary::Load(const std::string& filepath)
 	{
 		Ref<Shader> shader = Shader::CreateRef(filepath);
 		Add(shader);
 		return shader;
 	}
-
-	Ref<Shader> Renderer::ShaderLibrary::Load(const std::string & name, const std::string & filepath)
+	Ref<Shader> Renderer::ShaderLibrary::Load(const std::string& name, const std::string& filepath)
 	{
 		Ref<Shader> shader = Shader::CreateRef(name, filepath);
 		Add(name, shader);
 		return shader;
 	}
-
 	Ref<Shader> Renderer::ShaderLibrary::Get(const std::string& name)
 	{
 		if (!exist(name)) { KROSS_CORE_WARN("[ {0} ] |||| Shader '{1}' NOT FOUND in library. ", __FUNCTION__, name); }

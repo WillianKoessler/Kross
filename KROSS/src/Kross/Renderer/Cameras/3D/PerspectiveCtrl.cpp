@@ -1,5 +1,5 @@
 #include "Kross_pch.h"
-#include "Ortho2DCtrl.h"
+#include "PerspectiveCtrl.h"
 
 #include "Kross/Core/Input.h"
 #include "Kross/Core/KeyCodes.h"
@@ -8,16 +8,16 @@
 
 namespace Kross::Camera {
 
-	Ortho2DCtrl::Ortho2DCtrl(Ortho2D* camera, float AR, bool rot)
+	Persp3DCtrl::Persp3DCtrl(Persp3D* camera, float AR, bool rot)
 		: m_fAR(AR),
 		m_bRotation(rot),
 		m_Camera(camera)
 	{}
 
-	Ortho2DCtrl::Ortho2DCtrl(float AR, bool rot, const std::string& name)
+	Persp3DCtrl::Persp3DCtrl(float AR, bool rot, const std::string& name)
 		: m_fAR(AR),
 		m_bRotation(rot),
-		m_Camera(makeRef<Ortho2D>(-AR * m_fZoom, AR* m_fZoom, -m_fZoom, m_fZoom, name))
+		m_Camera(makeRef<Persp3D>(-AR * m_fZoom, AR* m_fZoom, -m_fZoom, m_fZoom, name))
 	{
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
@@ -28,10 +28,10 @@ namespace Kross::Camera {
 		KROSS_CORE_INFO("[ {0} ] |||| Camera Controller Created", __FUNCTION__);
 	}
 
-	Ortho2DCtrl::Ortho2DCtrl(const std::string& name, float AR, bool rot)
+	Persp3DCtrl::Persp3DCtrl(const std::string& name, float AR, bool rot)
 		: m_fAR(AR),
 		m_bRotation(rot),
-		m_Camera(makeRef<Ortho2D>(-AR * m_fZoom, AR* m_fZoom, -m_fZoom, m_fZoom, name))
+		m_Camera(makeRef<Persp3D>(-AR * m_fZoom, AR* m_fZoom, -m_fZoom, m_fZoom, name))
 	{
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
@@ -42,10 +42,10 @@ namespace Kross::Camera {
 		KROSS_CORE_INFO("[ {0} ] |||| Camera Controller Created", __FUNCTION__);
 	}
 
-	Ortho2DCtrl::Ortho2DCtrl(bool rot, const std::string& name, float AR)
+	Persp3DCtrl::Persp3DCtrl(bool rot, const std::string& name, float AR)
 		: m_fAR(AR),
 		m_bRotation(rot),
-		m_Camera(makeRef<Ortho2D>(-AR * m_fZoom, AR* m_fZoom, -m_fZoom, m_fZoom, name))
+		m_Camera(makeRef<Persp3D>(-AR * m_fZoom, AR* m_fZoom, -m_fZoom, m_fZoom, name))
 	{
 		KROSS_PROFILE_FUNC();
 		if (GetSelf())
@@ -57,16 +57,16 @@ namespace Kross::Camera {
 	}
 
 
-	Ortho2DCtrl::~Ortho2DCtrl()
+	Persp3DCtrl::~Persp3DCtrl()
 	{
 		KROSS_PROFILE_FUNC();
-		m_Camera->~Ortho2D();
+		m_Camera->~Persp3D();
 		m_Camera.~shared_ptr();
 		SetSelf(nullptr);
 		KROSS_CORE_INFO("[ {0} ] |||| Camera Controller Deconstructed", __FUNCTION__);
 	}
 
-	void Ortho2DCtrl::OnUpdate(Timestep ts)
+	void Persp3DCtrl::OnUpdate(Timestep ts)
 	{
 		KROSS_PROFILE_FUNC();
 		v3cameraPos.x += move.x * ts * fCameraMoveSpeed;
@@ -79,25 +79,25 @@ namespace Kross::Camera {
 		fCameraMoveSpeed = m_fZoom * 1.2f;
 	}
 
-	void Ortho2DCtrl::OnEvent(Event& e)
+	void Persp3DCtrl::OnEvent(Event& e)
 	{
 		KROSS_PROFILE_FUNC();
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<WindowResizeEvent>(KROSS_BIND_EVENT_FN(Ortho2DCtrl::OnWindowResized));
-		dispatcher.Dispatch<MouseScrolledEvent>(KROSS_BIND_EVENT_FN(Ortho2DCtrl::OnMouseScrolled));
+		dispatcher.Dispatch<WindowResizeEvent>(KROSS_BIND_EVENT_FN(Persp3DCtrl::OnWindowResized));
+		dispatcher.Dispatch<MouseScrolledEvent>(KROSS_BIND_EVENT_FN(Persp3DCtrl::OnMouseScrolled));
 	}
 
-	Ref<Camera> Ortho2DCtrl::GetCamera()
+	Ref<Camera> Persp3DCtrl::GetCamera()
 	{
 		return m_Camera;
 	}
 
-	const Ref<Camera> Ortho2DCtrl::GetCamera() const
+	const Ref<Camera> Persp3DCtrl::GetCamera() const
 	{
 		return m_Camera;
 	}
 
-	bool Ortho2DCtrl::OnWindowResized(WindowResizeEvent& e)
+	bool Persp3DCtrl::OnWindowResized(WindowResizeEvent& e)
 	{
 		KROSS_PROFILE_FUNC();
 		size = { e.GetWidth(), e.GetHeight() };
@@ -108,7 +108,7 @@ namespace Kross::Camera {
 		return false;
 	}
 
-	bool Ortho2DCtrl::OnMouseScrolled(MouseScrolledEvent& e)
+	bool Persp3DCtrl::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		KROSS_PROFILE_FUNC();
 		m_fZoom += e.GetYOffSet() * (m_fZoom * 0.01f);
@@ -116,7 +116,7 @@ namespace Kross::Camera {
 		m_Camera->SetProjMat(-m_fAR * m_fZoom, m_fAR * m_fZoom, -m_fZoom, m_fZoom);
 		return false;
 	}
-	bool Ortho2DCtrl::Input(std::function<bool(int)> func)
+	bool Persp3DCtrl::Input(std::function<bool(int)> func)
 	{
 		move.x = func(KROSS_KEY_D) - func(KROSS_KEY_A);
 		move.y = func(KROSS_KEY_W) - func(KROSS_KEY_S);
@@ -134,7 +134,7 @@ namespace Kross::Camera {
 		if (m_bRotation) move.z = (func(KROSS_KEY_Q) - func(KROSS_KEY_E));
 		return false;
 	}
-	void Ortho2DCtrl::DebugWindow()
+	void Persp3DCtrl::DebugWindow()
 	{
 		if (ImGui::Begin("Camera", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{

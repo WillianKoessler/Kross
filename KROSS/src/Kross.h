@@ -24,8 +24,8 @@
 #include "Kross/Renderer/Renderer2D.h"
 
 #include "Kross/Renderer/Cameras/Camera.h"
-#include "Kross/Renderer/Cameras/Ortho2D.h"
-#include "Kross/Renderer/Cameras/Ortho2DCtrl.h"
+#include "Kross/Renderer/Cameras/2D/Ortho.h"
+#include "Kross/Renderer/Cameras/2D/OrthoCtrl.h"
 
 #include "Kross/Renderer/Buffer.h"
 #include "Kross/Renderer/Shaders.h"

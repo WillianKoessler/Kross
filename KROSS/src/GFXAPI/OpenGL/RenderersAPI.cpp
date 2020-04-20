@@ -35,7 +35,7 @@ namespace Kross::OpenGL {
 	void RendererAPI::DrawIndexed(const Scope<VertexArray>& va, uint32_t indexCount) const
 	{
 		GLerror();
-		glDrawElements(GL_TRIANGLES, indexCount ? indexCount : va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, indexCount != 0 ? indexCount : va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
 	void RendererAPI::SetViewport(uint32_t width, uint32_t height) const
 	{

@@ -4,12 +4,15 @@
 #include "Cameras/Camera.h"
 #include "Shaders.h"
 #include "Renderer2D.h"
+#include "Renderer3D.h"
 
 namespace Kross {
 
 	class KAPI Renderer
 	{
 	public:
+		enum Dimentions { D2 = 0, D3 };
+
 		class Scene
 		{
 			struct Data
@@ -72,11 +75,23 @@ namespace Kross {
 			std::unordered_map<std::string, Ref<Shader>> shaders;
 		};
 
+		struct triangle
+		{
+			glm::vec3 pos[3];
+			glm::vec2 texCoord[2];
+			glm::vec4 color;
+		};
+
 	public:
 		static void Shutdown();
 		static void Init();
 		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& va, const glm::mat4 transform = glm::mat4(1.0f));
 		static void Submit(const Ref<Shader>& shader, const Scope<VertexArray>& va, const glm::mat4 transform = glm::mat4(1.0f));
+		static void SetDims(Dimentions);
+
+
+		static void DrawMesh();
+
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 		static Ref<ShaderLibrary> GetShaderLibrary();

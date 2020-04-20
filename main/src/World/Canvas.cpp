@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Canvas.h"
 #include <fstream>
 
@@ -62,51 +61,38 @@ Canvas::Canvas()
 
 void Canvas::OnAttach()
 {
-	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/Oboro.png"));
-	//entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
-	entities[0].active = true;
+	Kross::Renderer3D::Init();
+	Kross::Renderer::Command::SetClear({ 0.2f,0.4f,0.6f,1.0f });
 }
-void Canvas::OnDetach()
-{}
-
 
 void Canvas::OnUpdate(Kross::Timestep ts)
 {
-	Kross::Renderer2D::ResetStats();
-	params.Reset();
-	camera.OnUpdate(ts);
+	if (Kross::Input::IsKeyPressed(KROSS_KEY_ESCAPE))
+		Kross::Application::Get().OnEvent(Kross::WindowCloseEvent());
+	
+	static glm::mat4 rotation(0.0f);
+	static glm::mat4 mat4i = glm::mat4(1.0f);
+	
+	static float theta = 0.0f;
+	theta += 120 * ts;
+	
+	rotation = glm::rotate(mat4i, glm::radians(theta * 0.5f), { 0.0f, 0.0f, 1.0f });
+	rotation = glm::rotate(rotation, glm::radians(theta), { 1.0f, 0.0f, 0.0f });
 
-	Kross::Renderer2D::Begin(*camera.GetCamera());
-	Kross::Renderer::Command::SetClear({ 0.15f, 0.1f, 0.2f, 1.0f });
+	Kross::Renderer3D::Begin();
 	Kross::Renderer::Command::Clear();
+	Kross::Renderer3D::DrawCube(
+		{0.0f, 0.0f, 2.0f},
+		{1.0f, 1.0f, 1.0f},
+		rotation,
+		{0.8f, 0.3f, 0.4f, 1.0f}
+	);
+	Kross::Renderer3D::End();
+}
 
-	params.position = { -1.0f,-1.0f };
-	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("ChernoLogo", "assets/textures/ChernoLogo.png");
-	Kross::Renderer2D::BatchQuad(params);
-
-	params.position.x -= 0.5f;
-	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("cage", "assets/textures/cage.png");
-	params.FlipY();
-	Kross::Renderer2D::BatchQuad(params);
-	params.FlipY();
-
-	for (auto& e : entities)
-	{
-		//if (Kross::Input::IsMouseButtonPressed(KROSS_MOUSE_BUTTON_1)) params.position = camera.GetCamera()->GetPosition();
-		//Kross::Renderer2D::BatchQuad(params);
-		e.OnUpdate(ts);
-		e.DrawSelf();
-	}
-
-	for (int i = 1; i <= size; i++)
-		for (int j = 1; j < size; j++)
-		{
-			params.position = { i, j };
-			//params.texture = 0;
-			params.color = { i / size, j / size, i / size, j / size };
-			Kross::Renderer2D::BatchQuad(params);
-		}
-	Kross::Renderer2D::End();
+void Canvas::OnDetach()
+{
+	Kross::Renderer3D::Shutdown();
 }
 
 void Canvas::OnImGuiRender(Kross::Timestep ts)
@@ -126,38 +112,14 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 	}
 	else app.viewportsState = 0;
 
-	if (app.show_camera) camera.DebugWindow();
-
-	if (!entities.empty())
-	{
-		if (Begin("Entities", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize))
-		{
-			if (ImGui::TreeNode("Entities"))
-			{
-				ImGui::SameLine(); ShowHelpMarker("Click on Entity Name to show more info.");
-				ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
-				for (auto& e : entities)
-				{
-					ImGui::TreeNodeEx(e.GetName().c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
-					if (ImGui::IsItemClicked())
-						e.debugWindow = !e.debugWindow;
-				}
-				ImGui::PopStyleVar();
-				ImGui::TreePop();
-			}
-			for (auto& e : entities) e.ShowDebugWindow();
-			ImGui::End();
-		}
-		else ImGui::End();
-	}
-	static ImGuiWindowFlags viewport_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_MenuBar;
+	static ImGuiWindowFlags viewport_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove;
 	ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowDockID(main_screen, ImGuiCond_FirstUseEver);
 	if (!Begin("Viewport", nullptr, viewport_flags))
 		ImGui::End();
 	else
 	{
-		Image((void*)(intptr_t)Kross::Renderer2D::GetFrameBuffer()->GetTexture()->GetID(),
+		Image((void*)(intptr_t)Kross::Renderer3D::GetFrameBuffer()->GetTexture()->GetID(),
 			GetContentRegionAvail(),
 			ImVec2(0, 1),
 			ImVec2(1, 0));
@@ -165,17 +127,11 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		camera.OnEvent(Kross::WindowResizeEvent((uint32_t)size.x, (uint32_t)size.y));
 		if (ImGui::IsWindowFocused()) {
 			camera.Input(ImGui::IsKeyDown);
-			for (auto& e : entities) e.Input();
 		}
 		if (ImGui::IsWindowHovered())
 			camera.OnEvent(Kross::MouseScrolledEvent(io.MouseWheelH, io.MouseWheel));
 		ImGui::End();
 	}
-}
-
-void Canvas::OnEvent(Kross::Event& event)
-{
-	//camera.OnEvent(event);
 }
 
 inline void CancelButton(bool* show, ImVec2 size = { 0, 0 })
@@ -206,23 +162,24 @@ void MessageBoxDialog(bool* show, const char* id, void* data = nullptr)
 		{
 			char buff[256] = { 0 };
 			ImGui::SetWindowFocus();
-			if (!ImGui::IsAnyItemActive())
-				ImGui::SetKeyboardFocusHere(0);
-			if (ImGui::InputText("file", buff, 256, ImGuiInputTextFlags_EnterReturnsTrue)) {///*Disabled till i know how to use InputText() to write into a buffer*/ || ImGui::Button("OK", ImVec2(50, 0))) {
-				ImGui::GetStyle() = LoadStyle(buff[0] ? buff : "imguiStyle.ini");
-				ImGui::CloseCurrentPopup();
-				*show = false;
-			}
-			ImGui::SetItemDefaultFocus();
-			ImGui::SameLine();
-			if (ImGui::Button("Cancel", ImVec2(50, 0))) {
-				ImGui::CloseCurrentPopup();
-				*show = false;
-			}
+			//if (!ImGui::IsAnyItemActive())
+			//	ImGui::SetKeyboardFocusHere(0);
+			//if (ImGui::InputText("file", buff, 256, ImGuiInputTextFlags_EnterReturnsTrue)) {///*Disabled till i know how to use InputText() to write into a buffer*/ || ImGui::Button("OK", ImVec2(50, 0))) {
+				//ImGui::GetStyle() = LoadStyle(buff[0] ? buff : "imguiStyle.ini");
+			ImGui::GetStyle() = LoadStyle("imguiStyle.ini");
+			ImGui::CloseCurrentPopup();
+			*show = false;
+			//}
+			//ImGui::SetItemDefaultFocus();
+			//ImGui::SameLine();
+			//if (ImGui::Button("Cancel", ImVec2(50, 0))) {
+			//	ImGui::CloseCurrentPopup();
+			//	*show = false;
+			//}
 		}
 		else if (id == "Yet Not Implemented")
 		{
-			ImGui::Text("This feature has yet not been implemented.");
+			ImGui::Text("This feature has not been implemented yet.");
 			CancelButton(show);
 		}
 		else
@@ -351,6 +308,14 @@ uint32_t MainScreen(bool* p_open, const char* ID)
 			if (ImGui::BeginMenu("Settings"))
 			{
 				ImGui::MenuItem("ImGui", NULL, &app.show_style_editor);
+
+				ImGui::Separator();
+
+				static const char* renderDs[2] = { "2D Render", "3D Render" };
+				static int current = 1;
+				ImGui::PushItemWidth(90);
+				if (ImGui::Combo("", &current, renderDs, sizeof(renderDs) / sizeof(size_t)))
+					Kross::Renderer::SetDims(current == 0 ? Kross::Renderer::D2 : Kross::Renderer::D3);
 				ImGui::EndMenu();
 			}
 			ImGui::Separator();
@@ -365,7 +330,7 @@ uint32_t MainScreen(bool* p_open, const char* ID)
 
 		if (ImGui::BeginMenu("Camera"))
 		{
-			ImGui::MenuItem("Window", NULL, &app.show_camera);
+			if (ImGui::MenuItem("Window", NULL, &app.popup_message_box)) id = "Yet Not Implemented";
 			ImGui::EndMenu();
 		}
 
@@ -417,7 +382,7 @@ void Status(bool* show_rendererStats, float ts)
 	if (show_rendererStats)
 	{
 		char buf[128];
-		sprintf_s(buf, "Application Status | FPS: %.1f###StatusTitle", FrameRate);
+		sprintf_s(buf, "Status Monitor | FPS: %.1f###StatusTitle", FrameRate);
 		if (ImGui::Begin(buf, show_rendererStats, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
 		{
 			if (ImGui::Combo("mode", &item_current, frame_plot_options, 2)) once = false;
@@ -430,13 +395,13 @@ Elapsed Time mode, is the plot of how many milisseconds has passed since the las
 			float max = 0;
 			for (size_t i = 0; i < plotsize; i++)
 				max = std::max(frames[i], max);
-			ImGui::PlotLines("", frames, plotsize - 1, 0, "Frames", 0, std::min(120.0f, max));
+			ImGui::PlotLines("", frames, plotsize - 1, 0, item_current ? "Timestamp" : "Frames", 0, std::min(120.0f, max));
 			auto& mouse = Kross::Input::GetMousePos();
 			ImGui::Text("Mouse: %.1f, %.1f", mouse.x, mouse.y);
 
-			ImGui::Text("MaxQuadCount: %d", Kross::Renderer2D::getStats().maxQuads);
-			ImGui::Text("Quad Count: %d", Kross::Renderer2D::getStats().QuadCount);
-			ImGui::Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
+			//ImGui::Text("MaxQuadCount: %d", Kross::Renderer2D::getStats().maxQuads);
+			//ImGui::Text("Quad Count: %d", Kross::Renderer2D::getStats().QuadCount);
+			//ImGui::Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
 			ImGui::End();
 		}
 		else
@@ -596,11 +561,11 @@ ImGuiStyle LoadStyle(const std::string& path)
 				try
 				{
 					std::vector<float> arr;
-					value = buffer.substr(fbrq+1, sbrq-fbrq-1);
+					value = buffer.substr(fbrq + 1, sbrq - fbrq - 1);
 					size_t last_comma = 0, comma = value.find(',');
-					for(int i = 0; i < value.size(); i++)
+					for (int i = 0; i < value.size(); i++)
 					{
-						if (value[i] == ',' || i == value.size()-1)
+						if (value[i] == ',' || i == value.size() - 1)
 						{
 							auto sub = value.substr(last_comma, i);
 							arr.push_back(std::stof(sub));

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Ortho2D.h"
-#include "Controller.h"
+#include "Ortho.h"
+#include "../Controller.h"
 
 namespace Kross::Camera {
 	class Ortho2DCtrl :

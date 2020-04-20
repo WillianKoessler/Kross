@@ -26,6 +26,7 @@ namespace Kross {
 		static bool batch;
 
 	public:
+		static bool Is_Initiated();
 		struct Stats
 		{
 			size_t maxQuads = 0;

@@ -25,7 +25,7 @@ namespace Kross::Camera {
 
 		enum class Type
 		{
-			None = 0, Orthographic_2D
+			None = 0, Orthographic_2D, Perspective_3D
 		};
 		
 		virtual Type GetType() const = 0;
