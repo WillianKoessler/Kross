@@ -9,22 +9,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\CoreMechanics.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Items.h">
-      <Filter>Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\World\Canvas.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="src\World\Creatures.h">
-      <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\World\Entities.h">
-      <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\main.cpp">
@@ -33,9 +20,11 @@
     <ClCompile Include="src\World\Canvas.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="src\World\Creatures.cpp">
-      <Filter>World</Filter>
-    </ClCompile>
-    <ClCompile Include="src\pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\OpenGL\Shader3D.frag" />
+    <None Include="assets\shaders\OpenGL\Shader3D.vert" />
+    <None Include="assets\shaders\OpenGL\Shader2D.vert" />
+    <None Include="assets\shaders\OpenGL\Shader2D.frag" />
   </ItemGroup>
 </Project>

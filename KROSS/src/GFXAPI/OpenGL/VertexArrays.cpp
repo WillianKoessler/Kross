@@ -61,7 +61,6 @@ namespace Kross::OpenGL {
 		Buffer::Layout layout = vertex->GetLayout();
 		for (const Buffer::Element& element : layout)
 		{
-			glCall(glEnableVertexAttribArray(index));
 			glCall(glVertexAttribPointer(
 				index,
 				element.GetComponentCount(),
@@ -70,7 +69,7 @@ namespace Kross::OpenGL {
 				layout.GetStride(),
 				(const void*)element.OffSet
 			));
-			index++;
+			glCall(glEnableVertexAttribArray(index++));
 		}
 
 		m_vecVertex.push_back(vertex);

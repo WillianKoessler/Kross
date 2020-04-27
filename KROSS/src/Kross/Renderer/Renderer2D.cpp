@@ -201,7 +201,8 @@ namespace Kross {
 			data->quad_VertexArrayID->AddVertex(data->quad_vertexbuffer);
 			data->quad_indexbuffer = Buffer::Index::Create(g_quad_index_buffer_data, sizeof(g_quad_index_buffer_data) / sizeof(uint32_t));
 			data->quad_VertexArrayID->SetIndex(data->quad_indexbuffer);
-			Stack<Shader>::get().Add(data->quad_programID = Shader::CreateRef("assets/shaders/OpenGL/framebuffer"));
+			//Stack<Shader>::get().Add(data->quad_programID = Shader::CreateRef("assets/shaders/OpenGL/framebuffer"));
+			Stack<Shader>::get().Add(data->quad_programID = Shader::CreateRef("Single_Quad_Shader", "assets/shaders/OpenGL/Shader2D"));
 
 
 

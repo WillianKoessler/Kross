@@ -13,7 +13,8 @@ namespace Kross::OpenGL {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_DEPTH_TEST);
+		//glDepthFunc(GL_LESS);
 	}
 	void RendererAPI::Clear() const
 	{
@@ -35,7 +36,8 @@ namespace Kross::OpenGL {
 	void RendererAPI::DrawIndexed(const Scope<VertexArray>& va, uint32_t indexCount) const
 	{
 		GLerror();
-		glDrawElements(GL_TRIANGLES, indexCount ? indexCount : va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		va->Bind();
+		glDrawElements(GL_TRIANGLES, indexCount != 0 ? indexCount : va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
 	void RendererAPI::SetViewport(uint32_t width, uint32_t height) const
 	{

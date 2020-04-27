@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Canvas.h"
 #include <fstream>
 
@@ -11,7 +10,7 @@ static struct windows
 
 	bool run_applicacion = true;
 	bool show_rendererStats = false;
-	bool show_camera = false;
+	bool show_camera = true;
 
 	bool show_demo_window = false;
 	bool show_style_editor = false;
@@ -25,21 +24,7 @@ static struct windows
 
 }app;
 
-
-static uint32_t MainScreen(bool* p_open, const char* ID);
-static void Status(bool* show_rendererStats, float ts);
-void SaveStyle(ImGuiStyle* style, const std::string& path = "imguiStyle.ini");
-ImGuiStyle LoadStyle(const std::string& path);
-inline bool ToggleFlag(bool enable, int& flags, int mask)
-{
-	if (enable)
-		flags |= mask;
-	else
-		flags &= ~(flags & mask);
-	return enable;
-}
-// Helper to display a little (?) mark which shows a tooltip when hovered.
-static void ShowHelpMarker(const char* desc)
+void Canvas::ShowHelpMarker(const char* desc)
 {
 	ImGui::TextDisabled("(?)");
 	if (ImGui::IsItemHovered())
@@ -52,61 +37,73 @@ static void ShowHelpMarker(const char* desc)
 	}
 }
 
-
-
 Canvas::Canvas()
 	: Layer("Canvas"),
-	camera(ar, true)
+	camera(Kross::makeRef<Kross::Camera::Ortho2DCtrl>(ar, 90))
 {
 }
 
 void Canvas::OnAttach()
 {
-	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/Oboro.png"));
-	//entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
-	entities[0].active = true;
+	Kross::Renderer2D::Init();
+	Kross::Renderer::Command::SetClear({ 0.2f,0.4f,0.6f,1.0f });
 }
-void Canvas::OnDetach()
-{}
 
+void Canvas::OnDetach()
+{
+	Kross::Renderer2D::Shutdown();
+}
 
 void Canvas::OnUpdate(Kross::Timestep ts)
 {
-	Kross::Renderer2D::ResetStats();
-	params.Reset();
-	camera.OnUpdate(ts);
+	KROSS_PROFILE_FUNC();
+	camera->OnUpdate(ts);
 
-	Kross::Renderer2D::Begin(*camera.GetCamera());
-	Kross::Renderer::Command::SetClear({ 0.15f, 0.1f, 0.2f, 1.0f });
+	static glm::mat4 mat4i = glm::mat4(1.0f);
+	static glm::mat4 rotation = mat4i;
+
+	static float theta = 0.0f;
+
+	p.x += (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts * 1;
+	p.y += (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts * 1;
+	p.z += (Kross::Input::IsKeyPressed(KROSS_KEY_COMMA) - Kross::Input::IsKeyPressed(KROSS_KEY_PERIOD)) * ts * 1;
+
 	Kross::Renderer::Command::Clear();
 
-	params.position = { -1.0f,-1.0f };
-	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("ChernoLogo", "assets/textures/ChernoLogo.png");
-	Kross::Renderer2D::BatchQuad(params);
-
-	params.position.x -= 0.5f;
-	params.texture = Kross::Stack<Kross::Texture::T2D>::get().Get("cage", "assets/textures/cage.png");
-	params.FlipY();
-	Kross::Renderer2D::BatchQuad(params);
-	params.FlipY();
-
-	for (auto& e : entities)
+	if(false)
 	{
-		//if (Kross::Input::IsMouseButtonPressed(KROSS_MOUSE_BUTTON_1)) params.position = camera.GetCamera()->GetPosition();
-		//Kross::Renderer2D::BatchQuad(params);
-		e.OnUpdate(ts);
-		e.DrawSelf();
-	}
+		KROSS_PROFILE_SCOPE(Draw);
 
-	for (int i = 1; i <= size; i++)
-		for (int j = 1; j < size; j++)
-		{
-			params.position = { i, j };
-			//params.texture = 0;
-			params.color = { i / size, j / size, i / size, j / size };
-			Kross::Renderer2D::BatchQuad(params);
-		}
-	Kross::Renderer2D::End();
+		theta += 90 * ts;
+		rotation = glm::rotate(mat4i, glm::radians(theta * 0.5f), { 0.0f, 0.0f, 1.0f });
+		rotation = glm::rotate(rotation, glm::radians(theta), { 1.0f, 0.0f, 0.0f });
+		static auto origin = glm::vec3(0.0f);
+
+		Kross::Renderer3D::Begin(*camera->GetCamera());
+		Kross::Renderer3D::DrawCube(origin, { 0.3f, 0.1f, 0.1f }, rotation, { 0.8f, 0.4f, 0.4f, 0.2f });
+		Kross::Renderer3D::DrawCube(origin, { 0.1f, 0.3f, 0.1f }, rotation, { 0.8f, 0.4f, 0.4f, 0.2f });
+		Kross::Renderer3D::DrawCube(origin, { 0.1f, 0.1f, 0.3f }, rotation, { 0.8f, 0.4f, 0.4f, 0.2f });
+		Kross::Renderer3D::DrawCube(
+			origin,
+			glm::vec3(0.01f),
+			0,
+			{ 0.0f, 0.0f, 1.0f },
+			{ 0.8f, 0.4f, 0.4f, 0.2f }
+		);
+		Kross::Renderer3D::DrawCube(
+			p,
+			glm::vec3(0.1f),
+			{ 0.8f, 0.3f, 0.4f, 1.0f }
+		);
+		Kross::Renderer3D::End();
+	}
+	else
+	{
+		params.position = p;
+		Kross::Renderer2D::Begin(*camera->GetCamera());
+		Kross::Renderer2D::BatchQuad(params);
+		Kross::Renderer2D::End();
+	}
 }
 
 void Canvas::OnImGuiRender(Kross::Timestep ts)
@@ -125,122 +122,42 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		app.viewports = false;
 	}
 	else app.viewportsState = 0;
+	if (app.show_camera)
+		camera->DebugWindow();
 
-	if (app.show_camera) camera.DebugWindow();
+	ImGui::Begin("cube", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
+	ImGui::Text("Pos: X %.1f, Y %.1f, Z %.1f", p.x, p.y, p.z);
+	ImGui::End();
 
-	if (!entities.empty())
-	{
-		if (Begin("Entities", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize))
-		{
-			if (ImGui::TreeNode("Entities"))
-			{
-				ImGui::SameLine(); ShowHelpMarker("Click on Entity Name to show more info.");
-				ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize() * 3); // Increase spacing to differentiate leaves from expanded contents.
-				for (auto& e : entities)
-				{
-					ImGui::TreeNodeEx(e.GetName().c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
-					if (ImGui::IsItemClicked())
-						e.debugWindow = !e.debugWindow;
-				}
-				ImGui::PopStyleVar();
-				ImGui::TreePop();
-			}
-			for (auto& e : entities) e.ShowDebugWindow();
-			ImGui::End();
-		}
-		else ImGui::End();
-	}
-	static ImGuiWindowFlags viewport_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_MenuBar;
+	static ImGuiWindowFlags viewport_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove;
 	ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowDockID(main_screen, ImGuiCond_FirstUseEver);
-	if (!Begin("Viewport", nullptr, viewport_flags))
-		ImGui::End();
-	else
+	if (Begin("Viewport", nullptr, viewport_flags))
 	{
 		Image((void*)(intptr_t)Kross::Renderer2D::GetFrameBuffer()->GetTexture()->GetID(),
 			GetContentRegionAvail(),
-			ImVec2(0, 1),
-			ImVec2(1, 0));
+			ImVec2(1, 1),
+			ImVec2(0, 0));
 		ImVec2 size = GetWindowSize();
-		camera.OnEvent(Kross::WindowResizeEvent((uint32_t)size.x, (uint32_t)size.y));
+		camera->OnEvent(Kross::WindowResizeEvent((uint32_t)size.x, (uint32_t)size.y));
 		if (ImGui::IsWindowFocused()) {
-			camera.Input(ImGui::IsKeyDown);
-			for (auto& e : entities) e.Input();
-		}
+			camera->Input(ImGui::IsKeyDown);
+			Kross::Input::HideCursor();
+		} else Kross::Input::ShowCursor();
 		if (ImGui::IsWindowHovered())
-			camera.OnEvent(Kross::MouseScrolledEvent(io.MouseWheelH, io.MouseWheel));
-		ImGui::End();
+			camera->OnEvent(Kross::MouseScrolledEvent(io.MouseWheelH, io.MouseWheel));
 	}
+	ImGui::End();
 }
 
-void Canvas::OnEvent(Kross::Event& event)
-{
-	//camera.OnEvent(event);
-}
-
-inline void CancelButton(bool* show, ImVec2 size = { 0, 0 })
-{
-	if (size.x > 0 && size.y > 0)
-	{
-		if (ImGui::Button("Cancel", size))
-		{
-			ImGui::CloseCurrentPopup();
-			*show = false;
-		}
-	}
-	else
-	{
-		if (ImGui::Button("Cancel"))
-		{
-			ImGui::CloseCurrentPopup();
-			*show = false;
-		}
-	}
-}
-void MessageBoxDialog(bool* show, const char* id, void* data = nullptr)
-{
-	if (*show) ImGui::OpenPopup(id);
-	if (ImGui::BeginPopupModal(id, NULL, ImGuiWindowFlags_AlwaysAutoResize))
-	{
-		if (id == "Style Open File")
-		{
-			char buff[256] = { 0 };
-			ImGui::SetWindowFocus();
-			if (!ImGui::IsAnyItemActive())
-				ImGui::SetKeyboardFocusHere(0);
-			if (ImGui::InputText("file", buff, 256, ImGuiInputTextFlags_EnterReturnsTrue)) {///*Disabled till i know how to use InputText() to write into a buffer*/ || ImGui::Button("OK", ImVec2(50, 0))) {
-				ImGui::GetStyle() = LoadStyle(buff[0] ? buff : "imguiStyle.ini");
-				ImGui::CloseCurrentPopup();
-				*show = false;
-			}
-			ImGui::SetItemDefaultFocus();
-			ImGui::SameLine();
-			if (ImGui::Button("Cancel", ImVec2(50, 0))) {
-				ImGui::CloseCurrentPopup();
-				*show = false;
-			}
-		}
-		else if (id == "Yet Not Implemented")
-		{
-			ImGui::Text("This feature has yet not been implemented.");
-			CancelButton(show);
-		}
-		else
-		{
-			ImGui::Text("An Error has ocurred!\nThe ID for this Modal Window was not setted.");
-			CancelButton(show);
-		}
-		ImGui::EndPopup();
-	}
-}
-
-
-uint32_t MainScreen(bool* p_open, const char* ID)
+uint32_t Canvas::MainScreen(bool* p_open, const char* ID)
 {
 	static const char* id = "";
 	ImGuiIO& io = ImGui::GetIO();
 
+	// ImGui Demo Window
 	if (app.show_demo_window) ImGui::ShowDemoWindow(&app.show_demo_window);
+	// ImGui Style Editor
 	if (app.show_style_editor)
 	{
 		static ImGuiStyle& style = ImGui::GetStyle();
@@ -326,6 +243,7 @@ uint32_t MainScreen(bool* p_open, const char* ID)
 	if (opt_fullscreen)
 		ImGui::PopStyleVar(2);
 
+	if (Kross::Input::IsKeyPressed(KROSS_KEY_ESCAPE)) ImGui::SetWindowFocus();
 
 	// Dockspace
 	ImGuiID dockspace_id = ImGui::GetID(ID);
@@ -351,6 +269,13 @@ uint32_t MainScreen(bool* p_open, const char* ID)
 			if (ImGui::BeginMenu("Settings"))
 			{
 				ImGui::MenuItem("ImGui", NULL, &app.show_style_editor);
+
+				ImGui::Separator();
+
+				static const char* renderDs[2] = { "2D Render", "3D Render" };
+				ImGui::PushItemWidth(90);
+				if (ImGui::Combo("", &current, renderDs, sizeof(renderDs) / sizeof(size_t)))
+					Kross::Renderer::SetDims(current == 0 ? Kross::Renderer::D2 : Kross::Renderer::D3);
 				ImGui::EndMenu();
 			}
 			ImGui::Separator();
@@ -366,6 +291,22 @@ uint32_t MainScreen(bool* p_open, const char* ID)
 		if (ImGui::BeginMenu("Camera"))
 		{
 			ImGui::MenuItem("Window", NULL, &app.show_camera);
+
+			ImGui::Separator();
+
+			static const char* renderDs[2] = { "2D Orthographic", "3D Perspective" };
+			static int current = 1;
+			ImGui::PushItemWidth(17 * 8);
+			if (camera->GetCamera()->GetCameraType() == "Orthographic_2D")
+				current = 0;
+			if (camera->GetCamera()->GetCameraType() == "Perspective_3D")
+				current = 1;
+			if (ImGui::Combo("", &current, renderDs, sizeof(renderDs) / sizeof(size_t)))
+			{
+				if (current == 0) camera = Kross::makeRef<Kross::Camera::Ortho2DCtrl>(renderDs[0], ar);
+				if (current == 1) camera = Kross::makeRef<Kross::Camera::Persp3DCtrl>(ar, 100);
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -383,7 +324,7 @@ uint32_t MainScreen(bool* p_open, const char* ID)
 	return dockspace_id;
 }
 
-void Status(bool* show_rendererStats, float ts)
+void Canvas::Status(bool* show_rendererStats, float ts)
 {
 	static bool pause_frame_plot_animation = false;
 
@@ -417,7 +358,7 @@ void Status(bool* show_rendererStats, float ts)
 	if (show_rendererStats)
 	{
 		char buf[128];
-		sprintf_s(buf, "Application Status | FPS: %.1f###StatusTitle", FrameRate);
+		sprintf_s(buf, "Status Monitor | FPS: %.1f###StatusTitle", FrameRate);
 		if (ImGui::Begin(buf, show_rendererStats, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
 		{
 			if (ImGui::Combo("mode", &item_current, frame_plot_options, 2)) once = false;
@@ -430,22 +371,20 @@ Elapsed Time mode, is the plot of how many milisseconds has passed since the las
 			float max = 0;
 			for (size_t i = 0; i < plotsize; i++)
 				max = std::max(frames[i], max);
-			ImGui::PlotLines("", frames, plotsize - 1, 0, "Frames", 0, std::min(120.0f, max));
+			ImGui::PlotLines("", frames, plotsize - 1, 0, item_current ? "Timestamp" : "Frames", 0, std::min(120.0f, max));
 			auto& mouse = Kross::Input::GetMousePos();
 			ImGui::Text("Mouse: %.1f, %.1f", mouse.x, mouse.y);
 
-			ImGui::Text("MaxQuadCount: %d", Kross::Renderer2D::getStats().maxQuads);
-			ImGui::Text("Quad Count: %d", Kross::Renderer2D::getStats().QuadCount);
-			ImGui::Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
-			ImGui::End();
+			//ImGui::Text("MaxQuadCount: %d", Kross::Renderer2D::getStats().maxQuads);
+			//ImGui::Text("Quad Count: %d", Kross::Renderer2D::getStats().QuadCount);
+			//ImGui::Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
 		}
-		else
-			ImGui::End();
+		ImGui::End();
 	}
 	if (!(*show_rendererStats)) once = false;
 }
 
-void SaveStyle(ImGuiStyle* style, const std::string& path)
+void Canvas::SaveStyle(ImGuiStyle* style, const std::string& path)
 {
 	auto aFloat = [](const char* label, float value)
 	{
@@ -549,7 +488,7 @@ void SaveStyle(ImGuiStyle* style, const std::string& path)
 	file.close();
 }
 
-ImGuiStyle LoadStyle(const std::string& path)
+ImGuiStyle Canvas::LoadStyle(const std::string& path)
 {
 	KROSS_PROFILE_FUNC();
 	KROSS_CORE_TRACE("Requested LoadStyle from file: {0}", path);
@@ -557,6 +496,7 @@ ImGuiStyle LoadStyle(const std::string& path)
 	float fFile[size] = { 0.0f };
 	std::string result;
 	std::ifstream in(path, std::ios::in);
+
 	if (in)
 	{
 		ImGuiStyle style;
@@ -567,9 +507,10 @@ ImGuiStyle LoadStyle(const std::string& path)
 		while (std::getline(in, buffer))
 		{
 			line++;
-			std::istringstream a(buffer);
-			a >> name;
-
+			{
+				std::istringstream a(buffer);
+				a >> name;
+			}
 			eq = buffer.find_first_of("=") + 1;
 			if (eq == std::string::npos)
 			{
@@ -596,11 +537,11 @@ ImGuiStyle LoadStyle(const std::string& path)
 				try
 				{
 					std::vector<float> arr;
-					value = buffer.substr(fbrq+1, sbrq-fbrq-1);
+					value = buffer.substr(fbrq + 1, sbrq - fbrq - 1);
 					size_t last_comma = 0, comma = value.find(',');
-					for(int i = 0; i < value.size(); i++)
+					for (int i = 0; i < value.size(); i++)
 					{
-						if (value[i] == ',' || i == value.size()-1)
+						if (value[i] == ',' || i == value.size() - 1)
 						{
 							auto sub = value.substr(last_comma, i);
 							arr.push_back(std::stof(sub));
@@ -746,88 +687,59 @@ ImGuiStyle LoadStyle(const std::string& path)
 
 }
 
-
-/*
-Alpha									= 1.000000
-WindowPadding							= [ 8.000000, 8.000000 ]
-WindowRounding							= 0.000000
-WindowBorderSize						= 1.000000
-WindowMinSize							= [ 32.000000, 32.000000 ]
-WindowTitleAlign						= [ 0.000000, 0.500000 ]
-ChildRounding							= 0.000000
-ChildBorderSize							= 1.000000
-PopupRounding							= 0.000000
-PopupBorderSize							= 1.000000
-FramePadding							= [ 4.000000, 3.000000 ]
-FrameRounding							= 0.000000
-FrameBorderSize							= 0.000000
-ItemSpacing								= [ 8.000000, 4.000000 ]
-ItemInnerSpacing						= [ 4.000000, 4.000000 ]
-TouchExtraPadding						= [ 0.000000, 0.000000 ]
-IndentSpacing							= 21.000000
-ColumnsMinSpacing						= 6.000000
-ScrollbarSize							= 16.000000
-ScrollbarRounding						= 9.000000
-GrabMinSize								= 10.000000
-GrabRounding							= 0.000000
-TabRounding								= 4.000000
-TabBorderSize							= 0.000000
-ButtonTextAlign							= [ 0.500000, 0.500000 ]
-DisplayWindowPadding					= [ 19.000000, 19.000000 ]
-DisplaySafeAreaPadding					= [ 3.000000, 3.000000 ]
-MouseCursorScale						= 1.000000
-AntiAliasedLines						= 1.000000
-AntiAliasedFill							= 1.000000
-CurveTessellationTol					= 1.250000
-Colors[ImGuiCol_Text]					= [ 1.000000, 1.000000, 1.000000, 1.000000 ]
-Colors[ImGuiCol_TextDisabled]			= [ 0.500000, 0.500000, 0.500000, 1.000000 ]
-Colors[ImGuiCol_WindowBg]				= [ 0.060000, 0.060000, 0.060000, 1.000000 ]
-Colors[ImGuiCol_ChildBg]				= [ 0.000000, 0.000000, 0.000000, 0.000000 ]
-Colors[ImGuiCol_PopupBg]				= [ 0.080000, 0.080000, 0.080000, 0.940000 ]
-Colors[ImGuiCol_Border]					= [ 0.430000, 0.430000, 0.500000, 0.500000 ]
-Colors[ImGuiCol_BorderShadow]			= [ 0.000000, 0.000000, 0.000000, 0.000000 ]
-Colors[ImGuiCol_FrameBg]				= [ 0.160000, 0.290000, 0.480000, 0.540000 ]
-Colors[ImGuiCol_FrameBgHovered]			= [ 0.260000, 0.590000, 0.980000, 0.400000 ]
-Colors[ImGuiCol_FrameBgActive]			= [ 0.260000, 0.590000, 0.980000, 0.670000 ]
-Colors[ImGuiCol_TitleBg]				= [ 0.040000, 0.040000, 0.040000, 1.000000 ]
-Colors[ImGuiCol_TitleBgActive]			= [ 0.160000, 0.290000, 0.480000, 1.000000 ]
-Colors[ImGuiCol_TitleBgCollapsed]		= [ 0.000000, 0.000000, 0.000000, 0.510000 ]
-Colors[ImGuiCol_MenuBarBg]				= [ 0.140000, 0.140000, 0.140000, 1.000000 ]
-Colors[ImGuiCol_ScrollbarBg]			= [ 0.020000, 0.020000, 0.020000, 0.530000 ]
-Colors[ImGuiCol_ScrollbarGrab]			= [ 0.310000, 0.310000, 0.310000, 1.000000 ]
-Colors[ImGuiCol_ScrollbarGrabHovered]	= [ 0.410000, 0.410000, 0.410000, 1.000000 ]
-Colors[ImGuiCol_ScrollbarGrabActive]	= [ 0.510000, 0.510000, 0.510000, 1.000000 ]
-Colors[ImGuiCol_CheckMark]				= [ 0.260000, 0.590000, 0.980000, 1.000000 ]
-Colors[ImGuiCol_SliderGrab]				= [ 0.240000, 0.520000, 0.880000, 1.000000 ]
-Colors[ImGuiCol_SliderGrabActive]		= [ 0.260000, 0.590000, 0.980000, 1.000000 ]
-Colors[ImGuiCol_Button]					= [ 0.260000, 0.590000, 0.980000, 0.400000 ]
-Colors[ImGuiCol_ButtonHovered]			= [ 0.260000, 0.590000, 0.980000, 1.000000 ]
-Colors[ImGuiCol_ButtonActive]			= [ 0.060000, 0.530000, 0.980000, 1.000000 ]
-Colors[ImGuiCol_Header]					= [ 0.260000, 0.590000, 0.980000, 0.310000 ]
-Colors[ImGuiCol_HeaderHovered]			= [ 0.260000, 0.590000, 0.980000, 0.800000 ]
-Colors[ImGuiCol_HeaderActive]			= [ 0.260000, 0.590000, 0.980000, 1.000000 ]
-Colors[ImGuiCol_Separator]				= [ 0.430000, 0.430000, 0.500000, 0.500000 ]
-Colors[ImGuiCol_SeparatorHovered]		= [ 0.100000, 0.400000, 0.750000, 0.780000 ]
-Colors[ImGuiCol_SeparatorActive]		= [ 0.100000, 0.400000, 0.750000, 1.000000 ]
-Colors[ImGuiCol_ResizeGrip]				= [ 0.260000, 0.590000, 0.980000, 0.250000 ]
-Colors[ImGuiCol_ResizeGripHovered]		= [ 0.260000, 0.590000, 0.980000, 0.670000 ]
-Colors[ImGuiCol_ResizeGripActive]		= [ 0.260000, 0.590000, 0.980000, 0.950000 ]
-Colors[ImGuiCol_Tab]					= [ 0.180000, 0.350000, 0.580000, 0.862000 ]
-Colors[ImGuiCol_TabHovered]				= [ 0.260000, 0.590000, 0.980000, 0.800000 ]
-Colors[ImGuiCol_TabActive]				= [ 0.200000, 0.410000, 0.680000, 1.000000 ]
-Colors[ImGuiCol_TabUnfocused]			= [ 0.068000, 0.102000, 0.148000, 0.972400 ]
-Colors[ImGuiCol_TabUnfocusedActive]		= [ 0.136000, 0.262000, 0.424000, 1.000000 ]
-Colors[ImGuiCol_DockingPreview]			= [ 0.260000, 0.590000, 0.980000, 0.700000 ]
-Colors[ImGuiCol_DockingEmptyBg]			= [ 0.200000, 0.200000, 0.200000, 1.000000 ]
-Colors[ImGuiCol_PlotLines]				= [ 0.610000, 0.610000, 0.610000, 1.000000 ]
-Colors[ImGuiCol_PlotLinesHovered]		= [ 1.000000, 0.430000, 0.350000, 1.000000 ]
-Colors[ImGuiCol_PlotHistogram]			= [ 0.900000, 0.700000, 0.000000, 1.000000 ]
-Colors[ImGuiCol_PlotHistogramHovered]	= [ 1.000000, 0.600000, 0.000000, 1.000000 ]
-Colors[ImGuiCol_TextSelectedBg]			= [ 0.260000, 0.590000, 0.980000, 0.350000 ]
-Colors[ImGuiCol_DragDropTarget]			= [ 1.000000, 1.000000, 0.000000, 0.900000 ]
-Colors[ImGuiCol_NavHighlight]			= [ 0.260000, 0.590000, 0.980000, 1.000000 ]
-Colors[ImGuiCol_NavWindowingHighlight]	= [ 1.000000, 1.000000, 1.000000, 0.700000 ]
-Colors[ImGuiCol_NavWindowingDimBg]		= [ 0.800000, 0.800000, 0.800000, 0.200000 ]
-Colors[ImGuiCol_ModalWindowDimBg]		= [ 0.800000, 0.800000, 0.800000, 0.350000 ]
-
-*/
+inline void CancelButton(bool* show, ImVec2 size = { 0, 0 })
+{
+	if (size.x > 0 && size.y > 0)
+	{
+		if (ImGui::Button("Cancel", size))
+		{
+			ImGui::CloseCurrentPopup();
+			*show = false;
+		}
+	}
+	else
+	{
+		if (ImGui::Button("Cancel"))
+		{
+			ImGui::CloseCurrentPopup();
+			*show = false;
+		}
+	}
+}
+void Canvas::MessageBoxDialog(bool* show, const char* id, void* data)
+{
+	if (*show) ImGui::OpenPopup(id);
+	if (ImGui::BeginPopupModal(id, NULL, ImGuiWindowFlags_AlwaysAutoResize))
+	{
+		if (id == "Style Open File")
+		{
+			char buff[256] = { 0 };
+			ImGui::SetWindowFocus();
+			//if (!ImGui::IsAnyItemActive())
+			//	ImGui::SetKeyboardFocusHere(0);
+			//if (ImGui::InputText("file", buff, 256, ImGuiInputTextFlags_EnterReturnsTrue)) {///*Disabled till i know how to use InputText() to write into a buffer*/ || ImGui::Button("OK", ImVec2(50, 0))) {
+				//ImGui::GetStyle() = LoadStyle(buff[0] ? buff : "imguiStyle.ini");
+			ImGui::GetStyle() = LoadStyle("imguiStyle.ini");
+			ImGui::CloseCurrentPopup();
+			*show = false;
+			//}
+			//ImGui::SetItemDefaultFocus();
+			//ImGui::SameLine();
+			//if (ImGui::Button("Cancel", ImVec2(50, 0))) {
+			//	ImGui::CloseCurrentPopup();
+			//	*show = false;
+			//}
+		}
+		else if (id == "Yet Not Implemented")
+		{
+			ImGui::Text("This feature has not been implemented yet.");
+			CancelButton(show);
+		}
+		else
+		{
+			ImGui::Text("An Error has ocurred!\nThe ID for this Modal Window was not setted.");
+			CancelButton(show);
+		}
+		ImGui::EndPopup();
+	}
+}

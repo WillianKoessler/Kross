@@ -62,4 +62,28 @@ namespace Kross {
 		auto [x, y] = GetMousePositionImpl();
 		return y;
 	}
+	void WindowInput::SetMousePosImpl(const glm::dvec2& pos)
+	{
+		glfwSetCursorPos(
+			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
+			pos.x,
+			pos.y
+		);
+	}
+	void WindowInput::HideCursorImpl()
+	{
+		glfwSetInputMode(
+			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
+			GLFW_CURSOR,
+			GLFW_CURSOR_DISABLED
+		);
+	}
+	void WindowInput::ShowCursorImpl()
+	{
+		glfwSetInputMode(
+			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
+			GLFW_CURSOR,
+			GLFW_CURSOR_NORMAL
+		);
+	}
 }

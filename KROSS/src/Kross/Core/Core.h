@@ -89,7 +89,7 @@
 	#define KROSS_PROFILE_OVERRIDE(name, filepath)
 	#define KROSS_PROFILE_BEGIN(name, filepath)
 	#define KROSS_PROFILE_END
-	#define KROSS_PROFILE_SCOPE
+	#define KROSS_PROFILE_SCOPE(name)
 	#define KROSS_PROFILE_FUNC()
 	#define KROSS_RTP_FUNC()
 	#define KROSS_RTP_SCOPE(name)

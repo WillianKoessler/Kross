@@ -1,6 +1,9 @@
 #ifndef PCH_H
 #define PCH_H
 
+// Exceptions libraries
+#include <stdexcept>
+
 // Console libraries
 #include <iostream>
 #include <iomanip>

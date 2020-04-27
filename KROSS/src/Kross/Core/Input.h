@@ -17,6 +17,11 @@ namespace Kross {
 		inline static const glm::dvec2& GetMousePos() { return s_Instance->GetMousePosImpl(); }
 		inline static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
 		inline static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
+
+		inline static void SetMousePos(const glm::dvec2& pos) { s_Instance->SetMousePosImpl(pos); }
+
+		inline static void HideCursor() { s_Instance->HideCursorImpl(); }
+		inline static void ShowCursor() { s_Instance->ShowCursorImpl(); }
 	protected:
 		glm::dvec2 mouse_position = { 0.0, 0.0 };
 		bool Keys[KROSS_KEY_LAST] = { false };
@@ -29,6 +34,11 @@ namespace Kross {
 		virtual float GetMouseYImpl() = 0;
 		virtual std::pair<float, float> GetMousePositionImpl() = 0;
 		virtual const glm::dvec2& GetMousePosImpl() = 0;
+
+		virtual void SetMousePosImpl(const glm::dvec2& pos) = 0;
+
+		virtual void HideCursorImpl() = 0;
+		virtual void ShowCursorImpl() = 0;
 	private:
 		static Input* s_Instance;
 

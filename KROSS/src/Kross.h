@@ -34,4 +34,9 @@
 #include "Kross/Renderer/Textures/Array.h"
 #include "Kross/Renderer/VertexArray.h"
 
+#include "Kross/Util/FileUtil.h"
+#include "Kross/Util/NonCopyable.h"
+#include "Kross/Util/NonMovable.h"
+#include "Kross/Util/Singleton.h"
+
 #include "Kross/Core/EntryPoint.h"

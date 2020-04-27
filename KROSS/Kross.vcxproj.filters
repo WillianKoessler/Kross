@@ -147,12 +147,6 @@
     <ClInclude Include="src\Kross\Renderer\Cameras\Controller.h">
       <Filter>src\Kross\Renderer\Cameras</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Renderer\Cameras\Ortho2D.h">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Kross\Renderer\Cameras\Ortho2DCtrl.h">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClInclude>
     <ClInclude Include="src\Kross\Renderer\Context.h">
       <Filter>src\Kross\Renderer</Filter>
     </ClInclude>
@@ -1290,6 +1284,22 @@
     </ClInclude>
     <ClInclude Include="src\Kross\Renderer\Textures\FrameBuffer.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Texture\_FrameBuffer.h" />
+    <ClInclude Include="src\Kross\Renderer\Renderer3D.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\2D\Ortho.h">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Cameras\2D\OrthoCtrl.h">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Cameras\3D\Perspective.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\3D\PerspectiveCtrl.h" />
+    <ClInclude Include="src\Kross\Model\Mesh.h" />
+    <ClInclude Include="src\Kross\Util\NonCopyable.h" />
+    <ClInclude Include="src\Kross\Util\NonMovable.h" />
+    <ClInclude Include="src\Kross\Util\Singleton.h" />
+    <ClInclude Include="src\Kross\Util\FileUtil.h" />
+    <ClInclude Include="src\Kross\Model\3DModel.h" />
+    <ClInclude Include="src\Kross\Model\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
@@ -1337,12 +1347,6 @@
     <ClCompile Include="src\Kross\Renderer\Cameras\Controller.cpp">
       <Filter>src\Kross\Renderer\Cameras</Filter>
     </ClCompile>
-    <ClCompile Include="src\Kross\Renderer\Cameras\Ortho2D.cpp">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Kross\Renderer\Cameras\Ortho2DCtrl.cpp">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Renderer.cpp">
       <Filter>src\Kross\Renderer</Filter>
     </ClCompile>
@@ -1387,5 +1391,17 @@
     </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Textures\FrameBuffer.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_FrameBuffer.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Renderer3D.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\2D\Ortho.cpp">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Cameras\2D\OrthoCtrl.cpp">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Cameras\3D\Perspective.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\3D\PerspectiveCtrl.cpp" />
+    <ClCompile Include="src\Kross\Util\FileUtil.cpp" />
+    <ClCompile Include="src\Kross\Model\3DModel.cpp" />
+    <ClCompile Include="src\Kross\Model\Model.cpp" />
   </ItemGroup>
 </Project>
