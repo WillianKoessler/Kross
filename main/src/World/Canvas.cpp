@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Canvas.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 Canvas::Canvas()
 	: Layer("Canvas"),
 	camera(Kross::makeRef<Kross::Camera::Ortho2DCtrl>(ar, true))
@@ -9,13 +11,16 @@ Canvas::Canvas()
 
 void Canvas::OnAttach()
 {
-	Kross::Renderer::Command::SetClear(0x0f0f0fff);
-	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Friendly | Entity::EF::Solid, "Bob", "assets/textures/character.png"));
 	const char* cherno = "assets/textures/ChernoLogo.png";
 	const char* checker = "assets/textures/CheckerBoard.png";
 	const char* cage = "assets/textures/cage.png";
 	const char* cage_mamma = "assets/textures/cage_mamma.png";
 	Kross::Stack<Kross::Texture::T2D>::instance().Get("cage", cage);
+	
+	Kross::Renderer::Command::SetClear(0x0f0f0fff);
+	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/character.png"));
+	entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
+	entities[0].active = true;
 }
 void Canvas::OnDetach()
 {
@@ -27,16 +32,14 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	Kross::Renderer2D::ResetStats();
 	camera->OnUpdate(ts);
 
-	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) / 100.0f;
-	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) / 100.0f;
-
-	entities[0].SetAcc(acc);
-	entities[0].OnUpdate(ts);
+	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
+	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
 
 	Kross::Renderer::Command::Clear();
 	Kross::Renderer2D::Begin(*camera->GetCamera());
 	Kross::Renderer2D::BatchBegin();
-	entities[0].DrawSelf();
+	for (auto& e : entities)
+		e.DrawSelf();
 	static float r = 0.0f;
 	r += 0.6283f * ts;
 	params.rotation = r;
@@ -58,9 +61,12 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 	{
 		static bool show_demo_window = false;
 		static bool show_rendererStats = false;
+		static bool fullscreen = false;
+
 		static size_t timer = 0;
 		static float FrameRate = 0;
 		static float framerate_buffer = 0;
+
 		framerate_buffer += 1 / ts;
 		if (timer++ % 10 == 0) { FrameRate = framerate_buffer / 10; framerate_buffer = 0; }
 
@@ -72,9 +78,10 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 			Text("Draw Calls: %d", Kross::Renderer2D::getStats().DrawCount);
 			End();
 		}
+		Kross::Application::Get().GetWindow().FullScreen(fullscreen);
 
 		Begin("Main Window");
-		Text("FPS: %.1f", FrameRate);
+		Text("FPS: %.1f", FrameRate); SameLine(); Checkbox("FullScreen: ", &fullscreen);
 		Checkbox("Demo Window", &show_demo_window);
 		Checkbox("Show Renderer Stats", &show_rendererStats);
 		Text("Entities: ");
@@ -88,8 +95,10 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 				Text("HP %d/%d", e.hp, e.mhp);
 				Text("State: %d", e.myState);
 				Text("Direction: %d", e.myDirection);
+				Checkbox("Inputs", &e.active);
 				Text("sprite_speed: "); SameLine(); SliderFloat("###1", &e.sprite_speed, 0.0f, 1.0f);
 				Text("dump: "); SameLine(); SliderFloat("###2", &e.dump, 0.0f, 1.0f);
+				SliderFloat2("vel", glm::value_ptr(acc), -0.01f, 0.01f);
 				End();
 			}
 		}

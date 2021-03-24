@@ -131,7 +131,7 @@ namespace Kross::OpenGL::Texture {
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
-			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
+			if(data) glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
 		}
 		else
 		{	 //------------OpenGL 4.5------------

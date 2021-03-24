@@ -37,19 +37,20 @@ public:
 	enum direction
 	{
 		East = 0,
-		North,
-		West,
 		South,
-		//SouthEast,
-		//NorthEast,
-		//NorthWest,
-		//SouthWest,
+		West,
+		North,
+		SouthEast,
+		NorthEast,
+		NorthWest,
+		SouthWest,
 	} myDirection = South;
 	long double timer = 0.0;
 	size_t gfxCounter = 0;
 	float sprite_speed = 0.955f;
 	float dump = 0.7f;
 	bool debugWindow = false;
+	bool active = false;
 
 	Creature(const Entity::Props& prop) :
 		Entity(prop),

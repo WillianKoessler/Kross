@@ -20,7 +20,7 @@ namespace Kross::OpenGL {
 		glError::flushCache();
 		KROSS_CORE_INFO("[Kross::OpenGL::Context] OpenGL Context Destructed");
 	}
-	void Context::Init()
+	void Context::Init(unsigned int x, unsigned int y)
 	{
 		KROSS_PROFILE_FUNC();
 		unsigned int err = false;
@@ -72,6 +72,7 @@ namespace Kross::OpenGL {
 			glDebugMessageCallback(glDebugMessage, nullptr);
 #endif
 
+			glViewport(0, 0, x, y);
 			KROSS_CORE_TRACE("[Kross::OpenGL::Context] OpenGL Context Initialized");
 	}
 	void Context::SwapBuffers()
