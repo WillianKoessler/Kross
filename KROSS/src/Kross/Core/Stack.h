@@ -71,7 +71,7 @@ namespace Kross {
 		};
 
 	public:
-		static const Stack<T>& get()
+		static const Stack<T>& instance()
 		{
 			static Stack<T> instance;
 			return instance;
@@ -81,8 +81,8 @@ namespace Kross {
 		static const bool Add(const Ref<T>& resource);
 		static const bool Del(const std::string& key);
 
-		static Ref<T> Get(const std::string& k) { return _Get(k, nullptr); }
-		static Ref<T> Get(const std::string& k, const std::string& filepath) { return _Get(k, &filepath); }
+		static Ref<T> Get(const std::string& key) { return _Get(key, nullptr); }
+		static Ref<T> Get(const std::string& key, const std::string& filepath) { return _Get(key, &filepath); }
 
 		static void Log() { KROSS_CORE_TRACE("[Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
 

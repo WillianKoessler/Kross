@@ -40,6 +40,10 @@ namespace Kross {
 			{
 				s_RendererAPI->SetClear(color);
 			}
+			inline static void SetClear(const unsigned int color)
+			{
+				s_RendererAPI->SetClear(color);
+			}
 			inline static void DrawIndexed(const Ref<VertexArray>& va)
 			{
 				s_RendererAPI->DrawIndexed(va);

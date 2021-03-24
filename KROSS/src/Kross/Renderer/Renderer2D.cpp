@@ -21,50 +21,23 @@ namespace Kross {
 	struct Vertex
 	{
 		Vertex() = default;
-		Vertex(
-			const glm::vec3& pos,
-			const glm::vec4& color = { 1.0f, 1.0f, 1.0f, 1.0f },
-			const glm::vec2& texCoord = { 0.0f, 0.0f },
-			float texIndex = 0.0f)
-			:
-			pos(pos),
-			color(color),
-			texCoord(texCoord),
-			texIndex(texIndex)
-		{}
+		Vertex(float x, float y) :
+			pos(x, y, 0.0f) {}
+		Vertex(const glm::vec3& pos, const glm::vec4& color, const glm::vec2& texCoord, float texIndex) :
+			pos(pos), color(color), texCoord(texCoord), texIndex(texIndex) {}
 		glm::vec3 pos;
-		glm::vec4 color;
-		glm::vec2 texCoord;
-		float texIndex;
+		glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		glm::vec2 texCoord = glm::vec2(0.0f, 0.0f);
+		float texIndex = 0.0f;
 	};
 	struct Quad
 	{
 		Quad() = default;
-		Quad(Vertex bl, Vertex br, Vertex tr, Vertex tl) : bl(bl), br(br), tr(tr), tl(tl) {}
-		Quad(const glm::vec3& pos, const glm::vec4& color, const glm::vec2& size, const float texture)
-			:
-			bl(pos, color, { 0.0f, 0.0f }, texture),
-			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { 1.0f, 0.0f }, texture),
-			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { 1.0f, 1.0f }, texture),
-			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { 0.0f, 1.0f }, texture)
-		{}
-		Quad(
-			const glm::vec3& pos,
-			const glm::vec4& color,
-			const glm::vec2& size,
-			const glm::vec2& texOff,
-			const glm::vec2& texSize,
-			const float texture)
-			:
-			bl(pos, color, { texOff.x				, texOff.y }, texture),
-			br({ pos.x + size.x	,	pos.y,			pos.z }, color, { texOff.x + texSize.x	, texOff.y }, texture),
-			tr({ pos.x + size.x ,	pos.y + size.y,	pos.z }, color, { texOff.x + texSize.x	, texOff.y + texSize.y }, texture),
-			tl({ pos.x			,	pos.y + size.y,	pos.z }, color, { texOff.x				, texOff.y + texSize.y }, texture)
-		{}
-		Vertex bl;
-		Vertex br;
-		Vertex tr;
+		Quad(Vertex tl, Vertex tr, Vertex br, Vertex bl) : tl(tl), tr(tr), br(br), bl(bl) {}
 		Vertex tl;
+		Vertex tr;
+		Vertex br;
+		Vertex bl;
 	};
 
 	struct R2DData {
@@ -84,11 +57,6 @@ namespace Kross {
 		//Batch Quad Counter
 		unsigned int quadIndex = 0;
 
-		//Non Batch data
-		Scope<VertexArray> NBva;
-		Ref<Buffer::Vertex> NBsqrVB;
-		Ref<Buffer::Index> NBsqrIB;
-
 		//Texture Array
 		Scope<Texture::T2DArray> texArray;
 
@@ -97,9 +65,11 @@ namespace Kross {
 
 		//Cache for Texture (Performance Optimization)
 		std::vector<Ref<Texture::T2D>> texCache;
+
+		//Quad local vertex positions (rotation)
+		Quad rotations;
 	};
 	static R2DData* data;
-
 	const Renderer2D::Stats& Renderer2D::getStats()
 	{
 		return data->rendererStats;
@@ -108,7 +78,6 @@ namespace Kross {
 	{
 		data->rendererStats = Stats();
 	}
-
 	void Renderer2D::Init()
 	{
 		KROSS_PROFILE_FUNC();
@@ -118,29 +87,6 @@ namespace Kross {
 			data = new R2DData;
 			data->texCache.resize(Texture::Base::QueryMaxSlots());
 			data->texArray = Texture::T2DArray::CreateScope(Texture::Base::QueryMaxSlots());
-
-			float sqrVertices[4 * (3 + 4 + 2 + 1)] = {
-				-0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		1.0f,
-				 0.5f, -0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 0.0f,		1.0f,
-				 0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		1.0f, 1.0f,		1.0f,
-				-0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 1.0f, 1.0f,		0.0f, 1.0f,		1.0f
-			};
-			uint32_t sqrIndices[6] = {
-				0, 1, 2, 2, 3, 0
-			};
-
-			data->NBva = VertexArray::CreateScope();
-			data->NBsqrVB = Buffer::Vertex::Create(sqrVertices, sizeof(sqrVertices), false);
-			data->NBsqrVB->SetLayout({
-				{ Buffer::ShaderDataType::Float3, "a_Position" },
-				{ Buffer::ShaderDataType::Float4, "a_Color"},
-				{ Buffer::ShaderDataType::Float2, "a_TexCoord" },
-				{ Buffer::ShaderDataType::Float,  "a_TexIndex"}
-				});
-			data->NBva->AddVertex(data->NBsqrVB);
-
-			data->NBsqrIB = Buffer::Index::Create(sqrIndices, sizeof(sqrIndices));
-			data->NBva->SetIndex(data->NBsqrIB);
 
 			data->va = VertexArray::CreateScope();
 
@@ -171,23 +117,23 @@ namespace Kross {
 			data->ib = Buffer::Index::Create(indices, sizeof(indices));
 			data->va->SetIndex(data->ib);
 
-			Stack<Shader>::get().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D.glsl"));
+			data->rotations = Quad(
+				Vertex(-0.5f, -0.5f),
+				Vertex( 0.5f, -0.5f),
+				Vertex( 0.5f,  0.5f),
+				Vertex(-0.5f,  0.5f)
+			);
+
+			Stack<Shader>::instance().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D.glsl"));
 			data->shader->SetFloat("u_Repeat", 1);
 			data->shader->SetFloat4("u_Color", { 1,1,1,1 });
 
 			data->shader->SetIntV("u_Textures", Texture::Base::QueryMaxSlots(), nullptr);
 
 			uint32_t white = 0xffffffff;
-			Stack<Texture::T2D>::get().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white));
+			Stack<Texture::T2D>::instance().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white));
 
-			const char* cherno = "assets/textures/ChernoLogo.png";
-			const char* checker = "assets/textures/CheckerBoard.png";
-			const char* cage = "assets/textures/cage.png";
-			const char* cage_mamma = "assets/textures/cage_mamma.png";
-
-			data->texArray->Add(Stack<Texture::T2D>::get().Get("blank"));
-			data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage), cage));
-			data->texArray->Add(Stack<Texture::T2D>::get().Get(FileName(cage_mamma), cage_mamma));
+			data->texArray->Add(Stack<Texture::T2D>::instance().Get("blank"));
 
 			SceneBegan = false;
 			called = true;
@@ -203,8 +149,8 @@ namespace Kross {
 		static bool called = false;
 		if (!called)
 		{
-			Stack<Texture::T2D>::get().clear();
-			Stack<Shader>::get().clear();
+			Stack<Texture::T2D>::instance().clear();
+			Stack<Shader>::instance().clear();
 			delete data;
 		}
 		else
@@ -227,7 +173,6 @@ namespace Kross {
 	{
 		if (batch == false)
 		{
-			//data->QuadBufferPtr = data->QuadBuffer;
 			data->quadIndex = 0;
 			batch = true;
 		}
@@ -268,319 +213,53 @@ namespace Kross {
 		else
 			KROSS_CORE_WARN("Calling Renderer2D::End(void) without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?");
 	}
-
-	//void Renderer2D::DrawQuad(const glm::vec2& position, float size, const glm::vec4& color)
-	//{
-	//	DrawQuad(position, { size, size }, color);
-	//}
-	//void Renderer2D::DrawQuad(const glm::vec3& position, float size, const glm::vec4& color)
-	//{
-	//	DrawQuad(position, { size, size }, color);
-	//}
-	//void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
-	//{
-	//	DrawQuad({ position.x, position.y, 0.0f }, size, color);
-	//}
-	//void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	glm::mat4 transform;
-	//	{
-	//		KROSS_PROFILE_SCOPE("transform");
-	//		transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-	//	}
-	//	data->shader->Bind();
-	//	data->shader->SetMat4("u_Transform", transform);
-	//	data->shader->SetFloat4("u_Color", color);
-	//	data->whiteTex->Bind();
-	//	data->NBva->Bind();
-	//	Renderer::Command::DrawIndexed(data->NBva);
-	//}
-	////
-	//void Renderer2D::DrawQuad(const glm::vec2& position, float size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	DrawQuad(position, { size, size }, texture, color, repeat);
-	//}
-	//void Renderer2D::DrawQuad(const glm::vec3& position, float size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	DrawQuad(position, { size, size }, texture, color, repeat);
-	//}
-	//void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	DrawQuad({ position.x, position.y, 0.0f }, size, texture, color, repeat);
-	//}
-	//void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	glm::mat4 transform;
-	//	{
-	//		KROSS_PROFILE_SCOPE("transform");
-	//		transform =
-	//			glm::translate(glm::mat4(1.0f), position)
-	//			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-	//	}
-	//	data->shader->Bind();
-	//	data->shader->SetMat4("u_Transform", transform);
-	//	data->shader->SetFloat4("u_Color", color);
-	//	data->shader->SetFloat("u_Repeat", repeat);
-	//
-	//	KROSS_R_MSGBOX(texture,
-	//		texture->Bind();
-	//	, "Trying to Draw with a NULL texture", _WARN_);
-	//
-	//	data->NBva->Bind();
-	//	Renderer::Command::DrawIndexed(data->NBva);
-	//}
-	////
-	////
-	//void Renderer2D::DrawRotatedQuad(const glm::vec2& position, float size, float rotation, const glm::vec4& color)
-	//{
-	//	DrawRotatedQuad(position, { size, size }, rotation, color);
-	//}
-	//void Renderer2D::DrawRotatedQuad(const glm::vec3& position, float size, float rotation, const glm::vec4& color)
-	//{
-	//	DrawRotatedQuad(position, { size, size }, rotation, color);
-	//}
-	//void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-	//{
-	//	DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
-	//}
-	//void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	glm::mat4 transform;
-	//	{
-	//		KROSS_PROFILE_SCOPE("transform");
-	//		transform =
-	//			glm::translate(glm::mat4(1.0f), position)
-	//			* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
-	//			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-	//	}
-	//	data->shader->Bind();
-	//	data->shader->SetMat4("u_Transform", transform);
-	//	data->shader->SetFloat4("u_Color", color);
-	//	data->whiteTex->Bind();
-	//	data->NBva->Bind();
-	//	Renderer::Command::DrawIndexed(data->NBva);
-	//}
-	////
-	//void Renderer2D::DrawRotatedQuad(const glm::vec2& position, float size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	DrawRotatedQuad(position, { size, size }, texture, rotation, color, repeat);
-	//}
-	//void Renderer2D::DrawRotatedQuad(const glm::vec3& position, float size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	DrawRotatedQuad(position, { size, size }, texture, rotation, color, repeat);
-	//}
-	//void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	DrawRotatedQuad({ position.x, position.y, 0.0f }, size, texture, rotation, color, repeat);
-	//}
-	//void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	glm::mat4 transform;
-	//	{
-	//		KROSS_PROFILE_SCOPE("transform");
-	//		transform =
-	//			glm::translate(glm::mat4(1.0f), position)
-	//			* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
-	//			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-	//	}
-	//	data->shader->Bind();
-	//	data->shader->SetMat4("u_Transform", transform);
-	//	data->shader->SetFloat4("u_Color", color);
-	//	data->shader->SetFloat("u_Repeat", repeat);
-	//
-	//	texture->Bind();
-	//
-	//	data->NBva->Bind();
-	//	Renderer::Command::DrawIndexed(data->NBva);
-	//}
-	////
-	////
-	////
-	//void Renderer2D::BatchQuad(const glm::vec2& position, float size, const glm::vec4& color)
-	//{
-	//	BatchQuad(position, { size, size }, color);
-	//}
-	//void Renderer2D::BatchQuad(const glm::vec3& position, float size, const glm::vec4& color)
-	//{
-	//	BatchQuad(position, { size, size }, color);
-	//}
-	//void Renderer2D::BatchQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
-	//{
-	//	BatchQuad({ position.x, position.y, 0.0f }, size, color);
-	//}
-	//void Renderer2D::BatchQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	if (++data->quadIndex >= MaxQuadCount)
-	//	{
-	//		BatchEnd();
-	//		BatchBegin();
-	//	}
-	//	data->myBuffer[data->quadIndex] = Quad(position, color, size, 0.0f);
-	//	data->rendererStats.QuadCount++;
-	//}
-	////
-	//void Renderer2D::BatchQuad(const glm::vec2& position, float size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	BatchQuad(position, { size, size }, texture, color, repeat);
-	//}
-	//void Renderer2D::BatchQuad(const glm::vec3& position, float size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	BatchQuad(position, { size, size }, texture, color, repeat);
-	//}
-	//void Renderer2D::BatchQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	BatchQuad({ position.x, position.y, 0.0f }, size, texture, color, repeat);
-	//}
-	//void Renderer2D::BatchQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, const glm::vec4& color, float repeat)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	if (++data->quadIndex >= MaxQuadCount)
-	//	{
-	//		BatchEnd();
-	//		BatchBegin();
-	//	}
-	//	float texIndex = 0.0f;
-	//	//for (auto iter = data->texCache.begin() + 1; iter != data->texCache.end(); iter++)
-	//	//{
-	//	//	if (*iter)
-	//	//	{
-	//	//		if ((*iter)->GetID() == texture->GetID())
-	//	//		{
-	//	//			texIndex = (float)std::distance(data->texCache.begin(), iter);
-	//	//			break;
-	//	//		}
-	//	//	}
-	//	//}
-	//	//if (texIndex == 0.0f)
-	//	//{
-	//	//	int index = 0;
-	//	//	for (auto iter = data->texCache.begin() + 1; iter != data->texCache.end(); iter++)
-	//	//	{
-	//	//		index++;
-	//	//		if (!(*iter))
-	//	//		{
-	//	//			*iter = texture;
-	//	//			break;
-	//	//		}
-	//	//	}
-	//	//	if (index == (int)data->texCache.size())
-	//	//	{
-	//	//		KROSS_CORE_WARN("Texture Cache at maximum capacity. New Textures discarted");
-	//	//	}
-	//	//}
-	//	////data->myBuffer[data->quadIndex] = Quad(position, color, size, texIndex);
-	//	data->myBuffer[data->quadIndex] = {
-	//		Vertex({position.x			, position.y			, position.z}, color, {0.0f, 0.0f}, texIndex),
-	//		Vertex({position.x + size.x	, position.y			, position.z}, color, {0.5f, 0.0f}, texIndex),
-	//		Vertex({position.x + size.x	, position.y + size.y	, position.z}, color, {0.5f, 0.5f}, texIndex),
-	//		Vertex({position.x			, position.y + size.y	, position.z}, color, {0.0f, 0.5f}, texIndex)
-	//	};
-	//	data->rendererStats.QuadCount++;
-	//}
-
 	void Renderer2D::BatchQuad(const QuadParams& params)
 	{
 		KROSS_PROFILE_FUNC();
-		if (data->quadIndex+1 >= MaxQuadCount)
+		if (data->quadIndex + 1 >= MaxQuadCount)
 		{
 			BatchEnd();
 			BatchBegin();
 		}
-
+		float tex = 0.0f;
 		if (params.texture)
 		{
-			float tex = (float)data->texArray->Get(params.texture);
-			if (tex < 0.0f)
-			{
-				data->texArray->Add(params.texture);
-			}
-			data->myBuffer[data->quadIndex] =
-				Quad(
-					{ params.position, 0.0f },
-					params.color,
-					params.size,
-					params.texOffSet,
-					params.texSubSize,
-					tex
-				);
+			tex = (float)data->texArray->Get(params.texture);
+			if (tex < 0.0f) data->texArray->Add(params.texture);
+		}
+
+		glm::vec4 p1(0.0f);
+		glm::vec4 p2(0.0f);
+		glm::vec4 p3(0.0f);
+		glm::vec4 p4(0.0f);
+		if (params.rotation == 0.0f)
+		{
+			p1 = { params.position.x,					params.position.y,					0.0f, 1.0f };
+			p2 = { params.position.x + params.size.x,	params.position.y,					0.0f, 1.0f };
+			p3 = { params.position.x + params.size.x,	params.position.y + params.size.y,	0.0f, 1.0f };
+			p4 = { params.position.x,					params.position.y + params.size.y,	0.0f, 1.0f };
 		}
 		else
 		{
-			data->myBuffer[data->quadIndex] = Quad({ params.position, 0.0f }, params.color, params.size, 0.0f);
+			const glm::mat4 m4(1.0f);
+			glm::mat4 transform = glm::translate(m4, glm::vec3(params.position, 0.0f)) *
+				glm::rotate(m4, params.rotation, { 0.0f, 0.0f, 1.0f }) *
+				glm::scale(m4, glm::vec3(params.size, 0.0f));
+			p1 = transform * glm::vec4(data->rotations.tl.pos, 1.0f);
+			p2 = transform * glm::vec4(data->rotations.tr.pos, 1.0f);
+			p3 = transform * glm::vec4(data->rotations.br.pos, 1.0f);
+			p4 = transform * glm::vec4(data->rotations.bl.pos, 1.0f);
 		}
+
+		data->myBuffer[data->quadIndex] = Quad(
+			Vertex(glm::vec3(p1), params.color, params.texOffSet, tex),
+			Vertex(glm::vec3(p2), params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y }, tex),
+			Vertex(glm::vec3(p3), params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y + params.texSubSize.y }, tex),
+			Vertex(glm::vec3(p4), params.color, { params.texOffSet.x, params.texOffSet.y + params.texSubSize.y }, tex)
+		);
+
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;
 	}
-
-
-	//void Renderer2D::BatchRotatedQuad(const glm::vec2& position, float size, float rotation, const glm::vec4& color)
-	//{
-	//	BatchRotatedQuad(position, { size, size }, rotation, color);
-	//}
-	//void Renderer2D::BatchRotatedQuad(const glm::vec3& position, float size, float rotation, const glm::vec4& color)
-	//{
-	//	BatchRotatedQuad(position, { size, size }, rotation, color);
-	//}
-	//void Renderer2D::BatchRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-	//{
-	//	BatchRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, color);
-	//}
-	//void Renderer2D::BatchRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	glm::mat4 transform;
-	//	{
-	//		KROSS_PROFILE_SCOPE("transform");
-	//		transform =
-	//			glm::translate(glm::mat4(1.0f), position)
-	//			* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
-	//			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-	//	}
-	//	data->shader->Bind();
-	//	data->shader->SetMat4("u_Transform", transform);
-	//	data->shader->SetFloat4("u_Color", color);
-	//	data->whiteTex->Bind();
-	//	data->NBva->Bind();
-	//	Renderer::Command::DrawIndexed(data->NBva);
-	//}
-	////
-	//void Renderer2D::BatchRotatedQuad(const glm::vec2& position, float size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	BatchRotatedQuad(position, { size, size }, texture, rotation, color, repeat);
-	//}
-	//void Renderer2D::BatchRotatedQuad(const glm::vec3& position, float size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	BatchRotatedQuad(position, { size, size }, texture, rotation, color, repeat);
-	//}
-	//void Renderer2D::BatchRotatedQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	BatchRotatedQuad({ position.x, position.y, 0.0f }, size, texture, rotation, color, repeat);
-	//}
-	//void Renderer2D::BatchRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture::T2D>& texture, float rotation, const glm::vec4& color, float repeat)
-	//{
-	//	KROSS_PROFILE_FUNC();
-	//	glm::mat4 transform;
-	//	{
-	//		KROSS_PROFILE_SCOPE("transform");
-	//		transform =
-	//			glm::translate(glm::mat4(1.0f), position)
-	//			* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
-	//			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-	//	}
-	//	data->shader->Bind();
-	//	data->shader->SetMat4("u_Transform", transform);
-	//	data->shader->SetFloat4("u_Color", color);
-	//	data->shader->SetFloat("u_Repeat", repeat);
-	//
-	//	texture->Bind();
-	//
-	//	data->NBva->Bind();
-	//	Renderer::Command::DrawIndexed(data->NBva);
-	//}
 }
 

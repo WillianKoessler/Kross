@@ -22,6 +22,15 @@ namespace Kross::OpenGL {
 	{
 		glCall(glClearColor(color.r, color.g, color.b, color.a));
 	}
+	void RendererAPI::SetClear(const unsigned int color) const
+	{
+		glCall(glClearColor(
+			((color & 0xff000000) >> 24) / 255.0f,
+			((color & 0x00ff0000) >> 16) / 255.0f,
+			((color & 0x0000ff00) >> 8) / 255.0f,
+			((color & 0x000000ff)) / 255.0f
+		));
+	}
 	void RendererAPI::DrawIndexed(const Ref<VertexArray>& va) const
 	{
 		glDrawElements(GL_TRIANGLES, va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr);

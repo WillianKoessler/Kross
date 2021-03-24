@@ -20,7 +20,7 @@ public:
 		{
 			sprite.color = glm::vec4(1.0f);
 			sprite.position = pos;
-			sprite.texture = Kross::Stack<Kross::Texture::T2D>::get().Get(Kross::FileName(spr), spr);
+			sprite.texture = Kross::Stack<Kross::Texture::T2D>::instance().Get(Kross::FileName(spr), spr);
 		}
 		Kross::QuadParams sprite;
 		glm::vec3 pos = {0.0f, 0.0f, 0.0f};
