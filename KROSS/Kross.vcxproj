@@ -184,6 +184,7 @@
     <ClInclude Include="src\Kross\Renderer\Textures\Textures.h" />
     <ClInclude Include="src\Kross\Renderer\VertexArray.h" />
     <ClInclude Include="src\Kross\imgui\ImGuiLayer.h" />
+    <ClInclude Include="src\Kross\Util\Constants.h" />
     <ClInclude Include="src\Kross_pch.h" />
     <ClInclude Include="src\Platform\Windows\Win_Windows.h" />
     <ClInclude Include="src\Platform\Windows\WindowInput.h" />

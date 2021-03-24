@@ -39,6 +39,9 @@ namespace Kross {
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
+	public:
+		Renderer::Dimentions renderDims;
+
 	private:
 		Scope<Window> m_uptrWindow;
 		bool m_bRunning = true;

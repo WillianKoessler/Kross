@@ -21,7 +21,11 @@ namespace Kross {
 	void Renderer::Shutdown()
 	{
 		KROSS_PROFILE_FUNC();
-		shaderLibrary->Clear();
+		if (Renderer2D::Is_Initiated())
+			Renderer2D::Shutdown();
+		if (Renderer3D::Is_Initiated())
+			Renderer3D::Shutdown();
+			shaderLibrary->Clear();
 		Renderer::Command::Shutdown();
 		Renderer2D::Shutdown();
 		KROSS_CORE_TRACE("[Kross::Renderer] Renderer Finished");

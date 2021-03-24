@@ -185,7 +185,7 @@ bool glError::handled(const glError& error)
 {
 	auto i = std::lower_bound(cache.begin(), cache.end(), error,
 		[](const glError& other, const glError& k) { return other.id < k.id; });
-	if (i != cache.end() && !(i->id < error.id)) return true;
+	if (i < cache.end() && !(i->id < error.id)) return true;
 	else cache.emplace(i, error);
 	return false;
 }
