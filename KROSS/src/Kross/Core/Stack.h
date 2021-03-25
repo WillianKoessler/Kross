@@ -76,7 +76,6 @@ namespace Kross {
 			static Stack<T> instance;
 			return instance;
 		}
-		~Stack() { clear(); }
 
 		static const bool Add(const Ref<T>& resource);
 		static const bool Del(const std::string& key);
@@ -94,7 +93,9 @@ namespace Kross {
 		void operator =(Stack<T>&& other) = delete;
 
 	private:
-		Stack() = default;
+		~Stack() { KROSS_CORE_INFO("[Kross::Stack<{0}>] Destroyed", typeid(T).name()); clear(); }
+
+		Stack() { KROSS_CORE_INFO("[Kross::Stack<{0}>] Created", typeid(T).name()); }
 
 		static Ref<T> _Get(const std::string& k, const std::string* filepath);
 

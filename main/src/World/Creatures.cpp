@@ -51,6 +51,10 @@ bool Creature::receiveDamage(int amount, const Creature* attacker)
 	return hp <= 0;
 }
 
+void Creature::Input(float ts)
+{
+}
+
 void Creature::OnUpdate(float ts)
 {
 	timer += ts;

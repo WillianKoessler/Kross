@@ -60,6 +60,7 @@ public:
 	bool tgm(bool set);
 	bool applyDamage(int amount, Creature* victim) const;
 	bool receiveDamage(int amount, const Creature* attacker);
+	virtual void Input(float ts) override;
 	virtual void OnUpdate(float ts) override;
 	virtual void DrawSelf() override;
 	void Log();

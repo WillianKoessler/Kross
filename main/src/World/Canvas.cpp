@@ -39,7 +39,12 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	Kross::Renderer2D::Begin(*camera->GetCamera());
 	Kross::Renderer2D::BatchBegin();
 	for (auto& e : entities)
+	{
+		if(e.active) e.SetAcc(acc);
+		e.Input(ts);
+		e.OnUpdate(ts);
 		e.DrawSelf();
+	}
 	static float r = 0.0f;
 	r += 0.6283f * ts;
 	params.rotation = r;
@@ -85,9 +90,10 @@ void Canvas::OnImGuiRender(Kross::Timestep ts)
 		Checkbox("Demo Window", &show_demo_window);
 		Checkbox("Show Renderer Stats", &show_rendererStats);
 		Text("Entities: ");
+		ImGui::Indent(30);
 		for (auto& e : entities)
 		{
-			SameLine(); Checkbox((e.GetName() + " Window").c_str(), &e.debugWindow);
+			Checkbox((e.GetName() + " Window").c_str(), &e.debugWindow);
 			if (e.debugWindow) {
 				Begin(e.GetName().c_str(), &e.debugWindow);
 				Text("Position: X=%.1f, Y=%.1f", e.GetX(), e.GetY());

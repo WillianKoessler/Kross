@@ -66,6 +66,7 @@ public:
 
 	virtual ~Entity() = default;
 
+	virtual void Input(float ts) {};
 	virtual void OnUpdate(float ts) {};
 	virtual bool interact() { return false; }
 	virtual void DrawSelf() {}
