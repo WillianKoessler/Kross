@@ -18,9 +18,11 @@ void Canvas::OnAttach()
 	Kross::Stack<Kross::Texture::T2D>::instance().Get("cage", cage);
 	
 	Kross::Renderer::Command::SetClear(0x0f0f0fff);
-	entities.emplace_back(Entity::Props({ 0, 0 }, Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/character.png"));
-	entities.emplace_back(Entity::Props({ 2, 0 }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
+	entities.emplace_back(Entity::Props(glm::vec3(0.0f), Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/character.png"));
+	entities.emplace_back(Entity::Props({ 2.0f, 0.0f, 0.0f }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
 	entities[0].active = true;
+
+	Kross::Stack<Kross::Shader>::instance().Get()
 }
 void Canvas::OnDetach()
 {
@@ -52,7 +54,7 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	for (int i = 1; i <= size; i++)
 		for (int j = 1; j < size; j++)
 		{
-			params.position = { i-5, j-5 };
+			params.position = { i-5, j-5, 0.0f };
 			params.color = { i / size, j / size, i / size, j / size };
 			Kross::Renderer2D::BatchQuad(params);
 		}

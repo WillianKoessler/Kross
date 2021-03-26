@@ -1,0 +1,2 @@
+C:\dev\C++\RPG Project\Game\bin\Debug-windows-x86_64\Kross\Kross.pdb
+C:\dev\C++\RPG Project\Game\bin-int\Debug-windows-x86_64\Kross\Kross.pdb

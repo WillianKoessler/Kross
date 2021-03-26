@@ -33,11 +33,8 @@ namespace Kross {
 	struct Quad
 	{
 		Quad() = default;
-		Quad(Vertex tl, Vertex tr, Vertex br, Vertex bl) : tl(tl), tr(tr), br(br), bl(bl) {}
-		Vertex tl;
-		Vertex tr;
-		Vertex br;
-		Vertex bl;
+		Quad(Vertex* vertices) { for (int i = 0; i < 4; i++) v[i] = vertices[i]; }
+		Vertex v[4];
 	};
 
 	struct R2DData {
@@ -116,13 +113,13 @@ namespace Kross {
 
 			data->ib = Buffer::Index::Create(indices, sizeof(indices));
 			data->va->SetIndex(data->ib);
-
-			data->rotations = Quad(
+			Vertex v[4] = {
 				Vertex(-0.5f, -0.5f),
 				Vertex( 0.5f, -0.5f),
 				Vertex( 0.5f,  0.5f),
 				Vertex(-0.5f,  0.5f)
-			);
+			};
+			data->rotations = Quad(v);
 
 			Stack<Shader>::instance().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D.glsl"));
 			data->shader->SetFloat("u_Repeat", 1);
@@ -216,48 +213,34 @@ namespace Kross {
 	void Renderer2D::BatchQuad(const QuadParams& params)
 	{
 		KROSS_PROFILE_FUNC();
-		if (data->quadIndex + 1 >= MaxQuadCount)
-		{
-			BatchEnd();
-			BatchBegin();
-		}
 		float tex = 0.0f;
-		if (params.texture)
+
+		if ((size_t)data->quadIndex + 1 >= MaxQuadCount) { BatchEnd(); BatchBegin(); }
+		if (params.texture) { tex = (float)data->texArray->Get(params.texture); if (tex < 0.0f) data->texArray->Add(params.texture); }
+
+		static const glm::mat4 m4(1.0f);
+		static glm::mat4 transform(1.0f);
+		Vertex v[4] = { Vertex() };
+
+		for (char i = 0; i < 4; i++)
 		{
-			tex = (float)data->texArray->Get(params.texture);
-			if (tex < 0.0f) data->texArray->Add(params.texture);
+			if (params.rotation != 0.0f) {
+				transform = glm::translate(m4, params.position) *
+					glm::rotate(m4, params.rotation, { 0.0f, 0.0f, 1.0f }) *
+					glm::scale(m4, glm::vec3(params.size, 0.0f));
+				v[i].pos = transform * glm::vec4(data->rotations.v[i].pos, 1.0f);
+			} else {
+				v[i].pos = {
+					params.position.x + (params.size.x * (i == 1 || i == 2)),
+					params.position.y + (params.size.y * (i == 2 || i == 3)),
+					params.position.z };
+			}
+			v[i].color = params.color;
+			v[i].texIndex = tex;
+			v[i].texCoord = { params.texOffSet.x + (params.texSubSize.x * (i == 1 || i == 2)), params.texOffSet.y + (params.texSubSize.y * (i == 2 || i == 3)) };
 		}
 
-		glm::vec4 p1(0.0f);
-		glm::vec4 p2(0.0f);
-		glm::vec4 p3(0.0f);
-		glm::vec4 p4(0.0f);
-		if (params.rotation == 0.0f)
-		{
-			p1 = { params.position.x,					params.position.y,					0.0f, 1.0f };
-			p2 = { params.position.x + params.size.x,	params.position.y,					0.0f, 1.0f };
-			p3 = { params.position.x + params.size.x,	params.position.y + params.size.y,	0.0f, 1.0f };
-			p4 = { params.position.x,					params.position.y + params.size.y,	0.0f, 1.0f };
-		}
-		else
-		{
-			const glm::mat4 m4(1.0f);
-			glm::mat4 transform = glm::translate(m4, glm::vec3(params.position, 0.0f)) *
-				glm::rotate(m4, params.rotation, { 0.0f, 0.0f, 1.0f }) *
-				glm::scale(m4, glm::vec3(params.size, 0.0f));
-			p1 = transform * glm::vec4(data->rotations.tl.pos, 1.0f);
-			p2 = transform * glm::vec4(data->rotations.tr.pos, 1.0f);
-			p3 = transform * glm::vec4(data->rotations.br.pos, 1.0f);
-			p4 = transform * glm::vec4(data->rotations.bl.pos, 1.0f);
-		}
-
-		data->myBuffer[data->quadIndex] = Quad(
-			Vertex(glm::vec3(p1), params.color, params.texOffSet, tex),
-			Vertex(glm::vec3(p2), params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y }, tex),
-			Vertex(glm::vec3(p3), params.color, { params.texOffSet.x + params.texSubSize.x	, params.texOffSet.y + params.texSubSize.y }, tex),
-			Vertex(glm::vec3(p4), params.color, { params.texOffSet.x, params.texOffSet.y + params.texSubSize.y }, tex)
-		);
-
+		data->myBuffer[data->quadIndex] = Quad(v);
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;
 	}

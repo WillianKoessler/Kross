@@ -11,9 +11,9 @@ class Entity
 {
 public:
 	struct Props {
-		Props(const glm::vec2& pos, const unsigned char efs, const std::string& name, const std::string& spr)
+		Props(const glm::vec3& pos, const unsigned char efs, const std::string& name, const std::string& spr)
 			:
-			pos({pos, 0.0f}),
+			pos(pos),
 			EFs(efs),
 			name(name),
 			sprite()
@@ -40,7 +40,7 @@ public:
 		GodMode		= BIT(5),
 	};
 
-	Entity(const Props& props_ = { {0, 0} , EF::None, "Default Name", ""}) :
+	Entity(const Props& props_ = { glm::vec3(0.0f) , EF::None, "Default Name", ""}) :
 		props(props_)
 	{}
 

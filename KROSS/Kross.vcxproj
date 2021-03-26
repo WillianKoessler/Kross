@@ -140,7 +140,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Atlas.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Array.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Buffers.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Context.h" />
@@ -556,7 +555,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Atlas.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
       <ObjectFileName>$(IntDir)\Buffers1.obj</ObjectFileName>
