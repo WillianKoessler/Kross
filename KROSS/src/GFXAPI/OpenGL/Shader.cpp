@@ -194,18 +194,10 @@ namespace Kross::OpenGL {
 			{
 				GLint maxLength = 0;
 				glCall(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength));
-				//std::vector<GLchar> infoLog(maxLength);
 				char* infoLog = new char[maxLength];
 				glCall(glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]));
 				glCall(glDeleteShader(shader));
 				if(!isCompiled) KROSS_CORE_WARN("{0} Shader '{1}' failed to Compile", area, m_strName);
-				//std::string log(infoLog);
-				//for (size_t pos = log.find(':', 0); pos != std::string::npos; pos = log.find_first_of(':', pos))
-				//{
-				//	std::string line = log.substr(pos, pos + log.find_first_of(':', pos));
-				//	int line = std::stoi(line);
-				//	line + 
-				//}
 				KROSS_CORE_ERROR("{0}\n{1}", area,  infoLog);
 				return false;
 			}

@@ -26,7 +26,11 @@ namespace Kross {
 			stack.emplace(i, resource->GetName(), resource);
 			return true;
 		}
-		else return false;
+		else
+		{
+			KROSS_CORE_WARN("EMPTY object emplaced on Stack.", __FUNCTION__);
+			return false;
+		}
 	}
 	template<typename T> const bool Stack<T>::Del(const std::string& key)
 	{
@@ -50,7 +54,7 @@ namespace Kross {
 			if (i != stack.end() && !(k < i->key)) return i->resource;
 			else if (filepath)
 			{
-				return *stack.emplace(i, k, T::CreateRef(*filepath, k), *filepath);
+				return *stack.emplace(i, k, T::CreateRef(k, *filepath), *filepath);
 			}
 			else
 			{

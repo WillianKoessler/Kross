@@ -21,8 +21,6 @@ void Canvas::OnAttach()
 	entities.emplace_back(Entity::Props(glm::vec3(0.0f), Entity::EF::Alive | Entity::EF::Solid | Entity::EF::Friendly, "Bob", "assets/textures/character.png"));
 	entities.emplace_back(Entity::Props({ 2.0f, 0.0f, 0.0f }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
 	entities[0].active = true;
-
-	Kross::Stack<Kross::Shader>::instance().Get()
 }
 void Canvas::OnDetach()
 {
@@ -34,6 +32,15 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	Kross::Renderer2D::ResetStats();
 	camera->OnUpdate(ts);
 
+	static bool once = false;
+	static bool once2 = false;
+	if (Kross::Input::IsKeyPressed(KROSS_KEY_N)) { once2 = true; }
+	else { once2 = false; }
+	if (Kross::Input::IsKeyPressed(KROSS_KEY_M)) { once = true; }
+	else { once = false; }
+
+	if(once) Kross::Renderer2D::SwitchShader(Kross::Stack<Kross::Shader>::instance().Get("flat", "assets/shaders/OpenGL/FlatColor.glsl"));
+	if(once2) Kross::Renderer2D::SwitchShader(Kross::Stack<Kross::Shader>::instance().Get("Shader2D", "assets/shaders/OpenGL/Shader2D.glsl"));
 	acc.y = (Kross::Input::IsKeyPressed(KROSS_KEY_UP) - Kross::Input::IsKeyPressed(KROSS_KEY_DOWN)) * ts;
 	acc.x = (Kross::Input::IsKeyPressed(KROSS_KEY_RIGHT) - Kross::Input::IsKeyPressed(KROSS_KEY_LEFT)) * ts;
 

@@ -17,7 +17,7 @@ namespace Kross::OpenGL::Texture {
 		T2D() = default;
 		T2D(uint32_t width, uint32_t height, const std::string & name, void* data = nullptr);
 		T2D(uint32_t width, uint32_t height, void* data = nullptr);
-		T2D(const std::string& path, const std::string& name = "Default");
+		T2D(const std::string& name, const std::string& path);
 
 		virtual void SetData(void* data, uint32_t size) override;
 

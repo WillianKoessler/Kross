@@ -210,6 +210,17 @@ namespace Kross {
 		else
 			KROSS_CORE_WARN("Calling Renderer2D::End(void) without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?");
 	}
+	void Renderer2D::SwitchShader(const Ref<Shader>& shader)
+	{
+		if (shader) {
+			data->shader->unBind();
+			data->shader = shader;
+			data->shader->Bind();
+		}
+		else {
+			KROSS_CORE_WARN("Shader provided is empty, or not supported."); return;
+		}
+	}
 	void Renderer2D::BatchQuad(const QuadParams& params)
 	{
 		KROSS_PROFILE_FUNC();

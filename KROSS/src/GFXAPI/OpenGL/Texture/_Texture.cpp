@@ -78,7 +78,7 @@ namespace Kross::OpenGL::Texture {
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
 		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Created", m_strName);
 	}
-	T2D::T2D(const std::string& path, const std::string& name)
+	T2D::T2D(const std::string& name, const std::string& path)
 		:
 		m_strPath(path),
 		m_strName(name),

@@ -31,9 +31,9 @@ namespace Kross::Texture {
 	public:
 		static Ref<T2D> CreateRef(uint32_t width, uint32_t height, void* data = nullptr);
 		static Ref<T2D> CreateRef(uint32_t width, uint32_t height, const std::string& name, void* data = nullptr);
-		static Ref<T2D> CreateRef(const std::string& path, const std::string& name = "");
+		static Ref<T2D> CreateRef(const std::string& name, const std::string& path);
 		static Scope<T2D> CreateScope(uint32_t width, uint32_t height, void* data = nullptr);
 		static Scope<T2D> CreateScope(uint32_t width, uint32_t height, const std::string& name, void* data = nullptr);
-		static Scope<T2D> CreateScope(const std::string& path, const std::string& name = "");
+		static Scope<T2D> CreateScope(const std::string& name, const std::string& path);
 	};
 }

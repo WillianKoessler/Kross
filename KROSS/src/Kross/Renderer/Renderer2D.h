@@ -2,6 +2,7 @@
 
 #include "Cameras/Camera.h"
 #include "Textures/Textures.h"
+#include "Shaders.h"
 
 namespace Kross {
 	struct QuadParams
@@ -42,6 +43,8 @@ namespace Kross {
 		static void Flush();
 		static void BatchEnd();
 		static void End();
+
+		static void SwitchShader(const Ref<Shader>& shader);
 
 		static void BatchQuad(const QuadParams& params);
 	};
