@@ -2,6 +2,7 @@
 
 #include "Kross/Core/Core.h"
 #include <string>
+#include <glm/glm.hpp>
 
 namespace Kross::Texture {
 	class KAPI Base
@@ -12,6 +13,7 @@ namespace Kross::Texture {
 
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
+		virtual glm::vec2 GetSize() const = 0;
 		virtual const std::string& GetName() const = 0;
 		virtual const unsigned int GetID() const = 0;
 		virtual const int GetCurrentSlot() const = 0;

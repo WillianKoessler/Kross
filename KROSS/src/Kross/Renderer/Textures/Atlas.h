@@ -1,28 +1,23 @@
 #pragma once
 #include "Kross/Renderer/Textures/Textures.h"
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 
 namespace Kross::Texture {
-	class KAPI T2DAtlas : public Base
+	class KAPI T2DAtlas
 	{
-		unsigned int cellWidth, cellHeight;
-		std::string name;
-		Ref<Kross::Texture::T2D> atlas;
-
+		using Tex = Ref<Kross::Texture::T2D>;
+		std::string m_name;
+		glm::vec2 m_TexCoords[4];
+		glm::vec2 m_cellSize, m_spriteSize;
+		Tex m_Atlas;
+		inline void calculate(const glm::vec2& min, const glm::vec2& max);
 	public:
-
-		T2DAtlas();
-		void Load(const std::string& path, const std::string& name = "Default");
-		inline void SetCellSize(uint8_t width, uint8_t height) { cellWidth = width; cellHeight = height; }
-		uint8_t GetCellIndex(uint8_t x, uint8_t y);
-		glm::vec2 GetCellCoord(uint8_t index);
-
-		virtual uint32_t GetWidth() const override { return atlas->GetWidth(); }
-		virtual uint32_t GetHeight() const override { return atlas->GetHeight(); }
-		virtual const std::string& GetName() const override { return name; }
-		virtual const unsigned int GetID() const override { return atlas->GetID(); }
-		virtual const int GetCurrentSlot() const override { return atlas->GetCurrentSlot(); }
-		virtual void SetData(void* data, uint32_t size) override { atlas->SetData(data, size); }
-		virtual void Bind(uint32_t slot = 0) const override { atlas->Bind(slot); }
+		T2DAtlas(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max);
+		T2DAtlas(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize);
+		void UpdateTexture(const glm::vec2& index);
+		
+		inline const glm::vec2* GetTexCoords() const { return m_TexCoords; }
+		inline const Tex& GetTexture() const { return m_Atlas; }
+		inline const std::string& GetName() const { return m_name; }
 	};
 }

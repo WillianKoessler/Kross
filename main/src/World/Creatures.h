@@ -47,7 +47,7 @@ public:
 	} myDirection = South;
 	long double timer = 0.0;
 	size_t gfxCounter = 0;
-	float sprite_speed = 0.955f;
+	float sprite_speed = 0.94f;
 	float dump = 0.7f;
 	bool debugWindow = false;
 	bool active = false;
@@ -63,6 +63,7 @@ public:
 	virtual void Input(float ts) override;
 	virtual void OnUpdate(float ts) override;
 	virtual void DrawSelf() override;
+	virtual void ConfigureAtlas(const glm::vec2& cellSize, const glm::vec2& spriteSize = { 1,1 }) override;
 	void Log();
 
 	int mhp, hp;

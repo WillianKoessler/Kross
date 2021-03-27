@@ -80,8 +80,8 @@ namespace Kross {
 		static const bool Add(const Ref<T>& resource);
 		static const bool Del(const std::string& key);
 
-		static Ref<T> Get(const std::string& key) { return _Get(key, nullptr); }
-		static Ref<T> Get(const std::string& key, const std::string& filepath) { return _Get(key, &filepath); }
+		static const Ref<T> Get(const std::string& key) { return _Get(key, nullptr); }
+		static const Ref<T> Get(const std::string& key, const std::string& filepath) { return _Get(key, &filepath); }
 
 		static void Log() { KROSS_CORE_TRACE("[Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
 

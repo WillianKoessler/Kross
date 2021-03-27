@@ -44,7 +44,8 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Created", m_strName);
+		else KROSS_CORE_WARN("[{0}] Texture '{1}' NOT created. There were no data.", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
 	T2D::T2D(uint32_t width, uint32_t height, void* data)
 		: m_unWidth(width),
@@ -76,7 +77,8 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Created", m_strName);
+		else KROSS_CORE_WARN("[{0}] Texture '{1}' NOT created. There were no data.", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
 	T2D::T2D(const std::string& name, const std::string& path)
 		:
@@ -88,20 +90,17 @@ namespace Kross::OpenGL::Texture {
 	{
 		KROSS_PROFILE_FUNC();
 
-		if (name != "")
-		{
-			m_strName = FileName(path);
-		}
+		if (name.empty()) m_strName = FileName(path);
 
 		stbi_set_flip_vertically_on_load(true);
 
 		int width, height, channels;
 		stbi_uc* data = nullptr;
 		{
-			KROSS_PROFILE_SCOPE("T2D::T2D(const std::string&) - stbi_load");
+			KROSS_PROFILE_SCOPE("T2D::T2D - stbi_load");
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 		}
-		if (!data) { KROSS_MSGBOX("Failed to load image!\nFILE: " + path, "[Kross::OpenGL::Texture::T2D]", _ERROR_); }
+		if (!data) { KROSS_MSGBOX("Failed to load image!\nFILE: " + path, __FUNCTION__, _ERROR_); }
 
 		m_unWidth = width;
 		m_unHeight = height;
@@ -117,9 +116,7 @@ namespace Kross::OpenGL::Texture {
 			m_unInternalFormat = GL_RGBA8;
 		}
 		else
-		{
-			KROSS_CORE_WARN("[Kross::OpenGL::Texture::T2D] Image format not suported!\nFILE: {0}", path);
-		}
+			KROSS_CORE_WARN("[{0}] Image format not suported!\nFILE: {1}", __FUNCTION__, path);
 
 		if (Context::GetVersion() < 4.5f)
 		{
@@ -147,21 +144,19 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		stbi_image_free(data);
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Created", m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Created",__FUNCTION__, m_strName);
 	}
 	T2D::~T2D()
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glDeleteTextures(1, &m_RendererID));
-		KROSS_CORE_INFO("[Kross::OpenGL::Texture::T2D] Texture '{0}' Destructed", m_strName);
+		KROSS_CORE_INFO("[{0}] Texture '{1}' Destructed", __FUNCTION__, m_strName);
 	}
 	void T2D::SetData(void* data, uint32_t size)
 	{
 		KROSS_PROFILE_FUNC();
-		//if (size != m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3))
-		//{
-		//	KROSS_CORE_WARN("[Kross::OpenGL::Texture::T2D] Specified size does not match data size.");
-		//}
+		if (size != m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3))
+			KROSS_CORE_WARN("[{0}] Texture '{1}' Specified size does not match data size.", __FUNCTION__, m_strName);
 		Bind();
 		glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
 	}
@@ -170,13 +165,7 @@ namespace Kross::OpenGL::Texture {
 		KROSS_PROFILE_FUNC();
 		if (m_RendererID)
 		{
-			if (Context::GetVersion() < 4.4)
-			{
-				if (slot) { glCall(glActiveTexture(GL_TEXTURE0 + slot)); }
-				else { glCall(glActiveTexture(GL_TEXTURE0 + m_CurrentSlot)); }
-				glCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-			}
-			else if (Context::GetVersion() < 4.5)
+			if (Context::GetVersion() < 4.5)
 			{
 				if (slot) { glCall(glActiveTexture(GL_TEXTURE0 + slot)); }
 				else { glCall(glActiveTexture(GL_TEXTURE0 + m_CurrentSlot)); }

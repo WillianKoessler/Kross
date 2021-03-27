@@ -13,34 +13,35 @@ public:
 	struct Props {
 		Props(const glm::vec3& pos, const unsigned char efs, const std::string& name, const std::string& spr)
 			:
+			sprite(),
+			spritePath(spr),
 			pos(pos),
 			EFs(efs),
-			name(name),
-			sprite()
+			name(name)
 		{
-			sprite.color = glm::vec4(1.0f);
 			sprite.position = pos;
-			sprite.texture = Kross::Stack<Kross::Texture::T2D>::instance().Get(Kross::FileName(spr), spr);
 		}
 		Kross::QuadParams sprite;
-		glm::vec3 pos = {0.0f, 0.0f, 0.0f};
-		glm::vec3 vel = {0.0f, 0.0f, 0.0f};
-		glm::vec3 acc = {0.0f, 0.0f, 0.0f};
+		Kross::Ref<Kross::Texture::T2DAtlas> atlas;
+		std::string spritePath = "";
+		glm::vec3 pos = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 vel = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 acc = { 0.0f, 0.0f, 0.0f };
 		unsigned char EFs;
 		const std::string name;
 	};
 
 	enum EF
 	{
-		None		= BIT(0),
-		Solid		= BIT(1),
-		Friendly	= BIT(2),
-		Flyable		= BIT(3),
-		Alive		= BIT(4),
-		GodMode		= BIT(5),
+		None = BIT(0),
+		Solid = BIT(1),
+		Friendly = BIT(2),
+		Flyable = BIT(3),
+		Alive = BIT(4),
+		GodMode = BIT(5),
 	};
 
-	Entity(const Props& props_ = { glm::vec3(0.0f) , EF::None, "Default Name", ""}) :
+	Entity(const Props& props_ = { glm::vec3(0.0f) , EF::None, "Default Name", "" }) :
 		props(props_)
 	{}
 
@@ -56,11 +57,10 @@ public:
 	inline void SetAcc(const glm::vec3& acc) { props.acc = acc; }
 	inline void SetPos(const glm::vec3& newpos) { props.pos = newpos; }
 	inline void SetPos(const glm::vec2& newpos) { props.pos = { newpos.x, newpos.y, 0.0f }; }
-	inline const Kross::QuadParams& GetSprite(const glm::vec2& texoff = { 0.0f, 0.0f }, const glm::vec2& texsize = { 1.0f,1.0f })
+	inline const Kross::QuadParams& GetSprite(const glm::vec2& index)
 	{
 		props.sprite.position = props.pos;
-		props.sprite.texOffSet = texoff;
-		props.sprite.texSubSize = texsize;
+		props.sprite.subTexture->UpdateTexture(index);
 		return props.sprite;
 	}
 
@@ -70,6 +70,7 @@ public:
 	virtual void OnUpdate(float ts) {};
 	virtual bool interact() { return false; }
 	virtual void DrawSelf() {}
+	virtual void ConfigureAtlas(const glm::vec2& cellSize, const glm::vec2& spriteSize) {}
 
 protected:
 	inline Props& GetProps() { return props; }

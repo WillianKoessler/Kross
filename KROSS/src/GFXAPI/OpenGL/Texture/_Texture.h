@@ -1,8 +1,10 @@
 #pragma once
 
+#include <glm/glm.hpp>
 #include "GFXAPI/OpenGL/GLErrors.h"
 #include "Kross/Core/Core.h"
 #include "Kross/Renderer/Textures/Textures.h"
+
 
 namespace Kross::OpenGL::Texture {
 	class KAPI Base final : public Kross::Texture::Base
@@ -25,6 +27,7 @@ namespace Kross::OpenGL::Texture {
 
 		virtual uint32_t GetWidth() const override { return m_unWidth; }
 		virtual uint32_t GetHeight() const override { return m_unHeight; }
+		virtual glm::vec2 GetSize() const override { return glm::vec2((float)m_unWidth, (float)m_unHeight); }
 		virtual const unsigned int GetID() const override { return m_RendererID; }
 		virtual const std::string& GetName() const override { return m_strName; }
 		virtual const int GetCurrentSlot() const override { return m_CurrentSlot; }

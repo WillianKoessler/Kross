@@ -106,7 +106,7 @@ void Creature::OnUpdate(float ts)
 
 void Creature::DrawSelf()
 {
-	glm::vec2 spr(0.0f);
+	static glm::vec2 spr(0.0f);
 	switch (myState)
 	{
 	case Walking:
@@ -119,10 +119,22 @@ void Creature::DrawSelf()
 		spr = { 4, 1 };
 		break;
 	}
+	
+	Kross::Renderer2D::BatchQuad(GetSprite(spr));
+	//Kross::Renderer2D::BatchQuad(GetSprite(
+	//	{ (spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256 },
+	//	{ SPRITE_SIZE / 576, SPRITE_SIZE / 256 }));
+}
 
-	Kross::Renderer2D::BatchQuad(GetSprite(
-		{ (spr.x * SPRITE_SIZE) / 576, (spr.y * SPRITE_SIZE) / 256 },
-		{ SPRITE_SIZE / 576, SPRITE_SIZE / 256 }));
+void Creature::ConfigureAtlas(const glm::vec2& cellSize, const glm::vec2& spriteSize)
+{
+	GetProps().sprite.subTexture = Kross::makeRef<Kross::Texture::T2DAtlas>(
+			Kross::Stack<Kross::Texture::T2D>::instance().Get(Kross::FileName(GetProps().spritePath), GetProps().spritePath),
+			cellSize,
+			glm::vec2(0.0f),
+			spriteSize
+		);
+
 }
 
 void Creature::Log()

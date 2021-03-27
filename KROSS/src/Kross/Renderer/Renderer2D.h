@@ -2,18 +2,18 @@
 
 #include "Cameras/Camera.h"
 #include "Textures/Textures.h"
+#include "Textures/Atlas.h"
 #include "Shaders.h"
 
 namespace Kross {
 	struct QuadParams
 	{
-		glm::vec3			position	= { 0.0f, 0.0f, 0.0f };
-		glm::vec2			size		= { 1.0f, 1.0f };
-		Ref<Texture::T2D>	texture		= NULL;
-		glm::vec4			color		= { 1.0f, 1.0f, 1.0f, 1.0f };
-		float				rotation	= 0.0f;
-		glm::vec2			texOffSet	= { 0.0f, 0.0f };
-		glm::vec2			texSubSize	= { 1.0f, 1.0f };
+		glm::vec3				position	= { 0.0f, 0.0f, 0.0f };
+		glm::vec2				size		= { 1.0f, 1.0f };
+		Ref<Texture::T2D>		texture		= nullptr;
+		Ref<Texture::T2DAtlas>	subTexture	= nullptr;
+		glm::vec4				color		= { 1.0f, 1.0f, 1.0f, 1.0f };
+		float					rotation	= 0.0f;
 	};
 
 	class Renderer2D

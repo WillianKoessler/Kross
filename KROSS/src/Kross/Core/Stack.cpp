@@ -48,7 +48,7 @@ namespace Kross {
 		static std::string calls = "";
 		const char* mycall = (" " + k + " " + (filepath ? *filepath : "null")).c_str();
 
-		if (k != "")
+		if (!k.empty())
 		{
 			const auto i = location(k);
 			if (i != stack.end() && !(k < i->key)) return i->resource;

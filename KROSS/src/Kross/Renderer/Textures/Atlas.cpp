@@ -1,20 +1,29 @@
 #include "Kross_pch.h"
 #include "Atlas.h"
-#include "Kross/Renderer/Renderer.h"
 
 namespace Kross::Texture {
-	T2DAtlas::T2DAtlas()
+	void T2DAtlas::calculate(const glm::vec2& min, const glm::vec2& max)
 	{
+		m_TexCoords[0] = min;
+		m_TexCoords[1] = { max.x, min.y };
+		m_TexCoords[2] = max;
+		m_TexCoords[3] = { min.x, max.y };
 	}
-	void T2DAtlas::Load(const std::string& path, const std::string& name)
+	T2DAtlas::T2DAtlas(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max) :
+		m_Atlas(atlas_Texture)
 	{
+		calculate(min, max);
 	}
-	uint8_t T2DAtlas::GetCellIndex(uint8_t x, uint8_t y)
+	T2DAtlas::T2DAtlas(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize) :
+		m_name(atlas_Texture->GetName() + "_ATLAS"),
+		m_Atlas(atlas_Texture),
+		m_cellSize(cellSize),
+		m_spriteSize(spriteSize)
 	{
-		return uint8_t();
+		calculate((index * cellSize) / m_Atlas->GetSize(), ((index + spriteSize) * cellSize) / m_Atlas->GetSize());
 	}
-	glm::vec2 T2DAtlas::GetCellCoord(uint8_t index)
+	void T2DAtlas::UpdateTexture(const glm::vec2& index)
 	{
-		return glm::vec2();
+		calculate((index * m_cellSize) / m_Atlas->GetSize(), ((index + m_spriteSize) * m_cellSize) / m_Atlas->GetSize());
 	}
 }
