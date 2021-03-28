@@ -28,5 +28,8 @@ private:
 	
 	// parameter for batch rendering quads
 	Kross::QuadParams params;
+
+	// texture atlas
+	Kross::Ref<Kross::Texture::T2DAtlas> atlas;
 };
 

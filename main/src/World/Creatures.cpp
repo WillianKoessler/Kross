@@ -69,10 +69,9 @@ void Creature::OnUpdate(float ts)
 	//p.vel += p.acc;
 	//p.vel *= dump;
 	p.pos += p.acc;
-
-
-
-	if (fabsf(p.acc.x) < 0.0000000001f && fabsf(p.acc.y) < 0.0000000001f)
+	static float min;
+	min = 0.1f * ts;
+	if (fabsf(p.acc.x) < min && fabsf(p.acc.y) < min)
 		myState = Standing;
 	else
 		myState = Walking;
@@ -91,15 +90,15 @@ void Creature::OnUpdate(float ts)
 	else if (p.vel.x < 0.0f && p.vel.y == 0.0f) myDirection = West;
 	else if (p.vel.x < 0.0f && p.vel.y < 0.0f) myDirection = SouthWest;
 #else
-	if (!(p.acc.y < 0.0000000001f && p.acc.y > -0.0000000001f))
+	if (!(p.acc.y < 0.0f && p.acc.y > -0.0f))
 	{
-		if (p.acc.y < -0.0000000001f) myDirection = South;
-		if (p.acc.y > 0.0000000001f) myDirection = North;
+		if (p.acc.y < -0.0f) myDirection = South;
+		if (p.acc.y > 0.0f) myDirection = North;
 	}
-	if (!(p.acc.x < 0.0000000001f && p.acc.x > -0.0000000001f))
+	if (!(p.acc.x < 0.0f && p.acc.x > -0.0f))
 	{
-		if (p.acc.x < -0.0000000001f) myDirection = West;
-		if (p.acc.x > 0.0000000001f) myDirection = East;
+		if (p.acc.x < -0.0f) myDirection = West;
+		if (p.acc.x > 0.0f) myDirection = East;
 	}
 #endif
 }
