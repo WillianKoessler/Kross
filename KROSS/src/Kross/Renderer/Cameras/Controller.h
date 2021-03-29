@@ -20,10 +20,18 @@ namespace Kross::Camera {
 		virtual Ref<Camera> GetCamera() = 0;
 		virtual const Ref<Camera> GetCamera() const = 0;
 
-		inline static Camera* GetSelf() { return self; }
-		inline static void SetSelf(Camera* other) { self = other; }
-	private:
-		static Camera* self;
-		
+		virtual void Zoom(float val) = 0;
+	protected:
+		virtual void CalculateView() = 0;
+
+		struct Boundary {
+			float left;
+			float right;
+			float bottom;
+			float top;
+		} bounds;
+
+		Ref<Camera> camera;
+		glm::vec3 position = { 0.0f, 0.0f, 0.0f };
 	};
 }

@@ -15,7 +15,7 @@ public:
 
 private:
 	// main camera
-	Kross::Ref<Kross::Camera::Ortho2DCtrl> camera;
+	Kross::Ref<Kross::Camera::Controller> camera;
 
 	// size for test grid
 	float size = 10;

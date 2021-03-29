@@ -5,7 +5,7 @@
 
 Canvas::Canvas()
 	: Layer("Canvas"),
-	camera(Kross::makeRef<Kross::Camera::Ortho2DCtrl>(ar, true))
+	camera(Kross::makeRef<Kross::Camera::Ortho2DCtrl>("primary_camera", ar, true))
 {
 }
 
@@ -16,10 +16,11 @@ void Canvas::OnAttach()
 	const char* cage = "assets/textures/cage.png";
 	const char* cage_mamma = "assets/textures/cage_mamma.png";
 	Kross::Stack<Kross::Texture::T2D>::instance().Get("cage", cage);
+
 	auto& tex = Kross::Stack<Kross::Texture::T2D>::instance().Get("tileset_rogue", "assets/textures/tileset.png");
 	tex->SetFilter(Kross::Texture::Base::MAG_NEAREST);
 	tex->SetFilter(Kross::Texture::Base::MIN_NEAREST);
-	//tex->ResetData();
+
 	atlas = Kross::makeRef<Kross::Texture::T2DAtlas>(
 		tex,
 		glm::vec2(17.0f),
@@ -32,6 +33,8 @@ void Canvas::OnAttach()
 	entities.emplace_back(Entity::Props({ 2.0f, 0.0f, 0.0f }, Entity::EF::Alive | Entity::EF::Solid, "Skelly", "assets/textures/skelly.png"));
 	entities[0].active = true;
 	for (auto& e : entities) e.ConfigureAtlas({ 64,64 });
+
+	camera->Zoom(5.0f);
 }
 void Canvas::OnDetach()
 {
