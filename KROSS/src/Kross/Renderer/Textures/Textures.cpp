@@ -41,31 +41,31 @@ namespace Kross::Texture {
 		switch (Kross::Renderer::GetAPI())
 		{
 		case Kross::RendererAPI::API::None:		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Renderer API (None) is not supported"); return nullptr;
-		case Kross::RendererAPI::API::OpenGL:		return makeRef<Kross::OpenGL::Texture::T2D>(name, path);
+		case Kross::RendererAPI::API::OpenGL:		return makeRef<Kross::OpenGL::Texture::T2D>((name.empty() ? "Default" : name), path);
 			//case Kross::RendererAPI::API::DirectX:		return makeRef<Kross::DirectX::Texture::T2D>(path);
 		}
 
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Ref<T2D> T2D::CreateRef(uint32_t width, uint32_t height, void* data)
+	Ref<T2D> T2D::CreateRef(uint32_t width, uint32_t height, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
 		case Kross::RendererAPI::API::None:		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Renderer API (None) is not supported"); return nullptr;
-		case Kross::RendererAPI::API::OpenGL:		return makeRef<Kross::OpenGL::Texture::T2D>(width, height, data);
+		case Kross::RendererAPI::API::OpenGL:		return makeRef<Kross::OpenGL::Texture::T2D>(width, height, "Default", data);
 			//case Kross::RendererAPI::API::DirectX:		return makeRef<Kross::DirectX::Texture::T2D>(width, height, data);
 		}
 
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Ref<T2D> T2D::CreateRef(uint32_t width, uint32_t height, const std::string& name, void* data)
+	Ref<T2D> T2D::CreateRef(uint32_t width, uint32_t height, const std::string& name, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
 		case Kross::RendererAPI::API::None:		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Renderer API (None) is not supported"); return nullptr;
-		case Kross::RendererAPI::API::OpenGL:		return makeRef<Kross::OpenGL::Texture::T2D>(width, height, name, data);
+		case Kross::RendererAPI::API::OpenGL:		return makeRef<Kross::OpenGL::Texture::T2D>(width, height, (name.empty() ? "Default" : name), data);
 			//case Kross::RendererAPI::API::DirectX:		return makeRef<Kross::DirectX::Texture::T2D>(width, height, data);
 		}
 
@@ -77,31 +77,31 @@ namespace Kross::Texture {
 		switch (Kross::Renderer::GetAPI())
 		{
 		case Kross::RendererAPI::API::None:		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Renderer API (None) is not supported"); return nullptr;
-		case Kross::RendererAPI::API::OpenGL:		return makeScope<Kross::OpenGL::Texture::T2D>(name, path);
+		case Kross::RendererAPI::API::OpenGL:		return makeScope<Kross::OpenGL::Texture::T2D>((name.empty() ? "Default" : name), path);
 			//case Kross::RendererAPI::API::DirectX:		return makeScope<Kross::DirectX::Texture::T2D>(path);
 		}
 
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Scope<T2D> T2D::CreateScope(uint32_t width, uint32_t height, void* data)
+	Scope<T2D> T2D::CreateScope(uint32_t width, uint32_t height, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
 		case Kross::RendererAPI::API::None:		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Renderer API (None) is not supported"); return nullptr;
-		case Kross::RendererAPI::API::OpenGL:		return makeScope<Kross::OpenGL::Texture::T2D>(width, height, data);
+		case Kross::RendererAPI::API::OpenGL:		return makeScope<Kross::OpenGL::Texture::T2D>(width, height, "Default", data);
 			//case Kross::RendererAPI::API::DirectX:		return makeScope<Kross::DirectX::Texture::T2D>(width, height, data);
 		}
 
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Scope<T2D> T2D::CreateScope(uint32_t width, uint32_t height, const std::string& name, void* data)
+	Scope<T2D> T2D::CreateScope(uint32_t width, uint32_t height, const std::string& name, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
 		case Kross::RendererAPI::API::None:		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Renderer API (None) is not supported"); return nullptr;
-		case Kross::RendererAPI::API::OpenGL:		return makeScope<Kross::OpenGL::Texture::T2D>(width, height, name, data);
+		case Kross::RendererAPI::API::OpenGL:		return makeScope<Kross::OpenGL::Texture::T2D>(width, height, (name.empty() ? "Default" : name), data);
 			//case Kross::RendererAPI::API::DirectX:		return makeRef<Kross::DirectX::Texture::T2D>(width, height, data);
 		}
 

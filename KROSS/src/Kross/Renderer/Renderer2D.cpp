@@ -124,8 +124,13 @@ namespace Kross {
 
 			data->shader->SetIntV("u_Textures", Texture::Base::QueryMaxSlots(), nullptr);
 
-			uint32_t white = 0xffffffff;
-			Stack<Texture::T2D>::instance().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", &white));
+			unsigned char* white = new unsigned char[4];
+			white[0] = 255;
+			white[1] = 255;
+			white[2] = 255;
+			white[3] = 255;
+
+			Stack<Texture::T2D>::instance().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", white));
 			data->texArray->Add(Stack<Texture::T2D>::instance().Get("blank"));
 
 			SceneBegan = false;

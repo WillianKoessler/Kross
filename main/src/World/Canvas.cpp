@@ -16,9 +16,12 @@ void Canvas::OnAttach()
 	const char* cage = "assets/textures/cage.png";
 	const char* cage_mamma = "assets/textures/cage_mamma.png";
 	Kross::Stack<Kross::Texture::T2D>::instance().Get("cage", cage);
-	Kross::Stack<Kross::Texture::T2D>::instance().Get("tileset_rogue", "assets/textures/tileset.png");
+	auto& tex = Kross::Stack<Kross::Texture::T2D>::instance().Get("tileset_rogue", "assets/textures/tileset.png");
+	tex->SetFilter(Kross::Texture::Base::MAG_NEAREST);
+	tex->SetFilter(Kross::Texture::Base::MIN_NEAREST);
+	//tex->ResetData();
 	atlas = Kross::makeRef<Kross::Texture::T2DAtlas>(
-		Kross::Stack<Kross::Texture::T2D>::instance().Get("tileset_rogue"),
+		tex,
 		glm::vec2(17.0f),
 		glm::vec2(0.0f),
 		glm::vec2(1.0f)
@@ -85,6 +88,7 @@ void Canvas::OnUpdate(Kross::Timestep ts)
 	}
 	atlas->UpdateTexture(t);
 	params.position = { -1.0f, 0.0f, 1.0f };
+	params.size = { 1.0f, 1.0f };
 	params.texture = nullptr;
 	params.subTexture = atlas;
 	params.rotation = 0;

@@ -17,11 +17,13 @@ namespace Kross::OpenGL::Texture {
 	{
 	public:
 		T2D() = default;
-		T2D(uint32_t width, uint32_t height, const std::string & name, void* data = nullptr);
-		T2D(uint32_t width, uint32_t height, void* data = nullptr);
+		T2D(uint32_t width, uint32_t height, const std::string & name, unsigned char* data = nullptr);
 		T2D(const std::string& name, const std::string& path);
 
-		virtual void SetData(void* data, uint32_t size) override;
+		virtual void SetFilter(Filtering_Type filter) override;
+		virtual void SetData(unsigned char* data, uint32_t size) override;
+		virtual void ResetData() const override;
+		virtual const Ref<unsigned char>& GetData() const override;
 
 		virtual ~T2D() override;
 
@@ -34,6 +36,7 @@ namespace Kross::OpenGL::Texture {
 
 		virtual void Bind(uint32_t slot = 0) const override;
 	private:
+		Ref<unsigned char> raw_data;
 		std::string m_strPath, m_strName;
 		uint32_t m_RendererID, m_unWidth, m_unHeight;
 		unsigned short m_CurrentSlot;
