@@ -21,7 +21,7 @@ namespace Kross {
 			unsigned short width = 640, height = 320;
 			bool fullscreen = false;
 		};
-		void Construct(const settings&);
+		void Construct(settings&&);
 	public:
 		Application() { Construct({}); }
 		Application(const std::string& title, unsigned short width, unsigned short height, bool fullscreen = false)

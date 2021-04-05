@@ -16,6 +16,7 @@ namespace Kross::OpenGL {
 
 		virtual void Init(unsigned int, unsigned int) override;
 		virtual void SwapBuffers() override;
+		virtual void UpdateViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
 
 		static const float GetVersion();
 	private:

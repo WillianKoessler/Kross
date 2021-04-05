@@ -80,6 +80,10 @@ namespace Kross::OpenGL {
 		KROSS_PROFILE_FUNC();
 		glfwSwapBuffers(static_cast<GLFWwindow*>(m_Window->GetNativeWindow()));
 	}
+	void Context::UpdateViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+	{
+		glCall(glViewport(x, y, width, height));
+	}
 	const float Context::GetVersion()
 	{
 		if (initialized)

@@ -17,16 +17,10 @@ namespace Kross {
 		KROSS_CORE_ERROR_("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Window* Window::Create(const WindowProps& props)
-	{
-		KROSS_CORE_INFO("[{0}] Windows window Created.", __FUNCTION__);
-		return new Win_Windows(props);
-	}
-
-	Win_Windows::Win_Windows(const WindowProps& props)
+	Win_Windows::Win_Windows(WindowProps&& props)
 	{
 		KROSS_PROFILE_FUNC();
-		Init(props);
+		Init(std::move(props));
 	}
 
 	Win_Windows::~Win_Windows()
@@ -36,7 +30,7 @@ namespace Kross {
 		glfwTerminate();
 	}
 
-	void Win_Windows::Init(const WindowProps& props)
+	void Win_Windows::Init(WindowProps&& props)
 	{
 		KROSS_PROFILE_FUNC();
 		m_Data = props;
@@ -57,18 +51,18 @@ namespace Kross {
 				s_GLFWInitialized = true;
 			}
 		}
-		auto monitor = glfwGetPrimaryMonitor();
-		auto mode = glfwGetVideoMode(monitor);
+		m_Monitor = glfwGetPrimaryMonitor();
+		auto mode = glfwGetVideoMode(m_Monitor);
 		{
 			KROSS_PROFILE_SCOPE("glfwCreateWindow");
 			if ((props.nWidth == 0 || props.nHeight == 0) && props.fullscreen)
 			{
-				m_Window = glfwCreateWindow(mode->width, mode->height, props.strTitle.c_str(), monitor, NULL);
+				m_Window = glfwCreateWindow(mode->width, mode->height, props.strTitle.c_str(), m_Monitor, NULL);
 			}
 			else if ((props.nWidth > 0 && props.nHeight > 0) && props.fullscreen)
 			{
-				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), monitor, NULL);
-				glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), m_Monitor, NULL);
+				glfwSetWindowMonitor(m_Window, m_Monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 			}
 			else if ((props.nWidth > 0 && props.nHeight > 0) && !props.fullscreen)
 			{
@@ -226,20 +220,23 @@ namespace Kross {
 	void Win_Windows::OnUpdate()
 	{
 		glfwPollEvents();
-		if (GetWidth() != 0 && GetHeight() != 0) m_Context->SwapBuffers();
+		if (GetWidth() != 0 && GetHeight() != 0)
+			m_Context->SwapBuffers();
 	}
 
-	void Win_Windows::FullScreen(bool enable) const
+	bool Win_Windows::FullScreen(bool enable) const
 	{
 		static bool previous_state = false;
-		if (enable != previous_state)
-		{
-			auto monitor = glfwGetPrimaryMonitor();
-			auto mode = glfwGetVideoMode(monitor);
-			if (enable) { glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate); }
-			else glfwSetWindowMonitor(m_Window, nullptr, 100, 100, 640, 320, mode->refreshRate);
-		}
+		if (enable == previous_state) return false;
+
+		auto mode = glfwGetVideoMode(m_Monitor);
+		if (enable) glfwSetWindowMonitor(m_Window, m_Monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		else glfwSetWindowMonitor(m_Window, nullptr, 100, 100, m_Data.nWidth, m_Data.nHeight, mode->refreshRate);
+		glfwGetFramebufferSize(m_Window, nullptr, nullptr);
+		m_Context->UpdateViewport(0, 0, m_Data.nWidth, m_Data.nHeight);
+		printf_s("size = {%u, %u}\n", m_Data.nWidth, m_Data.nHeight);
 		previous_state = enable;
+		return enable;
 	}
 
 	void Win_Windows::SetVSync(bool enable)

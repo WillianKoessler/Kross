@@ -555,6 +555,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp" />
+    <ClCompile Include="src\Kross\Core\Window.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
       <ObjectFileName>$(IntDir)\Buffers1.obj</ObjectFileName>

@@ -8,7 +8,7 @@ namespace Kross {
 
 	Application* Application::s_Instance = nullptr;
 
-	void Application::Construct(const settings& s)
+	void Application::Construct(settings&& s)
 	{
 		KROSS_PROFILE_FUNC();
 		if (s_Instance) KROSS_MSGBOX("Application already exists!", __FUNCTION__, _FATAL_);

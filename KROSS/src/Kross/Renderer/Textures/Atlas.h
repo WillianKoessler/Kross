@@ -12,6 +12,8 @@ namespace Kross::Texture {
 		Tex m_Atlas;
 		inline void calculate(const glm::vec2& min, const glm::vec2& max);
 	public:
+		T2DAtlas(Tex&& atlas_Texture, glm::vec2&& min, glm::vec2&& max);
+		T2DAtlas(Tex&& atlas_Texture, glm::vec2&& cellSize, glm::vec2&& index, glm::vec2&& spriteSize);
 		T2DAtlas(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max);
 		T2DAtlas(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize);
 		void UpdateTexture(const glm::vec2& index);

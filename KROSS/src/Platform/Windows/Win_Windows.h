@@ -12,16 +12,17 @@ namespace Kross {
 	class Win_Windows : public Window
 	{
 	public:
-		Win_Windows(const WindowProps& props);
+		Win_Windows(WindowProps&& props);
 		virtual ~Win_Windows() override;
 
 		virtual void OnUpdate() override;
 
 		virtual inline unsigned int GetWidth() const override { return m_Data.nWidth; }
 		virtual inline unsigned int GetHeight() const override { return m_Data.nHeight; }
+		virtual inline const std::string& GetName() const override { return m_Data.strTitle; }
 
 		// Window attributes
-		virtual void FullScreen(bool) const override;
+		virtual bool FullScreen(bool active) const override;
 		virtual inline void SetEventCallback(const EventCallbackFn& callback) override
 		{
 			KROSS_CORE_TRACE("[{0}] Callback set", __FUNCTION__);
@@ -33,11 +34,12 @@ namespace Kross {
 		virtual void SetVSync(bool enable) override;
 		virtual bool IsVSync() const override;
 	private:
-		virtual void Init(const WindowProps& props);
+		virtual void Init(WindowProps&& props);
 		virtual void Shutdown() const override;
 	private:
 		HWND m_WindowHWND;
 		GLFWwindow* m_Window;
+		GLFWmonitor* m_Monitor;
 		Ref<Context> m_Context;
 
 		using WindowData = WindowProps;

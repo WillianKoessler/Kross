@@ -38,6 +38,15 @@ namespace Kross {
 			bVSync = other.bVSync;
 			EventCallback = other.EventCallback;
 		}
+
+		void operator =(WindowProps&& other)
+		{
+			strTitle = other.strTitle;
+			nWidth = other.nWidth;
+			nHeight = other.nHeight;
+			bVSync = other.bVSync;
+			EventCallback = other.EventCallback;
+		}
 	};
 
 	// Interface representing a desktop system based on Windows
@@ -50,9 +59,10 @@ namespace Kross {
 
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
+		virtual const std::string& GetName() const = 0;
 
 		// Window attributes
-		virtual void FullScreen(bool) const = 0;
+		virtual bool FullScreen(bool) const = 0;
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
@@ -61,6 +71,6 @@ namespace Kross {
 
 		virtual void Shutdown() const = 0;
 
-		static Window* Create(const WindowProps& props = WindowProps());
+		static Window* Create(WindowProps&& props);
 	};
 }
