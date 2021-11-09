@@ -1,0 +1,12 @@
+[submodule "KROSS/vendor/glfw"]
+	path = KROSS/vendor/glfw
+	url = https://github.com/glfw/glfw
+[submodule "KROSS/vendor/spdlog"]
+	path = KROSS/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "KROSS/vendor/glm"]
+	path = KROSS/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "KROSS/vendor/imgui"]
+	path = KROSS/vendor/imgui
+	url = https://github.com/ocornut/imgui
