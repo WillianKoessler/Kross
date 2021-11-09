@@ -42,9 +42,7 @@ else\
 	}\
 }
 
-#undef KROSS_FILE_LOG
-#define KROSS_FILE_LOG 0
-#if KROSS_FILE_LOG
+#if(KROSS_FILE_LOG==1)
 	// Core File Log Macros
 	#define KROSS_CORE_FILE_TRACE(...)	::Kross::Log::GetFileLogger()->trace(__VA_ARGS__)
 	#define KROSS_CORE_FILE_INFO(...)	::Kross::Log::GetFileLogger()->info(__VA_ARGS__)
@@ -140,12 +138,12 @@ else\
 	#define KROSS_ERROR(...) ::Kross::Log::GetClientLogger()->error("ERROR AT FILE {0}, LINE {1}",__FILE__, __LINE__);\
 							 ::Kross::Log::GetClientLogger()->error(__VA_ARGS__)
 
-	#define KROSS_TRACE_ONCE(...) { static bool called = false; if(!called) { Kross::Log::GetClientLogger()->trace(__VA_ARGS__); called = true;}}
-	#define KROSS_INFO_ONCE(...)  { static bool called = false; if(!called) { Kross::Log::GetClientLogger()->info(__VA_ARGS__); called = true;}}
-	#define KROSS_WARN_ONCE(...)  { static bool called = false; if(!called) { Kross::Log::GetClientLogger()->warn(__VA_ARGS__); called = true;}}
-	#define KROSS_ERROR_ONCE_(...){ static bool called = false; if(!called) { Kross::Log::GetClientLogger()->error(__VA_ARGS__); called = true;}}
-	#define KROSS_FATAL_ONCE(...) { static bool called = false; if(!called) { Kross::Log::GetClientLogger()->critical(__VA_ARGS__); called = true;}}
-	#define KROSS_ERROR_ONCE(...) { static bool called = false; if(!called) { Kross::Log::GetClientLogger()->error("ERROR AT FILE {0}, LINE {1}",__FILE__, __LINE__);\
-																				   Kross::Log::GetClientLogger()->error(__VA_ARGS__); called = true;}
+	#define KROSS_TRACE_ONCE(...) { static bool called = false; if(!called) { ::Kross::Log::GetClientLogger()->trace(__VA_ARGS__); called = true;}}
+	#define KROSS_INFO_ONCE(...)  { static bool called = false; if(!called) { ::Kross::Log::GetClientLogger()->info(__VA_ARGS__); called = true;}}
+	#define KROSS_WARN_ONCE(...)  { static bool called = false; if(!called) { ::Kross::Log::GetClientLogger()->warn(__VA_ARGS__); called = true;}}
+	#define KROSS_ERROR_ONCE_(...){ static bool called = false; if(!called) { ::Kross::Log::GetClientLogger()->error(__VA_ARGS__); called = true;}}
+	#define KROSS_FATAL_ONCE(...) { static bool called = false; if(!called) { ::Kross::Log::GetClientLogger()->critical(__VA_ARGS__); called = true;}}
+	#define KROSS_ERROR_ONCE(...) { static bool called = false; if(!called) { ::Kross::Log::GetClientLogger()->error("ERROR AT FILE {0}, LINE {1}",__FILE__, __LINE__);\
+																				   ::Kross::Log::GetClientLogger()->error(__VA_ARGS__); called = true;}
 
-#endif
+#endif // KROSS_FILE_LOG

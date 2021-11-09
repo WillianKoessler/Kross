@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\dev\C++\RPG Project\Game\bin\Release-windows-x86_64\Main\Main.exe</FullPath>
+      <FullPath>C:\dev\C++\Kross_Engine\bin\Release-windows-x86_64\Main\Main.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

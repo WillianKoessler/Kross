@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -97,7 +97,7 @@
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -121,7 +121,7 @@
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -140,7 +140,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Kross\Renderer\Textures\Array.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Perspective.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Buffers.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Context.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h" />
@@ -164,7 +165,6 @@
     <ClInclude Include="src\Kross\Core\Stack.h" />
     <ClInclude Include="src\Kross\Core\Timestep.h" />
     <ClInclude Include="src\Kross\Core\Window.h" />
-    <ClInclude Include="src\Kross\Debug\Profiling.h" />
     <ClInclude Include="src\Kross\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Kross\Events\Event.h" />
     <ClInclude Include="src\Kross\Events\KeyEvent.h" />
@@ -172,18 +172,24 @@
     <ClInclude Include="src\Kross\Renderer\Buffer.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Camera.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Controller.h" />
-    <ClInclude Include="src\Kross\Renderer\Cameras\Ortho2D.h" />
-    <ClInclude Include="src\Kross\Renderer\Cameras\Ortho2DCtrl.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.h" />
     <ClInclude Include="src\Kross\Renderer\Context.h" />
     <ClInclude Include="src\Kross\Renderer\Renderer.h" />
     <ClInclude Include="src\Kross\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\Kross\Renderer\Renderer3D.h" />
     <ClInclude Include="src\Kross\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Kross\Renderer\Shaders.h" />
+    <ClInclude Include="src\Kross\Renderer\Textures\Array.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Atlas.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Textures.h" />
     <ClInclude Include="src\Kross\Renderer\VertexArray.h" />
-    <ClInclude Include="src\Kross\imgui\ImGuiLayer.h" />
     <ClInclude Include="src\Kross\Util\Constants.h" />
+    <ClInclude Include="src\Kross\Util\FileUtil.h" />
+    <ClInclude Include="src\Kross\Util\NonCopyable.h" />
+    <ClInclude Include="src\Kross\Util\NonMovable.h" />
+    <ClInclude Include="src\Kross\Util\Singleton.h" />
+    <ClInclude Include="src\Kross\imgui\ImGuiLayer.h" />
     <ClInclude Include="src\Kross_pch.h" />
     <ClInclude Include="src\Platform\Windows\Win_Windows.h" />
     <ClInclude Include="src\Platform\Windows\WindowInput.h" />
@@ -318,6 +324,8 @@
     <ClInclude Include="vendor\glm\glm\ext\scalar_constants.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_constants.inl" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_int_sized.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\scalar_integer.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\scalar_integer.inl" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_relational.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_relational.inl" />
     <ClInclude Include="vendor\glm\glm\ext\scalar_uint_sized.hpp" />
@@ -357,6 +365,8 @@
     <ClInclude Include="vendor\glm\glm\ext\vector_int3_precision.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\vector_int4.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\vector_int4_precision.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\vector_integer.hpp" />
+    <ClInclude Include="vendor\glm\glm\ext\vector_integer.inl" />
     <ClInclude Include="vendor\glm\glm\ext\vector_relational.hpp" />
     <ClInclude Include="vendor\glm\glm\ext\vector_relational.inl" />
     <ClInclude Include="vendor\glm\glm\ext\vector_uint1.hpp" />
@@ -554,25 +564,15 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp" />
-    <ClCompile Include="src\Kross\Core\Window.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
-      <ObjectFileName>$(IntDir)\Buffers1.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\GFXAPI\OpenGL\Context.cpp">
-      <ObjectFileName>$(IntDir)\Context1.obj</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Perspective.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Context.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\RenderersAPI.cpp">
-      <ObjectFileName>$(IntDir)\RenderersAPI1.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\GFXAPI\OpenGL\Shader.cpp">
-      <ObjectFileName>$(IntDir)\Shader1.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Texture.cpp">
-      <ObjectFileName>$(IntDir)\Texture1.obj</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="src\GFXAPI\OpenGL\RenderersAPI.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Shader.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Texture.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\VertexArrays.cpp" />
     <ClCompile Include="src\Kross\Core\Application.cpp" />
     <ClCompile Include="src\Kross\Core\Layer.cpp" />
@@ -580,19 +580,22 @@
     <ClCompile Include="src\Kross\Core\Log.cpp" />
     <ClCompile Include="src\Kross\Core\Stack.cpp" />
     <ClCompile Include="src\Kross\Core\Timestep.cpp" />
-    <ClCompile Include="src\Kross\Debug\Profiling.cpp" />
+    <ClCompile Include="src\Kross\Core\Window.cpp" />
     <ClCompile Include="src\Kross\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Camera.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controller.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Cameras\Ortho2D.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Cameras\Ortho2DCtrl.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer2D.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Renderer3D.cpp" />
     <ClCompile Include="src\Kross\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Kross\Renderer\Shaders.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Atlas.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Textures.cpp" />
     <ClCompile Include="src\Kross\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Kross\Util\FileUtil.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Kross_pch.cpp">
@@ -606,8 +609,8 @@
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
       <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
     </ProjectReference>
-    <ProjectReference Include="vendor\Glad\GLAD.vcxproj">
-      <Project>{5D4A857C-4981-860D-F26D-6C10DE83020F}</Project>
+    <ProjectReference Include="vendor\Glad\Glad.vcxproj">
+      <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>

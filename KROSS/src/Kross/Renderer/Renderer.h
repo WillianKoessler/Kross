@@ -4,8 +4,24 @@
 #include "Cameras/Camera.h"
 #include "Shaders.h"
 #include "Renderer2D.h"
+#include "Renderer3D.h"
 
 namespace Kross {
+	struct QuadParams
+	{
+		glm::vec3				position = { 0.0f, 0.0f, 0.0f };
+		glm::vec2				size = { 1.0f, 1.0f };
+		Ref<Texture::T2D>		texture = nullptr;
+		Ref<Texture::T2DAtlas>	subTexture = nullptr;
+		glm::vec4				color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		float					rotation = 0.0f;
+	};
+	struct CubeParams
+	{
+		glm::vec3 position = glm::vec3(0.0f);
+		glm::vec3 size = glm::vec3(1.0f);
+		glm::vec4 color = glm::vec4(1.0f);
+	};
 
 	class KAPI Renderer
 	{
@@ -48,13 +64,17 @@ namespace Kross {
 			{
 				s_RendererAPI->DrawIndexed(va);
 			}
-			inline static void DrawIndexed(const Scope<VertexArray>& va)
+			inline static void DrawIndexed(const Scope<VertexArray>& va, bool drawPoints = false)
 			{
-				s_RendererAPI->DrawIndexed(va);
+				s_RendererAPI->DrawIndexed(va, drawPoints);
 			}
 			inline static void OnWindowResize(uint32_t width, uint32_t height)
 			{
 				s_RendererAPI->SetViewport(width, height);
+			}
+			inline static void SetMode(Kross::RendererAPI::Mode mode)
+			{
+				s_RendererAPI->SetMode(mode);
 			}
 		private:
 			static RendererAPI* s_RendererAPI;
@@ -75,10 +95,11 @@ namespace Kross {
 
 			std::unordered_map<std::string, Ref<Shader>> shaders;
 		};
+		enum Dimentions { D2 = 0, D3 };
 
 	public:
 		static void Shutdown();
-		static void Init();
+		static void Init(Dimentions type);
 		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& va, const glm::mat4 transform = glm::mat4(1.0f));
 		static void Submit(const Ref<Shader>& shader, const Scope<VertexArray>& va, const glm::mat4 transform = glm::mat4(1.0f));
 
@@ -86,5 +107,6 @@ namespace Kross {
 		static Ref<ShaderLibrary> GetShaderLibrary();
 	private:
 		static Ref<ShaderLibrary> shaderLibrary;
+		static Dimentions s_dDims;
 	};
 }

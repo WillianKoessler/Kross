@@ -1,6 +1,7 @@
 #include "Kross_pch.h"
 #include "Log.h"
-#include "spdlog/sinks/basic_file_sink.h"
+//#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/include/spdlog/sinks/basic_file_sink.h"
 
 namespace Kross {
 	Ref<spdlog::logger> Log::s_FileLogger;

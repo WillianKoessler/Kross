@@ -6,12 +6,48 @@
 
 namespace Kross {
 	Input* Input::s_Instance = new WindowInput();
+	Input::KeyState WindowInput::keys[256] = { Input::KeyState::NOT_PRESSED };
+	bool WindowInput::s_bOldKeys[256] = { false };
+	bool WindowInput::s_bKeys[256] = { false };
+	Input::KeyState WindowInput::GetKeyStateImpl(int keycode)
+	{
+		int nState = glfwGetKey(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), keycode);
+		Input::KeyState& now = keys[keycode];
+		bool& state = s_bKeys[keycode];
+		bool& oldState = s_bOldKeys[keycode];
+
+		switch (nState) {
+		case GLFW_PRESS:
+		{
+			state = true;
+			now = Input::KeyState::HELD;
+			break;
+		}
+		case GLFW_RELEASE:
+		{
+			state = false;
+			now = Input::KeyState::NOT_PRESSED;
+			break;
+		}
+		}
+		if (state != oldState) {
+			if (now == Input::KeyState::HELD) now = Input::KeyState::PRESSED;
+			if (now == Input::KeyState::NOT_PRESSED) now = Input::KeyState::RELEASED;
+		}
+		oldState = state;
+		return now;
+	}
+	bool WindowInput::IsKeyHeldImpl(int keycode)
+	{
+		return GetKeyStateImpl(keycode) == Input::KeyState::HELD;
+	}
 	bool WindowInput::IsKeyPressedImpl(int keycode)
 	{
-		int state = glfwGetKey(
-			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
-			keycode);
-		return state == GLFW_PRESS || state == GLFW_REPEAT;
+		return GetKeyStateImpl(keycode) == Input::KeyState::PRESSED;
+	}
+	bool WindowInput::IsKeyReleasedImpl(int keycode)
+	{
+		return GetKeyStateImpl(keycode) == Input::KeyState::RELEASED;
 	}
 	bool  WindowInput::IsMouseButtonPressedImpl(int button)
 	{
@@ -29,14 +65,21 @@ namespace Kross {
 		);
 		return { (float)xpos, (float)ypos };
 	}
+	void WindowInput::SetMousePositionImpl(double x, double y)
+	{
+		glfwSetCursorPos(
+			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
+			x, y
+		);
+	}
 	float WindowInput::GetMouseXImpl()
 	{
-		auto[x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePositionImpl();
 		return x;
 	}
 	float WindowInput::GetMouseYImpl()
 	{
-		auto[x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePositionImpl();
 		return y;
 	}
 }

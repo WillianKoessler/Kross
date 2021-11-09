@@ -1,4 +1,4 @@
-project "GLAD"
+project "Glad"
     kind "StaticLib"
     language "C"
     staticruntime "on"
@@ -17,12 +17,7 @@ project "GLAD"
     {
         "include"
     }
-
-    defines
-    {
-        "KROSS_GLAD"
-    }
-
+    
     filter "system:windows"
         systemversion "latest"
 

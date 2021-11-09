@@ -20,10 +20,15 @@ namespace Kross {
 			std::string title = "Kross Engine";
 			unsigned short width = 640, height = 320;
 			bool fullscreen = false;
+			Renderer::Dimentions dims;
 		};
 		void Construct(settings&&);
 	public:
 		Application() { Construct({}); }
+		Application(const std::string& title, unsigned short width, unsigned short height, Renderer::Dimentions dimentions)
+		{
+			Construct({ title, width, height, false, dimentions });
+		}
 		Application(const std::string& title, unsigned short width, unsigned short height, bool fullscreen = false)
 		{
 			Construct({ title, width, height, fullscreen });
@@ -39,9 +44,12 @@ namespace Kross {
 
 		void OnEvent(Event& e);
 		void PushLayer(const Ref<Layer>& layer);
+		void PushLayer(const std::initializer_list<Ref<Layer>>& list);
 		void PushOverlay(const Ref<Layer>& layer);
 		inline Window& GetWindow() { return *m_uptrWindow; }
 		inline static Application& Get() { return *s_Instance; }
+
+		inline Timestep GetTime() const;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

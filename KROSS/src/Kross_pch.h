@@ -33,9 +33,9 @@
 #include <fstream>
 
 // Logging libraries
-#include "spdlog/spdlog.h"
-#include "spdlog/fmt/ostr.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/include/spdlog/spdlog.h"
+#include "spdlog/include/spdlog/fmt/ostr.h"
+#include "spdlog/include/spdlog/sinks/stdout_color_sinks.h"
 
 #include "Kross/Core/Log.h"
 #include "Kross/Core/Timestep.h"

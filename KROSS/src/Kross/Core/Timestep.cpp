@@ -33,8 +33,8 @@ namespace Kross {
 		//KROSS_CORE_TRACE("[Timer: {1}] Duration: {0}ms", fTime, cName);
 		if (rtp)
 			RTP_add({ cName, fTime });
-		else
-			Profiler::Get().Write({ cName, start, end });
+		//else
+		//	Profiler::Get().Write({ cName, start, end });
 	}
 
 	void Timer::read(void func(step&))
@@ -81,4 +81,18 @@ namespace Kross {
 		return -1;
 	}
 
+	DeltaTime::DeltaTime()
+		: m_fLastIterationTime(std::chrono::high_resolution_clock::now())
+	{
+	}
+
+	float DeltaTime::lap()
+	{
+		using namespace std::chrono;
+		time_point<steady_clock> now = high_resolution_clock::now();
+		long long start = time_point_cast<microseconds>(m_fLastIterationTime).time_since_epoch().count();
+		long long end = time_point_cast<microseconds>(now).time_since_epoch().count();
+		m_fLastIterationTime = now;
+		return float(end - start) * 0.001f;
+	}
 }

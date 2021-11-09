@@ -1,6 +1,5 @@
 #pragma once
 #include <chrono>
-#include "Kross/Debug/Profiling.h"
 
 namespace Kross {
 	class Timestep
@@ -46,5 +45,13 @@ namespace Kross {
 		bool bStoped;
 		bool rtp;
 		static bool RTP_cleared;
+	};
+
+	class DeltaTime
+	{
+		std::chrono::time_point<std::chrono::steady_clock> m_fLastIterationTime;
+	public:
+		DeltaTime();
+		float lap();
 	};
 }

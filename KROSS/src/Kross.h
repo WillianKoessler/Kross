@@ -22,10 +22,13 @@
 
 #include "Kross/Renderer/Renderer.h"
 #include "Kross/Renderer/Renderer2D.h"
+#include "Kross/Renderer/Renderer3D.h"
 
 #include "Kross/Renderer/Cameras/Camera.h"
-#include "Kross/Renderer/Cameras/Ortho2D.h"
-#include "Kross/Renderer/Cameras/Ortho2DCtrl.h"
+#include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
+#include "Kross/Renderer/Cameras/Cameras/Perspective.h"
+#include "Kross/Renderer/Cameras/Controllers/OrthographicCtrl.h"
+#include "Kross/Renderer/Cameras/Controllers/FirstPerson.h"
 
 #include "Kross/Renderer/Buffer.h"
 #include "Kross/Renderer/Shaders.h"

@@ -9,20 +9,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\CoreMechanics.h">
+    <ClInclude Include="src\Core\world.h">
       <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\Items.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\World\Canvas.h">
-      <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\World\Creatures.h">
-      <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="src\World\Entities.h">
-      <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
@@ -30,11 +18,8 @@
     <ClCompile Include="src\Core\main.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\World\Canvas.cpp">
-      <Filter>World</Filter>
-    </ClCompile>
-    <ClCompile Include="src\World\Creatures.cpp">
-      <Filter>World</Filter>
+    <ClCompile Include="src\Core\world.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
   </ItemGroup>

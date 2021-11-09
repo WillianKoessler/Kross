@@ -3,6 +3,9 @@
 
 #if KROSS_PLATFORM_WINDOWS
 extern Kross::Application* Kross::CreateApp();
+#else
+#error Kross only supports Windows... for now
+#endif
 
 #if KROSS_MAIN
 int main(int agrc, char** args)
@@ -42,8 +45,4 @@ int main(int agrc, char** args)
 
 	KROSS_PROFILE_END;
 }
-#endif
-
-#else
-#error Kross only supports Windows... for now
 #endif

@@ -14,7 +14,8 @@ namespace Kross::OpenGL {
 		virtual void SetClear(const glm::vec4& color) const override;
 		virtual void SetClear(const unsigned int color) const override;
 		virtual void DrawIndexed(const Ref<VertexArray>& va) const override;
-		virtual void DrawIndexed(const Scope<VertexArray>& va) const override;
+		virtual void DrawIndexed(const Scope<VertexArray>& va, bool drawPoints) const override;
 		virtual void SetViewport(uint32_t width, uint32_t height) const override;
+		virtual void SetMode(Kross::RendererAPI::Mode mode) const override;
 	};
 }

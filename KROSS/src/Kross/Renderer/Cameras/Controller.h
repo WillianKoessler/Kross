@@ -16,6 +16,7 @@ namespace Kross::Camera {
 
 		virtual bool OnWindowResized(WindowResizeEvent& e) = 0;
 		virtual bool OnMouseScrolled(MouseScrolledEvent& e) = 0;
+		virtual bool OnMouseMoved(MouseMovedEvent& e) = 0;
 
 		virtual Ref<Camera> GetCamera() = 0;
 		virtual const Ref<Camera> GetCamera() const = 0;
@@ -32,6 +33,5 @@ namespace Kross::Camera {
 		} bounds;
 
 		Ref<Camera> camera;
-		glm::vec3 position = { 0.0f, 0.0f, 0.0f };
 	};
 }

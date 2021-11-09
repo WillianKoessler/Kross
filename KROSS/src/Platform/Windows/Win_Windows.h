@@ -23,6 +23,7 @@ namespace Kross {
 
 		// Window attributes
 		virtual bool FullScreen(bool active) const override;
+		virtual bool CursorEnabled(bool active) const override;
 		virtual inline void SetEventCallback(const EventCallbackFn& callback) override
 		{
 			KROSS_CORE_TRACE("[{0}] Callback set", __FUNCTION__);

@@ -17,7 +17,7 @@ namespace Kross {
 		m_uptrWindow = Scope<Window>(Window::Create(WindowProps(s.title, s.width, s.height, s.fullscreen)));
 		m_uptrWindow->SetVSync(true);
 		m_uptrWindow->SetEventCallback(KROSS_BIND_EVENT_FN(Application::OnEvent));
-		Renderer::Init();
+		Renderer::Init(s.dims);
 
 		m_ptrImGuiLayer = makeRef<ImGuiLayer>();
 		PushOverlay(m_ptrImGuiLayer);
@@ -34,12 +34,22 @@ namespace Kross {
 		KROSS_CORE_INFO("[{0}] Application Destructed", __FUNCTION__);
 	}
 
+	void Application::PushLayer(const std::initializer_list<Ref<Layer>>& list)
+	{
+		KROSS_PROFILE_FUNC();
+		for (const Ref<Layer>& l : list) {
+			m_LayerStack.PushLayer(l);
+			l->OnAttach();
+			KROSS_CORE_TRACE("[{1}] Application '{0}' Pushed", l->GetName(), __FUNCSIG__);
+		}
+	}
+
 	void Application::PushLayer(const Ref<Layer>& layer)
 	{
 		KROSS_PROFILE_FUNC();
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
-		KROSS_CORE_TRACE("[{1}] Application '{0}' Pushed", layer->GetName(), __FUNCTION__);
+		KROSS_CORE_TRACE("[{1}] Application '{0}' Pushed", layer->GetName(), __FUNCSIG__);
 	}
 
 	void Application::PushOverlay(const Ref<Layer>& layer)
@@ -72,7 +82,7 @@ namespace Kross {
 		while (m_bRunning)
 		{
 			KROSS_PROFILE_SCOPE("Run Loop");
-			float time = (float)glfwGetTime();
+			float time = GetTime();
 			Timestep ts = time - previous_time;
 			previous_time = time;
 
@@ -97,6 +107,11 @@ namespace Kross {
 		KROSS_CORE_FILE_TRACE("-----------------------RUNTIME ENDED-----------------------");
 
 		KROSS_CORE_TRACE("[{0}] Application Finished", __FUNCTION__);
+	}
+
+	inline Timestep Application::GetTime() const
+	{
+		return Timestep((float)glfwGetTime());
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

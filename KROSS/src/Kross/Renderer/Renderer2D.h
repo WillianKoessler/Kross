@@ -6,20 +6,12 @@
 #include "Shaders.h"
 
 namespace Kross {
-	struct QuadParams
-	{
-		glm::vec3				position	= { 0.0f, 0.0f, 0.0f };
-		glm::vec2				size		= { 1.0f, 1.0f };
-		Ref<Texture::T2D>		texture		= nullptr;
-		Ref<Texture::T2DAtlas>	subTexture	= nullptr;
-		glm::vec4				color		= { 1.0f, 1.0f, 1.0f, 1.0f };
-		float					rotation	= 0.0f;
-	};
-
+	struct QuadParams;
 	class Renderer2D
 	{
-		static bool SceneBegan;
-		static bool batch;
+		static bool s_bSceneBegan;
+		static bool s_bBatch;
+		static bool s_bInitiated;
 
 	public:
 		struct Stats
@@ -38,7 +30,7 @@ namespace Kross {
 		static void Init();
 		static void Shutdown();
 
-		static void Begin(Camera::Camera& camera);
+		static void Begin(Ref<Camera::Camera>& camera);
 		static void BatchBegin();
 		static void Flush();
 		static void BatchEnd();

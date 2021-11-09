@@ -1,20 +1,18 @@
 #define KROSS_MAIN 1
 #include "Kross.h"
 
-#include "World/Canvas.h"
+#include "Core/world.h"
 
 class Game : public Kross::Application
 {
 public:
 	Game()
-		: Kross::Application("RPG", 800, 400)
+		: Kross::Application("Voxel", 800, 400, Kross::Renderer::D3)
 	{
-		PushLayer(Kross::makeRef<Canvas>());
+		PushLayer(Kross::makeRef<world>());
 	}
 	~Game()
-	{
-
-	}
+	{}
 };
 
 

@@ -7,20 +7,17 @@
     <Filter Include="src\GFXAPI">
       <UniqueIdentifier>{5B360010-47EE-415D-B0F5-1AB99CCCDC4D}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\GFXAPI\DirectX">
-      <UniqueIdentifier>{1D44D687-0928-97DD-7288-91305E8B815F}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\GFXAPI\OpenGL">
       <UniqueIdentifier>{2FCBAAD0-9BE1-A866-E458-348850AE79EE}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GFXAPI\OpenGL\Texture">
+      <UniqueIdentifier>{8FAFA681-FB71-DA0B-4422-6998B023B3E9}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Kross">
       <UniqueIdentifier>{EEA649B3-5A11-FE29-A34F-AFCF0FF9DB7E}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Kross\Core">
       <UniqueIdentifier>{0650E68F-F21D-DA95-DBB1-4ABCC71EB6FA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Kross\Debug">
-      <UniqueIdentifier>{E4ABBC8C-5037-2A51-5948-AD45C5528651}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Kross\Events">
       <UniqueIdentifier>{127BDC27-FE73-FB79-27A6-E0FE13FEDA85}</UniqueIdentifier>
@@ -30,6 +27,15 @@
     </Filter>
     <Filter Include="src\Kross\Renderer\Cameras">
       <UniqueIdentifier>{3FCEB3DC-2BDE-5FAD-9497-C4CB80C64E46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Kross\Renderer\Cameras\2D">
+      <UniqueIdentifier>{8468ECF4-F080-D31E-B92D-63B8250568B8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Kross\Renderer\Textures">
+      <UniqueIdentifier>{A7C62F72-13D4-5D58-9CBA-594308C7290F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Kross\Util">
+      <UniqueIdentifier>{FB42F08F-E710-E495-D0A4-54BCBC11C0FA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Kross\imgui">
       <UniqueIdentifier>{D8AE5E8F-443A-CC53-4D4B-4F48B9552854}</UniqueIdentifier>
@@ -81,6 +87,12 @@
     <ClInclude Include="src\GFXAPI\OpenGL\Shader.h">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Array.h">
+      <Filter>src\GFXAPI\OpenGL\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Texture.h">
+      <Filter>src\GFXAPI\OpenGL\Texture</Filter>
+    </ClInclude>
     <ClInclude Include="src\GFXAPI\OpenGL\VertexArrays.h">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClInclude>
@@ -117,14 +129,17 @@
     <ClInclude Include="src\Kross\Core\MouseButtonCodes.h">
       <Filter>src\Kross\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Kross\Core\Random.h">
+      <Filter>src\Kross\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Core\Stack.h">
+      <Filter>src\Kross\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Kross\Core\Timestep.h">
       <Filter>src\Kross\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Kross\Core\Window.h">
       <Filter>src\Kross\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Kross\Debug\Profiling.h">
-      <Filter>src\Kross\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\Kross\Events\ApplicationEvent.h">
       <Filter>src\Kross\Events</Filter>
@@ -147,12 +162,6 @@
     <ClInclude Include="src\Kross\Renderer\Cameras\Controller.h">
       <Filter>src\Kross\Renderer\Cameras</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Renderer\Cameras\Ortho2D.h">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Kross\Renderer\Cameras\Ortho2DCtrl.h">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClInclude>
     <ClInclude Include="src\Kross\Renderer\Context.h">
       <Filter>src\Kross\Renderer</Filter>
     </ClInclude>
@@ -168,8 +177,32 @@
     <ClInclude Include="src\Kross\Renderer\Shaders.h">
       <Filter>src\Kross\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Textures\Array.h">
+      <Filter>src\Kross\Renderer\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Textures\Atlas.h">
+      <Filter>src\Kross\Renderer\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Textures\Textures.h">
+      <Filter>src\Kross\Renderer\Textures</Filter>
+    </ClInclude>
     <ClInclude Include="src\Kross\Renderer\VertexArray.h">
       <Filter>src\Kross\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Util\Constants.h">
+      <Filter>src\Kross\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Util\FileUtil.h">
+      <Filter>src\Kross\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Util\NonCopyable.h">
+      <Filter>src\Kross\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Util\NonMovable.h">
+      <Filter>src\Kross\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Util\Singleton.h">
+      <Filter>src\Kross\Util</Filter>
     </ClInclude>
     <ClInclude Include="src\Kross\imgui\ImGuiLayer.h">
       <Filter>src\Kross\imgui</Filter>
@@ -576,6 +609,12 @@
     <ClInclude Include="vendor\glm\glm\ext\scalar_int_sized.hpp">
       <Filter>vendor\glm\glm\ext</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\glm\glm\ext\scalar_integer.hpp">
+      <Filter>vendor\glm\glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\glm\glm\ext\scalar_integer.inl">
+      <Filter>vendor\glm\glm\ext</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\glm\glm\ext\scalar_relational.hpp">
       <Filter>vendor\glm\glm\ext</Filter>
     </ClInclude>
@@ -691,6 +730,12 @@
       <Filter>vendor\glm\glm\ext</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\ext\vector_int4_precision.hpp">
+      <Filter>vendor\glm\glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\glm\glm\ext\vector_integer.hpp">
+      <Filter>vendor\glm\glm\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\glm\glm\ext\vector_integer.inl">
       <Filter>vendor\glm\glm\ext</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glm\glm\ext\vector_relational.hpp">
@@ -1278,16 +1323,15 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Core\Stack.h" />
-    <ClInclude Include="src\Kross\Core\Random.h" />
-    <ClInclude Include="src\Kross\Renderer\Textures\Textures.h" />
-    <ClInclude Include="src\Kross\Renderer\Textures\Atlas.h" />
-    <ClInclude Include="src\Kross\Renderer\Textures\Array.h" />
-    <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Array.h" />
-    <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Texture.h">
-      <Filter>src\GFXAPI\OpenGL</Filter>
+    <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.h">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Util\Constants.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Perspective.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.h">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Renderer3D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
@@ -1305,6 +1349,12 @@
     <ClCompile Include="src\GFXAPI\OpenGL\Shader.cpp">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp">
+      <Filter>src\GFXAPI\OpenGL\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Texture.cpp">
+      <Filter>src\GFXAPI\OpenGL\Texture</Filter>
+    </ClCompile>
     <ClCompile Include="src\GFXAPI\OpenGL\VertexArrays.cpp">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClCompile>
@@ -1320,11 +1370,14 @@
     <ClCompile Include="src\Kross\Core\Log.cpp">
       <Filter>src\Kross\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Kross\Core\Stack.cpp">
+      <Filter>src\Kross\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Kross\Core\Timestep.cpp">
       <Filter>src\Kross\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Kross\Debug\Profiling.cpp">
-      <Filter>src\Kross\Debug</Filter>
+    <ClCompile Include="src\Kross\Core\Window.cpp">
+      <Filter>src\Kross\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Buffer.cpp">
       <Filter>src\Kross\Renderer</Filter>
@@ -1333,12 +1386,6 @@
       <Filter>src\Kross\Renderer\Cameras</Filter>
     </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Cameras\Controller.cpp">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Kross\Renderer\Cameras\Ortho2D.cpp">
-      <Filter>src\Kross\Renderer\Cameras</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Kross\Renderer\Cameras\Ortho2DCtrl.cpp">
       <Filter>src\Kross\Renderer\Cameras</Filter>
     </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Renderer.cpp">
@@ -1353,8 +1400,20 @@
     <ClCompile Include="src\Kross\Renderer\Shaders.cpp">
       <Filter>src\Kross\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp">
+      <Filter>src\Kross\Renderer\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Textures\Atlas.cpp">
+      <Filter>src\Kross\Renderer\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Textures\Textures.cpp">
+      <Filter>src\Kross\Renderer\Textures</Filter>
+    </ClCompile>
     <ClCompile Include="src\Kross\Renderer\VertexArray.cpp">
       <Filter>src\Kross\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Util\FileUtil.cpp">
+      <Filter>src\Kross\Util</Filter>
     </ClCompile>
     <ClCompile Include="src\Kross\imgui\ImGuiBuild.cpp">
       <Filter>src\Kross\imgui</Filter>
@@ -1374,13 +1433,14 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Kross\Core\Stack.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Textures\Textures.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Textures\Atlas.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Texture.cpp">
-      <Filter>src\GFXAPI\OpenGL</Filter>
+    <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.cpp">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
     </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Perspective.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.cpp">
+      <Filter>src\Kross\Renderer\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Renderer3D.cpp" />
   </ItemGroup>
 </Project>

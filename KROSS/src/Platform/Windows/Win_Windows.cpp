@@ -6,7 +6,7 @@
 #include "Kross/Events/KeyEvent.h"
 
 #include "GFXAPI/OpenGL/Context.h"
-#include "GFXAPI/DirectX/Context.h"
+//#include "GFXAPI/DirectX/Context.h"
 
 namespace Kross {
 
@@ -237,6 +237,12 @@ namespace Kross {
 		printf_s("size = {%u, %u}\n", m_Data.nWidth, m_Data.nHeight);
 		previous_state = enable;
 		return enable;
+	}
+
+	bool Win_Windows::CursorEnabled(bool active) const
+	{
+		glfwSetInputMode(m_Window, GLFW_CURSOR, (active ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED));
+		return active;
 	}
 
 	void Win_Windows::SetVSync(bool enable)
