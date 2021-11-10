@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <ProjectOutputs />
+  <ProjectOutputs>
+    <ProjectOutput>
+      <FullPath>Z:\4385 - Willian Koessler\random\C++\KROSS-ENGINE\bin\Release-windows-x86_64\Kross\Kross.lib</FullPath>
+    </ProjectOutput>
+  </ProjectOutputs>
   <ContentFiles />
   <SatelliteDlls />
   <NonRecipeFileRefs />

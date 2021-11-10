@@ -43,7 +43,7 @@ glDebugMessage(
     const GLchar* message,
     const void* userParam);
 
-class glError
+class KAPI glError
 {
     static bool active;
     static unsigned int count;

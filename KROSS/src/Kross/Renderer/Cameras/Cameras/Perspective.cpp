@@ -3,10 +3,21 @@
 
 namespace Kross::Camera3D {
 	Perspective::Perspective(float aspectRatio, float fov, const std::string& name)
-		: m_ProjMat(glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 2000.0f)),
-		m_Position(glm::vec3(0.0f))
+		: Camera(name)
 	{
+		KROSS_PROFILE_FUNC();
+		if (GetSelf())
+		{
+			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, GetSelf()->GetName());
+			SetSelf(this);
+		}
 
+
+		m_ProjMat = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 2000.0f);
+		m_ViewMat = glm::mat4(1.0f);
+		APIorder();
+
+		KROSS_CORE_TRACE("[{0}] Camera Created.", __FUNCTION__);
 	}
 	Perspective::~Perspective()
 	{

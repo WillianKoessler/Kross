@@ -121,9 +121,9 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		static const glm::mat4 m4(1.0f);
 		static glm::mat4 transform(1.0f);
-		static Vertex v[1] = { Vertex() };
+		static Vertex v[8] = { Vertex() };
 
-		for (uint8_t i = 0; i < 1; i++) {
+		for (uint8_t i = 0; i < 8; i++) {
 			v[i].pos.x = params.position.x + (params.size.x * (i == 2 || i == 3 || i == 4 || i == 7));
 			v[i].pos.y = params.position.y + (params.size.y * (i == 0 || i == 1 || i == 2 || i == 3));
 			v[i].pos.z = params.position.z + (params.size.z * (i == 1 || i == 2 || i == 6 || i == 7));
@@ -132,8 +132,8 @@ namespace Kross {
 
 			v[i].texCoords = glm::vec2(1.0f);
 		}
-		data->vb->upload(v, sizeof(Vertex) * 1);
-		Renderer::Command::DrawIndexed(data->va, true);
+		data->vb->upload(v, sizeof(Vertex) * 8);
+		Renderer::Command::DrawIndexed(data->va, false);
 	}
 }
 

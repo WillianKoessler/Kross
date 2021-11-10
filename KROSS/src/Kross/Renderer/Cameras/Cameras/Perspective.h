@@ -21,19 +21,8 @@ namespace Kross::Camera3D {
 
 		virtual const std::string& GetName() const override { return m_strName; }
 		CAMERA_TYPE(Perspective_3D);
-	public:
-		std::string m_strName;
-
 	private:
 		inline void RecalculateVPM();
 		inline void APIorder();
-
-	private:
-		glm::mat4 m_ProjMat;
-		glm::mat4 m_ViewMat;
-		glm::mat4 m_VPM;
-
-		glm::vec3 m_Position;
-		glm::vec3 m_Rotation = glm::vec3(0.0f);
 	};
 }

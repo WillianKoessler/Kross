@@ -7,7 +7,7 @@
 #include "Renderer3D.h"
 
 namespace Kross {
-	struct QuadParams
+	struct KAPI QuadParams
 	{
 		glm::vec3				position = { 0.0f, 0.0f, 0.0f };
 		glm::vec2				size = { 1.0f, 1.0f };
@@ -16,7 +16,7 @@ namespace Kross {
 		glm::vec4				color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		float					rotation = 0.0f;
 	};
-	struct CubeParams
+	struct KAPI CubeParams
 	{
 		glm::vec3 position = glm::vec3(0.0f);
 		glm::vec3 size = glm::vec3(1.0f);

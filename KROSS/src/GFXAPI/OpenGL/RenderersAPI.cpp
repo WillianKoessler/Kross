@@ -49,7 +49,7 @@ namespace Kross::OpenGL {
 		{
 		case Kross::RendererAPI::Mode::Wireframe: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)); break;
 		case Kross::RendererAPI::Mode::Fill: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)); break;
-		case Kross::RendererAPI::Mode::Points: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)); break;
+		case Kross::RendererAPI::Mode::Points: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_POINTS)); break;
 		}
 	}
 }

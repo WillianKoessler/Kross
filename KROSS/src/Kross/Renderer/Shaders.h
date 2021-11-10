@@ -5,13 +5,13 @@
 #include "glm/glm/fwd.hpp"
 
 namespace Kross {
-	enum class ShaderType
+	enum class KAPI ShaderType
 	{
 		None = 0,
 		OpenGL
 	};
 
-	class Shader
+	class KAPI Shader
 	{
 	public:
 		virtual ~Shader() {}

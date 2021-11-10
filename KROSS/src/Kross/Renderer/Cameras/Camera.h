@@ -2,6 +2,7 @@
 
 #include "glm/glm/gtc/matrix_transform.hpp"
 #include "Kross/Renderer/RendererAPI.h"
+#include <string>
 
 namespace Kross::Camera {
 
@@ -38,9 +39,20 @@ namespace Kross::Camera {
 
 		inline static Camera* GetSelf() { return self; }
 		inline static void SetSelf(Camera* other) { self = other; }
+		Camera(const std::string& name) : m_strName(name) {}
 
 	private:
 		static Camera* self;
+
+	protected:
+		std::string m_strName;
+
+		glm::mat4 m_ProjMat;
+		glm::mat4 m_ViewMat = glm::mat4(1.0f);
+		glm::mat4 m_VPM;
+
+		glm::vec3 m_Position = glm::vec3(0.0f);
+		glm::vec3 m_Rotation = glm::vec3(0.0f);
 	};
 
 }

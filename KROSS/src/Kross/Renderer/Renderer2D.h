@@ -6,8 +6,8 @@
 #include "Shaders.h"
 
 namespace Kross {
-	struct QuadParams;
-	class Renderer2D
+	struct KAPI QuadParams;
+	class KAPI Renderer2D
 	{
 		static bool s_bSceneBegan;
 		static bool s_bBatch;
