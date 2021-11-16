@@ -46,7 +46,7 @@ void world::OnUpdate(double ts)
 	Kross::Renderer3D::Begin(m_Camera->GetCamera());
 	//static Kross::QuadParams params;
 	static Kross::Params3D params;
-	params.color = { 0.8f, 0.6f, 0.1f, 1.0f };
+	//params.color = { 0.8f, 0.6f, 0.1f, 1.0f };
 	if (Kross::Input::IsKeyHeld(KROSS_KEY_RIGHT))	params.position.x -= (float)ts * 50.0f;
 	if (Kross::Input::IsKeyHeld(KROSS_KEY_LEFT))	params.position.x += (float)ts * 50.0f;
 	if (Kross::Input::IsKeyHeld(KROSS_KEY_UP))		params.position.y += (float)ts * 50.0f;

@@ -102,8 +102,12 @@ namespace Kross {
 			});
 		pData->va->AddVertex(pData->vb);
 
-		Stack<Shader>::instance().Add(pData->voxelShader = Shader::CreateRef("assets/shaders/OpenGL/voxelShader.glsl"));
-
+//		Stack<Shader>::instance().Add(pData->voxelShader = Shader::CreateRef("assets/shaders/OpenGL/voxelShader.glsl"));
+		Stack<Shader>::instance().Add(pData->voxelShader = Shader::CreateRef("voxelShader", {
+			"assets/shaders/OpenGL/voxel/voxel.vert",
+			"assets/shaders/OpenGL/voxel/voxel.geom",
+			"assets/shaders/OpenGL/voxel/voxel.frag",
+			}));
 
 		data = new R3DData;
 		data->texArray = Texture::T2DArray::CreateScope(Texture::Base::QueryMaxSlots());

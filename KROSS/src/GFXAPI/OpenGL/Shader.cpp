@@ -141,17 +141,17 @@ namespace Kross::OpenGL {
 	}
 	unsigned int Shader::GetGlType(const std::string & type)
 	{
-		if(!type.compare("vertex") || !type.compare("vert"))
+		if(!type.compare("vertex") || !type.compare(".vert"))
 			return GL_VERTEX_SHADER;
-		if (!type.compare("fragment") || !type.compare("pixel") || !type.compare("frag"))
+		if (!type.compare("fragment") || !type.compare("pixel") || !type.compare(".frag"))
 			return GL_FRAGMENT_SHADER;
-		if (!type.compare("geometry") || !type.compare("geom"))
+		if (!type.compare("geometry") || !type.compare(".geom"))
 			return GL_GEOMETRY_SHADER;
-		if (!type.compare("compute") || !type.compare("comp"))
+		if (!type.compare("compute") || !type.compare(".comp"))
 			return GL_COMPUTE_SHADER;
-		if (!type.compare("tess_eval") || !type.compare("tese"))
+		if (!type.compare("tess_eval") || !type.compare(".tese"))
 			return GL_TESS_EVALUATION_SHADER;
-		if (!type.compare("tess_ctrl") || !type.compare("tesc"))
+		if (!type.compare("tess_ctrl") || !type.compare(".tesc"))
 			return GL_TESS_CONTROL_SHADER;
 
 		KROSS_MSGBOX("Unknown shader type: " + type, __FUNCTION__, _ERROR_);
