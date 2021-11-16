@@ -48,8 +48,7 @@ namespace Kross {
 		void PushOverlay(const Ref<Layer>& layer);
 		inline Window& GetWindow() { return *m_uptrWindow; }
 		inline static Application& Get() { return *s_Instance; }
-
-		inline Timestep GetTime() const;
+		inline double GetTime() const;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
@@ -61,7 +60,6 @@ namespace Kross {
 		bool m_bMinimized = false;
 		LayerStack m_LayerStack;
 		Ref<ImGuiLayer> m_ptrImGuiLayer;
-		float previous_time = 0.0f;
 
 	private:
 		static Application* s_Instance;

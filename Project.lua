@@ -1,6 +1,6 @@
 workspace "Engine"
 	architecture "x64"
-	startproject "Main"
+	startproject "Editor"
 
 	configurations
 	{
@@ -98,7 +98,7 @@ group "Dep"
 			optimize "on"
 group ""
 
-project "Main"
+project "Editor"
 	location "main"
 	kind "ConsoleApp"
 	language "C++"

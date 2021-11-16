@@ -11,11 +11,6 @@ namespace Kross::Camera2D {
 	{
 		KROSS_PROFILE_FUNC();
 		APIorder();
-		if (GetSelf())
-		{
-			KROSS_CORE_WARN("[Kross::Camera::Ortho] WARNING: Overriding previous camera: {0}", GetSelf()->GetName());
-			SetSelf(this);
-		}
 		KROSS_CORE_INFO("[Kross::Camera::Ortho] Camera Created");
 	}
 
@@ -39,11 +34,16 @@ namespace Kross::Camera2D {
 
 	void Orthographic::SetRotation(const glm::vec3& rot)
 	{
+		m_Rotation = rot;
 	}
 
 	void Orthographic::SetRotation(float angle, Axis a)
 	{
-		m_Rotation = angle;
+		switch (a) {
+		case Axis::X: m_Rotation.x = angle; break;
+		case Axis::Y: m_Rotation.y = angle; break;
+		case Axis::Z: m_Rotation.z = angle; break;
+		}
 		RecalculateVPM();
 	}
 
@@ -51,7 +51,9 @@ namespace Kross::Camera2D {
 	{
 		KROSS_PROFILE_FUNC();
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position);
-		transform = glm::rotate(transform, glm::radians(m_Rotation), glm::vec3(0, 0, 1));
+		transform = glm::rotate(transform, glm::radians(m_Rotation.x), glm::vec3(1, 0, 0));
+		transform = glm::rotate(transform, glm::radians(m_Rotation.y), glm::vec3(0, 1, 0));
+		transform = glm::rotate(transform, glm::radians(m_Rotation.z), glm::vec3(0, 0, 1));
 		m_ViewMat = glm::inverse(transform);
 		APIorder();
 	}

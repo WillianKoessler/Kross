@@ -30,7 +30,7 @@ namespace Kross::OpenGL::Texture {
 		virtual uint32_t GetWidth() const override { return m_unWidth; }
 		virtual uint32_t GetHeight() const override { return m_unHeight; }
 		virtual glm::vec2 GetSize() const override { return glm::vec2((float)m_unWidth, (float)m_unHeight); }
-		virtual const unsigned int GetID() const override { return m_RendererID; }
+		virtual const uint32_t GetID() const override { return m_RendererID; }
 		virtual const std::string& GetName() const override { return m_strName; }
 		virtual const int GetCurrentSlot() const override { return m_CurrentSlot; }
 
@@ -39,8 +39,8 @@ namespace Kross::OpenGL::Texture {
 		Ref<unsigned char> raw_data;
 		std::string m_strPath, m_strName;
 		uint32_t m_RendererID, m_unWidth, m_unHeight;
-		unsigned short m_CurrentSlot;
+		uint8_t m_CurrentSlot;
 		int m_unInternalFormat;
-		unsigned int m_unDataFormat;
+		uint32_t m_unDataFormat;
 	};
 }

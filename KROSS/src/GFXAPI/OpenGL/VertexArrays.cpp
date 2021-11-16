@@ -24,7 +24,7 @@ namespace Kross::OpenGL {
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glGenVertexArrays(1, &m_RendererID));
-		glBindVertexArray(m_RendererID);
+		Bind();
 		KROSS_CORE_INFO("[Kross::OpenGL::VertexArray] Vertex Array Created");
 	}
 

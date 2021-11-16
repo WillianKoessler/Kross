@@ -14,7 +14,7 @@ namespace Kross {
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
-		virtual void OnImGuiRender(Timestep ts) override;
+		virtual void OnImGuiRender(double ts) override;
 
 		void Begin();
 		void End();

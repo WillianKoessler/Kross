@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "main\Main.vcxproj", "{4AF3887C-362A-8A0D-DF16-7010CB2C060F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "barebones\Main.vcxproj", "{4AF3887C-362A-8A0D-DF16-7010CB2C060F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dep", "Dep", "{A56CF67E-11D7-AAF5-5A15-5C9BC6BE884A}"
 EndProject

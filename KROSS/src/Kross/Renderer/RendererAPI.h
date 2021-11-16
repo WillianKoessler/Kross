@@ -23,6 +23,8 @@ namespace Kross {
 		virtual void Clear() const = 0;
 		virtual void SetClear(const glm::vec4& color) const = 0;
 		virtual void SetClear(const unsigned int color) const = 0;
+		virtual void DrawArrays(const Ref<VertexArray>& va) const = 0;
+		virtual void DrawArrays(const Scope<VertexArray>& va, bool drawPoints) const = 0;
 		virtual void DrawIndexed(const Ref<VertexArray>& va) const = 0;
 		virtual void DrawIndexed(const Scope<VertexArray>& va, bool drawPoints = false) const = 0;
 		virtual void SetViewport(uint32_t width, uint32_t height) const = 0;

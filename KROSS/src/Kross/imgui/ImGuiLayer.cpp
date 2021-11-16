@@ -60,7 +60,7 @@ namespace Kross {
 	}
 
 
-	void ImGuiLayer::OnImGuiRender(Timestep ts)
+	void ImGuiLayer::OnImGuiRender(double ts)
 	{
 	}
 

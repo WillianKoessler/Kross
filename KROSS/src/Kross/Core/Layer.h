@@ -14,8 +14,8 @@ namespace Kross {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate(Timestep fElapsedTime) {}
-		virtual void OnImGuiRender(Timestep fElapsedTime) {}
+		virtual void OnUpdate(double fElapsedTime) {}
+		virtual void OnImGuiRender(double fElapsedTime) {}
 		virtual void OnEvent(Event& event) {}
 
 		inline const std::string& GetName() const { return m_strDebugName; }

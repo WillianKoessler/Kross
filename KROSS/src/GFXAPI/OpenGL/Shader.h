@@ -68,7 +68,6 @@ namespace Kross::OpenGL {
 		void CreateShader(const std::string& filepath);
 
 	private:
-		static const char* area;
 		uint32_t m_RendererID;
 		std::string m_strName;
 		mutable std::vector<UniformLocation*> UniformCache;

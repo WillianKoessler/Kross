@@ -8,6 +8,10 @@ namespace Kross::Camera3D {
 		Perspective(float aspectRatio, float fov, const std::string& name = "blank");
 		~Perspective();
 
+		virtual bool isLookingAt() const override { return m_bLookingAt; }
+		virtual void LockAt(const glm::vec3& target) override;
+		virtual void unLock() override;
+
 		virtual void SetPosition(const glm::vec3& pos) override;
 		virtual void SetRotation(const glm::vec3& rot) override;
 		virtual void SetRotation(float angle, Axis a) override;
@@ -34,6 +38,9 @@ namespace Kross::Camera3D {
 		glm::mat4 m_VPM;
 
 		glm::vec3 m_Position;
-		glm::vec3 m_Rotation = glm::vec3(0.0f);
+		glm::vec3 m_Rotation;
+
+		bool m_bLookingAt;
+		glm::vec3 m_Target;
 	};
 }
