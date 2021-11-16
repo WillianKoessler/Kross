@@ -237,20 +237,25 @@ namespace Kross {
 		else if (params.texture && params.subTexture) { KROSS_CORE_ERROR_("[{0}] Texture AND subTexture was found. Please supply only one of each.", __FUNCTION__); return; }
 		else { KROSS_CORE_WARN("[{0}] Neither Texture nor Subtexture selected. Batch aborted.", __FUNCTION__); return; }
 
-		if (params.rotation != 0.0f)
-			for (char i = 0; i < 4; i++)
+		if (params.rotation != glm::vec3(0.0f))
+		{
+			for (uint8_t i = 0; i < 4; i++)
 			{
 				transform = glm::translate(m4, params.position) *
-					glm::rotate(m4, params.rotation, { 0.0f, 0.0f, 1.0f }) *
+					(params.rotation.x != 0.0f ? (glm::rotate(m4, params.rotation.x, { 1.0f, 0.0f, 0.0f })) : m4) *
+					(params.rotation.y != 0.0f ? (glm::rotate(m4, params.rotation.y, { 0.0f, 1.0f, 0.0f })) : m4) *
+					(params.rotation.z != 0.0f ? (glm::rotate(m4, params.rotation.z, { 0.0f, 0.0f, 1.0f })) : m4) *
 					glm::scale(m4, glm::vec3(params.size, 0.0f));
+
 				v[i].pos = transform * glm::vec4(data->rotations.v[i].pos, 1.0f);
 				v[i].color = params.color;
 				v[i].texIndex = tex;
 				v[i].texCoord = texCoords[i];
 				//v[i].texCoord = { params.texOffSet.x + (params.texSubSize.x * (i == 1 || i == 2)), params.texOffSet.y + (params.texSubSize.y * (i == 2 || i == 3)) };
 			}
+		}
 		else 
-			for (char i = 0; i < 4; i++)
+			for (uint8_t i = 0; i < 4; i++)
 			{
 				v[i].pos = {
 					params.position.x + (params.size.x * (i == 1 || i == 2)),

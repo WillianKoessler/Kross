@@ -14,26 +14,25 @@ namespace Kross::Camera3D {
 
 		static glm::vec3 m_v3Rot;
 
-		virtual void OnUpdate(Timestep ts) override;
+		virtual void OnUpdate(double ts) override;
 		virtual void OnEvent(Event& e) override;
 
 		virtual Ref<Kross::Camera::Camera> GetCamera() override;
 		virtual const Ref<Kross::Camera::Camera> GetCamera() const override;
 
-		virtual void Zoom(float val) override;
+		virtual void Zoom(float val) override {};
 	private:
 		virtual void CalculateView() override;
 
 	private:
 		virtual bool OnWindowResized(WindowResizeEvent& e) override;
-		virtual bool OnMouseScrolled(MouseScrolledEvent& e) override;
+		virtual bool OnMouseScrolled(MouseScrolledEvent& e) override { return false; };
 		virtual bool OnMouseMoved(MouseMovedEvent& e) override;
 	private:
-		float BOUND = 89.0f;
+		float m_fYbound = 89.0f;
+		float m_fSpeed = 50.0f;
 		float m_fAR;
 		float m_fFOV;
-		float m_fZoomRate = -0.1f;
-		float m_fZoom = 1.0f;
 		glm::vec3 mouseRotation;
 		bool m_bCursorEnabled = false;
 	};

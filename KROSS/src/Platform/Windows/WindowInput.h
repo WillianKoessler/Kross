@@ -1,13 +1,14 @@
 #pragma once
 #include "Kross/Core/Input.h"
+constexpr int maxKeys = 512;
 
 namespace Kross{
 
 	class WindowInput : public Input
 	{
-		static KeyState keys[256];
-		static bool s_bOldKeys[256];
-		static bool s_bKeys[256];
+		static KeyState keys[maxKeys];
+		static bool s_bOldKeys[maxKeys];
+		static bool s_bKeys[maxKeys];
 	protected:
 		virtual KeyState GetKeyStateImpl(int keycode) override;
 		virtual bool IsKeyHeldImpl(int keycode) override;

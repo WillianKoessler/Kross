@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Kross/Renderer/Buffers.h"
+#include "Kross/Renderer/Buffer.h"
 
 namespace Kross {
-	class KAPI VertexArray
+	class VertexArray
 	{
 	public:
 		virtual ~VertexArray() = default;

@@ -6,9 +6,9 @@
 
 namespace Kross {
 	Input* Input::s_Instance = new WindowInput();
-	Input::KeyState WindowInput::keys[256] = { Input::KeyState::NOT_PRESSED };
-	bool WindowInput::s_bOldKeys[256] = { false };
-	bool WindowInput::s_bKeys[256] = { false };
+	Input::KeyState WindowInput::keys[maxKeys] = { Input::KeyState::NOT_PRESSED };
+	bool WindowInput::s_bOldKeys[maxKeys] = { false };
+	bool WindowInput::s_bKeys[maxKeys] = { false };
 	Input::KeyState WindowInput::GetKeyStateImpl(int keycode)
 	{
 		int nState = glfwGetKey(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), keycode);

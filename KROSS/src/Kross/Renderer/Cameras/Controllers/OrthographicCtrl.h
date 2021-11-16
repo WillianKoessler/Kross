@@ -12,7 +12,7 @@ namespace Kross::Camera2D {
 		OrthographicCtrl(Orthographic* camera, float AR = 1.0f, bool rot = false);
 		~OrthographicCtrl();
 
-		virtual void OnUpdate(Timestep ts) override;
+		virtual void OnUpdate(double ts) override;
 		virtual void OnEvent(Event& e) override;
 
 		virtual Ref<Kross::Camera::Camera> GetCamera() override;

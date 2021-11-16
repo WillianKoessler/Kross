@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Kross {
-	class KAPI Context
+	class Context
 	{
 	public:
 		virtual void Init(unsigned int width, unsigned int height) = 0;

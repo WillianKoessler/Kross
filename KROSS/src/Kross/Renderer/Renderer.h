@@ -7,20 +7,33 @@
 #include "Renderer3D.h"
 
 namespace Kross {
-	struct KAPI QuadParams
+	struct QuadParams
 	{
-		glm::vec3				position = { 0.0f, 0.0f, 0.0f };
-		glm::vec2				size = { 1.0f, 1.0f };
+		glm::vec3				position = glm::vec3(0.0f);
+		glm::vec2				size = glm::vec2(1.0f);
 		Ref<Texture::T2D>		texture = nullptr;
 		Ref<Texture::T2DAtlas>	subTexture = nullptr;
-		glm::vec4				color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		float					rotation = 0.0f;
+		glm::vec4				color = glm::vec4(1.0f);
+		glm::vec3				rotation = glm::vec3(0.0f);
 	};
-	struct KAPI CubeParams
+	struct Params3D
 	{
-		glm::vec3 position = glm::vec3(0.0f);
-		glm::vec3 size = glm::vec3(1.0f);
-		glm::vec4 color = glm::vec4(1.0f);
+		glm::vec3				position = glm::vec3(0.0f);
+		glm::vec3				size = glm::vec3(1.0f);
+		glm::vec4				color = glm::vec4(1.0f);
+		glm::vec3				rotation = glm::vec3(0.0f);
+		Ref<Texture::T2D>		frontTexture = nullptr;
+		Ref<Texture::T2D>		rightTexture = nullptr;
+		Ref<Texture::T2D>		leftTexture = nullptr;
+		Ref<Texture::T2D>		backTexture = nullptr;
+		Ref<Texture::T2D>		topTexture = nullptr;
+		Ref<Texture::T2D>		bottomTexture = nullptr;
+	};
+	struct CubeParams
+	{
+		glm::vec3				position = glm::vec3(0.0f);
+		glm::vec3				size = glm::vec3(1.0f);
+		glm::vec4				color = glm::vec4(1.0f);
 	};
 
 	class KAPI Renderer
@@ -60,6 +73,14 @@ namespace Kross {
 			{
 				s_RendererAPI->SetClear(color);
 			}
+			inline static void DrawArrays(const Ref<VertexArray>& va)
+			{
+				s_RendererAPI->DrawArrays(va);
+			}
+			inline static void DrawArrays(const Scope<VertexArray>& va, bool drawPoints = false)
+			{
+				s_RendererAPI->DrawArrays(va, drawPoints);
+			}
 			inline static void DrawIndexed(const Ref<VertexArray>& va)
 			{
 				s_RendererAPI->DrawIndexed(va);
@@ -95,7 +116,7 @@ namespace Kross {
 
 			std::unordered_map<std::string, Ref<Shader>> shaders;
 		};
-		enum Dimentions { D2 = 0, D3 };
+		enum class Dimentions { D2 = 0, D3 };
 
 	public:
 		static void Shutdown();

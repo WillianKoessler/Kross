@@ -6,12 +6,13 @@
 #include "Shaders.h"
 
 namespace Kross {
-	struct KAPI CubeParams;
-	class KAPI Renderer3D
+	struct QuadParams;
+	struct Params3D;
+	class Renderer3D
 	{
 		static bool s_bSceneBegan;
 		static bool s_bBatch;
-		static bool s_bRendererInitialized;
+		static bool s_bInitiated;
 
 	public:
 		struct Stats
@@ -31,11 +32,15 @@ namespace Kross {
 		static void Shutdown();
 
 		static void Begin(Ref<Camera::Camera>& camera);
+		static void DrawCube();
+		static void DrawCube(const Params3D& params);
 		static void End();
 
 		static void SwitchShader(const Ref<Shader>& shader);
-
-		static void DrawCube(const CubeParams& params);
+		static void BatchBegin();
+		static void Flush();
+		static void BatchEnd();
+		static void BatchQuad(QuadParams& params);
 	};
 
 }

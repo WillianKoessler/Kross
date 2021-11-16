@@ -19,6 +19,7 @@ namespace Kross::OpenGL {
 		Shader(const std::string& filepath);
 		Shader(const std::string& name, const std::string& filepath);
 		Shader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		Shader(const std::string& name, const std::initializer_list<std::string>& sources);
 		~Shader();
 
 		virtual void Bind() const override;
@@ -68,7 +69,6 @@ namespace Kross::OpenGL {
 		void CreateShader(const std::string& filepath);
 
 	private:
-		static const char* area;
 		uint32_t m_RendererID;
 		std::string m_strName;
 		mutable std::vector<UniformLocation*> UniformCache;

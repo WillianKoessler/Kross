@@ -121,7 +121,7 @@ else\
 	#define KROSS_CORE_ERROR_ONCE_(...){ static bool called = false; if(!called) { Kross::Log::GetCoreLogger()->error(__VA_ARGS__); called = true;}}
 	#define KROSS_CORE_FATAL_ONCE(...) { static bool called = false; if(!called) { Kross::Log::GetCoreLogger()->critical(__VA_ARGS__); called = true;}}
 	#define KROSS_CORE_ERROR_ONCE(...) { static bool called = false; if(!called) { Kross::Log::GetCoreLogger()->error("ERROR AT FILE {0}, LINE {1}",__FILE__, __LINE__);\
-																				   Kross::Log::GetCoreLogger()->error(__VA_ARGS__); called = true;}
+																				   Kross::Log::GetCoreLogger()->error(__VA_ARGS__); called = true;}}
 
 // Client File Log 
 	#define KROSS_FILE_TRACE(...)

@@ -25,15 +25,22 @@ namespace Kross::OpenGL {
 	void RendererAPI::SetClear(const unsigned int color) const
 	{
 		glCall(glClearColor(
-			(float)(((color & 0xff000000) >> 24) / 256),
-			(float)(((color & 0x00ff0000) >> 16) / 256),
-			(float)(((color & 0x0000ff00) >> 8) / 256),
-			(float)(((color & 0x000000ff)) / 256)
+			(((color & 0xff000000) >> 24) / 256.0f),
+			(((color & 0x00ff0000) >> 16) / 256.0f),
+			(((color & 0x0000ff00) >> 8) / 256.0f),
+			(((color & 0x000000ff)) / 256.0f)
 		));
+	}
+	void RendererAPI::DrawArrays(const Ref<VertexArray>& va) const
+	{
+	}
+	void RendererAPI::DrawArrays(const Scope<VertexArray>& va, bool drawPoints) const
+	{
+		glCall(glDrawArrays(GL_POINTS, 0, (GLsizei)va->GetVertex().size()));
 	}
 	void RendererAPI::DrawIndexed(const Ref<VertexArray>& va) const
 	{
-		glDrawElements(GL_POINTS, va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		glCall(glDrawElements(GL_POINTS, va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr));
 	}
 	void RendererAPI::DrawIndexed(const Scope<VertexArray>& va, bool drawPoints) const
 	{
@@ -49,7 +56,7 @@ namespace Kross::OpenGL {
 		{
 		case Kross::RendererAPI::Mode::Wireframe: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)); break;
 		case Kross::RendererAPI::Mode::Fill: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)); break;
-		case Kross::RendererAPI::Mode::Points: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_POINTS)); break;
+		case Kross::RendererAPI::Mode::Points: glCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)); break;
 		}
 	}
 }

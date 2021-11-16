@@ -2,7 +2,6 @@
 
 #include "glm/glm/gtc/matrix_transform.hpp"
 #include "Kross/Renderer/RendererAPI.h"
-#include <string>
 
 namespace Kross::Camera {
 
@@ -14,12 +13,16 @@ namespace Kross::Camera {
 	class Camera
 	{
 	public:
-		enum Axis { X, Y, Z };
+		enum class Axis { X, Y, Z };
 
 	public:
+		virtual bool isLookingAt() const = 0;
+		virtual void LockAt(const glm::vec3& target) = 0;
+		virtual void unLock() = 0;
+
 		virtual void SetPosition(const glm::vec3& pos) = 0;
 		virtual void SetRotation(const glm::vec3& rot) = 0;
-		virtual void SetRotation(float angle, Axis a) = 0;
+		virtual void SetRotation(float angle, Axis a)  = 0;
 		virtual void SetProjMat(float f1, float f2, float f3, float f4) = 0; // for more detailed information about arguments, look on the specific type you're using
 
 		virtual const glm::mat4& GetProjMat()	const = 0;
@@ -36,23 +39,6 @@ namespace Kross::Camera {
 		virtual Type GetType() const = 0;
 		virtual const std::string GetCameraName() const = 0;
 		virtual const std::string& GetName() const = 0;
-
-		inline static Camera* GetSelf() { return self; }
-		inline static void SetSelf(Camera* other) { self = other; }
-		Camera(const std::string& name) : m_strName(name) {}
-
-	private:
-		static Camera* self;
-
-	protected:
-		std::string m_strName;
-
-		glm::mat4 m_ProjMat;
-		glm::mat4 m_ViewMat = glm::mat4(1.0f);
-		glm::mat4 m_VPM;
-
-		glm::vec3 m_Position = glm::vec3(0.0f);
-		glm::vec3 m_Rotation = glm::vec3(0.0f);
 	};
 
 }

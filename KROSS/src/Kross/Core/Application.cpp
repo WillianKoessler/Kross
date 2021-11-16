@@ -1,8 +1,5 @@
 #include "Kross_pch.h"
 #include "Application.h"
-#include "Input.h"
-
-#include "GLFW/glfw3.h"
 
 namespace Kross {
 
@@ -82,10 +79,8 @@ namespace Kross {
 		while (m_bRunning)
 		{
 			KROSS_PROFILE_SCOPE("Run Loop");
-			float time = GetTime();
-			Timestep ts = time - previous_time;
-			previous_time = time;
-
+			static Timestep time;
+			double ts = time.GetLap();
 			if (!m_bMinimized)
 			{
 				KROSS_PROFILE_SCOPE("LayerStack OnUpdate");
@@ -109,9 +104,9 @@ namespace Kross {
 		KROSS_CORE_TRACE("[{0}] Application Finished", __FUNCTION__);
 	}
 
-	inline Timestep Application::GetTime() const
+	inline double Application::GetTime() const
 	{
-		return Timestep((float)glfwGetTime());
+		return Timestep::now();
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

@@ -5,13 +5,13 @@
 #include "glm/glm/fwd.hpp"
 
 namespace Kross {
-	enum class KAPI ShaderType
+	enum class ShaderType
 	{
 		None = 0,
 		OpenGL
 	};
 
-	class KAPI Shader
+	class Shader
 	{
 	public:
 		virtual ~Shader() {}
@@ -33,9 +33,11 @@ namespace Kross {
 		virtual void SetMat3	(const std::string& name, const glm::mat3& matrix) const = 0;
 		virtual void SetMat4	(const std::string& name, const glm::mat4& matrix) const = 0;
 
+		static Ref<Shader> CreateRef(const std::string& name, const std::initializer_list<std::string>& sources);
 		static Ref<Shader> CreateRef(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
 		static Ref<Shader> CreateRef(const std::string& name, const std::string& filepath);
 		static Ref<Shader> CreateRef(const std::string& filepath);
+		static Scope<Shader> CreateScope(const std::string& name, const std::initializer_list<std::string>& sources);
 		static Scope<Shader> CreateScope(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
 		static Scope<Shader> CreateScope(const std::string& name, const std::string& filepath);
 		static Scope<Shader> CreateScope(const std::string& filepath);

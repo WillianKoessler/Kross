@@ -11,15 +11,7 @@
 #endif
 
 #if KROSS_GL_DEBUG
-    #define glCall(x)                                       \
-        {                                                   \
-            KROSS_PROFILE_SCOPE(#x);                        \
-            /*glError::glClearErrors();*/                   \
-            x;                                              \
-           /*glError::glGetErrors(#x, __FILE__, __LINE__);*/\
-           	glError error(#x, __FILE__, __LINE__);          \
-            error.handle();                                 \
-        }                                                   
+    #define glCall(x) { KROSS_PROFILE_SCOPE(#x); x; glError error(#x, __FILE__, __LINE__);error.handle(); }
 #elif KROSS_GLCALL_PROFILE
     #define glCall(x)                                       \
         {                                                   \
@@ -43,7 +35,7 @@ glDebugMessage(
     const GLchar* message,
     const void* userParam);
 
-class KAPI glError
+class glError
 {
     static bool active;
     static unsigned int count;

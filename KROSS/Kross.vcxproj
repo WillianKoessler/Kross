@@ -29,7 +29,7 @@
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
@@ -96,7 +96,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -140,9 +140,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Kross\Renderer\Mesh\Mesh.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\FrameBuffer.h" />
     <ClInclude Include="src\Kross\Renderer\FrameBuffers.h" />
-    <ClInclude Include="src\GFXAPI\OpenGL\Buffer.h" />
+    <ClInclude Include="src\GFXAPI\OpenGL\Buffers.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Context.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\RenderersAPI.h" />
@@ -169,7 +170,7 @@
     <ClInclude Include="src\Kross\Events\Event.h" />
     <ClInclude Include="src\Kross\Events\KeyEvent.h" />
     <ClInclude Include="src\Kross\Events\MouseEvent.h" />
-    <ClInclude Include="src\Kross\Renderer\Buffers.h" />
+    <ClInclude Include="src\Kross\Renderer\Buffer.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Camera.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Perspective.h" />
@@ -566,9 +567,10 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Kross\Renderer\Mesh\Mesh.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\FrameBuffer.cpp" />
     <ClCompile Include="src\Kross\Renderer\FrameBuffers.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\Buffer.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Context.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\RenderersAPI.cpp" />
@@ -583,11 +585,9 @@
     <ClCompile Include="src\Kross\Core\Stack.cpp" />
     <ClCompile Include="src\Kross\Core\Timestep.cpp" />
     <ClCompile Include="src\Kross\Core\Window.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Buffers.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Cameras\Camera.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Perspective.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Cameras\Controller.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer.cpp" />

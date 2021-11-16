@@ -1,31 +1,31 @@
-#include "Kross_pch.h"
+#include <Kross_pch.h>
 #include "FrameBuffers.h"
+
 #include "Renderer.h"
 
 #include "GFXAPI/OpenGL/FrameBuffer.h"
 
 namespace Kross {
-	Ref<FrameBuffers> FrameBuffers::CreateRef()
-	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::None:		KROSS_MSGBOX("[Kross::FrameBuffers] Renderer API (None) is not supported", "Vertex Array", _ERROR_); return nullptr;
-		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::FrameBuffer>();
-		}
 
-		KROSS_MSGBOX("[Kross::FrameBuffers] Renderer API (None) is not supported", "Vertex Array", _ERROR_);
+	Ref<FrameBuffers> Kross::FrameBuffers::CreateRef(const FrameBufferSpec& specs)
+	{
+		switch (RendererAPI::GetAPI())
+		{
+		case RendererAPI::API::None:    KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_); return nullptr;
+		case RendererAPI::API::OpenGL:  return makeRef<Kross::OpenGL::FrameBuffer>(specs);
+		}
+		KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_);
 		return nullptr;
 	}
 
-	Scope<FrameBuffers> FrameBuffers::CreateScope()
+	Scope<FrameBuffers> Kross::FrameBuffers::CreateScope(const FrameBufferSpec& specs)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::None:		Log::WindowBox("[Kross::FrameBuffers] Renderer API (None) is not supported", "Vertex Array", _ERROR_); return nullptr;
-		case RendererAPI::API::OpenGL:		return makeScope<OpenGL::FrameBuffer>();
+		case RendererAPI::API::None:    KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_); return nullptr;
+		case RendererAPI::API::OpenGL:  return makeScope<Kross::OpenGL::FrameBuffer>(specs);
 		}
-
-		KROSS_MSGBOX("[Kross::FrameBuffers] Renderer API (None) is not supported", "Vertex Array", _ERROR_);
+		KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_);
 		return nullptr;
 	}
 }

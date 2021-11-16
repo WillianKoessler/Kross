@@ -5,16 +5,19 @@ namespace Kross {
 	class Timestep
 	{
 	public:
-		Timestep(float time = 0.0f)
-			: m_fTime(time)
+		Timestep()
+			: m_scTime(std::chrono::high_resolution_clock::now().time_since_epoch()),
+			m_lfTime(static_cast<double>(std::chrono::time_point_cast<std::chrono::microseconds>(m_scTime).time_since_epoch().count()))
 		{}
 
-		operator float() const { return m_fTime; }
-
-		inline const float GetSeconds() const { return m_fTime; }
-		inline const float GetMilliseconds() const { return m_fTime * 1000.0f; }
+		operator double() const { return m_lfTime; }
+		static inline const double now() { return static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count()); }
+		const double GetLap() { static double last_pass = m_lfTime; m_lfTime = now(); auto r = m_lfTime - last_pass; last_pass = m_lfTime; return r * 0.0001f; }
+		inline const double GetSeconds() const { return m_lfTime * 0.0001f; }
+		inline const double GetMilliseconds() const { return m_lfTime; }
 	private:
-		float m_fTime;
+		std::chrono::time_point<std::chrono::steady_clock> m_scTime;
+		double m_lfTime;
 	};
 
 	class Timer
@@ -40,7 +43,7 @@ namespace Kross {
 		const char* cName;
 		float fTime;
 	private:
-		static std::vector<step> RTP;
+		static std::vector<step> RTP; // Real Time Profiler
 		std::chrono::time_point<std::chrono::steady_clock> startPoint;
 		bool bStoped;
 		bool rtp;
