@@ -7,7 +7,7 @@ class Game : public Kross::Application
 {
 public:
 	Game()
-		: Kross::Application("Voxel", 800, 400, Kross::Renderer::Dimentions::D3)
+		: Kross::Application("Voxel", 800, 400, Kross::Renderer::Dimentions::D2)
 	{
 		PushLayer(Kross::makeRef<world>());
 	}

@@ -9,6 +9,8 @@ class world : public Kross::Layer
 	//Kross::Ref<Kross::FrameBuffers> m_Framebuffer;
 
 	Kross::Ref<Kross::Scene> m_Scene;
+	Kross::Entity square;
+	Kross::QuadParams params;
 
 public:
 	world();

@@ -224,9 +224,24 @@ namespace Kross {
 
 	}
 	void Renderer3D::DrawCube(const Params3D& params) {
-		static QuadParams p[6];
-		p[0].texture = params.frontTexture;
-		BatchQuad(p[0]);
+		static constexpr uint8_t faces = 6;
+		static uint8_t currentFace = 0;
+		static glm::vec3 pos[faces];
+		static glm::vec2 size[faces];
+		static glm::vec4 color[faces];
+		static glm::vec3 rotation[faces];
+		
+		QuadParams p = {
+			pos[currentFace],
+			size[currentFace],
+			nullptr,
+			nullptr,
+			color[currentFace],
+			rotation[currentFace],
+		};
+		p.texture = params.frontTexture;
+
+		BatchQuad(p);
 	}
 	void Renderer3D::DrawVoxel(const Voxel& params) {
 		GeometryVertex& p = pData->myBuffer[pData->pIndex++];

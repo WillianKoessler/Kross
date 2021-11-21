@@ -1356,6 +1356,8 @@
     <ClInclude Include="src\Kross\Scene\Scene.h" />
     <ClInclude Include="src\Kross\Renderer\RendererCommands.h" />
     <ClInclude Include="src\Kross\Renderer\RenderTypes.h" />
+    <ClInclude Include="src\Kross\Scene\Components.h" />
+    <ClInclude Include="src\Kross\Scene\Entity.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
@@ -1477,5 +1479,6 @@
     </ClCompile>
     <ClCompile Include="src\Kross\Scene\Scene.cpp" />
     <ClCompile Include="src\Kross\Renderer\Context.cpp" />
+    <ClCompile Include="src\Kross\Scene\Entity.cpp" />
   </ItemGroup>
 </Project>
