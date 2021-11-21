@@ -5,7 +5,7 @@
 #include "Kross/Renderer/VertexArray.h"
 
 namespace Kross {
-	class Command
+	class RenderCommand
 	{
 	public:
 		inline static void Shutdown()

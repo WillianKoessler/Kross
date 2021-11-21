@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include "Stack.h"
+#include "Kross/Renderer/Textures/Textures.h"
 
 namespace Kross {
 
@@ -130,7 +131,7 @@ namespace Kross {
 			return false;
 		}
 		m_bMinimized = false;
-		Renderer::Command::OnWindowResize(e.GetWidth(), e.GetHeight());
+		RenderCommand::OnWindowResize(e.GetWidth(), e.GetHeight());
 		return false;
 	}
 }

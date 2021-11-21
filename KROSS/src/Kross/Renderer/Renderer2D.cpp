@@ -6,6 +6,7 @@
 #include "Kross/Core/Stack.h"
 
 #include "Renderer.h"
+#include "RenderTypes.h"
 #include "VertexArray.h"
 #include "Textures/Array.h"
 
@@ -168,7 +169,7 @@ namespace Kross {
 	{
 		data->texArray->Bind(0);
 		data->va->Bind();
-		Renderer::Command::DrawIndexed(data->va);
+		RenderCommand::DrawIndexed(data->va);
 		data->rendererStats.DrawCount++;
 
 		data->quadIndex = 0;

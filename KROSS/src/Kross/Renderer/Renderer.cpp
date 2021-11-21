@@ -4,10 +4,11 @@
 #include "GFXAPI/OpenGL/RenderersAPI.h"
 //#include "GFXAPI/DirectX/RenderersAPI.h"
 
+#include "Renderer2D.h"
+#include "Renderer3D.h"
+
 namespace Kross {
-	//Renderer::Scene::Data* Renderer::Scene::m_Data = new Renderer::Scene::Data;
-	//Ref<Renderer::ShaderLibrary> Renderer::shaderLibrary = makeRef<Renderer::ShaderLibrary>();
-	RendererAPI* Renderer::Command::s_RendererAPI = new GraphicsAPI::RendererAPI;
+	RendererAPI* RenderCommand::s_RendererAPI = new GraphicsAPI::RendererAPI;
 	Renderer::Dimentions Renderer::s_dDims = Renderer::Dimentions::D2;
 
 	void Renderer::Init(Renderer::Dimentions dims)
@@ -15,7 +16,7 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		s_dDims = dims;
 
-		Renderer::Command::Init();
+		RenderCommand::Init();
 		switch (s_dDims) {
 		case Dimentions::D2: Renderer2D::Init(); break;
 		case Dimentions::D3: Renderer3D::Init(); break;
@@ -29,7 +30,7 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 
-		Renderer::Command::Shutdown();
+		RenderCommand::Shutdown();
 
 		switch (s_dDims) {
 		case Dimentions::D2: Renderer2D::Shutdown(); break;

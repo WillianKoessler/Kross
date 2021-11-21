@@ -6,8 +6,10 @@ class world : public Kross::Layer
 	// main camera
 	Kross::Ref<Kross::Camera::Controller> m_Camera;
 
-	Kross::Ref<Kross::FrameBuffers> framebuffer;
-	float* height;
+	//Kross::Ref<Kross::FrameBuffers> m_Framebuffer;
+
+	Kross::Ref<Kross::Scene> m_Scene;
+
 public:
 	world();
 

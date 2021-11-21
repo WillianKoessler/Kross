@@ -6,6 +6,7 @@
 #include "Kross/Core/Stack.h"
 
 #include "Renderer.h"
+#include "RenderTypes.h"
 #include "VertexArray.h"
 #include "Textures/Array.h"
 
@@ -190,7 +191,7 @@ namespace Kross {
 
 		delete[] indices;
 
-		Renderer::Command::BackCull(false);
+		RenderCommand::BackCull(false);
 
 		s_bSceneBegan = false;
 	}
@@ -263,7 +264,7 @@ namespace Kross {
 		data->texArray->Bind(0);
 		data->va->Bind();
 		data->shader->Bind();
-		Renderer::Command::DrawIndexed(data->va);
+		RenderCommand::DrawIndexed(data->va);
 		data->rendererStats.DrawCount++;
 
 		data->quadIndex = 0;
@@ -272,7 +273,7 @@ namespace Kross {
 		pData->va->Bind();
 		//Renderer::Command::DrawIndexed(pData->va);
 		pData->voxelShader->Bind();
-		Renderer::Command::DrawArrays(pData->va);
+		RenderCommand::DrawArrays(pData->va);
 
 		//Renderer::Submit()
 		pData->pIndex = 0;
