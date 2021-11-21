@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Kross/Core/Core.h"
-//#include "Kross/Core/StackEntry.h"
+#include "Kross/Util/Singleton.h"
 #include <string>
 #include <algorithm>
 #include <vector>
 
 namespace Kross {
 
-	// Kross::Shader || Kross::Texture::T2D  || Kross::Layer
+	// Kross::Shader || Kross::Texture::T2D  || Kross::Mesh::Base
 	template<class T>
 	class Stack
 	{
@@ -25,7 +25,7 @@ namespace Kross {
 			{
 				table += "\n	" + key + " | " + path;
 			}
-			~Entry() = default;
+			~Entry() { resource.reset(); };
 			
 			std::string key, path;
 			Ref<T> resource;
@@ -89,8 +89,8 @@ namespace Kross {
 		static const auto begin() { return stack.begin(); }
 		static const auto end() { return stack.end(); }
 
-		Stack(Stack<T>&& other) = delete;
-		void operator =(Stack<T>&& other) = delete;
+		//Stack(Stack<T>&& other) = delete;
+		//void operator =(Stack<T>&& other) = delete;
 
 	private:
 		~Stack() { KROSS_CORE_INFO("[Kross::Stack<{0}>] Destroyed", typeid(T).name()); clear(); }

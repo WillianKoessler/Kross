@@ -14,8 +14,7 @@ namespace Kross {
 		{
 			const std::string name = layer->GetName();
 			KROSS_CORE_INFO("[Kross::LayerStack] Deleting layer '{0}'", name);
-			//layer->~Layer();
-			layer.~shared_ptr();
+			layer.reset();
 			KROSS_CORE_INFO("[Kross::LayerStack] Layer '{0}' deleted", name);
 		}
 		m_vecLayers.clear();

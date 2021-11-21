@@ -8,6 +8,7 @@
 namespace Kross {
 	struct QuadParams;
 	struct Params3D;
+	struct Voxel;
 	class Renderer3D
 	{
 		static bool s_bSceneBegan;
@@ -34,6 +35,7 @@ namespace Kross {
 		static void Begin(Ref<Camera::Camera>& camera);
 		static void DrawCube();
 		static void DrawCube(const Params3D& params);
+		static void DrawVoxel(const Voxel& params);
 		static void End();
 
 		static void SwitchShader(const Ref<Shader>& shader);

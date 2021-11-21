@@ -19,6 +19,7 @@ namespace Kross::OpenGL {
 		Shader(const std::string& filepath);
 		Shader(const std::string& name, const std::string& filepath);
 		Shader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		Shader(const std::string& name, const std::initializer_list<std::string>& sources);
 		~Shader();
 
 		virtual void Bind() const override;

@@ -34,9 +34,11 @@ namespace Kross {
 		virtual void SetMat4	(const std::string& name, const glm::mat4& matrix) const = 0;
 
 		static Ref<Shader> CreateRef(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
+		static Ref<Shader> CreateRef(const std::string& name, const std::initializer_list<std::string>& sources);
 		static Ref<Shader> CreateRef(const std::string& name, const std::string& filepath);
 		static Ref<Shader> CreateRef(const std::string& filepath);
 		static Scope<Shader> CreateScope(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
+		static Scope<Shader> CreateScope(const std::string& name, const std::initializer_list<std::string>& sources);
 		static Scope<Shader> CreateScope(const std::string& name, const std::string& filepath);
 		static Scope<Shader> CreateScope(const std::string& filepath);
 	};

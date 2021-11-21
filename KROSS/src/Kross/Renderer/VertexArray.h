@@ -11,6 +11,7 @@ namespace Kross {
 		virtual void Bind() const = 0;
 		virtual void unBind() const = 0;
 
+		virtual void AddVoxel(const Ref<Kross::Buffer::Vertex>& voxel) = 0;
 		virtual void AddVertex(const Ref<Kross::Buffer::Vertex>& vertex) = 0;
 		virtual void SetIndex(const Ref<Kross::Buffer::Index>& index) = 0;
 

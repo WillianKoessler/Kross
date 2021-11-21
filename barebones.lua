@@ -19,6 +19,7 @@ IncludeDir["ImGui"]		= "Kross/vendor/imgui"
 IncludeDir["glm"]		= "Kross/vendor/glm"
 IncludeDir["stb_image"]		= "Kross/vendor/stb_image"
 IncludeDir["spdlog"]		= "Kross/vendor/spdlog/include"
+IncludeDir["entt"]		= "Kross/vendor/entt"
 
 group "Dep"
 	include "Kross/vendor/GLFW"
@@ -63,6 +64,7 @@ group "Dep"
 			"%{IncludeDir.glm}",
 			"%{IncludeDir.stb_image}",
 			"%{IncludeDir.spdlog}",
+			"%{IncludeDir.entt}",
 		}
 
 		links 
@@ -117,9 +119,10 @@ project "Main"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"Kross/vendor/spdlog/include",
 		"Kross/src",
 		"Kross/vendor",
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.entt}",
 		"%{IncludeDir.glm}",
 	}
 

@@ -1,6 +1,8 @@
 #include "Kross_pch.h"
 #include "Application.h"
 
+#include "Stack.h"
+
 namespace Kross {
 
 	Application* Application::s_Instance = nullptr;
@@ -25,6 +27,8 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 		m_LayerStack.~LayerStack();
+		Stack<Shader>::instance().clear();
+		Stack<Texture::T2D>::instance().clear();
 		Renderer::Shutdown();
 		m_uptrWindow->Shutdown();
 		m_uptrWindow.release();

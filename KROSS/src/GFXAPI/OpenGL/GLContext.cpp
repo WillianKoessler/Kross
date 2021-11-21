@@ -1,5 +1,5 @@
 #include "Kross_pch.h"
-#include "Context.h"
+#include "GLContext.h"
 #include <GLFW/glfw3.h>
 
 namespace Kross::OpenGL {

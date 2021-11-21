@@ -1,7 +1,6 @@
 #include "Kross_pch.h"
 #include "_Array.h"
 #include "stb_image.h"
-#include "GFXAPI/OpenGL/Context.h"
 
 namespace Kross::OpenGL::Texture {
 	T2DArray::T2DArray(const size_t size)

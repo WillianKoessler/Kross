@@ -14,6 +14,7 @@ namespace Kross::OpenGL {
 		virtual void Bind() const override;
 		virtual void unBind() const override;
 
+		virtual void AddVoxel(const Ref<Kross::Buffer::Vertex>& voxel) override;
 		virtual void AddVertex(const Ref<Kross::Buffer::Vertex>& vertex) override;
 		virtual void SetIndex(const Ref<Kross::Buffer::Index>& index) override;
 

@@ -41,7 +41,7 @@ namespace Kross {
 		HWND m_WindowHWND;
 		GLFWwindow* m_Window;
 		GLFWmonitor* m_Monitor;
-		Ref<Context> m_Context;
+		Scope<Context> m_Context;
 
 		using WindowData = WindowProps;
 		WindowProps m_Data;

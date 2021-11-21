@@ -31,7 +31,7 @@ void world::OnDetach()
 void world::OnUpdate(double ts)
 {
 	m_Camera->OnUpdate(ts);
-	m_Camera->GetCamera()->LookAt({ 3.0f, 0.0f, 0.0f });
+	m_Camera->GetCamera()->LockAt({ 3.0f, 0.0f, 0.0f });
 	Kross::Renderer::Command::Clear();
 	static bool debug = false;
 	if (Kross::Input::IsKeyReleased(KROSS_KEY_F1)) debug = !debug;
@@ -45,17 +45,19 @@ void world::OnUpdate(double ts)
 	Kross::Renderer3D::ResetStats();
 	Kross::Renderer3D::Begin(m_Camera->GetCamera());
 	//static Kross::QuadParams params;
-	static Kross::Params3D params;
-
-	if (Kross::Input::IsKeyHeld(KROSS_KEY_RIGHT))	params.position.x -= (float)ts * 50.0f;
-	if (Kross::Input::IsKeyHeld(KROSS_KEY_LEFT))	params.position.x += (float)ts * 50.0f;
-	if (Kross::Input::IsKeyHeld(KROSS_KEY_UP))		params.position.y += (float)ts * 50.0f;
-	if (Kross::Input::IsKeyHeld(KROSS_KEY_DOWN))	params.position.y -= (float)ts * 50.0f;
-
-	Kross::Renderer3D::BatchBegin();
+	//static Kross::Params3D params;
+	static Kross::Voxel params;
+	//params.color = { 255, 255, 255, 255 };
+	params.color = { 0,0,0,0 };
+	params.position = { 255, 0, 0 };
+	params.visibleFaces = Kross::Voxel::Faces::Top | Kross::Voxel::Faces::Front | Kross::Voxel::Faces::Left;
 	//Kross::Renderer3D::BatchQuad(params);
-	Kross::Renderer3D::DrawCube(params);
-	Kross::Renderer3D::BatchEnd();
+	//Kross::Renderer3D::DrawCube(params);
+	Kross::Renderer3D::DrawVoxel(params);
+
+	Kross::Params3D p3D;
+	p3D.frontTexture = Kross::Stack<Kross::Texture::T2D>::instance().Get("cage");
+	Kross::Renderer3D::DrawCube(p3D);
 	Kross::Renderer3D::End();
 }
 

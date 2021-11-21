@@ -34,6 +34,9 @@
     <Filter Include="src\Kross\Renderer\Cameras\Controllers">
       <UniqueIdentifier>{25A34A95-11F5-2185-FA13-5F95E6043B6E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Kross\Renderer\Mesh">
+      <UniqueIdentifier>{90206072-FC57-A809-0562-0C2D7118CF02}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Kross\Renderer\Textures">
       <UniqueIdentifier>{A7C62F72-13D4-5D58-9CBA-594308C7290F}</UniqueIdentifier>
     </Filter>
@@ -78,7 +81,10 @@
     <ClInclude Include="src\GFXAPI\OpenGL\Buffers.h">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\GFXAPI\OpenGL\Context.h">
+    <ClInclude Include="src\GFXAPI\OpenGL\GLContext.h">
+      <Filter>src\GFXAPI\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GFXAPI\OpenGL\FrameBuffer.h">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h">
@@ -180,10 +186,19 @@
     <ClInclude Include="src\Kross\Renderer\Context.h">
       <Filter>src\Kross\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\FrameBuffers.h">
+      <Filter>src\Kross\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Mesh\Mesh.h">
+      <Filter>src\Kross\Renderer\Mesh</Filter>
+    </ClInclude>
     <ClInclude Include="src\Kross\Renderer\Renderer.h">
       <Filter>src\Kross\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Kross\Renderer\Renderer2D.h">
+      <Filter>src\Kross\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Renderer\Renderer3D.h">
       <Filter>src\Kross\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Kross\Renderer\RendererAPI.h">
@@ -1338,16 +1353,18 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Renderer\FrameBuffers.h" />
-    <ClInclude Include="src\GFXAPI\OpenGL\FrameBuffer.h" />
-    <ClInclude Include="src\Kross\Renderer\Mesh\Mesh.h" />
-    <ClInclude Include="src\Kross\Renderer\Renderer3D.h" />
+    <ClInclude Include="src\Kross\Scene\Scene.h" />
+    <ClInclude Include="src\Kross\Renderer\RendererCommands.h" />
+    <ClInclude Include="src\Kross\Renderer\RenderTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\GFXAPI\OpenGL\Context.cpp">
+    <ClCompile Include="src\GFXAPI\OpenGL\GLContext.cpp">
+      <Filter>src\GFXAPI\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GFXAPI\OpenGL\FrameBuffer.cpp">
       <Filter>src\GFXAPI\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp">
@@ -1404,10 +1421,19 @@
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.cpp">
       <Filter>src\Kross\Renderer\Cameras\Controllers</Filter>
     </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\FrameBuffers.cpp">
+      <Filter>src\Kross\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Mesh\Mesh.cpp">
+      <Filter>src\Kross\Renderer\Mesh</Filter>
+    </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Renderer.cpp">
       <Filter>src\Kross\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Renderer2D.cpp">
+      <Filter>src\Kross\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Renderer3D.cpp">
       <Filter>src\Kross\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Kross\Renderer\RendererAPI.cpp">
@@ -1449,9 +1475,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Kross\Renderer\FrameBuffers.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\FrameBuffer.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Mesh\Mesh.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Renderer3D.cpp" />
+    <ClCompile Include="src\Kross\Scene\Scene.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Context.cpp" />
   </ItemGroup>
 </Project>

@@ -12,7 +12,8 @@ public:
 		PushLayer(Kross::makeRef<world>());
 	}
 	~Game()
-	{}
+	{
+	}
 };
 
 

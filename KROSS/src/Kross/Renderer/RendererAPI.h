@@ -7,8 +7,7 @@
 
 namespace Kross {
 
-	class KAPI RendererAPI
-	{
+	class KAPI RendererAPI {
 	public:
 		enum class API {
 			None = 0, OpenGL = 1, DirectX = 2
@@ -29,6 +28,7 @@ namespace Kross {
 		virtual void DrawIndexed(const Scope<VertexArray>& va, bool drawPoints = false) const = 0;
 		virtual void SetViewport(uint32_t width, uint32_t height) const = 0;
 		virtual void SetMode(Mode mode) const = 0;
+		virtual void BackCull(bool) const = 0;
 
 		inline static API GetAPI() { return s_API; }
 	private:
