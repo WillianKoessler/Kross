@@ -8,49 +8,66 @@ namespace Kross {
 	{
 	public:
 		Entity() = default;
-		Entity::Entity(uint32_t id, Scene* scene) : m_ID((entt::entity)id), m_Scene(scene) {}
+		Entity::Entity(entt::entity id, Scene* scene) : m_ID(id), p_Scene(scene) {}
 		Entity(const Entity& other) = default;
 
-		template<typename T> bool HasComponent() { return m_Scene ? (m_Scene->m_Registry.any_of<T>(m_ID)) : false; }
-		template<typename T> T& GetComponent()
+		template<typename T>
+		bool HasComponent() const
 		{
-			if (!HasComponent<T>())
-			{
-				KROSS_CORE_WARN("[{0}] Entity does not have specified component", __FUNCTION__);
-			}
-			if (m_Scene)
-				return m_Scene->m_Registry.get<T>(m_ID);
+			return true;
+//			if (!p_Scene) return false;
+//			return p_Scene->m_Registry.all_of<T>(m_ID);
+		}
+		template<typename T>
+		T* GetComponent()
+		{
+			//if (!HasComponent<T>())
+			//{
+			//	KROSS_CORE_WARN("[{0}] Entity does not have specified component", __FUNCTION__);
+			//}
+			if (p_Scene)
+				return &p_Scene->m_Registry.get<T>(m_ID);
 			else
 			{
 				KROSS_CORE_ERROR("[{0}] Invalid Scene pointer. (No valid scene was found)", __FUNCTION__);
-				return T();
+				return nullptr;
 			}
 		}
 
-		template<typename T, typename...Args> T& AddComponent(Args&&...args)
+		template<typename T, typename...Args>
+		T* AddComponent(Args&&...args)
 		{
-			if (m_Scene)
-				return m_Scene->m_Registry.emplace<T>(m_ID, std::forward<Args>(args)...);
+			if (p_Scene)
+			{
+				KROSS_CORE_TRACE("[{0}] Component added to Entity (ID = {1})", __FUNCTION__, (uint32_t)m_ID);
+				return &p_Scene->m_Registry.emplace<T>(m_ID, std::forward<Args>(args)...);
+			}
 			else
 			{
 				KROSS_CORE_ERROR("[{0}] Invalid Scene pointer. (No valid scene was found)", __FUNCTION__);
-				return T();
+				return nullptr;
 			}
 		}
 
 		template<typename T>
 		void RemoveComponent()
 		{
-			if (m_Scene)
-				return m_Scene->m_Registry.remove<T>(m_ID);
+			if (p_Scene)
+			{
+				KROSS_CORE_TRACE("[{0}] Component removed from Entity (ID = {1})", __FUNCTION__, (uint32_t)m_ID);
+				return p_Scene->m_Registry.remove<T>(m_ID);
+			}
 			else
 				KROSS_CORE_ERROR("[{0}] Invalid Scene pointer. (No valid scene was found)", __FUNCTION__);
 		}
 
+		entt::entity getID() const { return m_ID; }
+		inline bool isValid() { return m_ID != entt::null; }
 		operator bool() const { return m_ID != entt::null; }
+		bool operator ==(entt::entity other) { return m_ID == other; }
 
 	private:
 		entt::entity m_ID = entt::null;
-		Scene* m_Scene = nullptr;
+		Scene* p_Scene = nullptr;
 	};
 }

@@ -27,10 +27,12 @@ group "Dep"
 	include "Kross/vendor/imgui"
 	project "Kross"
 		location "Kross"
-		kind "StaticLib"
+		--kind "StaticLib"
+		kind "SharedLib"
 		language "C++"
 		cppdialect "C++17"
-		staticruntime "on"
+		--staticruntime "on"
+		staticruntime "off"
 
 		targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 		objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -52,6 +54,8 @@ group "Dep"
 		{
 			"_CRT_SECURE_NO_WARNINGS",
 			"KROSS_GLAD",
+			"KROSS_DLL",
+			"KROSS_BUILD_DLL"
 		}
 
 		includedirs
@@ -137,6 +141,7 @@ project "Main"
 		defines
 		{
 			"KROSS_PLATFORM_WINDOWS",
+			"KROSS_DLL"
 		}
 
 	filter "configurations:Debug"

@@ -17,10 +17,16 @@ void world::OnAttach()
 		m_Camera = Kross::makeRef<Kross::Camera2D::OrthographicCtrl>("main_Camera", ar, true);
 
 	m_Scene = Kross::makeRef<Kross::Scene>();
-	square = m_Scene->CreateEntity("Square");
-	square.AddComponent<Kross::SpriteComponent>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	m_SquareEntity = m_Scene->CreateEntity("Square");
+	KROSS_TRACE("{0}", m_SquareEntity.HasComponent<Kross::TagComponent>());
+	//m_SquareEntity.AddComponent<Kross::SpriteComponent>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	//m_SquareEntity.GetComponent<Kross::TagComponent>()->print();
 
-	Kross::RenderCommand::SetClear({ 0.1f, 0.0f, 0.1f, .1f });
+	//m_CameraEntity = m_Scene->CreateEntity("Basic Camera");
+	//m_CameraEntity.AddComponent<Kross::CameraComponent>(m_Camera->GetCamera());
+	//m_Scene->SetPrimaryCamera(m_CameraEntity);
+
+	Kross::RenderCommand::SetClear({ 0.1f, 0.1f, 0.1f, .1f });
 	m_Camera->Zoom(5.0f);
 	const char* cherno = "assets/textures/ChernoLogo.png";
 	const char* checker = "assets/textures/CheckerBoard.png";
@@ -51,12 +57,16 @@ void world::OnUpdate(double ts)
 
 
 	Kross::Renderer2D::ResetStats();
-	Kross::Renderer2D::Begin(m_Camera->GetCamera());
-	Kross::Renderer2D::BatchBegin();
-	m_Scene->OnUpdate(ts);
-	Kross::Renderer2D::BatchQuad(params);
-	Kross::Renderer2D::BatchEnd();
-	Kross::Renderer2D::End();
+
+
+
+
+
+	//Kross::Renderer2D::Begin(m_Camera->GetCamera());
+	//Kross::Renderer2D::BatchBegin();
+	//Kross::Renderer2D::BatchQuad(params);
+	//Kross::Renderer2D::BatchEnd();
+	//Kross::Renderer2D::End();
 }
 
 void world::OnImGuiRender(double ts)
@@ -66,14 +76,15 @@ void world::OnImGuiRender(double ts)
 		using namespace ImGui;
 		Begin("window", &window);
 		Separator();
-		if (square)
+		if (m_SquareEntity)
 		{
-			Text("%s", square.GetComponent<Kross::TagComponent>().tag);
-			if (square.HasComponent<Kross::SpriteComponent>())
-			{
-				auto& squareColor = square.GetComponent<Kross::SpriteComponent>().tint;
-				ColorEdit3("color", glm::value_ptr(squareColor));
-			}
+			//auto tagComponent = m_SquareEntity.GetComponent<Kross::TagComponent>();
+			//auto spriteComponent = m_SquareEntity.GetComponent<Kross::SpriteComponent>();
+			//if(tagComponent)
+			//	Text("%s", tagComponent->tag);
+			////if (m_SquareEntity.HasComponent<Kross::SpriteComponent>())
+			//if(spriteComponent)
+			//	ColorEdit3("color", glm::value_ptr(spriteComponent->tint));
 		}
 		Separator();
 		//Image((void*)(uintptr_t)Kross::Stack<Kross::Texture::T2D>::instance().Get("cage")->GetID(), ImGui::GetContentRegionAvail(), { 0, 2 });

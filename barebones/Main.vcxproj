@@ -78,7 +78,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DLL;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Main\src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -94,7 +94,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DLL;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Main\src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -114,7 +114,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DLL;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Main\src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -131,11 +131,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Main\src\Core\CoreMechanics.h" />
+    <ClInclude Include="..\Main\src\Core\Items.h" />
+    <ClInclude Include="..\Main\src\Core\UI.h" />
     <ClInclude Include="..\Main\src\Core\world.h" />
+    <ClInclude Include="..\Main\src\World\Creatures.h" />
+    <ClInclude Include="..\Main\src\World\Entities.h" />
+    <ClInclude Include="..\Main\src\pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Main\src\Core\UI.cpp" />
     <ClCompile Include="..\Main\src\Core\main.cpp" />
     <ClCompile Include="..\Main\src\Core\world.cpp" />
+    <ClCompile Include="..\Main\src\World\Creatures.cpp" />
+    <ClCompile Include="..\Main\src\pch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kross\Kross.vcxproj">

@@ -6,11 +6,13 @@
 #include <algorithm>
 #include <vector>
 
+// TODO: BIG CHANGES HERE (remove std::string && std::vector)
+
 namespace Kross {
 
 	// Kross::Shader || Kross::Texture::T2D  || Kross::Mesh::Base
 	template<class T>
-	class Stack
+	class KAPI Stack
 	{
 	public:
 		class Entry

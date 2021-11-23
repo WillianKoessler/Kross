@@ -5,18 +5,18 @@
 
 namespace Kross::Camera2D {
 	class OrthographicCtrl :
-		public Kross::Camera::Controller
+		public Camera::Controller
 	{
 	public:
-		OrthographicCtrl(const std::string& name, float AR = 1.0f, bool rot = false);
+		OrthographicCtrl(const char* name, float AR = 1.0f, bool rot = false);
 		OrthographicCtrl(Orthographic* camera, float AR = 1.0f, bool rot = false);
 		~OrthographicCtrl();
 
 		virtual void OnUpdate(double ts) override;
 		virtual void OnEvent(Event& e) override;
 
-		virtual Ref<Kross::Camera::Camera> GetCamera() override;
-		virtual const Ref<Kross::Camera::Camera> GetCamera() const override;
+		virtual Ref<Camera::Camera> GetCamera() override;
+		virtual const Ref<Camera::Camera> GetCamera() const override;
 
 		virtual void Zoom(float val) override;
 	private:

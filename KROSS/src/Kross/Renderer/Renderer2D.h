@@ -31,6 +31,7 @@ namespace Kross {
 		static void Shutdown();
 
 		static void Begin(Ref<Camera::Camera>& camera);
+		static void Begin(const Camera::Camera& camera);
 		static void BatchBegin();
 		static void Flush();
 		static void BatchEnd();

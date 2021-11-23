@@ -5,7 +5,7 @@ namespace Kross::Camera3D {
 	class Perspective : public Kross::Camera::Camera
 	{
 	public:
-		Perspective(float aspectRatio, float fov, const std::string& name = "blank");
+		Perspective(float aspectRatio, float fov, const char* name = "blank");
 		~Perspective();
 
 		virtual bool isLookingAt() const override { return m_bLookingAt; }
@@ -23,24 +23,6 @@ namespace Kross::Camera3D {
 		virtual const glm::vec3& GetPosition()	const override { return m_Position; }
 		virtual const glm::vec3& GetRotation()	const override { return m_Rotation; }
 
-		virtual const std::string& GetName() const override { return m_strName; }
 		CAMERA_TYPE(Perspective_3D);
-	public:
-		std::string m_strName;
-
-	private:
-		inline void RecalculateVPM();
-		inline void APIorder();
-
-	private:
-		glm::mat4 m_ProjMat;
-		glm::mat4 m_ViewMat;
-		glm::mat4 m_VPM;
-
-		glm::vec3 m_Position;
-		glm::vec3 m_Rotation;
-
-		bool m_bLookingAt;
-		glm::vec3 m_Target;
 	};
 }
