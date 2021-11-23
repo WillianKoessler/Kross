@@ -2,7 +2,7 @@
 
 #include "Kross/Renderer/Renderer.h"
 
-class Mesh
+class Base
 {
 public:
 

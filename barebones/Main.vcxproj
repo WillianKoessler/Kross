@@ -26,7 +26,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -38,7 +38,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -78,8 +78,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Main\src;..\Kross\vendor\spdlog\include;..\Kross\src;..\Kross\vendor;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DLL;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Main\src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -94,8 +94,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Main\src;..\Kross\vendor\spdlog\include;..\Kross\src;..\Kross\vendor;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DLL;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Main\src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -114,8 +114,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Main\src;..\Kross\vendor\spdlog\include;..\Kross\src;..\Kross\vendor;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DLL;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Main\src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -132,12 +132,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Main\src\Core\world.h" />
-    <ClInclude Include="..\Main\src\pch.h" />
+    <ClInclude Include="src\Core\world.h" />
+    <ClInclude Include="src\world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Main\src\Core\main.cpp" />
     <ClCompile Include="..\Main\src\Core\world.cpp" />
-    <ClCompile Include="..\Main\src\pch.cpp" />
+    <ClCompile Include="src\Core\main.cpp" />
+    <ClCompile Include="src\Core\world.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kross\Kross.vcxproj">

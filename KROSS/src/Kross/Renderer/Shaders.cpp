@@ -6,18 +6,8 @@
 //#include "GFXAPI/DirectX/Shader.h"
 
 namespace Kross {
-	Ref<Shader> Shader::CreateRef(const std::string& name, const std::initializer_list<std::string>& sources)
-	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::None: {KROSS_MSGBOX("Renderer API (None) is not supported", "[Kross::Shader]", _ERROR_); return nullptr; }
-		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Shader>(name, sources);
-			//case RendererAPI::API::DirectX:		return makeRef<DirectX::Shader>(name);
-		}
-		KROSS_MSGBOX("Unknown Renderer API", "[Kross::Shader]", _ERROR_);
-		return nullptr;
-	}
-	Ref<Shader> Shader::CreateRef(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
+
+	Ref<Shader> Shader::CreateRef(const char* name, const char* vertexSource, const char* fragmentSource)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -25,11 +15,25 @@ namespace Kross {
 		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Shader>(name, vertexSource, fragmentSource);
 		//case RendererAPI::API::DirectX:		return makeRef<DirectX::Shader>(name);
 		}
+
 		KROSS_MSGBOX("Unknown Renderer API", "[Kross::Shader]", _ERROR_);
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::CreateRef(const std::string& name, const std::string& filepath)
+	Ref<Shader> Shader::CreateRef(const char* name, const std::initializer_list<std::string>& sources)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None: {KROSS_MSGBOX("Renderer API (None) is not supported", "[Kross::Shader]", _ERROR_); return nullptr; }
+		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Shader>(name, sources);
+			//case RendererAPI::API::DirectX:		return makeRef<DirectX::Shader>(name);
+		}
+
+		KROSS_MSGBOX("Unknown Renderer API", "[Kross::Shader]", _ERROR_);
+		return nullptr;
+	}
+
+	Ref<Shader> Shader::CreateRef(const char* name, const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -42,7 +46,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::CreateRef(const std::string& filepath)
+	Ref<Shader> Shader::CreateRef(const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -55,20 +59,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Scope<Shader> Shader::CreateScope(const std::string& name, const std::initializer_list<std::string>& sources)
-	{
-		switch (Renderer::GetAPI())
-		{
-		case RendererAPI::API::None: {KROSS_MSGBOX("Renderer API (None) is not supported", "[Kross::Shader]", _ERROR_); return nullptr; }
-		case RendererAPI::API::OpenGL:		return makeScope<OpenGL::Shader>(name, sources);
-			//case RendererAPI::API::DirectX:		return makeScope<DirectX::Shader>(name);
-		}
-
-		KROSS_MSGBOX("Unknown Renderer API", "[Kross::Shader]", _ERROR_);
-		return nullptr;
-	}
-
-	Scope<Shader> Shader::CreateScope(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
+	Scope<Shader> Shader::CreateScope(const char* name, const char* vertexSource, const char* fragmentSource)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -81,7 +72,20 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Scope<Shader> Shader::CreateScope(const std::string& name, const std::string& filepath)
+	Scope<Shader> Shader::CreateScope(const char* name, const std::initializer_list<std::string>& sources)
+	{
+		switch (Renderer::GetAPI())
+		{
+		case RendererAPI::API::None: {KROSS_MSGBOX("Renderer API (None) is not supported", "[Kross::Shader]", _ERROR_); return nullptr; }
+		case RendererAPI::API::OpenGL:		return makeScope<OpenGL::Shader>(name, sources);
+			//case RendererAPI::API::DirectX:		return makeScope<DirectX::Shader>(name);
+		}
+
+		KROSS_MSGBOX("Unknown Renderer API", "[Kross::Shader]", _ERROR_);
+		return nullptr;
+	}
+
+	Scope<Shader> Shader::CreateScope(const char* name, const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -94,7 +98,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Scope<Shader> Shader::CreateScope(const std::string& filepath)
+	Scope<Shader> Shader::CreateScope(const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{

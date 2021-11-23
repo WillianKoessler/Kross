@@ -8,69 +8,69 @@ namespace Kross::OpenGL {
 	{
 		struct UniformLocation
 		{
-			UniformLocation(const std::string& n, int l)
+			UniformLocation(const char* n, int l)
 				: name(n), location(l)
 			{}
-			std::string name;
+			const char* name;
 			int location;
 		};
 
 	public:
-		Shader(const std::string& filepath);
-		Shader(const std::string& name, const std::string& filepath);
-		Shader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
-		Shader(const std::string& name, const std::initializer_list<std::string>& sources);
+		Shader(const char* filepath);
+		Shader(const char* name, const char* filepath);
+		Shader(const char* name, const char* vertexSrc, const char* fragmentSrc);
+		Shader(const char* name, const std::initializer_list<const char*>& sources);
 		~Shader();
 
 		virtual void Bind() const override;
 		virtual void unBind() const override;
 
-		virtual void SetIntV  (const std::string& name, size_t count, int* value)const override;
-		virtual void SetInt   (const std::string& name, int value)				 const override;
-		virtual void SetInt2  (const std::string& name, const glm::vec2& values) const override;
-		virtual void SetInt3  (const std::string& name, const glm::vec3& values) const override;
-		virtual void SetInt4  (const std::string& name, const glm::vec4& values) const override;
+		virtual void SetIntV  (const char* name, size_t count, int32_t* value)	const override;
+		virtual void SetInt   (const char* name, int32_t value)					const override;
+		virtual void SetInt2  (const char* name, const glm::vec2& values) const override;
+		virtual void SetInt3  (const char* name, const glm::vec3& values) const override;
+		virtual void SetInt4  (const char* name, const glm::vec4& values) const override;
 
-		virtual void SetFloat (const std::string& name, float value)			 const override;
-		virtual void SetFloat2(const std::string& name, const glm::vec2& values) const override;
-		virtual void SetFloat3(const std::string& name, const glm::vec3& values) const override;
-		virtual void SetFloat4(const std::string& name, const glm::vec4& values) const override;
+		virtual void SetFloat (const char* name, float value)			  const override;
+		virtual void SetFloat2(const char* name, const glm::vec2& values) const override;
+		virtual void SetFloat3(const char* name, const glm::vec3& values) const override;
+		virtual void SetFloat4(const char* name, const glm::vec4& values) const override;
 
-		virtual void SetMat3  (const std::string& name, const glm::mat3& matrix) const override;
-		virtual void SetMat4  (const std::string& name, const glm::mat4& matrix) const override;
+		virtual void SetMat3  (const char* name, const glm::mat3& matrix) const override;
+		virtual void SetMat4  (const char* name, const glm::mat4& matrix) const override;
 
-		void UploadUniformIntV	(const std::string& name, size_t count, int* value)const;
-		void UploadUniformInt	(const std::string& name, int value)			   const;
-		void UploadUniformInt2	(const std::string& name, const glm::vec2& values) const;
-		void UploadUniformInt3	(const std::string& name, const glm::vec3& values) const;
-		void UploadUniformInt4	(const std::string& name, const glm::vec4& values) const;
+		void UploadUniformIntV	(const char* name, size_t count, int* value)const;
+		void UploadUniformInt	(const char* name, int32_t value)			const;
+		void UploadUniformInt2	(const char* name, const glm::vec2& values) const;
+		void UploadUniformInt3	(const char* name, const glm::vec3& values) const;
+		void UploadUniformInt4	(const char* name, const glm::vec4& values) const;
 
-		void UploadUniformFloat (const std::string& name, float value)			   const;
-		void UploadUniformFloat2(const std::string& name, const glm::vec2& values) const;
-		void UploadUniformFloat3(const std::string& name, const glm::vec3& values) const;
-		void UploadUniformFloat4(const std::string& name, const glm::vec4& values) const;
+		void UploadUniformFloat (const char* name, float value)			    const;
+		void UploadUniformFloat2(const char* name, const glm::vec2& values) const;
+		void UploadUniformFloat3(const char* name, const glm::vec3& values) const;
+		void UploadUniformFloat4(const char* name, const glm::vec4& values) const;
 
-		void UploadUniformMat3	(const std::string& name, const glm::mat3& matrix) const;
-		void UploadUniformMat4	(const std::string& name, const glm::mat4& matrix) const;
+		void UploadUniformMat3	(const char* name, const glm::mat3& matrix) const;
+		void UploadUniformMat4	(const char* name, const glm::mat4& matrix) const;
 
 
-		int GetUniformLocation(const std::string& name) const;
+		int GetUniformLocation(const char* name) const;
 		
-		virtual const std::string& GetName() const override { return m_strName; }
+		virtual const char* GetName() const override { return m_strName; }
 
 	private:
-		std::string ReadFile(const std::string& filepath);
-		std::unordered_map<unsigned int, std::string> PreProcess(const std::string& source);
-		static unsigned int GetGlType(const std::string& type);
-		static const char* GetShaderType(unsigned int type);
-		bool Compile(const std::unordered_map<unsigned int, std::string>& sources);
-		unsigned int Compile(unsigned int program, unsigned int type, const std::string& source);
-		bool Link(unsigned int program, const std::vector<unsigned int>& shaders);
-		void CreateShader(const std::string& filepath);
+		const char* ReadFile(const char* filepath);
+		std::unordered_map<uint32_t, const char*> PreProcess(const char* source);
+		static uint32_t GetGlType(const char* type);
+		static const char* GetShaderType(uint32_t type);
+		bool Compile(const std::unordered_map<uint32_t, const char*>& sources);
+		uint32_t Compile(uint32_t program, uint32_t type, const char* source);
+		bool Link(uint32_t program, const uint32_t* shaders, uint32_t uShadersPtrSize);
+		void CreateShader(const char* filepath);
 
 	private:
 		uint32_t m_RendererID;
-		std::string m_strName;
+		const char* m_strName;
 		mutable std::vector<UniformLocation*> UniformCache;
 	};
 }

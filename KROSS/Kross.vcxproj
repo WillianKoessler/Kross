@@ -23,22 +23,22 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -54,97 +54,95 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\Debug-windows-x86_64\Kross\</OutDir>
     <IntDir>..\bin-int\Debug-windows-x86_64\Kross\</IntDir>
     <TargetName>Kross</TargetName>
-    <TargetExt>.lib</TargetExt>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release-windows-x86_64\Kross\</OutDir>
     <IntDir>..\bin-int\Release-windows-x86_64\Kross\</IntDir>
     <TargetName>Kross</TargetName>
-    <TargetExt>.lib</TargetExt>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Dist-windows-x86_64\Kross\</OutDir>
     <IntDir>..\bin-int\Dist-windows-x86_64\Kross\</IntDir>
     <TargetName>Kross</TargetName>
-    <TargetExt>.lib</TargetExt>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_DLL;KROSS_BUILD_DLL;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-    <Lib>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
+      <ImportLibrary>..\bin\Debug-windows-x86_64\Kross\Kross.lib</ImportLibrary>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_DLL;KROSS_BUILD_DLL;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-    </Link>
-    <Lib>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
+      <ImportLibrary>..\bin\Release-windows-x86_64\Kross\Kross.lib</ImportLibrary>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;KROSS_GLAD;KROSS_DLL;KROSS_BUILD_DLL;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-    </Link>
-    <Lib>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
+      <ImportLibrary>..\bin\Dist-windows-x86_64\Kross\Kross.lib</ImportLibrary>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Kross\Renderer\Mesh\Mesh.h" />
-    <ClInclude Include="src\GFXAPI\OpenGL\FrameBuffer.h" />
-    <ClInclude Include="src\Kross\Renderer\FrameBuffers.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Buffers.h" />
-    <ClInclude Include="src\GFXAPI\OpenGL\Context.h" />
+    <ClInclude Include="src\GFXAPI\OpenGL\FrameBuffer.h" />
+    <ClInclude Include="src\GFXAPI\OpenGL\GLContext.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\RenderersAPI.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Shader.h" />
@@ -178,15 +176,22 @@
     <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.h" />
     <ClInclude Include="src\Kross\Renderer\Context.h" />
+    <ClInclude Include="src\Kross\Renderer\FrameBuffers.h" />
+    <ClInclude Include="src\Kross\Renderer\Mesh\Mesh.h" />
+    <ClInclude Include="src\Kross\Renderer\RenderTypes.h" />
     <ClInclude Include="src\Kross\Renderer\Renderer.h" />
     <ClInclude Include="src\Kross\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Kross\Renderer\Renderer3D.h" />
     <ClInclude Include="src\Kross\Renderer\RendererAPI.h" />
+    <ClInclude Include="src\Kross\Renderer\RendererCommands.h" />
     <ClInclude Include="src\Kross\Renderer\Shaders.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Array.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Atlas.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Textures.h" />
     <ClInclude Include="src\Kross\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Kross\Scene\Components.h" />
+    <ClInclude Include="src\Kross\Scene\Entity.h" />
+    <ClInclude Include="src\Kross\Scene\Scene.h" />
     <ClInclude Include="src\Kross\Util\Constants.h" />
     <ClInclude Include="src\Kross\Util\FileUtil.h" />
     <ClInclude Include="src\Kross\Util\NonCopyable.h" />
@@ -567,11 +572,9 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Kross\Renderer\Mesh\Mesh.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\FrameBuffer.cpp" />
-    <ClCompile Include="src\Kross\Renderer\FrameBuffers.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\Context.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\FrameBuffer.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\GLContext.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\RenderersAPI.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Shader.cpp" />
@@ -579,6 +582,8 @@
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Texture.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\VertexArrays.cpp" />
     <ClCompile Include="src\Kross\Core\Application.cpp" />
+    <ClCompile Include="src\Kross\Core\KVector.cpp" />
+    <ClCompile Include="src\Kross\Core\KVector.h" />
     <ClCompile Include="src\Kross\Core\Layer.cpp" />
     <ClCompile Include="src\Kross\Core\LayerStack.cpp" />
     <ClCompile Include="src\Kross\Core\Log.cpp" />
@@ -590,6 +595,9 @@
     <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Perspective.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Context.cpp" />
+    <ClCompile Include="src\Kross\Renderer\FrameBuffers.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer3D.cpp" />
@@ -599,6 +607,8 @@
     <ClCompile Include="src\Kross\Renderer\Textures\Atlas.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Textures.cpp" />
     <ClCompile Include="src\Kross\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Kross\Scene\Entity.cpp" />
+    <ClCompile Include="src\Kross\Scene\Scene.cpp" />
     <ClCompile Include="src\Kross\Util\FileUtil.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiLayer.cpp" />

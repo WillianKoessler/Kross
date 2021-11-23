@@ -2,7 +2,11 @@
 #include "Stack.h"
 #include "Kross/Renderer/Shaders.h"
 #include "Kross/Renderer/Textures/Textures.h"
-#include "Kross/Core/Layer.h"
+#include "Kross/Renderer/Mesh/Mesh.h"
+
+#include <string>
+#include <algorithm>
+#include <vector>
 
 #define __impl__STACK_TEMPLATE(x)\
 std::vector<Stack<##x>::Entry> Stack<##x>::stack;\
@@ -12,6 +16,7 @@ template class Stack<##x>;
 namespace Kross {
 	__impl__STACK_TEMPLATE(Shader);
 	__impl__STACK_TEMPLATE(Texture::T2D);
+	//__impl__STACK_TEMPLATE(Mesh::Base);
 
 	template<typename T> const bool Stack<T>::Add(const Ref<T>& resource)
 	{
@@ -54,7 +59,7 @@ namespace Kross {
 			if (i != stack.end() && !(k < i->key)) return i->resource;
 			else if (filepath)
 			{
-				return *stack.emplace(i, k, T::CreateRef(k, *filepath), *filepath);
+				return *stack.emplace(i, k, T::CreateRef(k.c_str(), filepath->c_str()), filepath->c_str());
 			}
 			else
 			{

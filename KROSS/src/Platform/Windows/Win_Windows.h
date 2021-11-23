@@ -31,7 +31,7 @@ namespace Kross {
 		}
 		inline virtual void* GetNativeWindow() const override { return m_Window; }
 		inline HWND GetWindowHandle() const { return m_WindowHWND; }
-		inline Ref<Context> GetContext() const { return m_Context; }
+		inline const Scope<Context>& GetContext() const { return m_Context; }
 		virtual void SetVSync(bool enable) override;
 		virtual bool IsVSync() const override;
 	private:
@@ -41,7 +41,7 @@ namespace Kross {
 		HWND m_WindowHWND;
 		GLFWwindow* m_Window;
 		GLFWmonitor* m_Monitor;
-		Ref<Context> m_Context;
+		Scope<Context> m_Context;
 
 		using WindowData = WindowProps;
 		WindowProps m_Data;

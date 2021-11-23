@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-
 namespace Kross {
-	std::string ReadFile(const std::string& filepath);
+	const char* ReadFile(const char* filepath);
+	inline const char* FileName(const char* path);
 }

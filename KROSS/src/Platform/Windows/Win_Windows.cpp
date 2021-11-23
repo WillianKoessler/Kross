@@ -5,7 +5,7 @@
 #include "Kross/Events/MouseEvent.h"
 #include "Kross/Events/KeyEvent.h"
 
-#include "GFXAPI/OpenGL/Context.h"
+#include "Kross/Renderer/Context.h"
 //#include "GFXAPI/DirectX/Context.h"
 
 namespace Kross {
@@ -86,10 +86,9 @@ namespace Kross {
 			m_WindowHWND = glfwGetWin32Window(m_Window);
 		}
 		{
-			KROSS_PROFILE_SCOPE("makeScope<OpenGL::Context>");
-			m_Context = makeRef<GraphicsAPI::Context>(this);
+			KROSS_PROFILE_SCOPE("makeScope<Kross::Context>");
+			m_Context = Context::CreateScope(this);
 			m_Context->Init(m_Data.nWidth, m_Data.nHeight);
-
 		}
 
 		{

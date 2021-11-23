@@ -6,7 +6,10 @@
 #include <iomanip>
 
 // String libraries
+#ifndef KROSS_DLL
 #include <string>
+#endif //KROSS_DLL
+
 #include <cstring>
 #include <cctype>
 #include <sstream>
@@ -25,7 +28,11 @@
 // Data Manip libraries
 #include <memory>
 #include <array>
+
+#ifndef KROSS_DLL
 #include <vector>
+#endif //KROSS_DLL
+
 #include <unordered_map>
 #include <unordered_set>
 

@@ -17,7 +17,7 @@ namespace Kross {
 	{
 		struct settings
 		{
-			std::string title = "Kross Engine";
+			const char* title = "Kross Engine";
 			unsigned short width = 640, height = 320;
 			bool fullscreen = false;
 			Renderer::Dimentions dims;
@@ -25,15 +25,15 @@ namespace Kross {
 		void Construct(settings&&);
 	public:
 		Application() { Construct({}); }
-		Application(const std::string& title, unsigned short width, unsigned short height, Renderer::Dimentions dimentions)
+		Application(const char* title, unsigned short width, unsigned short height, Renderer::Dimentions dimentions)
 		{
 			Construct({ title, width, height, false, dimentions });
 		}
-		Application(const std::string& title, unsigned short width, unsigned short height, bool fullscreen = false)
+		Application(const char* title, unsigned short width, unsigned short height, bool fullscreen = false)
 		{
 			Construct({ title, width, height, fullscreen });
 		}
-		Application(const std::string& title, bool fullscreen = true)
+		Application(const char* title, bool fullscreen = true)
 		{
 			Construct({title, 0, 0, fullscreen});
 		}

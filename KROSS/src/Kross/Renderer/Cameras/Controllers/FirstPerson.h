@@ -8,7 +8,7 @@ namespace Kross::Camera3D {
 		public Kross::Camera::Controller
 	{
 	public:
-		FirstPerson(const std::string& name, float aspectRatio, float fov = 90.0f);
+		FirstPerson(const char* name, float aspectRatio, float fov = 90.0f);
 		FirstPerson(Camera::Camera* camera, float aspectRatio, float fov = 90.0f);
 		~FirstPerson();
 

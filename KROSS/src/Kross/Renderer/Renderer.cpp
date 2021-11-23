@@ -4,10 +4,11 @@
 #include "GFXAPI/OpenGL/RenderersAPI.h"
 //#include "GFXAPI/DirectX/RenderersAPI.h"
 
+#include "Renderer2D.h"
+#include "Renderer3D.h"
+
 namespace Kross {
-	Renderer::Scene::Data* Renderer::Scene::m_Data = new Renderer::Scene::Data;
-	Ref<Renderer::ShaderLibrary> Renderer::shaderLibrary = makeRef<Renderer::ShaderLibrary>();
-	RendererAPI* Renderer::Command::s_RendererAPI = new GraphicsAPI::RendererAPI;
+	RendererAPI* RenderCommand::s_RendererAPI = new GraphicsAPI::RendererAPI;
 	Renderer::Dimentions Renderer::s_dDims = Renderer::Dimentions::D2;
 
 	void Renderer::Init(Renderer::Dimentions dims)
@@ -15,7 +16,7 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		s_dDims = dims;
 
-		Renderer::Command::Init();
+		RenderCommand::Init();
 		switch (s_dDims) {
 		case Dimentions::D2: Renderer2D::Init(); break;
 		case Dimentions::D3: Renderer3D::Init(); break;
@@ -29,7 +30,7 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 
-		Renderer::Command::Shutdown();
+		RenderCommand::Shutdown();
 
 		switch (s_dDims) {
 		case Dimentions::D2: Renderer2D::Shutdown(); break;
@@ -40,82 +41,82 @@ namespace Kross {
 		KROSS_CORE_TRACE("[{0}] Renderer Finished", __FUNCTION__);
 	}
 
-	void Renderer::Scene::Begin(Camera::Camera& camera)
-	{
-		Scene::m_Data->ViewProjectionMatrix = camera.GetVPM();
-	}
+	//void Renderer::Scene::Begin(Camera::Camera& camera)
+	//{
+	//	Scene::m_Data->ViewProjectionMatrix = camera.GetVPM();
+	//}
 
-	void Renderer::Scene::End()
-	{
-	}
+	//void Renderer::Scene::End()
+	//{
+	//}
 
-	void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& va, const glm::mat4 transform)
-	{
-		shader->Bind();
+	//void Renderer::Submit(const Ref<Shader>& shader, const Ref<VertexArray>& va, const glm::mat4 transform)
+	//{
+	//	shader->Bind();
 
-		shader->SetMat4("u_ViewProjection", Scene::m_Data->ViewProjectionMatrix);
-		shader->SetMat4("u_Transform", transform);
+	//	shader->SetMat4("u_ViewProjection", Scene::m_Data->ViewProjectionMatrix);
+	//	shader->SetMat4("u_Transform", transform);
 
-		va->Bind();
-		Renderer::Command::DrawIndexed(va);
-	}
+	//	va->Bind();
+	//	Renderer::Command::DrawIndexed(va);
+	//}
 
-	void Renderer::Submit(const Ref<Shader>& shader, const Scope<VertexArray>& va, const glm::mat4 transform)
-	{
-		shader->Bind();
+	//void Renderer::Submit(const Ref<Shader>& shader, const Scope<VertexArray>& va, const glm::mat4 transform)
+	//{
+	//	shader->Bind();
 
-		shader->SetMat4("u_ViewProjection", Scene::m_Data->ViewProjectionMatrix);
-		shader->SetMat4("u_Transform", transform);
+	//	shader->SetMat4("u_ViewProjection", Scene::m_Data->ViewProjectionMatrix);
+	//	shader->SetMat4("u_Transform", transform);
 
-		va->Bind();
-		Renderer::Command::DrawIndexed(va);
-	}
+	//	va->Bind();
+	//	Renderer::Command::DrawIndexed(va);
+	//}
 
-	Ref<Renderer::ShaderLibrary> Renderer::GetShaderLibrary()
-	{
-		return shaderLibrary;
-	}
+	//Ref<Renderer::ShaderLibrary> Renderer::GetShaderLibrary()
+	//{
+	//	return shaderLibrary;
+	//}
 
-	void Renderer::ShaderLibrary::Clear()
-	{
-		shaders.clear();
-	}
+	//void Renderer::ShaderLibrary::Clear()
+	//{
+	//	shaders.clear();
+	//}
 
-	void Renderer::ShaderLibrary::Add(const Ref<Shader>& shader)
-	{
-		const std::string& name = shader->GetName();
-		Add(name, shader);
-	}
+	//void Renderer::ShaderLibrary::Add(const Ref<Shader>& shader)
+	//{
+	//	const std::string& name = shader->GetName();
+	//	Add(name, shader);
+	//}
 
-	void Renderer::ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
-	{
-		if (exist(name)) { KROSS_CORE_WARN("[{0}] Shader '{1}' already in library. ", __FUNCTION__, name); }
-		shaders[name] = shader;
-	}
+	//void Renderer::ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
+	//{
+	//	if (exist(name)) { KROSS_CORE_WARN("[{0}] Shader '{1}' already in library. ", __FUNCTION__, name); }
+	//	shaders[name] = shader;
+	//}
 
-	Ref<Shader> Renderer::ShaderLibrary::Load(const Ref<Shader>& shader)
-	{
-		Add(shader);
-		return shader;
-	}
+	//Ref<Shader> Renderer::ShaderLibrary::Load(const Ref<Shader>& shader)
+	//{
+	//	Add(shader);
+	//	return shader;
+	//}
 
-	Ref<Shader> Renderer::ShaderLibrary::Load(const std::string & filepath)
-	{
-		Ref<Shader> shader = Shader::CreateRef(filepath);
-		Add(shader);
-		return shader;
-	}
+	//Ref<Shader> Renderer::ShaderLibrary::Load(const std::string & filepath)
+	//{
+	//	Ref<Shader> shader = Shader::CreateRef(filepath);
+	//	Add(shader);
+	//	return shader;
+	//}
 
-	Ref<Shader> Renderer::ShaderLibrary::Load(const std::string & name, const std::string & filepath)
-	{
-		Ref<Shader> shader = Shader::CreateRef(name, filepath);
-		Add(name, shader);
-		return shader;
-	}
+	//Ref<Shader> Renderer::ShaderLibrary::Load(const std::string & name, const std::string & filepath)
+	//{
+	//	Ref<Shader> shader = Shader::CreateRef(name, filepath);
+	//	Add(name, shader);
+	//	return shader;
+	//}
 
-	Ref<Shader> Renderer::ShaderLibrary::Get(const std::string& name)
-	{
-		if (!exist(name)) { KROSS_CORE_WARN("[{0}] Shader '{1}' NOT FOUND in library. ", __FUNCTION__, name); }
-		return shaders[name];
-	}
+	//Ref<Shader> Renderer::ShaderLibrary::Get(const std::string& name)
+	//{
+	//	if (!exist(name)) { KROSS_CORE_WARN("[{0}] Shader '{1}' NOT FOUND in library. ", __FUNCTION__, name); }
+	//	return shaders[name];
+	//}
 }

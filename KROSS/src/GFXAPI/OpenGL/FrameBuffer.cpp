@@ -23,6 +23,10 @@ namespace Kross::OpenGL {
 		glCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 	}
 
+	void FrameBuffer::Resize(uint32_t width, uint32_t height)
+	{
+	}
+
 	void FrameBuffer::Invalidate() const
 	{
 		glGenFramebuffers(1, (GLuint*)&m_RendererID);

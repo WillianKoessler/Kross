@@ -18,7 +18,7 @@ namespace Kross::Camera2D {
 		KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
 	}
 
-	OrthographicCtrl::OrthographicCtrl(const std::string& name, float AR, bool rot)
+	OrthographicCtrl::OrthographicCtrl(const char* name, float AR, bool rot)
 		: m_fAR(AR),
 		m_bRotation(rot)
 	{

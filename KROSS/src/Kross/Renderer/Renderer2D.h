@@ -31,6 +31,7 @@ namespace Kross {
 		static void Shutdown();
 
 		static void Begin(Ref<Camera::Camera>& camera);
+		static void Begin(const Camera::Camera& camera);
 		static void BatchBegin();
 		static void Flush();
 		static void BatchEnd();
@@ -39,6 +40,8 @@ namespace Kross {
 		static void SwitchShader(const Ref<Shader>& shader);
 
 		static void BatchQuad(const QuadParams& params);
+		static void BatchQuad(const glm::mat4& transform, const glm::vec4& color);
+		static void BatchQuad(const glm::mat4& transform, const Ref<Texture::T2D>& color);
 	};
 
 }

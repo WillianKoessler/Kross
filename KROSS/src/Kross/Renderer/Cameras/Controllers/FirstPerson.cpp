@@ -19,7 +19,7 @@ namespace Kross::Camera3D {
 		KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
 	}
 
-	FirstPerson::FirstPerson(const std::string& name, float aspectRatio, float fov)
+	FirstPerson::FirstPerson(const char* name, float aspectRatio, float fov)
 		: m_fAR(aspectRatio),
 		m_fFOV(fov),
 		mouseRotation(glm::vec3(0.0f, 0.0f, 1.0f)) {
@@ -33,7 +33,7 @@ namespace Kross::Camera3D {
 
 	FirstPerson::~FirstPerson() {
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("[{0}] Camera Controller Deconstructed", __FUNCTION__);
+		KROSS_CORE_INFO("[{0}] Camera Controller Destructed", __FUNCTION__);
 	}
 
 	void FirstPerson::OnUpdate(double ts) {

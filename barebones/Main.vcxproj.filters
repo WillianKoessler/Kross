@@ -4,12 +4,16 @@
     <Filter Include="Core">
       <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{4D25640E-B939-8CBF-82BB-2F1FEE8E88F0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Main\src\Core\world.h">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="..\Main\src\pch.h" />
+    <ClInclude Include="src\Core\world.h" />
+    <ClInclude Include="src\world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Main\src\Core\main.cpp">
@@ -18,6 +22,9 @@
     <ClCompile Include="..\Main\src\Core\world.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Main\src\pch.cpp" />
+    <ClCompile Include="src\Core\world.cpp" />
+    <ClCompile Include="src\Core\main.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
 </Project>

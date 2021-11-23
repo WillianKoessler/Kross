@@ -62,12 +62,14 @@ void makeQuad(vec4 offset, int axis)
 		alignment[2] = vec4(-1.0, 1.0,-1.0, 0.0);
 		alignment[3] = vec4(-1.0,-1.0,-1.0, 0.0);
 	}
-	for(int i = 0; i < 4; i++) { v_Color = vec4(g_Color[0], g_Color[0], g_Color[0], 1.0); gl_Position = u_ViewProjection * u_Transform * (offset + alignment[i]); EmitVertex(); }
+	for(int i = 0; i < 4; i++)
+		{ gl_Position = u_ViewProjection * u_Transform * (offset + alignment[i]); EmitVertex(); }
 	EndPrimitive();
 }
 
 void main(void)
 {
+	
 	makeQuad(gl_in[0].gl_Position, Z);
 	makeQuad(gl_in[0].gl_Position,-X);
 	makeQuad(gl_in[0].gl_Position,-Z);
@@ -85,5 +87,5 @@ in vec4 v_Color;
 
 void main()
 {
-	color = v_Color;
+	color = vec4(1.0);
 }
