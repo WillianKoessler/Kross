@@ -7,6 +7,9 @@
 
 // String libraries
 #include <string>
+#include <locale>
+#include <codecvt>
+
 #include <cstring>
 #include <cctype>
 #include <sstream>
@@ -25,7 +28,9 @@
 // Data Manip libraries
 #include <memory>
 #include <array>
+
 #include <vector>
+
 #include <unordered_map>
 #include <unordered_set>
 

@@ -2,14 +2,16 @@
 
 // For use by Kross Clients
 
+#ifndef KROSS_DLL
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "Kross/Core/Log.h"
+#endif
 
 #include "Kross/Core/Core.h"
 #include "Kross/Core/Application.h"
 #include "Kross/Core/Layer.h"
-#include "Kross/Core/Log.h"
 #include "Kross/imgui/ImGuiLayer.h"
 #include "Kross/Core/Input.h"
 #include "Kross/Core/Timestep.h"

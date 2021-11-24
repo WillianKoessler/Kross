@@ -4,6 +4,10 @@
 #include "Kross/Renderer/Textures/Textures.h"
 #include "Kross/Renderer/Mesh/Mesh.h"
 
+#include <string>
+#include <algorithm>
+#include <vector>
+
 #define __impl__STACK_TEMPLATE(x)\
 std::vector<Stack<##x>::Entry> Stack<##x>::stack;\
 std::string Stack<##x>::Entry::table = "";\
@@ -55,7 +59,7 @@ namespace Kross {
 			if (i != stack.end() && !(k < i->key)) return i->resource;
 			else if (filepath)
 			{
-				return *stack.emplace(i, k, T::CreateRef(k, *filepath), *filepath);
+				return *stack.emplace(i, k, T::CreateRef(k.c_str(), filepath->c_str()), filepath->c_str());
 			}
 			else
 			{

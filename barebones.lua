@@ -53,6 +53,7 @@ group "Dep"
 		defines
 		{
 			"_CRT_SECURE_NO_WARNINGS",
+			"KROSS_BUILD",
 			"KROSS_GLAD",
 			"KROSS_DLL",
 			"KROSS_BUILD_DLL"
