@@ -11,10 +11,10 @@ namespace Kross {
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:		KROSS_MSGBOX("[Kross::VertexArray] Renderer API (None) is not supported", "Vertex Array", _ERROR_); return nullptr;
+			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
 		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::VertexArray>();
 		}
-		KROSS_MSGBOX("[Kross::VertexArray] Renderer API (None) is not supported", "Vertex Array", _ERROR_);
+		KROSS_CORE_WARN("Renderer API (None) is not supported");
 		return nullptr;
 	}
 
@@ -22,10 +22,10 @@ namespace Kross {
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:		KROSS_MSGBOX("[Kross::VertexArray] Renderer API (None) is not supported", "Vertex Array", _ERROR_); return nullptr;
+		case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
 		case RendererAPI::API::OpenGL:		return makeScope<OpenGL::VertexArray>();
 		}
-		KROSS_MSGBOX("[Kross::VertexArray] Renderer API (None) is not supported", "Vertex Array", _ERROR_);
+		KROSS_CORE_WARN("Renderer API (None) is not supported");
 		return nullptr;
 	}
 }

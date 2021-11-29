@@ -9,39 +9,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Main\src\Core\CoreMechanics.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Main\src\Core\Items.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Main\src\Core\UI.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Main\src\Core\world.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Main\src\World\Creatures.h">
-      <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Main\src\World\Entities.h">
-      <Filter>World</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Main\src\pch.h" />
+    <ClInclude Include="src\world.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Main\src\Core\UI.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Main\src\Core\main.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Main\src\Core\world.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Main\src\World\Creatures.cpp">
-      <Filter>World</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Main\src\pch.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
 </Project>

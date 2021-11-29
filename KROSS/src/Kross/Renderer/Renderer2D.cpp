@@ -55,7 +55,6 @@ namespace Kross {
 		Scope<VertexArray> va;
 		Ref<Buffer::Vertex> vb;
 		Ref<Buffer::Index> ib;
-		uint32_t* indices;
 
 		//Batch Buffer
 		Quad myBuffer[MaxQuadCount] = { Quad() };
@@ -84,7 +83,7 @@ namespace Kross {
 	void Renderer2D::Init()
 	{
 		KROSS_PROFILE_FUNC();
-		if (s_bInitiated) { KROSS_MSGBOX("Renderer2D is already initialized. Cannot call Renderer2D::Init(void) twice. Forget to call Renderer2D::Shutdown(void)?", __FUNCSIG__, _ERROR_); return; }
+		if (s_bInitiated) { KROSS_CORE_WARN("Renderer2D is already initialized. Cannot call Renderer2D::Init(void) twice. Forget to call Renderer2D::Shutdown(void)?"); return; }
 		s_bInitiated = true;
 
 		data = new R2DData;
@@ -101,28 +100,29 @@ namespace Kross {
 			});
 		data->va->AddVertex(data->vb);
 
-		data->indices = new uint32_t[MaxIndexCount];
+		uint32_t indices[MaxIndexCount];
 		uint32_t offset = 0;
 		for (int i = 0; i < MaxIndexCount; i += 6)
 		{
-			data->indices[i + 0] = 0 + offset;
-			data->indices[i + 1] = 1 + offset;
-			data->indices[i + 2] = 2 + offset;
+			indices[i + 0] = 0 + offset;
+			indices[i + 1] = 1 + offset;
+			indices[i + 2] = 2 + offset;
 
-			data->indices[i + 3] = 2 + offset;
-			data->indices[i + 4] = 3 + offset;
-			data->indices[i + 5] = 0 + offset;
+			indices[i + 3] = 2 + offset;
+			indices[i + 4] = 3 + offset;
+			indices[i + 5] = 0 + offset;
 
 			offset += 4;
 		}
 
-		data->ib = Buffer::Index::Create(data->indices, sizeof(uint32_t) * MaxIndexCount);
+		data->ib = Buffer::Index::Create(indices, sizeof(indices));
 		data->va->SetIndex(data->ib);
 
 		data->basePositions[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
 		data->basePositions[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
 		data->basePositions[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
 		data->basePositions[3] = glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
+
 
 		Stack<Shader>::instance().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D.glsl"));
 		data->shader->SetFloat("u_Repeat", 1);
@@ -140,11 +140,10 @@ namespace Kross {
 	void Renderer2D::Shutdown()
 	{
 		KROSS_PROFILE_FUNC();
-		if (!s_bInitiated) { KROSS_MSGBOX("Renderer2D is not initialized. Cannot call Renderer2D::Shutdown(void) while Renderer2D::Init(void) is not called.", __FUNCSIG__, _ERROR_); return; }
+		if (!s_bInitiated) { KROSS_CORE_WARN("Renderer2D is not initialized. Cannot call Renderer2D::Shutdown(void) while Renderer2D::Init(void) is not called."); return; }
 
 		Stack<Texture::T2D>::instance().clear();
 		Stack<Shader>::instance().clear();
-		delete[] data->indices;
 		delete data;
 	}
 	void Renderer2D::Begin(Ref<Camera::Camera>& camera)
@@ -156,17 +155,6 @@ namespace Kross {
 			KROSS_CORE_WARN("Calling Renderer2D::Begin(Camera::Camera&) without calling Renderer2D::End(void). Overriding previous scene!");
 		data->shader->Bind();
 		data->shader->SetMat4("u_ViewProjection", camera->GetVPM());
-		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
-	}
-	void Renderer2D::Begin(const Camera::Camera& camera)
-	{
-		KROSS_PROFILE_FUNC();
-		if (!s_bSceneBegan)
-			s_bSceneBegan = true;
-		else
-			KROSS_CORE_WARN("Calling Renderer2D::Begin(Camera::Camera&) without calling Renderer2D::End(void). Overriding previous scene!");
-		data->shader->Bind();
-		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
 	}
 	void Renderer2D::BatchBegin()
@@ -251,7 +239,7 @@ namespace Kross {
 			tex = (float)data->texArray->Get(params.subTexture->GetTexture());
 			auto coords = params.subTexture->GetTexCoords();
 			for (int i = 0; i < 4; i++) texCoords[i] = coords[i];
-		} else if (params.texture && params.subTexture) { KROSS_CORE_ERROR_("[{0}] Texture AND subTexture was found. Please supply only one of each.", __FUNCTION__); return; }
+		} else if (params.texture && params.subTexture) { KROSS_CORE_ERROR("Texture AND subTexture was found. Please supply only one of each."); return; }
 
 		if (params.rotation != glm::vec3(0.0f))
 			for (uint8_t i = 0; i < 4; i++)

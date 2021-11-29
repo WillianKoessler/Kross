@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace Kross::OpenGL::Texture {
-	class KAPI T2DArray final : public Kross::Texture::T2DArray
+	class T2DArray final : public Kross::Texture::T2DArray
 	{
 		class Entry
 		{

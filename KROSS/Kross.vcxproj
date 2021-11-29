@@ -106,7 +106,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -140,31 +140,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\GFXAPI\OpenGL\Buffer.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Buffers.h" />
-    <ClInclude Include="src\GFXAPI\OpenGL\Context.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\FrameBuffer.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLContext.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\RenderersAPI.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Shader.h" />
+    <ClInclude Include="src\GFXAPI\OpenGL\Texture\GLAtlas.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Array.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\Texture\_Texture.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\VertexArrays.h" />
     <ClInclude Include="src\Kross.h" />
     <ClInclude Include="src\Kross\Core\Application.h" />
+    <ClInclude Include="src\Kross\Core\ClientLog.h" />
     <ClInclude Include="src\Kross\Core\Core.h" />
     <ClInclude Include="src\Kross\Core\CoreConfig.h" />
+    <ClInclude Include="src\Kross\Core\CoreLog.h" />
     <ClInclude Include="src\Kross\Core\EntryPoint.h" />
     <ClInclude Include="src\Kross\Core\Input.h" />
-    <ClInclude Include="src\Kross\Core\KVector.h" />
     <ClInclude Include="src\Kross\Core\KeyCodes.h" />
     <ClInclude Include="src\Kross\Core\Layer.h" />
     <ClInclude Include="src\Kross\Core\LayerStack.h" />
-    <ClInclude Include="src\Kross\Core\Log.h" />
+    <ClInclude Include="src\Kross\Core\LayerStack_Impl.h" />
     <ClInclude Include="src\Kross\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Kross\Core\Random.h" />
     <ClInclude Include="src\Kross\Core\Stack.h" />
+    <ClInclude Include="src\Kross\Core\Stack_Impl.h" />
     <ClInclude Include="src\Kross\Core\Timestep.h" />
     <ClInclude Include="src\Kross\Core\Window.h" />
     <ClInclude Include="src\Kross\Events\ApplicationEvent.h" />
@@ -172,7 +173,6 @@
     <ClInclude Include="src\Kross\Events\KeyEvent.h" />
     <ClInclude Include="src\Kross\Events\MouseEvent.h" />
     <ClInclude Include="src\Kross\Renderer\Buffer.h" />
-    <ClInclude Include="src\Kross\Renderer\Buffers.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Camera.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Perspective.h" />
@@ -193,7 +193,6 @@
     <ClInclude Include="src\Kross\Renderer\Textures\Atlas.h" />
     <ClInclude Include="src\Kross\Renderer\Textures\Textures.h" />
     <ClInclude Include="src\Kross\Renderer\VertexArray.h" />
-    <ClInclude Include="src\Kross\Renderer\oldRenderer3D.h" />
     <ClInclude Include="src\Kross\Scene\Components.h" />
     <ClInclude Include="src\Kross\Scene\Entity.h" />
     <ClInclude Include="src\Kross\Scene\Scene.h" />
@@ -577,52 +576,41 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GFXAPI\OpenGL\Buffer.cpp" />
+    <ClCompile Include="src\Kross\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Buffers.cpp" />
-    <ClCompile Include="src\GFXAPI\OpenGL\Context.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\FrameBuffer.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLContext.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\RenderersAPI.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Shader.cpp" />
+    <ClCompile Include="src\GFXAPI\OpenGL\Texture\GLAtlas.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Array.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\Texture\_Texture.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\VertexArrays.cpp" />
     <ClCompile Include="src\Kross\Core\Application.cpp" />
-    <ClCompile Include="src\Kross\Core\KVector.cpp" />
+    <ClCompile Include="src\Kross\Core\CoreLog.cpp" />
     <ClCompile Include="src\Kross\Core\Layer.cpp" />
     <ClCompile Include="src\Kross\Core\LayerStack.cpp" />
-    <ClCompile Include="src\Kross\Core\Log.cpp" />
+    <ClCompile Include="src\Kross\Core\LayerStack_Impl.cpp" />
     <ClCompile Include="src\Kross\Core\Stack.cpp" />
+    <ClCompile Include="src\Kross\Core\Stack_Impl.cpp" />
     <ClCompile Include="src\Kross\Core\Timestep.cpp" />
     <ClCompile Include="src\Kross\Core\Window.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Buffer.cpp">
-      <ObjectFileName>$(IntDir)\Buffer1.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\Kross\Renderer\Buffers.cpp">
-      <ObjectFileName>$(IntDir)\Buffers1.obj</ObjectFileName>
-    </ClCompile>
-    <ClCompile Include="src\Kross\Renderer\Cameras\Camera.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Perspective.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Cameras\Controller.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.cpp" />
-    <ClCompile Include="src\Kross\Renderer\Context.cpp">
-      <ObjectFileName>$(IntDir)\Context1.obj</ObjectFileName>
-    </ClCompile>
+    <ClCompile Include="src\Kross\Renderer\Context.cpp" />
     <ClCompile Include="src\Kross\Renderer\FrameBuffers.cpp" />
     <ClCompile Include="src\Kross\Renderer\Mesh\Mesh.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Kross\Renderer\Renderer3D.cpp" />
-    <ClCompile Include="src\Kross\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Kross\Renderer\Shaders.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Array.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Atlas.cpp" />
     <ClCompile Include="src\Kross\Renderer\Textures\Textures.cpp" />
     <ClCompile Include="src\Kross\Renderer\VertexArray.cpp" />
-    <ClCompile Include="src\Kross\Renderer\oldRenderer3D.cpp" />
     <ClCompile Include="src\Kross\Scene\Entity.cpp" />
     <ClCompile Include="src\Kross\Scene\Scene.cpp" />
     <ClCompile Include="src\Kross\Util\FileUtil.cpp" />

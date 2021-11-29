@@ -102,7 +102,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,20 +131,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Main\src\Core\CoreMechanics.h" />
-    <ClInclude Include="..\Main\src\Core\Items.h" />
-    <ClInclude Include="..\Main\src\Core\UI.h" />
-    <ClInclude Include="..\Main\src\Core\world.h" />
-    <ClInclude Include="..\Main\src\World\Creatures.h" />
-    <ClInclude Include="..\Main\src\World\Entities.h" />
-    <ClInclude Include="..\Main\src\pch.h" />
+    <ClInclude Include="src\world.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Main\src\Core\UI.cpp" />
-    <ClCompile Include="..\Main\src\Core\main.cpp" />
-    <ClCompile Include="..\Main\src\Core\world.cpp" />
-    <ClCompile Include="..\Main\src\World\Creatures.cpp" />
-    <ClCompile Include="..\Main\src\pch.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kross\Kross.vcxproj">

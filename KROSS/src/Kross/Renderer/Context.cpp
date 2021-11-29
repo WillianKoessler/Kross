@@ -9,20 +9,20 @@ namespace Kross {
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:		KROSS_MSGBOX("[Kross::Context] Invalid Graphics API", "Context", _FATAL_); return nullptr;
+			case RendererAPI::API::None:		KROSS_CORE_FATAL("Invalid Graphics API"); return nullptr;
 			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Context>(window);
 		}
-		KROSS_MSGBOX("[Kross::Context] Unknown Graphics API.", "Context", _FATAL_);
+		KROSS_CORE_FATAL("Unknown Graphics API.");
 		return nullptr;
 	}
 	Scope<Context> Context::CreateScope(Window* window)
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:		KROSS_MSGBOX("[Kross::Context] Invalid Graphics API", "Context", _FATAL_); return nullptr;
+			case RendererAPI::API::None:		KROSS_CORE_FATAL("Invalid Graphics API"); return nullptr;
 			case RendererAPI::API::OpenGL:		return makeScope<OpenGL::Context>(window);
 		}
-		KROSS_MSGBOX("[Kross::Context] Unknown Graphics API.", "Context", _FATAL_);
+		KROSS_CORE_FATAL("Unknown Graphics API.");
 		return nullptr;
 	}
 }

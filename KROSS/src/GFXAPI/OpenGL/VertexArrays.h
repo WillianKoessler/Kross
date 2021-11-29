@@ -5,7 +5,7 @@
 #include "Kross/Renderer/Buffer.h"
 
 namespace Kross::OpenGL {
-	class KAPI VertexArray final : public Kross::VertexArray
+	class VertexArray final : public Kross::VertexArray
 	{
 	public:
 		VertexArray();

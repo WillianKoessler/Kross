@@ -53,7 +53,7 @@ namespace Kross::OpenGL {
 		bool framebufferCompletion;
 		glCall(framebufferCompletion = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 		if (framebufferCompletion) {
-			KROSS_MSGBOX("Invalid FrameBuffer.\nglCheckFramebufferStatus(GL_FRAMEBUFFER) found errors.", "Kross::FrameBuffer", _ERROR_);
+			KROSS_CORE_ERROR("Invalid FrameBuffer.\nglCheckFramebufferStatus(GL_FRAMEBUFFER) found errors.");
 			return;
 		}
 		unBind();

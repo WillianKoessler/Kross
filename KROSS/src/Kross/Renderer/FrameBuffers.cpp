@@ -11,10 +11,10 @@ namespace Kross {
 	{
 		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::None:    KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_); return nullptr;
+		case RendererAPI::API::None:    KROSS_MSGBOX_ERROR("Renderer API (None) is not supported"); return nullptr;
 		case RendererAPI::API::OpenGL:  return makeRef<Kross::OpenGL::FrameBuffer>(specs);
 		}
-		KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_);
+		KROSS_MSGBOX_ERROR("Renderer API (None) is not supported Renderer API (None) is not supported", "FrameBuffer", _ERROR_);
 		return nullptr;
 	}
 
@@ -22,10 +22,10 @@ namespace Kross {
 	{
 		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::None:    KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_); return nullptr;
-		case RendererAPI::API::OpenGL:  return makeScope<Kross::OpenGL::FrameBuffer>(specs);
+			case RendererAPI::API::None:    KROSS_MSGBOX_ERROR("Renderer API (None) is not supported"); return nullptr;
+			case RendererAPI::API::OpenGL:  return makeScope<Kross::OpenGL::FrameBuffer>(specs);
 		}
-		KROSS_MSGBOX("[Kross::FrameBuffer] Renderer API (None) is not supported", "FrameBuffer", _ERROR_);
+		KROSS_MSGBOX_ERROR("Renderer API (None) is not supported Renderer API (None) is not supported", "FrameBuffer", _ERROR_);
 		return nullptr;
 	}
 }

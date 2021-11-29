@@ -5,21 +5,21 @@
 namespace Kross::Texture {
 	class KAPI T2DAtlas
 	{
-		using Tex = Ref<Kross::Texture::T2D>;
-		std::string m_name;
-		glm::vec2 m_TexCoords[4];
-		glm::vec2 m_cellSize, m_spriteSize;
-		Tex m_Atlas;
-		inline void calculate(const glm::vec2& min, const glm::vec2& max);
 	public:
-		T2DAtlas(Tex&& atlas_Texture, glm::vec2&& min, glm::vec2&& max);
-		T2DAtlas(Tex&& atlas_Texture, glm::vec2&& cellSize, glm::vec2&& index, glm::vec2&& spriteSize);
-		T2DAtlas(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max);
-		T2DAtlas(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize);
-		void UpdateTexture(const glm::vec2& index);
-		
-		inline const glm::vec2* GetTexCoords() const { return m_TexCoords; }
-		inline const Tex& GetTexture() const { return m_Atlas; }
-		inline const std::string& GetName() const { return m_name; }
+		using Tex = Ref<Kross::Texture::T2D>;
+
+		virtual void UpdateTexture(const glm::vec2& index) = 0;;
+		virtual const glm::vec2* GetTexCoords() const = 0;
+		virtual const Tex& GetTexture() const = 0;
+		virtual const std::string& GetName() const = 0;
+
+		static Ref<Kross::Texture::T2DAtlas> CreateRef(Tex&& atlas_Texture, glm::vec2&& min, glm::vec2&& max);
+		static Ref<Kross::Texture::T2DAtlas> CreateRef(Tex&& atlas_Texture, glm::vec2&& cellSize, glm::vec2&& index, glm::vec2&& spriteSize);
+		static Ref<Kross::Texture::T2DAtlas> CreateRef(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max);
+		static Ref<Kross::Texture::T2DAtlas> CreateRef(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize);
+		static Scope<Kross::Texture::T2DAtlas> CreateScope(Tex&& atlas_Texture, glm::vec2&& min, glm::vec2&& max);
+		static Scope<Kross::Texture::T2DAtlas> CreateScope(Tex&& atlas_Texture, glm::vec2&& cellSize, glm::vec2&& index, glm::vec2&& spriteSize);
+		static Scope<Kross::Texture::T2DAtlas> CreateScope(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max);
+		static Scope<Kross::Texture::T2DAtlas> CreateScope(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize);
 	};
 }

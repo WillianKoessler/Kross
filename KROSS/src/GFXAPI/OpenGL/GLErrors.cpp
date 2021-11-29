@@ -53,12 +53,12 @@ void glDebugMessage(
 	case GL_STACK_UNDERFLOW:				{ cid = "GL_STACK_UNDERFLOW"; break; }
 	}
 
-	KROSS_CORE_ERROR_("	**GL CALLBACK**");
-	KROSS_CORE_ERROR_("TYPE: {0}", ctype);
-	KROSS_CORE_ERROR_("SEVERITY: {0}", cseverity);
-	KROSS_CORE_ERROR_("SOURCE: {0}", csource);
-	KROSS_CORE_ERROR_("ID: {0}", cid);
-	KROSS_CORE_ERROR_("MESSAGE: {0}", message);
+	KROSS_CORE_ERROR("	**GL CALLBACK**");
+	KROSS_CORE_ERROR("TYPE: {0}", ctype);
+	KROSS_CORE_ERROR("SEVERITY: {0}", cseverity);
+	KROSS_CORE_ERROR("SOURCE: {0}", csource);
+	KROSS_CORE_ERROR("ID: {0}", cid);
+	KROSS_CORE_ERROR("MESSAGE: {0}", message);
 }
 
 glError::glError(const std::string& func_, const std::string& file_, int line_)
@@ -72,7 +72,7 @@ glError::glError(const std::string& func_, const std::string& file_, int line_)
 		code = glGetError();
 	else
 	{
-		KROSS_CORE_ERROR_("Trying to use glError without active instance of handler");
+		KROSS_CORE_ERROR("Trying to use glError without active instance of handler");
 	}
 }
 glError::glError(const std::string& func_, const std::string& file_, int line_, unsigned int code_)
@@ -89,7 +89,7 @@ void glError::Begin()
 		active = true;
 	else
 	{
-		KROSS_CORE_ERROR_("Trying to initilize OpenGL Error Handler with an already initialized instance.");
+		KROSS_CORE_ERROR("Trying to initilize OpenGL Error Handler with an already initialized instance.");
 	}
 }
 void glError::flushCache()
@@ -102,7 +102,7 @@ void glError::flushCache()
 	}
 	else
 	{
-		KROSS_CORE_ERROR_("Trying to flush OpenGL Error Handler without an valid instance.");
+		KROSS_CORE_ERROR("Trying to flush OpenGL Error Handler without an valid instance.");
 	}
 }
 bool glError::hasError()
@@ -124,9 +124,9 @@ bool glError::handle()
 }
 void glError::display(const glError& error)
 {
-	KROSS_CORE_ERROR_("FILE: {0}", error.file);
-	KROSS_CORE_ERROR_("LINE: {0}", error.line);
-	KROSS_CORE_ERROR_("FUNCTION: {0}", error.func);
+	KROSS_CORE_ERROR("FILE: {0}", error.file);
+	KROSS_CORE_ERROR("LINE: {0}", error.line);
+	KROSS_CORE_ERROR("FUNCTION: {0}", error.func);
 }
 bool glError::handled(const glError& error)
 {

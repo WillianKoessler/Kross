@@ -8,15 +8,15 @@
 struct GLFWwindow;
 
 namespace Kross::OpenGL {
-	class KAPI Context final : public Kross::Context
+	class Context final : public Kross::Context
 	{
 	public:
 		Context(Window* window);
 		~Context();
 
-		virtual void Init(unsigned int, unsigned int) override;
+		virtual void Init(uint32_t x, uint32_t y) override;
 		virtual void SwapBuffers() override;
-		virtual void UpdateViewport(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
+		virtual void UpdateViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 
 		static const float GetVersion();
 	private:

@@ -121,7 +121,7 @@ namespace Kross {
 	}
 	void Renderer3D::Init() {
 		KROSS_PROFILE_FUNC();
-		if (s_bInitiated) { KROSS_MSGBOX("Renderer3D is already initialized. Cannot call Renderer3D::Init(void) twice. Forget to call Renderer3D::Shutdown(void)?", __FUNCSIG__, _ERROR_); return; }
+		if (s_bInitiated) { KROSS_CORE_WARN("Renderer3D is already initialized. Cannot call Renderer3D::Init(void) twice. Forget to call Renderer3D::Shutdown(void)?"); return; }
 		s_bInitiated = true;
 		pData = new PointBatchData;
 
@@ -197,7 +197,7 @@ namespace Kross {
 	}
 	void Renderer3D::Shutdown() {
 		KROSS_PROFILE_FUNC();
-		if (!s_bInitiated) { KROSS_MSGBOX("Renderer3D is not initialized. Cannot call Renderer3D::Shutdown(void) while Renderer3D::Init(void) is not called.", __FUNCSIG__, _ERROR_); return; }
+		if (!s_bInitiated) { KROSS_CORE_WARN("Renderer3D is not initialized. Cannot call Renderer3D::Shutdown(void) while Renderer3D::Init(void) is not called."); return; }
 
 		Stack<Texture::T2D>::instance().clear();
 		Stack<Shader>::instance().clear();
@@ -324,7 +324,7 @@ namespace Kross {
 			tex = (float)data->texArray->Get(params.subTexture->GetTexture());
 			auto coords = params.subTexture->GetTexCoords();
 			for (int i = 0; i < 4; i++) texCoords[i] = coords[i];
-		} else if (params.texture && params.subTexture) { KROSS_CORE_ERROR_("[{0}] Texture AND subTexture was found. Please supply only one of each.", __FUNCTION__); return; } else {
+		} else if (params.texture && params.subTexture) { KROSS_CORE_ERROR("Texture AND subTexture was found. Please supply only one of each."); return; } else {
 			KROSS_CORE_WARN("[{0}] Neither Texture nor Subtexture selected. Default Selected.", __FUNCTION__);
 			params.texture = Stack<Texture::T2D>::instance().Get("blank");
 		}

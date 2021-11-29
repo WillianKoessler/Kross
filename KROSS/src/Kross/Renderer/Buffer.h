@@ -1,6 +1,6 @@
 #pragma once
 #include "Kross/Core/Core.h"
-#include "Kross/Core/Log.h"
+#include "Kross/Core/CoreLog.h"
 
 namespace Kross::Buffer {
 
@@ -19,28 +19,27 @@ namespace Kross::Buffer {
 	{
 		switch (type)
 		{
-		case ShaderDataType::Float:		return 4;
-		case ShaderDataType::Float2:	return 4 * 2;
-		case ShaderDataType::Float3:	return 4 * 3;
-		case ShaderDataType::Float4:	return 4 * 4;
-		case ShaderDataType::Mat3:		return 4 * 3 * 3;
-		case ShaderDataType::Mat4:		return 4 * 4 * 4;
-		case ShaderDataType::Int:		return 4;
-		case ShaderDataType::Int2:		return 4 * 2;
-		case ShaderDataType::Int3:		return 4 * 3;
-		case ShaderDataType::Int4:		return 4 * 4;
-		case ShaderDataType::uInt:		return 4;
-		case ShaderDataType::uInt2:		return 4 * 2;
-		case ShaderDataType::uInt3:		return 4 * 3;
-		case ShaderDataType::uInt4:		return 4 * 4;
-		case ShaderDataType::Bool:		return 1;
-		case ShaderDataType::Byte:		return size;
-		case ShaderDataType::None:		KROSS_MSGBOX("Not supported Shader Data Type. ('None' is selected).", __FUNCSIG__, _WARN_); return NULL;
+			case ShaderDataType::Float:		return 4;
+			case ShaderDataType::Float2:	return 4 * 2;
+			case ShaderDataType::Float3:	return 4 * 3;
+			case ShaderDataType::Float4:	return 4 * 4;
+			case ShaderDataType::Mat3:		return 4 * 3 * 3;
+			case ShaderDataType::Mat4:		return 4 * 4 * 4;
+			case ShaderDataType::Int:		return 4;
+			case ShaderDataType::Int2:		return 4 * 2;
+			case ShaderDataType::Int3:		return 4 * 3;
+			case ShaderDataType::Int4:		return 4 * 4;
+			case ShaderDataType::uInt:		return 4;
+			case ShaderDataType::uInt2:		return 4 * 2;
+			case ShaderDataType::uInt3:		return 4 * 3;
+			case ShaderDataType::uInt4:		return 4 * 4;
+			case ShaderDataType::Bool:		return 1;
+			case ShaderDataType::Byte:		return size;
 		}
-		KROSS_MSGBOX("Unknown Shader Data Type", __FUNCSIG__, _ERROR_);
+		KROSS_CORE_WARN("Not supported Shader Data Type. ('None' is selected).","");
 		return NULL;
 	}
-	
+
 	struct Element
 	{
 		std::string Name;
@@ -50,14 +49,17 @@ namespace Kross::Buffer {
 		bool Normalized;
 
 		Element()
-		: Name(""), Type(ShaderDataType::None), Size(0), OffSet(0), Normalized(false)
-		{}
+			: Name(""), Type(ShaderDataType::None), Size(0), OffSet(0), Normalized(false)
+		{
+		}
 		Element(ShaderDataType type, const std::string& name, bool normalized = false)
 			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), OffSet(0), Normalized(normalized)
-		{}
+		{
+		}
 		Element(ShaderDataType type, const std::string& name, uint32_t size, bool normalized = false)
 			: Name(name), Type(type), Size(ShaderDataTypeSize(type, size)), OffSet(0), Normalized(normalized)
-		{}
+		{
+		}
 
 		uint32_t GetComponentCount() const
 		{
@@ -78,7 +80,7 @@ namespace Kross::Buffer {
 				case ShaderDataType::uInt4:    return 4;
 				case ShaderDataType::Bool:    return 1;
 			}
-			KROSS_MSGBOX("Unknown Shader Data Type", __FUNCSIG__, _ERROR_);
+			KROSS_CORE_WARN("Unknown Shader Data Type");
 			return NULL;
 		}
 	};
@@ -92,10 +94,10 @@ namespace Kross::Buffer {
 		inline const uint32_t GetStride() const { return m_Stride; }
 		inline const std::vector<Element> GetElements() const { return m_Elements; }
 
-		std::vector<Element>::iterator begin()	{ return m_Elements.begin(); }
-		std::vector<Element>::iterator end()	{ return m_Elements.end(); }
-		std::vector<Element>::const_iterator begin() const	{ return m_Elements.begin(); }
-		std::vector<Element>::const_iterator end() const	{ return m_Elements.end(); }
+		std::vector<Element>::iterator begin() { return m_Elements.begin(); }
+		std::vector<Element>::iterator end() { return m_Elements.end(); }
+		std::vector<Element>::const_iterator begin() const { return m_Elements.begin(); }
+		std::vector<Element>::const_iterator end() const { return m_Elements.end(); }
 	private:
 		void CalcOffnStride();
 	private:
@@ -103,7 +105,7 @@ namespace Kross::Buffer {
 		uint32_t m_Stride = 0;
 	};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 	class Vertex
@@ -124,7 +126,7 @@ namespace Kross::Buffer {
 		static Ref<Vertex> Create(float* vertices, uint32_t size, bool dynamic = false);
 	};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	class Index
 	{

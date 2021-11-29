@@ -1,14 +1,12 @@
 #pragma once
 
-#include "Core.h"
-#include "Timestep.h"
-#include "Kross/Events/Event.h"
+#include "Kross/Core/Core.h"
 
 namespace Kross {
 	class KAPI Layer
 	{
 	public:
-		Layer(const std::string& name = "Layer");
+		Layer(const char* name = "Layer");
 		virtual ~Layer();
 
 
@@ -16,12 +14,12 @@ namespace Kross {
 		virtual void OnDetach() {}
 		virtual void OnUpdate(double fElapsedTime) {}
 		virtual void OnImGuiRender(double fElapsedTime) {}
-		virtual void OnEvent(Event& event) {}
+		virtual void OnEvent(class Event& event) {}
 
-		inline const std::string& GetName() const { return m_strDebugName; }
+		inline const char* GetName() const { return m_strDebugName; }
 
 		float ar;
 	protected:
-		std::string m_strDebugName;
+		const char* m_strDebugName;
 	};
 }

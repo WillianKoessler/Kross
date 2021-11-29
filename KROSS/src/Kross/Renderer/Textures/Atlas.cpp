@@ -1,42 +1,61 @@
-#include "Kross_pch.h"
+#include <Kross_pch.h>
 #include "Atlas.h"
+#include "Kross/Renderer/Renderer.h"
+#include "GFXAPI/OpenGL/Texture/GLAtlas.h"
 
 namespace Kross::Texture {
-	void T2DAtlas::calculate(const glm::vec2& min, const glm::vec2& max)
+	template<typename...Args>
+	Ref<Kross::Texture::T2DAtlas> CreateReferenceImpl(Args&&...args)
 	{
-		m_TexCoords[0] = min;
-		m_TexCoords[1] = { max.x, min.y };
-		m_TexCoords[2] = max;
-		m_TexCoords[3] = { min.x, max.y };
+		switch (Renderer::GetAPI())
+		{
+			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
+			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Atlas>(std::forward<Args>(args)...);
+		}
+		KROSS_CORE_WARN("Renderer API (None) is not supported");
+		return nullptr;
 	}
-	T2DAtlas::T2DAtlas(Tex&& atlas_Texture, glm::vec2&& min, glm::vec2&& max) :
-		m_Atlas(atlas_Texture)
+	template<typename...Args>
+	Scope<Kross::Texture::T2DAtlas> CreateScopeImpl(Args&&...args)
 	{
-		calculate(min, max);
+		switch (Renderer::GetAPI())
+		{
+			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
+			case RendererAPI::API::OpenGL:		return makeScope<OpenGL::Atlas>(std::forward<Args>(args)...);
+		}
+		KROSS_CORE_WARN("Renderer API (None) is not supported");
+		return nullptr;
 	}
-	T2DAtlas::T2DAtlas(Tex&& atlas_Texture, glm::vec2&& cellSize, glm::vec2&& index, glm::vec2&& spriteSize) :
-		m_name(atlas_Texture->GetName() + "_ATLAS"),
-		m_Atlas(atlas_Texture),
-		m_cellSize(cellSize),
-		m_spriteSize(spriteSize)
+	Ref<Kross::Texture::T2DAtlas> T2DAtlas::CreateRef(Tex&& atlas_Texture, glm::vec2&& min, glm::vec2&& max)
 	{
-		calculate((index * cellSize) / m_Atlas->GetSize(), ((index + spriteSize) * cellSize) / m_Atlas->GetSize());
+		return CreateReferenceImpl(atlas_Texture, min, max);
 	}
-	T2DAtlas::T2DAtlas(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max) :
-		m_Atlas(atlas_Texture)
+	Ref<Kross::Texture::T2DAtlas> T2DAtlas::CreateRef(Tex&& atlas_Texture, glm::vec2&& cellSize, glm::vec2&& index, glm::vec2&& spriteSize)
 	{
-		calculate(min, max);
+		return CreateReferenceImpl(atlas_Texture, cellSize, index, spriteSize);
 	}
-	T2DAtlas::T2DAtlas(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize) :
-		m_name(atlas_Texture->GetName() + "_ATLAS"),
-		m_Atlas(atlas_Texture),
-		m_cellSize(cellSize),
-		m_spriteSize(spriteSize)
+	Ref<Kross::Texture::T2DAtlas> T2DAtlas::CreateRef(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max)
 	{
-		calculate((index * cellSize) / m_Atlas->GetSize(), ((index + spriteSize) * cellSize) / m_Atlas->GetSize());
+		return CreateReferenceImpl(atlas_Texture, min, max);
 	}
-	void T2DAtlas::UpdateTexture(const glm::vec2& index)
+	Ref<Kross::Texture::T2DAtlas> T2DAtlas::CreateRef(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize)
 	{
-		calculate((index * m_cellSize) / m_Atlas->GetSize(), ((index + m_spriteSize) * m_cellSize) / m_Atlas->GetSize());
+		return CreateReferenceImpl(atlas_Texture, cellSize, index, spriteSize);
+	}
+	Scope<Kross::Texture::T2DAtlas> T2DAtlas::CreateScope(Tex&& atlas_Texture, glm::vec2&& min, glm::vec2&& max)
+	{
+		return CreateScopeImpl(atlas_Texture, min, max);
+	}
+	Scope<Kross::Texture::T2DAtlas> T2DAtlas::CreateScope(Tex&& atlas_Texture, glm::vec2&& cellSize, glm::vec2&& index, glm::vec2&& spriteSize)
+	{
+		return CreateScopeImpl(atlas_Texture, cellSize, index, spriteSize);
+	}
+	Scope<Kross::Texture::T2DAtlas> T2DAtlas::CreateScope(const Tex& atlas_Texture, const glm::vec2& min, const glm::vec2& max)
+	{
+		return CreateScopeImpl(atlas_Texture, min, max);
+	}
+	Scope<Kross::Texture::T2DAtlas> T2DAtlas::CreateScope(const Tex& atlas_Texture, const glm::vec2& cellSize, const glm::vec2& index, const glm::vec2& spriteSize)
+	{
+		return CreateScopeImpl(atlas_Texture, cellSize, index, spriteSize);
 	}
 }

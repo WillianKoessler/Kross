@@ -11,14 +11,14 @@ namespace Kross::OpenGL {
 		KROSS_PROFILE_FUNC();
 		if (!m_Window)
 		{
-			KROSS_MSGBOX("Window pointer is NULL!", "[Kross::OpenGL::Context]", _FATAL_);
+			KROSS_CORE_FATAL("Window pointer is NULL!");
 		}
-		KROSS_CORE_INFO("[Kross::OpenGL::Context] OpenGL Context Created");
+		KROSS_CORE_INFO("OpenGL Context Created");
 	}
 	Context::~Context()
 	{
 		glError::flushCache();
-		KROSS_CORE_INFO("[Kross::OpenGL::Context] OpenGL Context Destructed");
+		KROSS_CORE_INFO("OpenGL Context Destructed");
 	}
 	void Context::Init(unsigned int x, unsigned int y)
 	{
@@ -40,7 +40,7 @@ namespace Kross::OpenGL {
 			err = gl3wInit() != 0;
 #endif
 		}
-		if (err > 1 || err == 0) { KROSS_MSGBOX("Failed to Load OpenGL!!", "[Kross::OpenGL::Context]", _FATAL_); }
+		if (err > 1 || err == 0) { KROSS_CORE_FATAL("Failed to Load OpenGL!!"); }
 
 		glError::Begin();
 
@@ -60,7 +60,7 @@ namespace Kross::OpenGL {
 
 		if (version < 4.4f)
 		{
-			KROSS_MSGBOX("KROSS requires OpenGL 4.4 or superior.", "[Kross::OpenGL::Context]", _FATAL_);
+			KROSS_CORE_FATAL("KROSS requires OpenGL 4.4 or superior.");
 		}
 
 #if (KROSS_GL_DEBUG)
@@ -73,7 +73,7 @@ namespace Kross::OpenGL {
 #endif
 
 			glViewport(0, 0, x, y);
-			KROSS_CORE_TRACE("[Kross::OpenGL::Context] OpenGL Context Initialized");
+			KROSS_CORE_TRACE("OpenGL Context Initialized");
 	}
 	void Context::SwapBuffers()
 	{
@@ -100,7 +100,7 @@ namespace Kross::OpenGL {
 		}
 		else
 		{
-			KROSS_MSGBOX("Failed to get OpenGL Version.\nReason: OpenGL was not initialized.", __FUNCSIG__, _ERROR_);
+			KROSS_CORE_FATAL("Failed to get OpenGL Version.\nReason: OpenGL was not initialized.");
 			return 0.0f;
 		}
 	}

@@ -8,8 +8,8 @@
 #include "Renderer3D.h"
 
 namespace Kross {
-	RendererAPI* RenderCommand::s_RendererAPI = new GraphicsAPI::RendererAPI;
-	Renderer::Dimentions Renderer::s_dDims = Renderer::Dimentions::D2;
+	KAPI RendererAPI* RenderCommand::s_RendererAPI = new GraphicsAPI::RendererAPI;
+	KAPI Renderer::Dimentions Renderer::s_dDims = Renderer::Dimentions::D2;
 
 	void Renderer::Init(Renderer::Dimentions dims)
 	{
@@ -37,7 +37,6 @@ namespace Kross {
 		case Dimentions::D3: Renderer3D::Shutdown(); break;
 		default: { KROSS_CORE_ERROR("[{0}] Renderer::Dimentions not supported", __FUNCTION__); return; }
 		}
-
 		KROSS_CORE_TRACE("[{0}] Renderer Finished", __FUNCTION__);
 	}
 

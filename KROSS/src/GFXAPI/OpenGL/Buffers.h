@@ -4,7 +4,7 @@
 #include "Kross/Core/Core.h"
 
 namespace Kross::OpenGL::Buffer {
-	class KAPI Vertex final : public Kross::Buffer::Vertex
+	class Vertex final : public Kross::Buffer::Vertex
 	{
 	public:
 		Vertex(float* vertices, uint32_t size, bool dynamic);
@@ -31,7 +31,7 @@ namespace Kross::OpenGL::Buffer {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	class KAPI Index: public Kross::Buffer::Index
+	class Index: public Kross::Buffer::Index
 	{
 	public:
 		Index(uint32_t* indices, uint32_t size);

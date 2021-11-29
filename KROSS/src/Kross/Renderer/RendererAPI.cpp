@@ -1,6 +1,4 @@
-#include "Kross_pch.h"
+#include <Kross_pch.h>
 #include "RendererAPI.h"
 
-namespace Kross {
-	RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
-}
+//Kross::RendererAPI::API Kross::RendererAPI::s_API = Kross::RendererAPI::API::OpenGL;

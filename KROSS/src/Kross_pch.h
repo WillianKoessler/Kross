@@ -6,10 +6,9 @@
 #include <iomanip>
 
 // String libraries
-#include <string>
 #include <locale>
 #include <codecvt>
-
+#include <string>
 #include <cstring>
 #include <cctype>
 #include <sstream>
@@ -28,21 +27,14 @@
 // Data Manip libraries
 #include <memory>
 #include <array>
-
 #include <vector>
-
 #include <unordered_map>
 #include <unordered_set>
 
 // Files Manip libraries
 #include <fstream>
 
-// Logging libraries
-#include "spdlog/include/spdlog/spdlog.h"
-#include "spdlog/include/spdlog/fmt/ostr.h"
-#include "spdlog/include/spdlog/sinks/stdout_color_sinks.h"
-
-#include "Kross/Core/Log.h"
+#include "Kross/Core/CoreLog.h"
 #include "Kross/Core/Timestep.h"
 
 #endif //PCH_H

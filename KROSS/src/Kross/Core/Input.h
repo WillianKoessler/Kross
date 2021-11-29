@@ -7,17 +7,25 @@ namespace Kross {
 	class KAPI Input
 	{
 	public:
-		enum class KeyState {
+		enum class KeyState
+		{
 			NOT_PRESSED = 0,
 			PRESSED,
 			HELD,
 			RELEASED
 		};
 
-		inline static KeyState GetKeyState(int keycode) { if (s_Instance) s_Instance->GetKeyStateImpl(keycode); else { KROSS_CORE_ERROR_ONCE("Input Error"); return KeyState::NOT_PRESSED; } }
+		inline static KeyState GetKeyState(int keycode)
+		{
+			if (s_Instance) return s_Instance->GetKeyStateImpl(keycode);
+			else {
+				KROSS_CORE_ERROR_ONCE("Input Error");
+				return KeyState::NOT_PRESSED;
+			}
+		}
 		inline static bool IsKeyHeld(int keycode) { return s_Instance->IsKeyHeldImpl(keycode); }
 		inline static bool IsKeyPressed(int keycode) { return s_Instance->IsKeyPressedImpl(keycode); }
-		inline static bool IsKeyReleased(int keycode) { if (s_Instance != nullptr) return s_Instance->IsKeyReleasedImpl(keycode); else { KROSS_CORE_ERROR_ONCE("Input is not defined"); return false; }}
+		inline static bool IsKeyReleased(int keycode) { if (s_Instance != nullptr) return s_Instance->IsKeyReleasedImpl(keycode); else { KROSS_CORE_ERROR_ONCE("Input is not defined"); return false; } }
 
 		inline static bool IsMouseButtonPressed(int button) { return s_Instance->IsMouseButtonPressedImpl(button); }
 		inline static std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }

@@ -30,8 +30,6 @@ namespace Kross {
 		virtual void SetMode(Mode mode) const = 0;
 		virtual void BackCull(bool) const = 0;
 
-		inline static API GetAPI() { return s_API; }
-	private:
-		static API s_API;
+		inline static API GetAPI() { static API s_API = API::OpenGL; return s_API; }
 	};
 }

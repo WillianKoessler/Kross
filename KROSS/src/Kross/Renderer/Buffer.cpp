@@ -32,33 +32,33 @@ namespace Kross::Buffer {
 		}
 	}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Ref<Vertex> Vertex::Create(float* vertices, uint32_t size, bool dynamic)
 	{
 		KROSS_CORE_INFO("{0} Creating VertexBufferObject...", __FUNCTION__);
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:		KROSS_MSGBOX("Renderer API (None) is not supported", __FUNCTION__ , _ERROR_); return nullptr;
-		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Vertex>(vertices, size, dynamic);
+			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
+			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Vertex>(vertices, size, dynamic);
 		}
-		
-		KROSS_MSGBOX("Renderer API (None) is not supported", __FUNCTION__, _ERROR_);
+
+		KROSS_CORE_WARN("Renderer API (None) is not supported");
 		return nullptr;
 	}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	Ref<Index> Index::Create(uint32_t* indices, uint32_t size)
 	{
 		KROSS_CORE_INFO("{0} Creating IndexBufferObject...", __FUNCTION__);
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None:		KROSS_MSGBOX("Renderer API (None) is not supported", __FUNCTION__, _FATAL_);return nullptr;
-		case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Index>(indices, size);
+			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
+			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Index>(indices, size);
 		}
 
-		KROSS_MSGBOX("Renderer API (None) is not supported", __FUNCTION__, _FATAL_);
+		KROSS_CORE_WARN("Renderer API (None) is not supported");
 		return nullptr;
 	}
 

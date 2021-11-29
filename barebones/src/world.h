@@ -10,8 +10,8 @@ public:
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;
-	virtual void OnUpdate(Kross::Timestep) override;
-	virtual void OnImGuiRender(Kross::Timestep) override;
+	virtual void OnUpdate(double) override;
+	virtual void OnImGuiRender(double) override;
 	virtual void OnEvent(Kross::Event& event) override;
 };
 

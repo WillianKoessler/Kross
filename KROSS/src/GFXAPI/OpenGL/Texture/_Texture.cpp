@@ -3,8 +3,6 @@
 #include "stb_image.h"
 #include "GFXAPI/OpenGL/GLContext.h"
 
-#include "Kross/Util/FileUtil.h"
-
 namespace Kross::OpenGL::Texture {
 	const int Base::QueryMaxSlots()
 	{
@@ -14,7 +12,7 @@ namespace Kross::OpenGL::Texture {
 		return query;
 	}
 
-	T2D::T2D(uint32_t width, uint32_t height, const char* name, unsigned char* data)
+	T2D::T2D(uint32_t width, uint32_t height, const std::string& name, unsigned char* data)
 		:
 		m_strPath(""),
 		m_strName(name),
@@ -50,26 +48,26 @@ namespace Kross::OpenGL::Texture {
 		else KROSS_CORE_WARN("[{0}] Texture '{1}' NOT created. There were no data.", __FUNCTION__, m_strName);
 		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
 	}
-	T2D::T2D(const char* cname, const char* cpath)
+	T2D::T2D(const std::string& name, const std::string& path)
 		:
-		m_strPath(cpath),
-		m_strName(cname),
+		m_strPath(path),
+		m_strName(name),
 		m_unDataFormat(0),
 		m_unInternalFormat(0),
 		m_CurrentSlot(IncSlot())
 	{
 		KROSS_PROFILE_FUNC();
-		std::string name(cname), path(cpath);
-		if (name.empty()) m_strName = FileName(cpath);
+
+		if (name.empty()) m_strName = FileName(path);
 
 		stbi_set_flip_vertically_on_load(true);
 
 		int width, height, channels;
 		{
 			KROSS_PROFILE_SCOPE("T2D::T2D - stbi_load");
-			raw_data.reset(stbi_load(cpath, &width, &height, &channels, 0));
+			raw_data.reset(stbi_load(path.c_str(), &width, &height, &channels, 0));
 		}
-		if (!raw_data) { KROSS_MSGBOX("Failed to load image!\nFILE: " + path, __FUNCTION__, _ERROR_); }
+		if (!raw_data) { KROSS_MSGBOX_ERROR(("Failed to load image!\nFILE: " + path).c_str()); }
 
 		m_unWidth = width;
 		m_unHeight = height;
@@ -168,12 +166,7 @@ namespace Kross::OpenGL::Texture {
 	T2D::~T2D()
 	{
 		KROSS_PROFILE_FUNC();
-		try
-		{
-			glCall(glDeleteTextures(1, &m_RendererID));
-		} catch (const std::exception& e) {
-			KROSS_CORE_ERROR("[{0}] Texture {1} throwed an exception on Destruct.", __FUNCTION__, e.what());
-		}
+		glCall(glDeleteTextures(1, &m_RendererID));
 		KROSS_CORE_INFO("[{0}] Texture '{1}' Destructed", __FUNCTION__, m_strName);
 	}
 	void T2D::SetData(unsigned char* data, uint32_t size)
