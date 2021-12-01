@@ -12,10 +12,10 @@ namespace Kross::Camera2D {
 	{
 		KROSS_PROFILE_FUNC();
 		if (camera)
-			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, camera->GetName());
+			KROSS_CORE_WARN("WARNING: Overriding previous camera: {1}", camera->GetName());
 
 		camera.reset(cam);
-		KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
+		KROSS_CORE_INFO("Camera Controller Created");
 	}
 
 	OrthographicCtrl::OrthographicCtrl(const std::string& name, float AR, bool rot)
@@ -24,16 +24,16 @@ namespace Kross::Camera2D {
 	{
 		KROSS_PROFILE_FUNC();
 		if (camera)
-			KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, camera->GetName());
+			KROSS_CORE_WARN("WARNING: Overriding previous camera: {1}", camera->GetName());
 
 		camera = makeRef<Orthographic>(-AR * m_fZoom, AR * m_fZoom, -m_fZoom, m_fZoom, name);
-		KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
+		KROSS_CORE_INFO("Camera Controller Created");
 	}
 
 	OrthographicCtrl::~OrthographicCtrl()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("[Kross::Camera::OrthographicCtrl] Camera Controller Deconstructed");
+		KROSS_CORE_INFO("Camera Controller Deconstructed");
 	}
 
 	void OrthographicCtrl::OnUpdate(double ts)

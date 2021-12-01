@@ -32,30 +32,30 @@ namespace Kross::OpenGL::Texture {
 			else if (textures.size() < _size)
 			{
 				textures.emplace(i, texture);
-				KROSS_CORE_WARN("[{0}] Texture '{1}' was not found. Added to Array.", __FUNCTION__, texture->GetName());
+				KROSS_CORE_WARN("Texture '{0}' was not found. Added to Array.", texture->GetName());
 				return (int)(location(texture->GetID()) - textures.begin());
 			}
 			else
-				KROSS_CORE_WARN("[{0}] Texture Array reached maximum capacity. Ignoring new textures.", __FUNCTION__);
+				KROSS_CORE_WARN("Texture Array reached maximum capacity. Ignoring new textures.");
 		}
-		KROSS_CORE_WARN("[{0}] Texture is empty.", __FUNCTION__);
+		KROSS_CORE_WARN("Texture is empty.");
 		return -1;
 	}
 	void T2DArray::Add(const Ref<Kross::Texture::T2D> texture)
 	{
-		if (textures.size() >= _size) { KROSS_CORE_WARN("[{0}] Texture Array reached maximum capacity. Ignoring new textures.", __FUNCTION__); return; }
+		if (textures.size() >= _size) { KROSS_CORE_WARN("Texture Array reached maximum capacity. Ignoring new textures."); return; }
 		if (texture)
 		{
 			auto i = location(texture->GetID());
 			if (i == textures.end())
 			{
 				textures.emplace(i, texture);
-				KROSS_CORE_TRACE("[{0}] Texture '{1}' added to Array", __FUNCTION__, texture->GetName());
+				KROSS_CORE_TRACE("Texture '{0}' added to Array", texture->GetName());
 			}
-			else KROSS_CORE_WARN("[{0}] Texture '{1}' is already in the Array.", __FUNCTION__, texture->GetName());
+			else KROSS_CORE_WARN("Texture '{0}' is already in the Array.", texture->GetName());
 		}
 		else
-			KROSS_CORE_WARN("[{0}] Adding a texture which was not yet created.", __FUNCTION__);
+			KROSS_CORE_WARN("Adding a texture which was not yet created.");
 	}
 	void T2DArray::Del(const Ref<Kross::Texture::T2D> texture)
 	{
@@ -65,21 +65,20 @@ namespace Kross::OpenGL::Texture {
 			if (i != textures.end() && i->get()->GetID() == texture->GetID())
 				textures.erase(i);
 			else
-				KROSS_CORE_WARN("[{0}] '{1}' Trying to delete texture that was not in Array.", __FUNCTION__, texture->GetName());
+				KROSS_CORE_WARN("'{0}' Trying to delete texture that was not in Array.", texture->GetName());
 		}
 		else
-			KROSS_CORE_WARN("[{0}] Trying to delete with a nullptr texture.", __FUNCTION__);
+			KROSS_CORE_WARN("Trying to delete with a nullptr texture.");
 	}
 	void T2DArray::Del(const size_t index)
 	{
 		if (index < textures.size())
 		{
-			KROSS_CORE_TRACE("[{0}] '{1}' texture deleted.", __FUNCTION__, (textures.begin() + index)->get()->GetName());
+			KROSS_CORE_TRACE("'{0}' texture deleted.", (textures.begin() + index)->get()->GetName());
 			textures.erase(textures.begin() + index);
 		}
 		else
-			KROSS_CORE_WARN
-			("[{0}] Specified index is out of range.", __FUNCTION__);
+			KROSS_CORE_WARN("Specified index is out of range.");
 	}
 	const size_t T2DArray::size() const
 	{

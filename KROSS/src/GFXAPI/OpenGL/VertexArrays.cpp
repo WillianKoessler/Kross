@@ -29,14 +29,14 @@ namespace Kross::OpenGL {
 		KROSS_PROFILE_FUNC();
 		glCall(glGenVertexArrays(1, &m_RendererID));
 		Bind();
-		KROSS_CORE_INFO("[Kross::OpenGL::VertexArray] Vertex Array Created");
+		KROSS_CORE_INFO("Vertex Array Created");
 	}
 
 	VertexArray::~VertexArray()
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glDeleteVertexArrays(1, &m_RendererID));
-		KROSS_CORE_INFO("[Kross::OpenGL::VertexArray] Vertex Array Deleted");
+		KROSS_CORE_INFO("Vertex Array Deleted");
 	}
 
 	void VertexArray::Bind() const
@@ -59,7 +59,7 @@ namespace Kross::OpenGL {
 
 		if (voxel->GetLayout().GetElements().size() == 0)
 		{
-			KROSS_CORE_WARN("[{0}] Voxel Buffer has no layout. Aborting.", __FUNCTION__);
+			KROSS_CORE_WARN("Voxel Buffer has no layout. Aborting.");
 			return;
 		}
 
@@ -70,7 +70,7 @@ namespace Kross::OpenGL {
 		glCall(glVertexAttribIPointer(0, 2, GL_UNSIGNED_INT, 8, nullptr));
 
 		m_vecVertex.push_back(voxel);
-		KROSS_CORE_TRACE("[{0}] Voxel Buffer Added", __FUNCTION__);
+		KROSS_CORE_TRACE("Voxel Buffer Added");
 		//if ((layout.begin()->Type == Buffer::ShaderDataType::Int) ||
 		//	(layout.begin()->Type == Buffer::ShaderDataType::Int2) ||
 		//	(layout.begin()->Type == Buffer::ShaderDataType::Int3) ||
@@ -100,7 +100,7 @@ namespace Kross::OpenGL {
 		vertex->Bind();
 
 		if (vertex->GetLayout().GetElements().size() == 0)
-			KROSS_CORE_WARN("[{0}] Vertex Buffer has no layout", __FUNCTION__);
+			KROSS_CORE_WARN("Vertex Buffer has no layout");
 
 		uint32_t index = 0;
 		Buffer::Layout layout = vertex->GetLayout();
@@ -140,7 +140,7 @@ namespace Kross::OpenGL {
 		}
 
 		m_vecVertex.push_back(vertex);
-		KROSS_CORE_TRACE("[{0}] Vertex Buffer Added", __FUNCTION__);
+		KROSS_CORE_TRACE("Vertex Buffer Added");
 	}
 
 	void VertexArray::SetIndex(const Ref<Kross::Buffer::Index>& index)
@@ -149,7 +149,7 @@ namespace Kross::OpenGL {
 		this->Bind();
 		index->Bind();
 		m_Index = index;
-		KROSS_CORE_TRACE("[{0}] Index Buffer Setted", __FUNCTION__);
+		KROSS_CORE_TRACE("Index Buffer Setted");
 	}
 
 

@@ -11,13 +11,13 @@ namespace Kross::Camera2D {
 	{
 		KROSS_PROFILE_FUNC();
 		APIorder();
-		KROSS_CORE_INFO("[Kross::Camera::Ortho] Camera Created");
+		KROSS_CORE_INFO("Camera Created");
 	}
 
 	Orthographic::~Orthographic()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("[Kross::Camera::Ortho] Camera Destroyed");
+		KROSS_CORE_INFO("Camera Destroyed");
 	}
 
 	void Orthographic::SetProjMat(float left, float right, float bottom, float top)

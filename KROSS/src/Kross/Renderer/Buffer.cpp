@@ -36,7 +36,7 @@ namespace Kross::Buffer {
 
 	Ref<Vertex> Vertex::Create(float* vertices, uint32_t size, bool dynamic)
 	{
-		KROSS_CORE_INFO("{0} Creating VertexBufferObject...", __FUNCTION__);
+		KROSS_CORE_INFO("Creating VertexBufferObject...");
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
@@ -51,7 +51,7 @@ namespace Kross::Buffer {
 
 	Ref<Index> Index::Create(uint32_t* indices, uint32_t size)
 	{
-		KROSS_CORE_INFO("{0} Creating IndexBufferObject...", __FUNCTION__);
+		KROSS_CORE_INFO("Creating IndexBufferObject...");
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;

@@ -45,8 +45,8 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		else KROSS_CORE_WARN("[{0}] Texture '{1}' NOT created. There were no data.", __FUNCTION__, m_strName);
-		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
+		else KROSS_CORE_WARN("Texture '{0}' NOT created. There were no data.", m_strName);
+		KROSS_CORE_INFO("Texture '{0}' Created", m_strName);
 	}
 	T2D::T2D(const std::string& name, const std::string& path)
 		:
@@ -83,7 +83,7 @@ namespace Kross::OpenGL::Texture {
 			m_unInternalFormat = GL_RGBA8;
 		}
 		else
-			KROSS_CORE_WARN("[{0}] Image format not suported!\nFILE: {1}", __FUNCTION__, path);
+			KROSS_CORE_WARN("Image format not suported!\nFILE: {0}", path);
 
 		if (Context::GetVersion() < 4.5f)
 		{
@@ -111,7 +111,7 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		//stbi_image_free(data);
-		KROSS_CORE_INFO("[{0}] Texture '{1}' Created", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("Texture '{0}' Created", m_strName);
 	}
 	void T2D::SetFilter(Filtering_Type filter)
 	{
@@ -136,7 +136,7 @@ namespace Kross::OpenGL::Texture {
 					glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 					break;
 				}
-				default: { KROSS_CORE_ERROR("[{0}] Invalid Filtering Type. '{1}'", __FUNCTION__, std::to_string(filter)); }
+				default: { KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter)); }
 			}
 		}
 		else
@@ -159,7 +159,7 @@ namespace Kross::OpenGL::Texture {
 					glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 					break;
 				}
-				default: { KROSS_CORE_ERROR("[{0}] Invalid Filtering Type. '{1}'", __FUNCTION__, std::to_string(filter)); }
+				default: { KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter)); }
 			}
 		}
 	}
@@ -167,7 +167,7 @@ namespace Kross::OpenGL::Texture {
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glDeleteTextures(1, &m_RendererID));
-		KROSS_CORE_INFO("[{0}] Texture '{1}' Destructed", __FUNCTION__, m_strName);
+		KROSS_CORE_INFO("Texture '{0}' Destructed", m_strName);
 	}
 	void T2D::SetData(unsigned char* data, uint32_t size)
 	{
@@ -175,7 +175,7 @@ namespace Kross::OpenGL::Texture {
 		if (data)
 		{
 			if (size != m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3))
-				KROSS_CORE_WARN("[{0}] Texture '{1}' Specified size does not match data size.", __FUNCTION__, m_strName);
+				KROSS_CORE_WARN("Texture '{0}' Specified size does not match data size.", m_strName);
 			Bind();
 			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
 			raw_data.reset(data);

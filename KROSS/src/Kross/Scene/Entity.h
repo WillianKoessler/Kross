@@ -16,13 +16,13 @@ namespace Kross {
 		{
 			if (!HasComponent<T>())
 			{
-				KROSS_CORE_WARN("[{0}] Entity does not have specified component", __FUNCTION__);
+				KROSS_CORE_WARN("Entity does not have specified component");
 			}
 			if (m_Scene)
 				return m_Scene->m_Registry.get<T>(m_ID);
 			else
 			{
-				KROSS_CORE_ERROR("[{0}] Invalid Scene pointer. (No valid scene was found)", __FUNCTION__);
+				KROSS_CORE_ERROR("Invalid Scene pointer. (No valid scene was found)");
 				return T();
 			}
 		}
@@ -33,7 +33,7 @@ namespace Kross {
 				return m_Scene->m_Registry.emplace<T>(m_ID, std::forward<Args>(args)...);
 			else
 			{
-				KROSS_CORE_ERROR("[{0}] Invalid Scene pointer. (No valid scene was found)", __FUNCTION__);
+				KROSS_CORE_ERROR("Invalid Scene pointer. (No valid scene was found)");
 				return T();
 			}
 		}
@@ -44,7 +44,7 @@ namespace Kross {
 			if (m_Scene)
 				return m_Scene->m_Registry.remove<T>(m_ID);
 			else
-				KROSS_CORE_ERROR("[{0}] Invalid Scene pointer. (No valid scene was found)", __FUNCTION__);
+				KROSS_CORE_ERROR("Invalid Scene pointer. (No valid scene was found)");
 		}
 
 		operator bool() const { return m_ID != entt::null; }

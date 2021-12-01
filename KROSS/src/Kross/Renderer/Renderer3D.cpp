@@ -325,7 +325,7 @@ namespace Kross {
 			auto coords = params.subTexture->GetTexCoords();
 			for (int i = 0; i < 4; i++) texCoords[i] = coords[i];
 		} else if (params.texture && params.subTexture) { KROSS_CORE_ERROR("Texture AND subTexture was found. Please supply only one of each."); return; } else {
-			KROSS_CORE_WARN("[{0}] Neither Texture nor Subtexture selected. Default Selected.", __FUNCTION__);
+			KROSS_CORE_WARN("Neither Texture nor Subtexture selected. Default Selected.");
 			params.texture = Stack<Texture::T2D>::instance().Get("blank");
 		}
 

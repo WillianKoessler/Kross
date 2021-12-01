@@ -13,10 +13,10 @@ namespace Kross::Camera3D {
 	//	mouseRotation(glm::vec3(0.0f, 0.0f, 1.0f)) {
 	//	KROSS_PROFILE_FUNC();
 	//	if (camera)
-	//		KROSS_CORE_WARN("[{0}] WARNING: Overriding previous {2} Camera: {1}", __FUNCTION__, camera->GetName(), camera->GetType());
+	//		KROSS_CORE_WARN("WARNING: Overriding previous {2} Camera: {1}", camera->GetName(), camera->GetType());
 
 	//	camera.reset(cam);
-	//	KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
+	//	KROSS_CORE_INFO("Camera Controller Created");
 	//}
 
 	//FirstPerson::FirstPerson(const std::string& name, float aspectRatio, float fov)
@@ -25,15 +25,15 @@ namespace Kross::Camera3D {
 	//	mouseRotation(glm::vec3(0.0f, 0.0f, 1.0f)) {
 	//	KROSS_PROFILE_FUNC();
 	//	if (camera)
-	//		KROSS_CORE_WARN("[{0}] WARNING: Overriding previous camera: {1}", __FUNCTION__, camera->GetName());
+	//		KROSS_CORE_WARN("WARNING: Overriding previous camera: {1}", camera->GetName());
 
 	//	camera = makeRef<Perspective>(m_fAR, m_fFOV, name);
-	//	KROSS_CORE_INFO("[{0}] Camera Controller Created", __FUNCTION__);
+	//	KROSS_CORE_INFO("Camera Controller Created");
 	//}
 
 	//FirstPerson::~FirstPerson() {
 	//	KROSS_PROFILE_FUNC();
-	//	KROSS_CORE_INFO("[{0}] Camera Controller Deconstructed", __FUNCTION__);
+	//	KROSS_CORE_INFO("Camera Controller Deconstructed");
 	//}
 
 	//void FirstPerson::OnUpdate(double ts) {

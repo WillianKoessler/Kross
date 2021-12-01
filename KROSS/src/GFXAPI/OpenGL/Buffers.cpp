@@ -8,7 +8,7 @@ namespace Kross::OpenGL::Buffer {
 		dynamic(dynamic)
 	{
 		KROSS_PROFILE_FUNC();
-		if (!vertices) { KROSS_CORE_WARN("{0} Creating Vertex Buffer Object with nullptr data", __FUNCTION__); }
+		if (!vertices) { KROSS_CORE_WARN("Creating Vertex Buffer Object with nullptr data"); }
 		glCall(glGenBuffers(1, &m_RendererID));
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 		glCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
@@ -50,7 +50,7 @@ namespace Kross::OpenGL::Buffer {
 		: m_Count(count / sizeof(uint32_t))
 	{
 		KROSS_PROFILE_FUNC();
-		if (!indices) { KROSS_CORE_ERROR("{0} Creating buffer with nullptr data", __FUNCTION__); }
+		if (!indices) { KROSS_CORE_ERROR("Creating buffer with nullptr data"); }
 		glCall(glGenBuffers(1, &m_RendererID));
 		glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 		glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count, indices, GL_STATIC_DRAW));

@@ -18,11 +18,11 @@ namespace Shaders
 	//void Shader::CreateShader(const std::string& filepath)
 	//{
 	//	KROSS_PROFILE_FUNC();
-	//	KROSS_CORE_INFO("{0} Creating Shader '{1}'...", area, m_strName);
+	//	KROSS_CORE_INFO("Creating Shader '{1}'...", area, m_strName);
 	//	const std::string& src = ReadFile(filepath);
 	//	if (src == "")
 	//	{
-	//		KROSS_CORE_WARN("{0} Shader '{1}' Failed to Create", area, m_strName);
+	//		KROSS_CORE_WARN("Shader '{1}' Failed to Create", area, m_strName);
 	//	}
 	//	else
 	//	{
@@ -33,7 +33,7 @@ namespace Shaders
 	//		const BYTE* pixelShader = PreProcess(ReadFile(src.substr(pnl, nl)));
 	//		Compile(DX_VERTEX_SHADER, vertexShader);
 	//		Compile(DX_PIXEL_SHADER, pixelShader);
-	//		KROSS_CORE_INFO("{0} Shader '{1}' Created Successfully", area, m_strName);
+	//		KROSS_CORE_INFO("Shader '{1}' Created Successfully", area, m_strName);
 	//	}
 	//	//KROSS_CORE_TRACE("Shader '{0}', ID {1}", m_strName, m_RendererID);
 	//}
@@ -63,12 +63,12 @@ namespace Shaders
 	//	m_strName(name)
 	//{
 	//	KROSS_PROFILE_FUNC();
-	//	KROSS_CORE_INFO("{0} Creating Shader '{1}'...", area, m_strName);
+	//	KROSS_CORE_INFO("Creating Shader '{1}'...", area, m_strName);
 	//	std::unordered_map<unsigned int, const BYTE*> sources;
 	//	sources[DX_VERTEX_SHADER] = PreProcess(ReadFile(vertexSource));
 	//	sources[DX_FRAGMENT_SHADER] = PreProcess(ReadFile(fragmentSource));
 	//	Compile(sources);
-	//	KROSS_CORE_INFO("{0} Shader '{1}' Created Successfully", area, m_strName);
+	//	KROSS_CORE_INFO("Shader '{1}' Created Successfully", area, m_strName);
 	//	//KROSS_CORE_TRACE("Shader '{0}', ID {1}", m_strName, m_RendererID);
 	//}
 	//
@@ -77,16 +77,16 @@ namespace Shaders
 	//	KROSS_PROFILE_FUNC();
 	//	if (m_RendererID != UINT32_MAX)
 	//	{
-	//		KROSS_CORE_INFO("{0} Deleting Shader '{1}' ...", area, m_strName);
+	//		KROSS_CORE_INFO("Deleting Shader '{1}' ...", area, m_strName);
 	//		unBind();
 	//		glCall(glDeleteProgram(m_RendererID));
 	//		UniformCache.clear();
-	//		KROSS_CORE_INFO("{0} Shader '{1}' Deleted Successfully", area, m_strName);
+	//		KROSS_CORE_INFO("Shader '{1}' Deleted Successfully", area, m_strName);
 	//	}
 	//	else
 	//	{
 	//		UniformCache.clear();
-	//		KROSS_CORE_WARN("{0} Trying to delete a Invalid Shader '{1}'", area, m_strName);
+	//		KROSS_CORE_WARN("Trying to delete a Invalid Shader '{1}'", area, m_strName);
 	//	}
 	//}
 	//
@@ -153,7 +153,7 @@ namespace Shaders
 	//	}
 	//	else
 	//	{
-	//		KROSS_CORE_ERROR("{0} Cannot pre-process shader file {1}: FILE EMPTY", area, source);
+	//		KROSS_CORE_ERROR("Cannot pre-process shader file {1}: FILE EMPTY", area, source);
 	//		return nullptr;
 	//	}
 	//	return sources;
@@ -182,7 +182,7 @@ namespace Kross::DirectX {
 	void Shader::Compile(unsigned int type, const BYTE* source)
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_TRACE("{0} Compiling Shader '{1}'...", area, m_strName);
+		KROSS_CORE_TRACE("Compiling Shader '{1}'...", m_strName);
 		HRESULT hr;
 		switch (type)
 		{
@@ -194,7 +194,7 @@ namespace Kross::DirectX {
 				nullptr,
 				&pVertexShader)))
 			{
-				KROSS_CORE_ERROR("{0} Failed to compile Vertex Shader", area);
+				KROSS_CORE_ERROR("Failed to compile Vertex Shader");
 			}
 		}
 		case DX_PIXEL_SHADER:
@@ -205,7 +205,7 @@ namespace Kross::DirectX {
 				nullptr,
 				&pPixelShader)))
 			{
-				KROSS_CORE_ERROR("{0} Failed to compile Pixel Shader", area);
+				KROSS_CORE_ERROR("Failed to compile Pixel Shader", area);
 			}
 		}
 		}

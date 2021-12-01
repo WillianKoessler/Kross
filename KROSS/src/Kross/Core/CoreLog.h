@@ -84,7 +84,6 @@ namespace Kross {
 			//s_CoreLogger->error("\t***\tInvalid Target for Logger\t***\n{0}", format);
 			//s_FileLogger->error("\t***\tInvalid Target for Logger\t***\n{0}", format);
 		}
-
 		template<typename...Args>
 		static inline void Client(uint8_t t, uint8_t s, const char* srcFunc, const char* fmt, const Args&...args)
 		{
@@ -102,29 +101,21 @@ namespace Kross {
 			//s_ClientFileLogger->error("\t***\tInvalid Target for Logger\t***\n{0}", format);
 		}
 
-		static spdlog::logger* GetCore() { return s_CoreLogger; }
+		static spdlog::logger* GetCore() { return s_CoreLogger.get(); }
 	private:
-		//static spdlog::logger* s_FileLogger;
-		static spdlog::logger* s_CoreLogger;
-		//static spdlog::logger* s_ClientFileLogger;
-		static spdlog::logger* s_ClientLogger;
+		static Ref<spdlog::logger> s_FileLogger;
+		static Ref<spdlog::logger> s_CoreLogger;
+		static Ref<spdlog::logger> s_ClientFileLogger;
+		static Ref<spdlog::logger> s_ClientLogger;
 	};
-
-#ifndef LOGGER_IMPL
-#define LOGGER_IMPL
-//Ref<spdlog::logger> Logger::s_FileLogger;
-//Ref<spdlog::logger> Logger::s_CoreLogger;
-//Ref<spdlog::logger> Logger::s_ClientFileLogger;
-//Ref<spdlog::logger> Logger::s_ClientLogger;
-#endif //LOGGER_IMPL
 }
 
 #if(KROSS_FILE_LOG == true)
-//#define KROSS_CORE_FILE_TRACE(fmt, ...) ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::trace, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_FILE_INFO(fmt, ...)  ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::info, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_FILE_WARN(fmt, ...)  ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::warn, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_FILE_ERROR(fmt, ...) ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::error, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_FILE_FATAL(fmt, ...) ::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::critical, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_CORE_FILE_TRACE(fmt, ...) ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::trace, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_CORE_FILE_INFO(fmt, ...)  ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::info, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_CORE_FILE_WARN(fmt, ...)  ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::warn, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_CORE_FILE_ERROR(fmt, ...) ::Kross::Logger::Core(Kross::Logger::File, Kross::Logger::error, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_CORE_FILE_FATAL(fmt, ...) ::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::critical, __FUNCTION__, fmt, __VA_ARGS__)
 #else
 #define KROSS_CORE_FILE_TRACE(fmt, ...)
 #define KROSS_CORE_FILE_INFO(fmt, ...)
@@ -132,45 +123,35 @@ namespace Kross {
 #define KROSS_CORE_FILE_ERROR(fmt, ...)
 #define KROSS_CORE_FILE_FATAL(fmt, ...)
 #endif //KROSS_FILE_LOG
-#define KROSS_MSGBOX_TRACE(fmt, ...)
-#define KROSS_MSGBOX_INFO(fmt, ...)	
-#define KROSS_MSGBOX_WARN(fmt, ...)	
-#define KROSS_MSGBOX_ERROR(fmt, ...)
 
-//#define KROSS_MSGBOX_TRACE(fmt, ...)	::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::trace, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_MSGBOX_INFO(fmt, ...)		::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::info, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_MSGBOX_WARN(fmt, ...)		::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::warn, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_MSGBOX_ERROR(fmt, ...)	::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::error, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_MSGBOX_TRACE(fmt, ...)	::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::trace, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_MSGBOX_INFO(fmt, ...)		::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::info, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_MSGBOX_WARN(fmt, ...)		::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::warn, __FUNCTION__, fmt, __VA_ARGS__)
+#define KROSS_MSGBOX_ERROR(fmt, ...)	::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::error, __FUNCTION__, fmt, __VA_ARGS__)
 
+#define opt 1
+#if (opt == 0)
 #define KROSS_CORE_TRACE(...)	::Kross::Logger::GetCore()->trace(__VA_ARGS__)
 #define KROSS_CORE_INFO(...)	::Kross::Logger::GetCore()->info(__VA_ARGS__)
 #define KROSS_CORE_WARN(...)	::Kross::Logger::GetCore()->warn(__VA_ARGS__)
 #define KROSS_CORE_ERROR(...)	::Kross::Logger::GetCore()->error(__VA_ARGS__)
 #define KROSS_CORE_FATAL(...)	::Kross::Logger::GetCore()->critical(__VA_ARGS__)
-
-//#define KROSS_CORE_TRACE(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::trace,	(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
-//#define KROSS_CORE_INFO(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::info,	(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
-//#define KROSS_CORE_WARN(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::warn,	(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
-//#define KROSS_CORE_ERROR(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::err,		(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
-//#define KROSS_CORE_FATAL(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::critical,(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
-
-//#define KROSS_CORE_TRACE(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::trace, __VA_ARGS__)
-//#define KROSS_CORE_INFO(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::info, __VA_ARGS__)
-//#define KROSS_CORE_WARN(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::warn, __VA_ARGS__)
-//#define KROSS_CORE_ERROR(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::error, __VA_ARGS__)
-//#define KROSS_CORE_FATAL(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::critical, __VA_ARGS__)
-
-#define KROSS_CORE_TRACE_ONCE(...)
-#define KROSS_CORE_INFO_ONCE(...) 
-#define KROSS_CORE_WARN_ONCE(...) 
-#define KROSS_CORE_ERROR_ONCE(...)
-
-//#define KROSS_CORE_TRACE(fmt, ...)	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::trace, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_INFO(fmt, ...)	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::info, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_WARN(fmt, ...)	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::warn, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_ERROR(fmt, ...)	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::error, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_FATAL(fmt, ...)	::Kross::Logger::Core(Kross::Logger::MsgBox, Kross::Logger::critical, __FUNCTION__, fmt, __VA_ARGS__)
-//#define KROSS_CORE_TRACE_ONCE(fmt, ...) { static bool called = false; if(!called) {	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::trace, __FUNCTION__, fmt, __VA_ARGS__); called = true;}}
-//#define KROSS_CORE_INFO_ONCE(fmt, ...)  { static bool called = false; if(!called) {	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::info, __FUNCTION__, fmt, __VA_ARGS__); called = true;}}
-//#define KROSS_CORE_WARN_ONCE(fmt, ...)  { static bool called = false; if(!called) {	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::warn, __FUNCTION__, fmt, __VA_ARGS__); called = true;}}
-//#define KROSS_CORE_ERROR_ONCE(fmt, ...) { static bool called = false; if(!called) {	::Kross::Logger::Core(Kross::Logger::Console, Kross::Logger::error, __FUNCTION__, fmt, __VA_ARGS__); called = true;}}
+#endif
+#if (opt == 1)
+#define KROSS_CORE_TRACE(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::trace,	(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
+#define KROSS_CORE_INFO(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::info,	(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
+#define KROSS_CORE_WARN(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::warn,	(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
+#define KROSS_CORE_ERROR(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::err,		(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
+#define KROSS_CORE_FATAL(fmt, ...)	::Kross::Logger::GetCore()->log(spdlog::level::critical,(" ["+std::string(__FUNCTION__)+"] "+fmt).c_str(), __VA_ARGS__)
+#endif
+#if (opt == 2)
+#define KROSS_CORE_TRACE(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::trace, __VA_ARGS__)
+#define KROSS_CORE_INFO(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::info, __VA_ARGS__)
+#define KROSS_CORE_WARN(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::warn, __VA_ARGS__)
+#define KROSS_CORE_ERROR(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::error, __VA_ARGS__)
+#define KROSS_CORE_FATAL(...)	::Kross::Logger::GetCore()->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, spdlog::level::critical, __VA_ARGS__)
+#endif
+#define KROSS_CORE_TRACE_ONCE(fmt, ...) { static bool called = false; if(!called) { KROSS_CORE_TRACE(fmt, __VA_ARGS__); called = true; } }
+#define KROSS_CORE_INFO_ONCE(fmt, ...)  { static bool called = false; if(!called) { KROSS_CORE_INFO(fmt, __VA_ARGS__); called = true; } }
+#define KROSS_CORE_WARN_ONCE(fmt, ...)  { static bool called = false; if(!called) { KROSS_CORE_WARN(fmt, __VA_ARGS__); called = true; } }
+#define KROSS_CORE_ERROR_ONCE(fmt, ...) { static bool called = false; if(!called) { KROSS_CORE_ERROR(fmt, __VA_ARGS__); called = true; } }

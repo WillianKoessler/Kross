@@ -14,7 +14,7 @@ namespace Kross::Camera3D {
 		~Perspective()
 		{
 			KROSS_PROFILE_FUNC();
-			KROSS_CORE_INFO("[{0}] Camera Destroyed", __FUNCTION__);
+			KROSS_CORE_INFO("Camera Destroyed");
 		}
 
 		virtual bool isLookingAt() const override { return m_bLookingAt; }
@@ -47,7 +47,7 @@ namespace Kross::Camera3D {
 				case Axis::Y: m_Rotation.y = angle; return;
 				case Axis::Z: m_Rotation.z = angle; return;
 			}
-			KROSS_CORE_WARN("[{0}] Axis of rotation not valid.", __FUNCTION__);
+			KROSS_CORE_WARN("Axis of rotation not valid.");
 		}
 		virtual void SetProjMat(float fov, float fAspectRatio, float fNear, float fFar) override
 		{

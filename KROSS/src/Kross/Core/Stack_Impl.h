@@ -102,12 +102,12 @@ namespace Kross {
 				stack.erase(i);
 				return true;
 			}
-			KROSS_CORE_WARN("{0}\n	T= {1}\n Resource named '{2}' was not found, and because of it, could not be deleted.\nEntries are:\n{3}", __FUNCTION__, typeid(T).name(), key, Entry::GetTable());
+			KROSS_CORE_WARN("{0}\n	T= {1}\n Resource named '{2}' was not found, and because of it, could not be deleted.\nEntries are:\n{3}", typeid(T).name(), key, Entry::GetTable());
 			return false;
 		}
 		virtual const Ref<T> Get(const std::string& key) override { return _Get(key, nullptr); }
 		virtual const Ref<T> Get(const std::string& key, const std::string& filepath) override { return _Get(key, &filepath); }
-		virtual void Log() override { KROSS_CORE_TRACE("[Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
+		virtual void Log() override { KROSS_CORE_TRACE(" | [Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
 		virtual void clear() override { stack.clear(); }
 		virtual size_t size() const override { return stack.size(); }
 		//virtual const Entry* begin() override { return stack.begin(); }
@@ -117,8 +117,8 @@ namespace Kross {
 		Stack_Impl(Stack_Impl&& other) = delete;
 		void operator =(Stack_Impl&& other) = delete;
 	private:
-		Stack_Impl() { KROSS_CORE_INFO("[Kross::Stack<{0}>] Created", typeid(T).name()); }
-		virtual ~Stack_Impl() override { clear(); KROSS_CORE_INFO("[Kross::Stack<{0}>] Destroyed", typeid(T).name()); }
+		Stack_Impl() { KROSS_CORE_INFO(" | [Kross::Stack<{0}>] Created", typeid(T).name()); }
+		virtual ~Stack_Impl() override { clear(); KROSS_CORE_INFO(" | [Kross::Stack<{0}>] Destroyed", typeid(T).name()); }
 
 		static Ref<T> _Get(const std::string& k, const std::string* filepath)
 		{
@@ -136,7 +136,7 @@ namespace Kross {
 				{
 					if (calls.find(mycall) == std::string::npos)
 					{
-						KROSS_CORE_WARN("{0}\n	T={1}\n	Resource named '{2}' has not a valid filepath, therefore, it could not be loaded.\nEntries are: {3}", __FUNCTION__, typeid(T).name(), k, Entry::GetTable());
+						KROSS_CORE_WARN("\n\tT={0}\n\tResource named '{1}' has not a valid filepath, therefore, it could not be loaded.\n\tEntries are: {2}", typeid(T).name(), k, Entry::GetTable());
 						calls.append(mycall);
 					}
 				}
@@ -144,7 +144,7 @@ namespace Kross {
 			{
 				if (calls.find(mycall) == std::string::npos)
 				{
-					KROSS_CORE_WARN("{0}\n	T={1}\n	KEY is a empty, and because of it, resource could not be loaded to Stack.\nEntries are: {2}", __FUNCTION__, typeid(T).name(), Entry::GetTable());
+					KROSS_CORE_WARN("\n\tT={0}\n\tKEY is a empty, and because of it, resource could not be loaded to Stack.\n\tEntries are: {1}", typeid(T).name(), Entry::GetTable());
 					calls.append(mycall);
 				}
 			}

@@ -20,10 +20,10 @@ namespace Kross {
 		switch (s_dDims) {
 		case Dimentions::D2: Renderer2D::Init(); break;
 		case Dimentions::D3: Renderer3D::Init(); break;
-		default: { KROSS_CORE_ERROR("[{0}] Renderer::Dimentions not supported", __FUNCTION__); return; }
+		default: { KROSS_CORE_ERROR("Renderer::Dimentions not supported"); return; }
 		}
 
-		KROSS_CORE_TRACE("[Kross::Renderer] Renderer Initiated");
+		KROSS_CORE_TRACE("Renderer Initiated");
 	}
 
 	void Renderer::Shutdown()
@@ -35,9 +35,9 @@ namespace Kross {
 		switch (s_dDims) {
 		case Dimentions::D2: Renderer2D::Shutdown(); break;
 		case Dimentions::D3: Renderer3D::Shutdown(); break;
-		default: { KROSS_CORE_ERROR("[{0}] Renderer::Dimentions not supported", __FUNCTION__); return; }
+		default: { KROSS_CORE_ERROR("Renderer::Dimentions not supported"); return; }
 		}
-		KROSS_CORE_TRACE("[{0}] Renderer Finished", __FUNCTION__);
+		KROSS_CORE_TRACE("Renderer Finished");
 	}
 
 	//void Renderer::Scene::Begin(Camera::Camera& camera)
@@ -89,7 +89,7 @@ namespace Kross {
 
 	//void Renderer::ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	//{
-	//	if (exist(name)) { KROSS_CORE_WARN("[{0}] Shader '{1}' already in library. ", __FUNCTION__, name); }
+	//	if (exist(name)) { KROSS_CORE_WARN("Shader '{1}' already in library. ", name); }
 	//	shaders[name] = shader;
 	//}
 
@@ -115,7 +115,7 @@ namespace Kross {
 
 	//Ref<Shader> Renderer::ShaderLibrary::Get(const std::string& name)
 	//{
-	//	if (!exist(name)) { KROSS_CORE_WARN("[{0}] Shader '{1}' NOT FOUND in library. ", __FUNCTION__, name); }
+	//	if (!exist(name)) { KROSS_CORE_WARN("Shader '{1}' NOT FOUND in library. ", name); }
 	//	return shaders[name];
 	//}
 }
