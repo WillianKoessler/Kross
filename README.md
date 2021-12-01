@@ -1,1 +1,1 @@
-First project created with the new (and still under development) KROSS Engine.
+KROSS Engine. (Basic C++ Game Engine, still under development)
