@@ -2,7 +2,7 @@
 #include "OrthographicCtrl.h"
 
 #include "Kross/Core/Input.h"
-#include "Kross/Core/KeyCodes.h"
+#include "Kross/Events/KeyCodes.h"
 
 namespace Kross::Camera2D {
 
@@ -40,25 +40,25 @@ namespace Kross::Camera2D {
 	{
 		KROSS_PROFILE_FUNC();
 		glm::vec3& position = const_cast<glm::vec3&>(camera->GetPosition());
-		if (Input::IsKeyHeld(KROSS_KEY_W)) position.y += fCameraMoveSpeed * (float)ts;
-		if (Input::IsKeyHeld(KROSS_KEY_S)) position.y -= fCameraMoveSpeed * (float)ts;
-		if (Input::IsKeyHeld(KROSS_KEY_A)) position.x -= fCameraMoveSpeed * (float)ts;
-		if (Input::IsKeyHeld(KROSS_KEY_D)) position.x += fCameraMoveSpeed * (float)ts;
+		if (Input::IsKeyHeld(Key::W)) position.y += fCameraMoveSpeed * (float)ts;
+		if (Input::IsKeyHeld(Key::S)) position.y -= fCameraMoveSpeed * (float)ts;
+		if (Input::IsKeyHeld(Key::A)) position.x -= fCameraMoveSpeed * (float)ts;
+		if (Input::IsKeyHeld(Key::D)) position.x += fCameraMoveSpeed * (float)ts;
 		camera->SetPosition(position);
 
-		if (Input::IsKeyHeld(KROSS_KEY_M)) m_fZoomRate *= 1.1f;
-		if (Input::IsKeyHeld(KROSS_KEY_N)) m_fZoomRate *= 0.9f;
+		if (Input::IsKeyHeld(Key::M)) m_fZoomRate *= 1.1f;
+		if (Input::IsKeyHeld(Key::N)) m_fZoomRate *= 0.9f;
 
 		if (m_fZoomRate > -0.001f) m_fZoomRate = -0.001f;
 
-		if (Input::IsKeyHeld(KROSS_KEY_I)) m_fZoom += m_fZoomRate;
-		if (Input::IsKeyHeld(KROSS_KEY_O)) m_fZoom -= m_fZoomRate;
+		if (Input::IsKeyHeld(Key::I)) m_fZoom += m_fZoomRate;
+		if (Input::IsKeyHeld(Key::O)) m_fZoom -= m_fZoomRate;
 
 		m_fZoom = std::max(m_fZoom, 0.005f);
 
 		if (m_bRotation) {
-			if (Input::IsKeyHeld(KROSS_KEY_Q)) fCameraRotation += fCameraRotationSpeed * (float)ts;
-			if (Input::IsKeyHeld(KROSS_KEY_E)) fCameraRotation -= fCameraRotationSpeed * (float)ts;
+			if (Input::IsKeyHeld(Key::Q)) fCameraRotation += fCameraRotationSpeed * (float)ts;
+			if (Input::IsKeyHeld(Key::E)) fCameraRotation -= fCameraRotationSpeed * (float)ts;
 		camera->SetRotation(fCameraRotation, Kross::Camera::Camera::Axis::Z);
 		}
 

@@ -12,7 +12,7 @@ namespace Kross {
 
 		operator double() const { return m_lfTime; }
 		static inline const double now() { return static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count()); }
-		const double GetLap() { static double last_pass = m_lfTime; m_lfTime = now(); auto r = m_lfTime - last_pass; last_pass = m_lfTime; return r * 0.0001f; }
+		const double GetLap() { static double last_pass = m_lfTime; m_lfTime = now(); auto r = m_lfTime - last_pass; last_pass = m_lfTime; return (r > 0.0 ? r * 0.0001f : 0.0); }
 		inline const double GetSeconds() const { return m_lfTime * 0.0001f; }
 		inline const double GetMilliseconds() const { return m_lfTime; }
 	private:

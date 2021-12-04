@@ -10,7 +10,7 @@ namespace Kross::OpenGL::Texture {
 	class Base final : public Kross::Texture::Base
 	{
 	public:
-		static const int QueryMaxSlots();
+		static const int32_t QueryMaxSlots();
 	};
 
 	class T2D final : public Kross::Texture::T2D
@@ -23,24 +23,24 @@ namespace Kross::OpenGL::Texture {
 		virtual void SetFilter(Filtering_Type filter) override;
 		virtual void SetData(unsigned char* data, uint32_t size) override;
 		virtual void ResetData() const override;
-		virtual const Ref<unsigned char>& GetData() const override;
+		virtual const Ref<uint8_t>& GetData() const override;
 
 		virtual ~T2D() override;
 
 		virtual uint32_t GetWidth() const override { return m_unWidth; }
 		virtual uint32_t GetHeight() const override { return m_unHeight; }
 		virtual glm::vec2 GetSize() const override { return glm::vec2((float)m_unWidth, (float)m_unHeight); }
-		virtual const uint32_t GetID() const override { return m_RendererID; }
+		virtual uint32_t GetID() const override { return m_RendererID; }
 		virtual const std::string& GetName() const override { return m_strName; }
-		virtual const int GetCurrentSlot() const override { return m_CurrentSlot; }
+		virtual int32_t GetCurrentSlot() const override { return m_CurrentSlot; }
 
 		virtual void Bind(uint32_t slot = 0) const override;
 	private:
-		Ref<unsigned char> raw_data;
+		Ref<uint8_t> raw_data;
 		std::string m_strPath, m_strName;
 		uint32_t m_RendererID, m_unWidth, m_unHeight;
 		uint8_t m_CurrentSlot;
-		int m_unInternalFormat;
+		int32_t m_unInternalFormat;
 		uint32_t m_unDataFormat;
 	};
 }

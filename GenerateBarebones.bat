@@ -1,2 +1,2 @@
-call vendor\bin\premake\premake5.exe vs2019 --file="barebones.lua"
+call vendor\bin\premake\premake5.exe vs2022 --file="barebones.lua"
 PAUSE

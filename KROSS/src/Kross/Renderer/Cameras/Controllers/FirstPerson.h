@@ -4,7 +4,7 @@
 #include "Kross/Renderer/Cameras/Controller.h"
 
 #include "Kross/Core/Input.h"
-#include "Kross/Core/KeyCodes.h"
+#include "Kross/Events/KeyCodes.h"
 #include "Kross/Core/Application.h"
 
 
@@ -48,9 +48,9 @@ namespace Kross::Camera3D {
 		virtual void OnUpdate(double ts) override
 		{
 			KROSS_PROFILE_FUNC();
-			if (Input::IsKeyReleased(KROSS_KEY_SPACE))
+			if (Input::IsKeyReleased(Key::Space))
 				m_bCursorEnabled = !m_bCursorEnabled;
-
+			
 			if (!m_bCursorEnabled) camera->unLock();
 			else camera->LockAt(glm::vec3(0.0f));
 
@@ -62,12 +62,12 @@ namespace Kross::Camera3D {
 			glm::vec3 forward = glm::normalize(glm::vec3(vpm[0][2], vpm[1][2], vpm[2][2])) * speed;
 			glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f))) * speed;
 
-			if (Input::IsKeyHeld(KROSS_KEY_W)) position += forward;
-			if (Input::IsKeyHeld(KROSS_KEY_S)) position -= forward;
-			if (Input::IsKeyHeld(KROSS_KEY_A)) position -= right;
-			if (Input::IsKeyHeld(KROSS_KEY_D)) position += right;
-			if (Input::IsKeyHeld(KROSS_KEY_E)) position.y += speed;
-			if (Input::IsKeyHeld(KROSS_KEY_Q)) position.y -= speed;
+			if (Input::IsKeyHeld(Key::W)) position += forward;
+			if (Input::IsKeyHeld(Key::S)) position -= forward;
+			if (Input::IsKeyHeld(Key::A)) position -= right;
+			if (Input::IsKeyHeld(Key::D)) position += right;
+			if (Input::IsKeyHeld(Key::E)) position.y += speed;
+			if (Input::IsKeyHeld(Key::Q)) position.y -= speed;
 			camera->SetPosition(position);
 			camera->SetRotation(mouseRotation);
 			CalculateView();
@@ -139,6 +139,6 @@ namespace Kross::Camera3D {
 		float m_fAR;
 		float m_fFOV;
 		glm::vec3 mouseRotation;
-		bool m_bCursorEnabled = false;
+		bool m_bCursorEnabled = true;
 	};
 }

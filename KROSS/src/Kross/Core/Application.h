@@ -1,33 +1,32 @@
 #pragma once
 
-#include "Core.h"
-#include "Window.h"
+#include "Kross/Core/Core.h"
+#include "Kross/Core/Window.h"
+#include "Kross/Core/Timestep.h"
+#include "Kross/Core/LayerStack.h"
+#include "Kross/imgui/ImGuiLayer.h"
+#include "Kross/Renderer/Renderer.h"
 #include "Kross/Events/Event.h"
 #include "Kross/Events/ApplicationEvent.h"
-
-#include "Kross/Core/Timestep.h"
-
-#include "Kross/Renderer/Renderer.h"
-
-#include "Kross/imgui/ImGuiLayer.h"
+int main(int argc, char** args);
 
 namespace Kross {
-	class LayerStack;
-	class KAPI Application
+	class Application
 	{
 		struct settings
 		{
-			std::string title = "Kross Engine";
-			unsigned short width = 640, height = 320;
+			const char* title = "Kross Engine";
+			uint32_t width = 640, height = 320;
 			bool fullscreen = false;
-			Renderer::Dimentions dims;
+			uint8_t dims;
 		};
 		void Construct(settings&&);
 	public:
-		Application() { Construct({}); }
-		Application(const std::string& title, unsigned short width, unsigned short height, Renderer::Dimentions dimentions) { Construct({ title, width, height, false, dimentions }); }
-		Application(const std::string& title, unsigned short width, unsigned short height, bool fullscreen = false) { Construct({ title, width, height, fullscreen }); }
-		Application(const std::string& title, bool fullscreen = true) { Construct({title, 0, 0, fullscreen}); }
+		//Application() { Construct({}); }
+		Application(const char* title, uint32_t width, uint32_t height, uint8_t dimentions) { Construct({ title, width, height, false, dimentions }); }
+		
+		//Application(const std::string& title, uint8_t width, uint8_t height, bool fullscreen = false) { Construct({ title, width, height, fullscreen }); }
+		//Application(const std::string& title, bool fullscreen = true) { Construct({title, 0, 0, fullscreen}); }
 
 		~Application();
 
@@ -49,14 +48,15 @@ namespace Kross {
 		bool m_bRunning = true;
 		bool m_bMinimized = false;
 		Window* m_pWindow;
-		LayerStack* m_pLayerStack;
+		LayerStack m_pLayerStack;
 		ImGuiLayer* m_refImGuiLayer;
 
 	private:
 		static Application* s_Instance;
+		friend int ::main(int argc, char** argv);
 	};
-
 
 	// Client-Side Definition
 	Application* CreateApp();
 }
+//extern Kross::Application* Kross::CreateApp();

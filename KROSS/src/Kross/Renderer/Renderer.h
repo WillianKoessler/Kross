@@ -9,16 +9,16 @@
 namespace Kross {
 	class KAPI Renderer {
 	public:
-		enum class Dimentions { D2 = 0, D3 };
-
-	public:
+		static constexpr uint8_t TWO_D = 2;
+		static constexpr uint8_t THREE_D = 3;
+		static constexpr uint8_t VOXEL = 4;
 		static void Shutdown();
-		static void Init(Dimentions type);
+		static void Init(uint8_t type);
 		static void Submit(const Ref<Shader>& shader, const Ref<VertexArray>& va, const glm::mat4 transform = glm::mat4(1.0f));
 		static void Submit(const Ref<Shader>& shader, const Scope<VertexArray>& va, const glm::mat4 transform = glm::mat4(1.0f));
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	private:
-		static Dimentions s_dDims;
+		static uint8_t s_uDims;
 	};
 }

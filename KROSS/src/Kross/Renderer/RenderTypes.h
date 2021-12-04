@@ -5,6 +5,12 @@
 #include "Kross/Renderer/Textures/Atlas.h"
 
 namespace Kross {
+	//position
+	//size
+	//texture
+	//subTexture
+	//color
+	//rotation
 	struct QuadParams
 	{
 		glm::vec3				position = glm::vec3(0.0f);
@@ -20,12 +26,8 @@ namespace Kross {
 		glm::vec3				size = glm::vec3(1.0f);
 		glm::vec4				color = glm::vec4(1.0f);
 		glm::vec3				rotation = glm::vec3(0.0f);
-		Ref<Texture::T2D>		frontTexture = nullptr;
-		Ref<Texture::T2D>		rightTexture = nullptr;
-		Ref<Texture::T2D>		leftTexture = nullptr;
-		Ref<Texture::T2D>		backTexture = nullptr;
-		Ref<Texture::T2D>		topTexture = nullptr;
-		Ref<Texture::T2D>		bottomTexture = nullptr;
+		// top, front, right, left, back, bottom
+		Ref<Texture::T2D>		textures[6] = { nullptr };
 	};
 	struct CubeParams
 	{

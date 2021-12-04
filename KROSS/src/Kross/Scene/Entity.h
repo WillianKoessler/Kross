@@ -6,9 +6,10 @@
 namespace Kross {
 	class Entity
 	{
+		using ecsEntity = entt::entity;
 	public:
 		Entity() = default;
-		Entity::Entity(uint32_t id, Scene* scene) : m_ID((entt::entity)id), m_Scene(scene) {}
+		Entity(uint32_t id, Scene* scene) : m_ID((ecsEntity)id), m_Scene(scene) {}
 		Entity(const Entity& other) = default;
 
 		template<typename T> bool HasComponent() { return m_Scene ? (m_Scene->m_Registry.any_of<T>(m_ID)) : false; }

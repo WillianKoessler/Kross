@@ -55,6 +55,7 @@ namespace Kross {
 		Scope<VertexArray> va;
 		Ref<Buffer::Vertex> vb;
 		Ref<Buffer::Index> ib;
+		uint32_t* indices;
 
 		//Batch Buffer
 		Quad myBuffer[MaxQuadCount] = { Quad() };
@@ -100,7 +101,7 @@ namespace Kross {
 			});
 		data->va->AddVertex(data->vb);
 
-		uint32_t indices[MaxIndexCount];
+		uint32_t* indices = new uint32_t[MaxIndexCount];
 		uint32_t offset = 0;
 		for (int i = 0; i < MaxIndexCount; i += 6)
 		{
@@ -115,16 +116,19 @@ namespace Kross {
 			offset += 4;
 		}
 
-		data->ib = Buffer::Index::Create(indices, sizeof(indices));
+		data->ib = Buffer::Index::Create(indices, sizeof(uint32_t) * MaxIndexCount);
 		data->va->SetIndex(data->ib);
 
 		data->basePositions[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
-		data->basePositions[1] = glm::vec4( 0.5f, -0.5f, 0.0f, 1.0f);
-		data->basePositions[2] = glm::vec4( 0.5f,  0.5f, 0.0f, 1.0f);
-		data->basePositions[3] = glm::vec4(-0.5f,  0.5f, 0.0f, 1.0f);
+		data->basePositions[1] = glm::vec4(0.5f, -0.5f, 0.0f, 1.0f);
+		data->basePositions[2] = glm::vec4(0.5f, 0.5f, 0.0f, 1.0f);
+		data->basePositions[3] = glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f);
 
 
-		Stack<Shader>::instance().Add(data->shader = Shader::CreateRef("assets/shaders/OpenGL/Shader2D.glsl"));
+		Stack<Shader>::instance().Add(data->shader = Shader::CreateRef("Shader2D", {
+			"assets/shaders/OpenGL/Shader2D.vert",
+			"assets/shaders/OpenGL/Shader2D.frag"
+			}));
 		data->shader->SetFloat("u_Repeat", 1);
 		data->shader->SetFloat4("u_Color", { 1,1,1,1 });
 
@@ -134,6 +138,10 @@ namespace Kross {
 
 		Stack<Texture::T2D>::instance().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", white));
 		data->texArray->Add(Stack<Texture::T2D>::instance().Get("blank"));
+
+		delete[] indices;
+
+		RenderCommand::BackCull(true);
 
 		s_bSceneBegan = false;
 	}
@@ -149,13 +157,12 @@ namespace Kross {
 	void Renderer2D::Begin(Ref<Camera::Camera>& camera)
 	{
 		KROSS_PROFILE_FUNC();
-		if (!s_bSceneBegan)
-			s_bSceneBegan = true;
-		else
-			KROSS_CORE_WARN("Calling Renderer2D::Begin(Camera::Camera&) without calling Renderer2D::End(void). Overriding previous scene!");
+		if (!s_bSceneBegan) s_bSceneBegan = true;
+		else KROSS_CORE_WARN("Calling Renderer2D::Begin(Camera::Camera&) without calling Renderer2D::End(void). Overriding previous scene!");
 		data->shader->Bind();
 		data->shader->SetMat4("u_ViewProjection", camera->GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
+		BatchBegin();
 	}
 	void Renderer2D::BatchBegin()
 	{
@@ -180,23 +187,16 @@ namespace Kross {
 	}
 	void Renderer2D::BatchEnd()
 	{
-		if (s_bBatch)
-		{
-			data->vb->upload(data->myBuffer, sizeof(Quad) * data->quadIndex);
-			Flush();
-			s_bBatch = false;
-		} else
-		{
-			KROSS_CORE_WARN("Ending a non initiated batch");
-		}
+		if (!s_bBatch) { KROSS_CORE_WARN("Ending a non initiated batch"); return; }
+		data->vb->upload(data->myBuffer, sizeof(Quad) * data->quadIndex);
+		Flush();
+		s_bBatch = false;
 	}
 	void Renderer2D::End()
 	{
-		if (s_bSceneBegan)
-		{
-			s_bSceneBegan = false;
-		} else
-			KROSS_CORE_WARN("Calling Renderer2D::End(void) without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?");
+		if (!s_bSceneBegan) { KROSS_CORE_WARN("Calling Renderer2D::End(void) without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?"); return; }
+		s_bSceneBegan = false;
+		BatchEnd();
 	}
 	void Renderer2D::SwitchShader(const Ref<Shader>& shader)
 	{
@@ -224,7 +224,7 @@ namespace Kross {
 		};
 
 		if ((size_t)data->quadIndex + 1 >= MaxQuadCount) { BatchEnd(); BatchBegin(); }
-		
+
 		float tex = (float)data->whiteTexIndex;
 
 		if (params.texture && !params.subTexture)
@@ -255,23 +255,22 @@ namespace Kross {
 				v[i].texIndex = tex;
 				v[i].texCoord = texCoords[i];
 				//v[i].texCoord = { params.texOffSet.x + (params.texSubSize.x * (i == 1 || i == 2)), params.texOffSet.y + (params.texSubSize.y * (i == 2 || i == 3)) };
-			}
-		else
-			for (uint8_t i = 0; i < 4; i++)
-			{
-				v[i].pos = {
-					params.position.x + (params.size.x * (i == 1 || i == 2)),
-					params.position.y + (params.size.y * (i == 2 || i == 3)),
-					params.position.z };
-				v[i].color = params.color;
-				v[i].texIndex = tex;
-				v[i].texCoord = texCoords[i];
-				//v[i].texCoord = { params.texOffSet.x + (params.texSubSize.x * (i == 1 || i == 2)), params.texOffSet.y + (params.texSubSize.y * (i == 2 || i == 3)) };
-			}
+			} else
+				for (uint8_t i = 0; i < 4; i++)
+				{
+					v[i].pos = {
+						params.position.x + (params.size.x * (i == 1 || i == 2)),
+						params.position.y + (params.size.y * (i == 2 || i == 3)),
+						params.position.z };
+					v[i].color = params.color;
+					v[i].texIndex = tex;
+					v[i].texCoord = texCoords[i];
+					//v[i].texCoord = { params.texOffSet.x + (params.texSubSize.x * (i == 1 || i == 2)), params.texOffSet.y + (params.texSubSize.y * (i == 2 || i == 3)) };
+				}
 
-		data->myBuffer[data->quadIndex] = Quad(v);
-		data->quadIndex++;
-		data->rendererStats.QuadCount++;
+			data->myBuffer[data->quadIndex] = Quad(v);
+			data->quadIndex++;
+			data->rendererStats.QuadCount++;
 	}
 	void Renderer2D::BatchQuad(const glm::mat4& transform, const glm::vec4& color)
 	{

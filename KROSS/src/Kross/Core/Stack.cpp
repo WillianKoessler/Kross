@@ -20,12 +20,6 @@ namespace Kross {
 	//__impl__STACK_TEMPLATE(Mesh::Base);
 
 	template<typename T>
-	Kross::Stack<T>::Stack()
-	{
-//		*this = Stack_Impl<T>::instance();
-	}
-
-	template<typename T>
 	Stack<T>& Kross::Stack<T>::instance()
 	{
 		return Stack_Impl<T>::instance();

@@ -108,7 +108,7 @@ namespace Kross::OpenGL {
 		}
 		else
 		{
-			KROSS_MSGBOX_WARN(("Could not open file: " + filepath).c_str());
+			KROSS_MSGBOX_WARN("Could not open file: {0}", filepath);
 			return "";
 		}
 	}

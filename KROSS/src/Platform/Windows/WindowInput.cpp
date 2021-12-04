@@ -1,20 +1,22 @@
 #include "Kross_pch.h"
-#include "WindowInput.h"
+
+#include "Kross/Core/Input.h"
 
 #include "Kross/Core/Application.h"
 #include <GLFW/glfw3.h>
 
 namespace Kross {
-	Input* Input::s_Instance = new WindowInput();
-	Input::KeyState WindowInput::keys[maxKeys] = { Input::KeyState::NOT_PRESSED };
-	bool WindowInput::s_bOldKeys[maxKeys] = { false };
-	bool WindowInput::s_bKeys[maxKeys] = { false };
-	Input::KeyState WindowInput::GetKeyStateImpl(int keycode)
+	constexpr uint16_t maxKeys = 512u;
+	Input::KeyState keys[maxKeys] = { Input::KeyState::NOT_PRESSED };
+	bool s_bOldKeys[maxKeys] = { false };
+	bool s_bKeys[maxKeys] = { false };
+	Input::KeyState Kross::Input::GetKeyState(Code keycode)
 	{
-		int nState = glfwGetKey(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), keycode);
-		Input::KeyState& now = keys[keycode];
-		bool& state = s_bKeys[keycode];
-		bool& oldState = s_bOldKeys[keycode];
+		int code = (int)keycode;
+		int nState = glfwGetKey(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), code);
+		Input::KeyState& now = keys[code];
+		bool& state = s_bKeys[code];
+		bool& oldState = s_bOldKeys[code];
 
 		switch (nState) {
 		case GLFW_PRESS:
@@ -37,25 +39,25 @@ namespace Kross {
 		oldState = state;
 		return now;
 	}
-	bool WindowInput::IsKeyHeldImpl(int keycode)
+	bool Input::IsKeyHeld(Code keycode)
 	{
-		return GetKeyStateImpl(keycode) == Input::KeyState::HELD;
+		return GetKeyState(keycode) == Input::KeyState::HELD;
 	}
-	bool WindowInput::IsKeyPressedImpl(int keycode)
+	bool Input::IsKeyPressed(Code keycode)
 	{
-		return GetKeyStateImpl(keycode) == Input::KeyState::PRESSED;
+		return GetKeyState(keycode) == Input::KeyState::PRESSED;
 	}
-	bool WindowInput::IsKeyReleasedImpl(int keycode)
+	bool Input::IsKeyReleased(Code keycode)
 	{
-		return GetKeyStateImpl(keycode) == Input::KeyState::RELEASED;
+		return GetKeyState(keycode) == Input::KeyState::RELEASED;
 	}
-	bool  WindowInput::IsMouseButtonPressedImpl(int button)
+	bool  Input::IsMouseButtonPressed(Code button)
 	{
 		return glfwGetMouseButton(
 			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
-			button) == GLFW_PRESS;
+			(int)button) == GLFW_PRESS;
 	}
-	std::pair<float, float> WindowInput::GetMousePositionImpl()
+	std::pair<float, float> Input::GetMousePosition()
 	{
 		double xpos, ypos;
 		glfwGetCursorPos(
@@ -65,21 +67,21 @@ namespace Kross {
 		);
 		return { (float)xpos, (float)ypos };
 	}
-	void WindowInput::SetMousePositionImpl(double x, double y)
+	void Input::SetMousePosition(double x, double y)
 	{
 		glfwSetCursorPos(
 			static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()),
 			x, y
 		);
 	}
-	float WindowInput::GetMouseXImpl()
+	float Input::GetMouseX()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return x;
 	}
-	float WindowInput::GetMouseYImpl()
+	float Input::GetMouseY()
 	{
-		auto [x, y] = GetMousePositionImpl();
+		auto [x, y] = GetMousePosition();
 		return y;
 	}
 }

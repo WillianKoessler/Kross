@@ -12,7 +12,10 @@ namespace Kross {
 		static bool s_bSceneBegan;
 		static bool s_bBatch;
 		static bool s_bInitiated;
-
+		
+		static void BatchBegin();
+		static void Flush();
+		static void BatchEnd();
 	public:
 		struct Stats
 		{
@@ -31,9 +34,6 @@ namespace Kross {
 		static void Shutdown();
 
 		static void Begin(Ref<Camera::Camera>& camera);
-		static void BatchBegin();
-		static void Flush();
-		static void BatchEnd();
 		static void End();
 
 		static void SwitchShader(const Ref<Shader>& shader);

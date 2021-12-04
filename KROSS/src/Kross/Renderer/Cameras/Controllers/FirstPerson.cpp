@@ -2,7 +2,7 @@
 #include "FirstPerson.h"
 
 #include "Kross/Core/Input.h"
-#include "Kross/Core/KeyCodes.h"
+#include "Kross/Events/KeyCodes.h"
 #include "Kross/Core/Application.h"
 
 namespace Kross::Camera3D {

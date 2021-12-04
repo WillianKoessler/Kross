@@ -80,7 +80,7 @@ namespace Kross {
 		virtual const bool Add(const Ref<T>& resource) override
 		{
 			const auto i = std::lower_bound(stack.begin(), stack.end(), resource->GetName());
-			if (i != stack.end() && !(resource->GetName() < i->key))
+			if (valid(resource->GetName(), i))
 			{
 				KROSS_CORE_WARN("Object already exists in stack.");
 				return false;
@@ -97,7 +97,7 @@ namespace Kross {
 		virtual const bool Del(const std::string& key) override
 		{
 			const auto i = location(key);
-			if (i != stack.end() && !(key < i->key))
+			if (valid(key, i))
 			{
 				stack.erase(i);
 				return true;
@@ -107,28 +107,26 @@ namespace Kross {
 		}
 		virtual const Ref<T> Get(const std::string& key) override { return _Get(key, nullptr); }
 		virtual const Ref<T> Get(const std::string& key, const std::string& filepath) override { return _Get(key, &filepath); }
-		virtual void Log() override { KROSS_CORE_TRACE(" | [Kross::Stack<{1}>] TABLE{0}", Entry::GetTable(), typeid(T).name()); }
+		virtual void Log() override { KROSS_CORE_TRACE("TABLE{0}", Entry::GetTable(), typeid(T).name()); }
 		virtual void clear() override { stack.clear(); }
 		virtual size_t size() const override { return stack.size(); }
-		//virtual const Entry* begin() override { return stack.begin(); }
-		//virtual const Entry* end() override { return stack.end(); }
 
 		Stack_Impl(const Stack_Impl& other) = delete;
 		Stack_Impl(Stack_Impl&& other) = delete;
 		void operator =(Stack_Impl&& other) = delete;
 	private:
-		Stack_Impl() { KROSS_CORE_INFO(" | [Kross::Stack<{0}>] Created", typeid(T).name()); }
-		virtual ~Stack_Impl() override { clear(); KROSS_CORE_INFO(" | [Kross::Stack<{0}>] Destroyed", typeid(T).name()); }
+		Stack_Impl() { KROSS_CORE_INFO("Created", typeid(T).name()); }
+		virtual ~Stack_Impl() override { clear(); KROSS_CORE_INFO("Destroyed", typeid(T).name()); }
 
 		static Ref<T> _Get(const std::string& k, const std::string* filepath)
 		{
 			static std::string calls = "";
-			const char* mycall = (" " + k + " " + (filepath ? *filepath : "null")).c_str();
+			std::string mycall = " " + k + " " + (filepath ? *filepath : "null");
 
 			if (!k.empty())
 			{
 				const auto i = location(k);
-				if (i != stack.end() && !(k < i->key)) return i->resource;
+				if (valid(k, i)) return i->resource;
 				else if (filepath)
 				{
 					return *stack.emplace(i, k, T::CreateRef(k, *filepath), *filepath);
@@ -150,9 +148,14 @@ namespace Kross {
 			}
 			return nullptr;
 		}
-		static auto location(const std::string& key)
+		static inline auto location(const std::string& key)
 		{
 			return std::lower_bound(stack.begin(), stack.end(), key);
+		}
+		template<class iter>
+		static inline bool valid(const std::string& k, const iter& i)
+		{
+			return i != stack.end() && !(k < i->key);
 		}
 
 		static std::vector<Entry> stack;

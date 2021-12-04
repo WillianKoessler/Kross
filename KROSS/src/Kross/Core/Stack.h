@@ -7,7 +7,7 @@ namespace Kross {
 	class KAPI Stack
 	{
 	public:
-		Stack();
+		Stack() = default;
 		virtual ~Stack() {};
 
 		virtual const bool Add(const Ref<T>& resource) = 0;
@@ -22,7 +22,5 @@ namespace Kross {
 		virtual size_t size() const = 0;
 
 		static Stack<T>& instance();
-		//virtual const std::_Vector_iterator<std::_Vector_val<std::_Simple_types<T>>> begin() = 0;
-		//virtual const std::_Vector_iterator<std::_Vector_val<std::_Simple_types<T>>> end() = 0;
 	};
 }

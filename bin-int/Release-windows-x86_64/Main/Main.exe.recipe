@@ -2,9 +2,6 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\dev\C++\Kross_Engine\bin\Release-windows-x86_64\Kross\Kross.dll</FullPath>
-    </ProjectOutput>
-    <ProjectOutput>
       <FullPath>C:\dev\C++\Kross_Engine\bin\Release-windows-x86_64\Main\Main.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>

@@ -27,7 +27,6 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 		Shutdown();
-		glfwTerminate();
 	}
 
 	void Win_Windows::Init(WindowProps&& props)
@@ -209,7 +208,7 @@ namespace Kross {
 	{
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
-		KROSS_CORE_INFO("Windows window Destructed.");
+		KROSS_CORE_INFO("Windows Window Destructed.");
 	}
 
 	void Win_Windows::OnUpdate()

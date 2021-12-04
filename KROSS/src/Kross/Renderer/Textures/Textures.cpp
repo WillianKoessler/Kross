@@ -7,19 +7,19 @@
 namespace Kross::Texture {
 	unsigned int Base::texSlotIndex = 0;
 
-	const unsigned int Base::QueryMaxSlots()
+	unsigned int Base::QueryMaxSlots()
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
 		case Kross::RendererAPI::API::None:		KROSS_CORE_ASSERT(false, "[Kross::Texture] Renderer API (None) is not supported"); return -1;
-		case Kross::RendererAPI::API::OpenGL:		return Kross::OpenGL::Texture::Base::QueryMaxSlots();
+		case Kross::RendererAPI::API::OpenGL:	return Kross::OpenGL::Texture::Base::QueryMaxSlots();
 			//case Kross::RendererAPI::API::DirectX:		return makeRef<Kross::DirectX::Texture::T2D>(path);
 		}
 
 		KROSS_CORE_ASSERT(false, "[Kross::Texture] Unknown Renderer API");
 		return -1;
 	}
-	const unsigned int Base::IncSlot()
+	unsigned int Base::IncSlot()
 	{
 		if (texSlotIndex + 1 >= QueryMaxSlots())
 		{
@@ -32,7 +32,7 @@ namespace Kross::Texture {
 	{
 		texSlotIndex = 1;
 	}
-	const unsigned int Base::GetSlot()
+	unsigned int Base::GetSlot()
 	{
 		return texSlotIndex;
 	}
@@ -48,7 +48,7 @@ namespace Kross::Texture {
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Ref<T2D> T2D::CreateRef(uint32_t width, uint32_t height, unsigned char* data)
+	Ref<T2D> T2D::CreateRef(unsigned int width, unsigned int height, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
@@ -60,7 +60,7 @@ namespace Kross::Texture {
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Ref<T2D> T2D::CreateRef(uint32_t width, uint32_t height, const std::string& name, unsigned char* data)
+	Ref<T2D> T2D::CreateRef(unsigned int width, unsigned int height, const std::string& name, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
@@ -84,7 +84,7 @@ namespace Kross::Texture {
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Scope<T2D> T2D::CreateScope(uint32_t width, uint32_t height, unsigned char* data)
+	Scope<T2D> T2D::CreateScope(unsigned int width, unsigned int height, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{
@@ -96,7 +96,7 @@ namespace Kross::Texture {
 		KROSS_CORE_ASSERT(false, "[Kross::Texture::T2D] Unknown Renderer API");
 		return nullptr;
 	}
-	Scope<T2D> T2D::CreateScope(uint32_t width, uint32_t height, const std::string& name, unsigned char* data)
+	Scope<T2D> T2D::CreateScope(unsigned int width, unsigned int height, const std::string& name, unsigned char* data)
 	{
 		switch (Kross::Renderer::GetAPI())
 		{

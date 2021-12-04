@@ -2,20 +2,26 @@
 
 #include "Kross/Core/Core.h"
 #include "Kross/Core/Layer.h"
+#include "Kross/Core/LayerStack.h"
 
 namespace Kross {
-	class KAPI LayerStack
+	class LayerStack
 	{
 	public:
-		virtual ~LayerStack() {};
-		virtual void PushLayer(const Ref<Layer>& layer) = 0;
-		virtual void PushOverlay(const Ref<Layer>& overlay) = 0;
-		virtual void PopLayer(const Ref<Layer>& layer) = 0;
-		virtual void PopOverlay(const Ref<Layer>& overlay) = 0;
-		virtual void clear() = 0;
-		virtual uint64_t size() const = 0;
-		virtual Ref<Layer> at(size_t index) = 0;
-		static LayerStack* Create();
-		static void Delete();
+		LayerStack();
+		~LayerStack();
+
+		void PushLayer	(const Ref<Layer>& layer);
+		void PushOverlay(const Ref<Layer>& overlay);
+		void PopLayer	(const Ref<Layer>& layer);
+		void PopOverlay(const Ref<Layer>& overlay);
+		void clear();
+
+		std::vector<Ref<Layer>>::iterator begin() { return m_vecLayers.begin(); }
+		std::vector<Ref<Layer>>::iterator end() { return m_vecLayers.end(); }
+
+	private:
+		std::vector<Ref<Layer>> m_vecLayers;
+		uint32_t m_unLayersInsertIndex = 0;
 	};
 }

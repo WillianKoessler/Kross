@@ -5,21 +5,22 @@
 //#include "GFXAPI/DirectX/RenderersAPI.h"
 
 #include "Renderer2D.h"
-#include "Renderer3D.h"
+#include "voxelRenderer.h"
 
 namespace Kross {
 	KAPI RendererAPI* RenderCommand::s_RendererAPI = new GraphicsAPI::RendererAPI;
-	KAPI Renderer::Dimentions Renderer::s_dDims = Renderer::Dimentions::D2;
+	KAPI uint8_t Renderer::s_uDims = 2;
 
-	void Renderer::Init(Renderer::Dimentions dims)
+	void Renderer::Init(uint8_t dims)
 	{
 		KROSS_PROFILE_FUNC();
-		s_dDims = dims;
+		s_uDims = dims;
 
 		RenderCommand::Init();
-		switch (s_dDims) {
-		case Dimentions::D2: Renderer2D::Init(); break;
-		case Dimentions::D3: Renderer3D::Init(); break;
+		switch (s_uDims) {
+		case Renderer::TWO_D: Renderer2D::Init(); break;
+		case Renderer::THREE_D: KROSS_CORE_ERROR("3D is not supported yet."); break;
+		case Renderer::VOXEL:	VoxelRenderer::Init(); break;
 		default: { KROSS_CORE_ERROR("Renderer::Dimentions not supported"); return; }
 		}
 
@@ -32,9 +33,10 @@ namespace Kross {
 
 		RenderCommand::Shutdown();
 
-		switch (s_dDims) {
-		case Dimentions::D2: Renderer2D::Shutdown(); break;
-		case Dimentions::D3: Renderer3D::Shutdown(); break;
+		switch (s_uDims) {
+		case Renderer::TWO_D: Renderer2D::Shutdown(); break;
+		case Renderer::THREE_D: KROSS_CORE_ERROR("3D is not supported yet."); break;
+		case Renderer::VOXEL:	VoxelRenderer::Shutdown(); break;
 		default: { KROSS_CORE_ERROR("Renderer::Dimentions not supported"); return; }
 		}
 		KROSS_CORE_TRACE("Renderer Finished");

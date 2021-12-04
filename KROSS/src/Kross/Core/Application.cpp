@@ -3,7 +3,6 @@
 
 #include "Stack_Impl.h"
 #include "Kross/Renderer/Textures/Textures.h"
-#include "Kross/Core/LayerStack_Impl.h"
 
 namespace Kross {
 
@@ -24,8 +23,6 @@ namespace Kross {
 		m_refImGuiLayer = l.get();
 		PushOverlay(l);
 
-		m_pLayerStack = LayerStack::Create();
-
 		KROSS_CORE_INFO("Application Contructed");
 	}
 	Application::~Application()
@@ -33,9 +30,8 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		Stack_Impl<Shader>::instance().clear();
 		Stack_Impl<Texture::T2D>::instance().clear();
-		m_pLayerStack->clear();
+		m_pLayerStack.clear();
 		Renderer::Shutdown();
-		m_pWindow->Shutdown();
 		delete m_pWindow;
 		KROSS_CORE_INFO("Application Destructed");
 	}
@@ -44,7 +40,7 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 		for (const Ref<Layer>& l : list) {
-			m_pLayerStack->PushLayer(l);
+			m_pLayerStack.PushLayer(l);
 			l->OnAttach();
 			KROSS_CORE_TRACE("Application '{0}' Pushed", l->GetName());
 		}
@@ -53,7 +49,7 @@ namespace Kross {
 	void Application::PushLayer(const Ref<Layer>& layer)
 	{
 		KROSS_PROFILE_FUNC();
-		m_pLayerStack->PushLayer(layer);
+		m_pLayerStack.PushLayer(layer);
 		layer->OnAttach();
 		KROSS_CORE_TRACE("Application '{0}' Pushed", layer->GetName());
 	}
@@ -61,7 +57,7 @@ namespace Kross {
 	void Application::PushOverlay(const Ref<Layer>& layer)
 	{
 		KROSS_PROFILE_FUNC();
-		m_pLayerStack->PushOverlay(layer);
+		m_pLayerStack.PushOverlay(layer);
 		layer->OnAttach();
 		KROSS_CORE_TRACE("Application Overlay '{0}' Pushed", layer->GetName());
 	}
@@ -73,9 +69,9 @@ namespace Kross {
 		dispatcher.Dispatch<WindowCloseEvent>(KROSS_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(KROSS_BIND_EVENT_FN(Application::OnWindowResize));
 
-		for(size_t i = m_pLayerStack->size(); i > -1; i--)
+		for(auto& layer : m_pLayerStack)
 		{
-			m_pLayerStack->at(i)->OnEvent(e);
+			layer->OnEvent(e);
 			if (e.handled)
 				break;
 		}
@@ -84,31 +80,32 @@ namespace Kross {
 	void Application::Run()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_FILE_TRACE("-----------------------RUNTIME STARTED-----------------------");
+		KROSS_CORE_TRACE("-----------------------RUNTIME STARTED-----------------------");
 		while (m_bRunning)
 		{
 			KROSS_PROFILE_SCOPE("Run Loop");
 			static Timestep time;
-			double ts = time.GetLap();
+			static double ts = 0.0;
+			ts = time.GetLap();
 			if (!m_bMinimized)
 			{
 				KROSS_PROFILE_SCOPE("LayerStack OnUpdate");
-				for(int i = 0; i < m_pLayerStack->size(); i++)
-					m_pLayerStack->at(i)->OnUpdate(ts);
+				for(auto& layer : m_pLayerStack)
+					layer->OnUpdate(ts);
 			}
 
 			m_refImGuiLayer->Begin();
 			if(!m_bMinimized)
 			{
 				KROSS_PROFILE_SCOPE("LayerStack ImGuiRender");
-				for (int i = 0; i < m_pLayerStack->size(); i++)
-					m_pLayerStack->at(i)->OnImGuiRender(ts);
+				for (auto& layer : m_pLayerStack)
+					layer->OnImGuiRender(ts);
 			}
 			m_refImGuiLayer->End();
 
 			m_pWindow->OnUpdate();
 		}
-		KROSS_CORE_FILE_TRACE("-----------------------RUNTIME ENDED-----------------------");
+		KROSS_CORE_TRACE("-----------------------RUNTIME ENDED-----------------------");
 
 		KROSS_CORE_TRACE("Application Finished");
 	}
