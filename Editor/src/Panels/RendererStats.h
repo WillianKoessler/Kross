@@ -13,10 +13,8 @@ namespace Kross {
 		float framerate_buffer = 0;
 		int rate_tick = 10;
 		float* frames;
-		bool show;
-        std::string m_strName;
     public:
-        RendererStats(const std::string& name);
+        RendererStats(const char* name);
         ~RendererStats();
 
         virtual void Show(double ts) override;

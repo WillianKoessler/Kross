@@ -2,20 +2,20 @@
 
 #include "glm/glm/gtc/matrix_transform.hpp"
 #include "Kross/Renderer/RendererAPI.h"
+#include "Kross/Core/Resource.h"
 
 namespace Kross::Camera {
 
 #define CAMERA_TYPE(type)\
 	static Type GetStaticType() { return Type::##type; }\
 	virtual Type GetType() const override { return GetStaticType(); }\
-	virtual const std::string GetCameraName() const override { return (const std::string)#type; }
 
-	class Camera
+	class Camera : public Resource
 	{
 	public:
+		Camera() { SetName("Unnamed_Camera"); }
 		enum class Axis { X, Y, Z };
 
-	public:
 		virtual bool isLookingAt() const = 0;
 		virtual void LockAt(const glm::vec3& target) = 0;
 		virtual void unLock() = 0;
@@ -37,8 +37,6 @@ namespace Kross::Camera {
 		};
 		
 		virtual Type GetType() const = 0;
-		virtual const std::string GetCameraName() const = 0;
-		virtual const std::string& GetName() const = 0;
 	};
 
 }

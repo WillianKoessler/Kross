@@ -2,14 +2,17 @@
 
 #include "Camera.h"
 #include "Kross/Core/Core.h"
+#include "Kross/Core/Resource.h"
 #include "Kross/Events/ApplicationEvent.h"
 #include "Kross/Events/MouseEvent.h"
 
 
 namespace Kross::Camera {
-	class Controller
+	class Controller : public Resource
 	{
 	public:
+		Controller() { SetName("Unnamed_CameraController"); }
+
 		virtual void OnUpdate(double ts) = 0;
 		virtual void OnEvent(Event& e) = 0;
 
@@ -25,11 +28,11 @@ namespace Kross::Camera {
 		virtual void CalculateView() = 0;
 
 		struct Boundary {
-			float left;
-			float right;
-			float bottom;
-			float top;
-		} bounds;
+			float left = 0.0f;
+			float right = 1.0f;
+			float bottom = 1.0f;
+			float top = 0.0f;
+		} bounds{};
 
 		Ref<Camera> camera;
 	};

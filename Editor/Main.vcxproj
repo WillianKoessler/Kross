@@ -134,16 +134,14 @@
     <ClInclude Include="src\Panels\RendererStats.h" />
     <ClInclude Include="src\Panels\Panel.h" />
     <ClInclude Include="src\Panels\DockSpace.h" />
-    <ClInclude Include="src\Core\UI.h" />
-    <ClInclude Include="src\Core\world.h" />
+    <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Panels\Viewport.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Panels\RendererStats.cpp" />
     <ClCompile Include="src\Panels\DockSpace.cpp" />
-    <ClCompile Include="src\Core\UI.cpp" />
-    <ClCompile Include="src\Core\main.cpp" />
-    <ClCompile Include="src\Core\world.cpp" />
+    <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Panels\Panel.cpp" />
     <ClCompile Include="src\Panels\Viewport.cpp" />
   </ItemGroup>

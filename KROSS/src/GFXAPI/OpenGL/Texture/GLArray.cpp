@@ -1,15 +1,16 @@
 #include "Kross_pch.h"
-#include "_Array.h"
+#include "GLArray.h"
 #include "stb_image.h"
 
 namespace Kross::OpenGL::Texture {
-	T2DArray::T2DArray(const size_t size)
+	T2DArray::T2DArray(const char* name, const size_t size)
 		:
 		iterator(0),
 		_size(size),
 		glTex(new int[size])
 	{
 		for (int i = 0; i < size; i++) glTex[i] = 0;
+		SetName(name);
 	}
 	T2DArray::~T2DArray()
 	{

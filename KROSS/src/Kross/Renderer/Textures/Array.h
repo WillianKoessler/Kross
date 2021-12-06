@@ -1,8 +1,9 @@
 #pragma once
 #include "Kross/Renderer/Textures/Textures.h"
+#include "Kross/Core/Resource.h"
 
 namespace Kross::Texture {
-	class KAPI Array
+	class KAPI Array : public Resource
 	{
 	public:
 		virtual ~Array() = default;
@@ -21,7 +22,7 @@ namespace Kross::Texture {
 	{
 	public:
 		virtual const int Get(const Ref<T2D>& texture) = 0;
-		static Ref<T2DArray> CreateRef(const size_t size);
-		static Scope<T2DArray> CreateScope(const size_t size);
+		static Ref<T2DArray> CreateRef(const char* name, const size_t size);
+		static Scope<T2DArray> CreateScope(const char* name, const size_t size);
 	};
 }

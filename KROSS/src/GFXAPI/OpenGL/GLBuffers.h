@@ -7,7 +7,7 @@ namespace Kross::OpenGL::Buffer {
 	class Vertex final : public Kross::Buffer::Vertex
 	{
 	public:
-		Vertex(float* vertices, uint32_t size, bool dynamic);
+		Vertex(const char* name, float* vertices, uint32_t size, bool dynamic);
 		virtual ~Vertex();
 
 		virtual void Bind() const override;
@@ -34,7 +34,7 @@ namespace Kross::OpenGL::Buffer {
 	class Index: public Kross::Buffer::Index
 	{
 	public:
-		Index(uint32_t* indices, uint32_t size);
+		Index(const char* name, uint32_t* indices, uint32_t size);
 		virtual ~Index();
 
 		virtual void Bind() const override;

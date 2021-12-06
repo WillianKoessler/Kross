@@ -85,13 +85,14 @@ namespace Kross {
 	void VoxelRenderer::Init()
 	{
 		KROSS_PROFILE_FUNC();
+		KROSS_CORE_WARN("CALLING UNFINISHED CODE. BUGS MAY HAPPEN");
 		if (s_bInitiated) { KROSS_CORE_WARN("VoxelRenderer is already initialized. Cannot call VoxelRenderer::Init(void) twice. Forget to call VoxelRenderer::Shutdown(void)?"); return; }
 		s_bInitiated = true;
 		data = new PointBatchData;
 
-		data->va = VertexArray::CreateScope();
+		data->va = VertexArray::CreateScope("Voxel VertexArray");
 
-		data->vb = Buffer::Vertex::Create(nullptr, sizeof(VoxelVertex) * MaxPointsBatchCount, true);
+		data->vb = Buffer::Vertex::Create("Voxel VertexBuffer", nullptr, sizeof(VoxelVertex) * MaxPointsBatchCount, true);
 		data->vb->SetLayout({
 			//{ Buffer::ShaderDataType::uInt2, "a_Data"}
 			{Buffer::ShaderDataType::Float3, "a_Pos"},
@@ -99,7 +100,7 @@ namespace Kross {
 			});
 		data->va->AddVoxel(data->vb);
 
-		Stack<Shader>::instance().Add(data->shader = Shader::CreateRef("voxelShader", {
+		Stack<Shader>::Add(data->shader = Shader::CreateRef("voxelShader", {
 			"assets/shaders/OpenGL/voxel/voxel.vert",
 			"assets/shaders/OpenGL/voxel/voxel.geom",
 			"assets/shaders/OpenGL/voxel/voxel.frag",
@@ -114,8 +115,8 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		if (!s_bInitiated) { KROSS_CORE_WARN("VoxelRenderer is not initialized. Cannot call VoxelRenderer::Shutdown(void) while VoxelRenderer::Init(void) is not called."); return; }
 
-		Stack<Texture::T2D>::instance().clear();
-		Stack<Shader>::instance().clear();
+		Stack<Texture::T2D>::clear();
+		Stack<Shader>::clear();
 		delete data;
 	}
 	void VoxelRenderer::Begin(Ref<Camera::Camera>& camera)

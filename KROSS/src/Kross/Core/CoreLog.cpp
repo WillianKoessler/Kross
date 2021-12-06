@@ -38,9 +38,6 @@ namespace Kross {
 			spdlog::register_logger(s_ClientLogger);
 			s_ClientLogger->set_level(spdlog::level::trace);
 			s_ClientLogger->flush_on(spdlog::level::trace);
-
-			s_CoreLogger->critical("Welcome to Kross Engine");
-			s_CoreLogger->info("Logger Initialized");
 		} catch (const spdlog::spdlog_ex& ex)
 		{
 			std::cout << "Logger init failed: " << ex.what() << std::endl;

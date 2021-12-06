@@ -1,8 +1,9 @@
 #include "Kross_pch.h"
 #include "Application.h"
 
-#include "Stack_Impl.h"
+#include "Stack.h"
 #include "Kross/Renderer/Textures/Textures.h"
+#include "Kross/Core/Resource.h"
 
 namespace Kross {
 
@@ -14,7 +15,7 @@ namespace Kross {
 		if (s_Instance) KROSS_CORE_FATAL("Application already exists!");
 		s_Instance = this;
 
-		m_pWindow = Window::Create(WindowProps(s.title, s.width, s.height, s.fullscreen));
+		m_pWindow = Window::Create({ s.title, s.width, s.height, s.fullscreen });
 		m_pWindow->SetVSync(true);
 		m_pWindow->SetEventCallback(KROSS_BIND_EVENT_FN(Application::OnEvent));
 		Renderer::Init(s.dims);
@@ -28,8 +29,8 @@ namespace Kross {
 	Application::~Application()
 	{
 		KROSS_PROFILE_FUNC();
-		Stack_Impl<Shader>::instance().clear();
-		Stack_Impl<Texture::T2D>::instance().clear();
+		Stack<Shader>::clear();
+		Stack<Texture::T2D>::clear();
 		m_pLayerStack.clear();
 		Renderer::Shutdown();
 		delete m_pWindow;

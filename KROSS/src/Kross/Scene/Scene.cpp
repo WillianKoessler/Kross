@@ -7,9 +7,12 @@
 namespace Kross {
 	Scene::Scene()
 	{
+		m_Registry = entt::registry();
+		KROSS_CORE_INFO("Scene Constructed");
 	}
 	Scene::~Scene()
 	{
+		KROSS_CORE_INFO("Scene Destructed");
 	}
 
 	Entity Scene::CreateEntity(const char* name)
@@ -17,6 +20,7 @@ namespace Kross {
 		Entity entity{ (uint32_t)m_Registry.create(), this};
 		entity.AddComponent<TransformComponent>();
 		entity.AddComponent<TagComponent>(name);
+		KROSS_CORE_TRACE("Entity '{0}' Created", name);
 		return entity;
 	}
 

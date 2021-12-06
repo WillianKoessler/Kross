@@ -1,12 +1,12 @@
 #include "Kross_pch.h"
-#include "VertexArrays.h"
+#include "GLVertexArrays.h"
 #include "GLErrors.h"
 
 namespace Kross::OpenGL {
 
 	unsigned int convertion_to_GLTYPE(const Kross::Buffer::ShaderDataType type)
 	{
-		if (type == Kross::Buffer::ShaderDataType::Float)	return GL_FLOAT;
+		if (type == Kross::Buffer::ShaderDataType::Float)		return GL_FLOAT;
 		else if (type == Kross::Buffer::ShaderDataType::Float2)	return GL_FLOAT;
 		else if (type == Kross::Buffer::ShaderDataType::Float3)	return GL_FLOAT;
 		else if (type == Kross::Buffer::ShaderDataType::Float4)	return GL_FLOAT;
@@ -24,19 +24,19 @@ namespace Kross::OpenGL {
 		return NULL;
 	}
 
-	VertexArray::VertexArray()
+	VertexArray::VertexArray(const char* name)
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glGenVertexArrays(1, &m_RendererID));
 		Bind();
-		KROSS_CORE_INFO("Vertex Array Created");
+		SetName(name);
+		KROSS_CORE_INFO("'{0}' Constructed", GetName());
 	}
 
 	VertexArray::~VertexArray()
 	{
 		KROSS_PROFILE_FUNC();
 		glCall(glDeleteVertexArrays(1, &m_RendererID));
-		KROSS_CORE_INFO("Vertex Array Deleted");
 	}
 
 	void VertexArray::Bind() const
@@ -54,6 +54,8 @@ namespace Kross::OpenGL {
 	void VertexArray::AddVoxel(const Ref<Kross::Buffer::Vertex>& voxel)
 	{
 		KROSS_PROFILE_FUNC();
+		KROSS_CORE_WARN("CALLING UNFINISHED CODE. BUGS MAY HAPPEN");
+
 		this->Bind();
 		voxel->Bind();
 

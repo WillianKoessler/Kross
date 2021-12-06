@@ -2,7 +2,7 @@
 #include "Buffer.h"
 #include "Renderer.h"
 
-#include "GFXAPI/OpenGL/Buffers.h"
+#include "GFXAPI/OpenGL/GLBuffers.h"
 
 
 namespace Kross::Buffer {
@@ -34,13 +34,12 @@ namespace Kross::Buffer {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	Ref<Vertex> Vertex::Create(float* vertices, uint32_t size, bool dynamic)
+	Ref<Vertex> Vertex::Create(const char* name, float* vertices, uint32_t size, bool dynamic)
 	{
-		KROSS_CORE_INFO("Creating VertexBufferObject...");
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
-			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Vertex>(vertices, size, dynamic);
+			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Vertex>(name, vertices, size, dynamic);
 		}
 
 		KROSS_CORE_WARN("Renderer API (None) is not supported");
@@ -49,13 +48,12 @@ namespace Kross::Buffer {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	Ref<Index> Index::Create(uint32_t* indices, uint32_t size)
+	Ref<Index> Index::Create(const char* name, uint32_t* indices, uint32_t size)
 	{
-		KROSS_CORE_INFO("Creating IndexBufferObject...");
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
-			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Index>(indices, size);
+			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Index>(name, indices, size);
 		}
 
 		KROSS_CORE_WARN("Renderer API (None) is not supported");

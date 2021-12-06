@@ -4,10 +4,10 @@
 namespace Kross {
     class Viewport : public Panel
     {
-        std::string m_strName;
-        Ref<Texture::T2D> m_Canvas;
+        Ref<FrameBuffer> m_Canvas;
+        glm::uvec2 m_ViewportSize;
     public:
-        Viewport(const std::string& name, const Ref<Texture::T2D>& canvas);
+        Viewport(const char* name, const Ref<FrameBuffer>& frame);
         virtual void Show(double ts) override;
     };
 }

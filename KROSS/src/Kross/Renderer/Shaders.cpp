@@ -2,12 +2,12 @@
 #include "Shaders.h"
 #include "Renderer.h"
 
-#include "GFXAPI/OpenGL/Shader.h"
+#include "GFXAPI/OpenGL/GLShader.h"
 //#include "GFXAPI/DirectX/Shader.h"
 
 namespace Kross {
 
-	Ref<Shader> Shader::CreateRef(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
+	Ref<Shader> Shader::CreateRef(const char* name, const char* vertexSource, const char* fragmentSource)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -20,7 +20,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::CreateRef(const std::string& name, const std::initializer_list<std::string>& sources)
+	Ref<Shader> Shader::CreateRef(const char* name, const std::initializer_list<const char *>& sources)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -33,7 +33,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::CreateRef(const std::string& name, const std::string& filepath)
+	Ref<Shader> Shader::CreateRef(const char* name, const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -46,7 +46,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Ref<Shader> Shader::CreateRef(const std::string& filepath)
+	Ref<Shader> Shader::CreateRef(const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -59,7 +59,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Scope<Shader> Shader::CreateScope(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource)
+	Scope<Shader> Shader::CreateScope(const char* name, const char* vertexSource, const char* fragmentSource)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -72,7 +72,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Scope<Shader> Shader::CreateScope(const std::string& name, const std::initializer_list<std::string>& sources)
+	Scope<Shader> Shader::CreateScope(const char* name, const std::initializer_list<const char *>& sources)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -85,7 +85,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Scope<Shader> Shader::CreateScope(const std::string& name, const std::string& filepath)
+	Scope<Shader> Shader::CreateScope(const char* name, const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -98,7 +98,7 @@ namespace Kross {
 		return nullptr;
 	}
 
-	Scope<Shader> Shader::CreateScope(const std::string& filepath)
+	Scope<Shader> Shader::CreateScope(const char* filepath)
 	{
 		switch (Renderer::GetAPI())
 		{

@@ -4,14 +4,8 @@
 
 namespace Kross{
 	Layer::Layer(const char* name)
-		: m_strDebugName(name),
-		ar((float)Application::Get().GetWindow().GetWidth() / (float)Application::Get().GetWindow().GetHeight())
 	{
-		KROSS_CORE_INFO("Layer '{0}' Created", name);
-	}
-
-	Layer::~Layer()
-	{
-		KROSS_CORE_INFO("Layer '{0}' Destructed", m_strDebugName);
+		SetName(name);
+		KROSS_CORE_INFO("'{0}' Constructed", GetName());
 	}
 }

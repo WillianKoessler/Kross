@@ -1,9 +1,11 @@
 #include "RendererStats.h"
 
 namespace Kross {
-	RendererStats::RendererStats(const std::string& name)
-		: m_strName(name), frames(new float[plotsize])
+	RendererStats::RendererStats(const char* name)
+		: frames(new float[plotsize])
 	{
+		SetName(name);
+		KROSS_INFO("RendererStats Panel '{0}' Constructed", name);
 	}
 	RendererStats::~RendererStats()
 	{
@@ -12,9 +14,10 @@ namespace Kross {
 	void RendererStats::Show(double ts)
 	{
 		if (!Manager().s_bRendererStats) return;
-		show = Manager().s_bRendererStats;
 
-		float f = (float)(plot_type ? ts : 0.1 / ts);
+		float f = 0.0f;
+		if (plot_type == 0) f = (float)(0.1 / ts);
+		else if (plot_type == 1) f = (float)ts;
 
 		static bool once = false;
 		if (!once) { for (size_t i = 0; i < plotsize; i++)  frames[i] = f; once = true; }
@@ -32,9 +35,12 @@ namespace Kross {
 		if (frame_count++ % rate_tick == 0) { FrameRate = framerate_buffer / rate_tick; framerate_buffer = 0; }
 
 
+		std::string title = GetName();
 		char buf[64];
-		sprintf_s(buf, "Status Monitor | FPS: %.1f###StatusTitle", FrameRate);
-		if (ImGui::Begin(buf, &show, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
+		if(plot_type == 0) sprintf_s(buf, " | FPS: %.1f###StatusTitle", FrameRate);
+		else if(plot_type == 1) sprintf_s(buf, " | Elapsed: %.4lf###StatusTitle", ts);
+		title += buf;
+		if (ImGui::Begin(title.c_str(), &Manager().s_bRendererStats, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
 		{
 			ImGui::Combo("mode", &plot_type, frame_plot_options, 2); ImGui::SameLine(); ShowHelperMarker(
 				"Select what plot type you want."
@@ -47,7 +53,8 @@ namespace Kross {
 			for (size_t i = 0; i < plotsize; i++)
 				max = std::max(frames[i], max);
 
-			ImGui::PlotLines("", frames, plotsize - 1, 0, plot_type ? "Timestamp" : "Frames", 0, std::min(120.0f, max));
+			ImGui::PlotLines("", frames, plotsize - 1, 0, "", 0, std::min(120.0f, max)); ImGui::SameLine();
+			ImGui::Text(plot_type ? "Timestep" : "Frames");
 			ImGui::Separator();
 			ImGui::Text("Quad Count: %d", Renderer2D::getStats().QuadCount);
 			ImGui::Text("Draw Calls: %d", Renderer2D::getStats().DrawCount);

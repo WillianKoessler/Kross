@@ -8,9 +8,8 @@ namespace Kross::Camera2D {
 		public Kross::Camera::Controller
 	{
 	public:
-		OrthographicCtrl(const std::string& name, float AR = 1.0f, bool rot = false);
-		OrthographicCtrl(Orthographic* camera, float AR = 1.0f, bool rot = false);
-		~OrthographicCtrl();
+		OrthographicCtrl(const char* name, float AR = 1.0f, bool rot = false);
+		OrthographicCtrl(const char* name, Ref<Orthographic> camera, float AR = 1.0f, bool rot = false);
 
 		virtual void OnUpdate(double ts) override;
 		virtual void OnEvent(Event& e) override;

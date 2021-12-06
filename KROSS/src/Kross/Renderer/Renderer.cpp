@@ -1,7 +1,7 @@
 #include "Kross_pch.h"
 #include "Renderer.h"
 
-#include "GFXAPI/OpenGL/RenderersAPI.h"
+#include "GFXAPI/OpenGL/GLRenderersAPI.h"
 //#include "GFXAPI/DirectX/RenderersAPI.h"
 
 #include "Renderer2D.h"

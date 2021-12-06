@@ -8,7 +8,7 @@ namespace Kross::OpenGL {
 	class VertexArray final : public Kross::VertexArray
 	{
 	public:
-		VertexArray();
+		VertexArray(const char* name);
 		~VertexArray();
 
 		virtual void Bind() const override;

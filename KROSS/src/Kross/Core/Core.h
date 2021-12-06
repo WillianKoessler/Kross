@@ -145,13 +145,4 @@ namespace Kross {
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
-
-	inline const std::string FileName(const std::string& path)
-	{
-		size_t slash = path.find_last_of("/\\");
-		slash = (slash == std::string::npos) ? 0 : slash + 1;
-		size_t dot = path.rfind('.');
-		size_t count = (dot == std::string::npos) ? path.size() - slash : dot - slash;
-		return path.substr(slash, count);
-	}
 }

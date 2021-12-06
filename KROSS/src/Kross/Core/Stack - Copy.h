@@ -17,8 +17,13 @@ namespace Kross {
 #define __decl__op__(r, op, type, other)		r operator op(type& o) { return (key op other);}
 		public:
 			Entry(const char *ckey, const Ref<T> &res, const char *cpath = "NULL")
-				: key(ckey), path(cpath), resource(res)
-			{ table += "	key='"+key+"', path='"+path+"', Address='"+std::to_string((uintptr_t)&resource)+"\n"; }
+				:
+				key(key),
+				path(path),
+				resource(res)
+			{
+				table += "\n	" + key + " | " + path;
+			}
 			~Entry() { resource.reset(); };
 
 			std::string key, path;
@@ -27,18 +32,18 @@ namespace Kross {
 			static std::string table;
 			static const std::string &GetTable() { return table; }
 
-			__decl__op__(const bool, <= , const Entry, o.key)
-			__decl__op__(const bool, >= , const Entry, o.key)
-			__decl__op__(const bool, < , const Entry, o.key)
-			__decl__op__(const bool, > , const Entry, o.key)
-			__decl__op__(const bool, == , const Entry, o.key)
-			__decl__op__(const bool, != , const Entry, o.key)
-			__decl__op__(const bool, <= , const std::string, o)
-			__decl__op__(const bool, >= , const std::string, o)
-			__decl__op__(const bool, < , const std::string, o)
-			__decl__op__(const bool, > , const std::string, o)
-			__decl__op__(const bool, == , const std::string, o)
-			__decl__op__(const bool, != , const std::string, o)
+			__decl__op__(const bool, <= , const Entry, o.key);
+			__decl__op__(const bool, >= , const Entry, o.key);
+			__decl__op__(const bool, < , const Entry, o.key);
+			__decl__op__(const bool, > , const Entry, o.key);
+			__decl__op__(const bool, == , const Entry, o.key);
+			__decl__op__(const bool, != , const Entry, o.key);
+			__decl__op__(const bool, <= , const std::string, o);
+			__decl__op__(const bool, >= , const std::string, o);
+			__decl__op__(const bool, < , const std::string, o);
+			__decl__op__(const bool, > , const std::string, o);
+			__decl__op__(const bool, == , const std::string, o);
+			__decl__op__(const bool, != , const std::string, o);
 
 			Ref<T> operator ->() { return resource; }
 			operator std::string() { return key; }
@@ -79,24 +84,34 @@ namespace Kross {
 		}
 		static const Ref<T> Get(const char *key) { return _Get(key, nullptr); }
 		static const Ref<T> Get(const char *key, const char *filepath) { return _Get(key, filepath); }
-		static void Log() { KROSS_CORE_TRACE("TABLE:\n{0}", Entry::GetTable()); }
+		static void Log() { KROSS_CORE_TRACE("TABLE{0}", Entry::GetTable()); }
 		static void clear() { stack.clear(); KROSS_CORE_INFO("Stack Cleared."); }
 		static size_t size() { return stack.size(); }
 
 	private:
 		static Ref<T> _Get(const char *k, const char *filepath)
 		{
+			KROSS_CORE_TRACE("{0}", k);
 			if (k && strcmp(k, "") != 0)
 			{
 				const auto i = location(k);
 				if (valid(k, i)) return i->resource;
 				else if (filepath && strcmp(filepath, "") != 0) return stack.emplace(i, k, T::CreateRef(k, filepath), filepath)->resource;
-				else KROSS_CORE_WARN("\n\tT={0}\n\tResource named '{1}' has a not valid filepath, therefore, it could not be loaded.\n\tEntries are:\n{2}", typeid(T).name(), k, Entry::GetTable());
-			} else KROSS_CORE_WARN("\n\tT={0}\n\tKEY is a empty, and because of it, resource could not be loaded to Stack.\n\tEntries are:\n{1}", typeid(T).name(), Entry::GetTable());
+				else KROSS_CORE_WARN("\n\tT={0}\n\tResource named '{1}' has a not valid filepath, therefore, it could not be loaded.\n\tEntries are: {2}", typeid(T).name(), k, Entry::GetTable());
+			} else KROSS_CORE_WARN("\n\tT={0}\n\tKEY is a empty, and because of it, resource could not be loaded to Stack.\n\tEntries are: {1}", typeid(T).name(), Entry::GetTable());
 			return nullptr;
 		}
 		static auto location(const char *key) { return std::lower_bound(stack.begin(), stack.end(), key); }
-		template<typename iter> static bool valid(const char* key, const iter &i) { return (i != stack.end() && key != nullptr && i->key.compare(key) == 0); }
+		template<typename iter> static bool valid(const char* key, const iter &i)
+		{
+			KROSS_TRACE("{0}", typeid(iter).name());
+			bool valid = false;
+			if (i != stack.end())
+				if(key != nullptr)
+					if (i->key.compare(key) != 0)
+					{ valid = true; KROSS_TRACE("{0}", key); }
+			return valid;
+		}
 		static std::vector<Entry> stack;
 	};
 }

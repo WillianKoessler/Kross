@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Kross/Core/Core.h"
+#include "Kross/Core/Resource.h"
 #include "Kross/Renderer/Buffer.h"
 
 namespace Kross {
-	class KAPI VertexArray
+	class KAPI VertexArray : public Resource
 	{
 	public:
 		virtual ~VertexArray() = default;
@@ -19,7 +20,7 @@ namespace Kross {
 		virtual const std::vector<Ref<Buffer::Vertex>>& GetVertex() = 0;
 		virtual const Ref<Buffer::Index>& GetIndex() = 0;
 
-		static Ref<VertexArray> CreateRef();
-		static Scope<VertexArray> CreateScope();
+		static Ref<VertexArray> CreateRef(const char* name);
+		static Scope<VertexArray> CreateScope(const char* name);
 	};
 }

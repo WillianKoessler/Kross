@@ -40,5 +40,3 @@
 #include "Kross/Renderer/Textures/Atlas.h"
 #include "Kross/Renderer/Textures/Array.h"
 #include "Kross/Renderer/VertexArray.h"
-
-#include "Kross/Core/EntryPoint.h"

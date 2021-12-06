@@ -4,7 +4,7 @@
 namespace Kross {
 	LayerStack::LayerStack()
 	{
-		KROSS_CORE_INFO("LayerStack created");
+		KROSS_CORE_INFO("LayerStack Constructed");
 	}
 
 	LayerStack::~LayerStack()

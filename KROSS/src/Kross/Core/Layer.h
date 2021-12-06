@@ -1,25 +1,18 @@
 #pragma once
 
 #include "Kross/Core/Core.h"
+#include "Kross/Core/Resource.h"
 
 namespace Kross {
-	class KAPI Layer
+	class KAPI Layer : public Resource
 	{
 	public:
-		Layer(const char* name = "Layer");
-		virtual ~Layer();
-
+		Layer(const char* name);
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(double fElapsedTime) {}
 		virtual void OnImGuiRender(double fElapsedTime) {}
 		virtual void OnEvent(class Event& event) {}
-
-		inline const char* GetName() const { return m_strDebugName; }
-
-		float ar;
-	protected:
-		const char* m_strDebugName;
 	};
 }

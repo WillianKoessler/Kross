@@ -88,11 +88,11 @@ namespace Kross {
 		s_bInitiated = true;
 
 		data = new R2DData;
-		data->texArray = Texture::T2DArray::CreateScope(Texture::Base::QueryMaxSlots());
+		data->texArray = Texture::T2DArray::CreateScope("Renderer2D_TextureArray", Texture::Base::QueryMaxSlots());
 
-		data->va = VertexArray::CreateScope();
+		data->va = VertexArray::CreateScope("Renderer2D_VAO");
 
-		data->vb = Buffer::Vertex::Create(nullptr, sizeof(Vertex) * MaxVertexCount, true);
+		data->vb = Buffer::Vertex::Create("Renderer2D_VBO", nullptr, sizeof(Vertex) * MaxVertexCount, true);
 		data->vb->SetLayout({
 			{ Buffer::ShaderDataType::Float3, "a_Position" },
 			{ Buffer::ShaderDataType::Float4, "a_Color"},
@@ -116,7 +116,7 @@ namespace Kross {
 			offset += 4;
 		}
 
-		data->ib = Buffer::Index::Create(indices, sizeof(uint32_t) * MaxIndexCount);
+		data->ib = Buffer::Index::Create("Renderer2D_IBO", indices, sizeof(uint32_t) * MaxIndexCount);
 		data->va->SetIndex(data->ib);
 
 		data->basePositions[0] = glm::vec4(-0.5f, -0.5f, 0.0f, 1.0f);
@@ -125,7 +125,7 @@ namespace Kross {
 		data->basePositions[3] = glm::vec4(-0.5f, 0.5f, 0.0f, 1.0f);
 
 
-		Stack<Shader>::instance().Add(data->shader = Shader::CreateRef("Shader2D", {
+		Stack<Shader>::Add(data->shader = Shader::CreateRef("Shader2D", {
 			"assets/shaders/OpenGL/Shader2D.vert",
 			"assets/shaders/OpenGL/Shader2D.frag"
 			}));
@@ -136,8 +136,8 @@ namespace Kross {
 
 		unsigned char* white = new unsigned char[4]{ 255 };
 
-		Stack<Texture::T2D>::instance().Add(data->whiteTex = Texture::T2D::CreateRef(1, 1, "blank", white));
-		data->texArray->Add(Stack<Texture::T2D>::instance().Get("blank"));
+		Stack<Texture::T2D>::Add(data->whiteTex = Texture::T2D::CreateRef("blank", 1, 1, white));
+		data->texArray->Add(Stack<Texture::T2D>::Get("blank"));
 
 		delete[] indices;
 
@@ -150,8 +150,6 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		if (!s_bInitiated) { KROSS_CORE_WARN("Renderer2D is not initialized. Cannot call Renderer2D::Shutdown(void) while Renderer2D::Init(void) is not called."); return; }
 
-		Stack<Texture::T2D>::instance().clear();
-		Stack<Shader>::instance().clear();
 		delete data;
 	}
 	void Renderer2D::Begin(Ref<Camera::Camera>& camera)

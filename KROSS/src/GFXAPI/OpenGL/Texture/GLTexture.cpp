@@ -1,7 +1,8 @@
 #include "Kross_pch.h"
-#include "_Texture.h"
+#include "GLTexture.h"
 #include "stb_image.h"
 #include "GFXAPI/OpenGL/GLContext.h"
+#include "Kross/Util/Util.h"
 
 namespace Kross::OpenGL::Texture {
 	const int Base::QueryMaxSlots()
@@ -12,17 +13,10 @@ namespace Kross::OpenGL::Texture {
 		return query;
 	}
 
-	T2D::T2D(uint32_t width, uint32_t height, const std::string& name, unsigned char* data)
-		:
-		m_strPath(""),
-		m_strName(name),
-		m_unWidth(width),
-		m_unHeight(height),
-		m_CurrentSlot(IncSlot()),
-		m_unInternalFormat(GL_RGBA8),
-		m_unDataFormat(GL_RGBA)
+	T2D::T2D(const char *name, uint32_t width, uint32_t height, uint8_t *data)
+		: m_strPath(""), m_unWidth(width), m_unHeight(height), m_CurrentSlot(IncSlot()), m_unInternalFormat(GL_RGBA8), m_unDataFormat(GL_RGBA)
 	{
-		KROSS_PROFILE_FUNC();
+		SetName(name);
 		if (Context::GetVersion() < 4.5)
 		{
 			glCall(glGenTextures(1, &m_RendererID));
@@ -32,8 +26,7 @@ namespace Kross::OpenGL::Texture {
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-		}
-		else
+		} else
 		{
 			glCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
 
@@ -45,29 +38,23 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		else KROSS_CORE_WARN("Texture '{0}' NOT created. There were no data.", m_strName);
-		KROSS_CORE_INFO("Texture '{0}' Created", m_strName);
+		else KROSS_CORE_WARN("Texture '{0}' NOT created. There were no data.", GetName());
+		KROSS_CORE_INFO("'{0}' Constructed", GetName());
 	}
-	T2D::T2D(const std::string& name, const std::string& path)
-		:
-		m_strPath(path),
-		m_strName(name),
-		m_unDataFormat(0),
-		m_unInternalFormat(0),
-		m_CurrentSlot(IncSlot())
+	T2D::T2D(const char *name, const char* path)
+		: m_strPath(path), m_unDataFormat(0), m_unInternalFormat(0), m_CurrentSlot(IncSlot())
 	{
-		KROSS_PROFILE_FUNC();
-
-		if (name.empty()) m_strName = FileName(path);
+		if (!strcmp(name, "Unnamed_Resource") || !strcmp(name, "")) SetName(FileName(path));
+		else SetName(name);
 
 		stbi_set_flip_vertically_on_load(true);
 
 		int width, height, channels;
 		{
 			KROSS_PROFILE_SCOPE("T2D::T2D - stbi_load");
-			raw_data.reset(stbi_load(path.c_str(), &width, &height, &channels, 0));
+			raw_data.reset(stbi_load(path, &width, &height, &channels, 0));
 		}
-		if (!raw_data) { KROSS_MSGBOX_ERROR(("Failed to load image!\nFILE: " + path).c_str()); }
+		if (!raw_data) { KROSS_MSGBOX_ERROR("Failed to load image!\nFILE: {0}", path); }
 
 		m_unWidth = width;
 		m_unHeight = height;
@@ -76,13 +63,11 @@ namespace Kross::OpenGL::Texture {
 		{
 			m_unDataFormat = GL_RGB;
 			m_unInternalFormat = GL_RGB8;
-		}
-		else if (channels == 4)
+		} else if (channels == 4)
 		{
 			m_unDataFormat = GL_RGBA;
 			m_unInternalFormat = GL_RGBA8;
-		}
-		else
+		} else
 			KROSS_CORE_WARN("Image format not suported!\nFILE: {0}", path);
 
 		if (Context::GetVersion() < 4.5f)
@@ -95,9 +80,8 @@ namespace Kross::OpenGL::Texture {
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
-			if (raw_data) glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)raw_data.get()));
-		}
-		else
+			if (raw_data) glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void *)raw_data.get()));
+		} else
 		{	 //------------OpenGL 4.5------------
 			glCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
 
@@ -111,77 +95,48 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		//stbi_image_free(data);
-		KROSS_CORE_INFO("Texture '{0}' Created", m_strName);
+		KROSS_CORE_INFO("'{0}' Constructed", GetName());
 	}
 	void T2D::SetFilter(Filtering_Type filter)
 	{
 		Bind();
-		if (Context::GetVersion() < 4.5f)
-		{
+		if (Context::GetVersion() < 4.5f) {
 			switch (filter)
 			{
-				case MIN_LINEAR: {
-					glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-					break;
-				}
-				case MAG_LINEAR: {
-					glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-					break;
-				}
-				case MIN_NEAREST: {
-					glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-					break;
-				}
-				case MAG_NEAREST: {
-					glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-					break;
-				}
-				default: { KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter)); }
+				case MIN_LINEAR: glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)); break;
+				case MAG_LINEAR: glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)); break;
+				case MIN_NEAREST: glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
+				case MAG_NEAREST: glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
+				default: KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter));
 			}
-		}
-		else
-		{
+		} else {
 			switch (filter)
 			{
-				case MIN_LINEAR: {
-					glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-					break;
-				}
-				case MAG_LINEAR: { 
-					glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-					break;
-				}
-				case MIN_NEAREST: {
-					glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-					break;
-				}
-				case MAG_NEAREST: {
-					glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-					break;
-				}
-				default: { KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter)); }
+				case MIN_LINEAR: glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR)); break;
+				case MAG_LINEAR: glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR)); break;
+				case MIN_NEAREST: glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
+				case MAG_NEAREST: glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
+				default: KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter));
 			}
 		}
 	}
 	T2D::~T2D()
 	{
-		KROSS_PROFILE_FUNC();
 		glCall(glDeleteTextures(1, &m_RendererID));
-		KROSS_CORE_INFO("Texture '{0}' Destructed", m_strName);
 	}
-	void T2D::SetData(unsigned char* data, uint32_t size)
+	void T2D::SetData(uint8_t *data, uint32_t size)
 	{
 		KROSS_PROFILE_FUNC();
 		if (data)
 		{
 			if (size != m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3))
-				KROSS_CORE_WARN("Texture '{0}' Specified size does not match data size.", m_strName);
+				KROSS_CORE_WARN("Texture '{0}' Specified size does not match data size.", GetName());
 			Bind();
-			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)data));
+			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void *)data));
 			raw_data.reset(data);
 		}
 	}
-	const Ref<unsigned char>& T2D::GetData() const
+	const Ref<unsigned char> &T2D::GetData() const
 	{
 		return raw_data;
 	}
@@ -190,7 +145,7 @@ namespace Kross::OpenGL::Texture {
 		if (raw_data)
 		{
 			Bind();
-			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void*)raw_data.get()));
+			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void *)raw_data.get()));
 		}
 	}
 	void T2D::Bind(uint32_t slot) const
@@ -200,14 +155,10 @@ namespace Kross::OpenGL::Texture {
 		{
 			if (Context::GetVersion() < 4.5)
 			{
-				if (slot) { glCall(glActiveTexture(GL_TEXTURE0 + slot)); }
-				else { glCall(glActiveTexture(GL_TEXTURE0 + m_CurrentSlot)); }
+				if (slot) { glCall(glActiveTexture(GL_TEXTURE0 + slot)); } else { glCall(glActiveTexture(GL_TEXTURE0 + m_CurrentSlot)); }
 				glCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-			}
-			else
-			{
-				if (slot) { glCall(glBindTextureUnit(slot, m_RendererID)); }
-				else { glCall(glBindTextureUnit(m_CurrentSlot, m_RendererID)); }
+			} else {
+				if (slot) { glCall(glBindTextureUnit(slot, m_RendererID)); } else { glCall(glBindTextureUnit(m_CurrentSlot, m_RendererID)); }
 			}
 		}
 	}

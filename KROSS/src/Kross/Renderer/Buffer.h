@@ -1,6 +1,8 @@
 #pragma once
+
 #include "Kross/Core/Core.h"
 #include "Kross/Core/CoreLog.h"
+#include "Kross/Core/Resource.h"
 
 namespace Kross::Buffer {
 
@@ -108,7 +110,7 @@ namespace Kross::Buffer {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-	class Vertex
+	class Vertex : public Resource
 	{
 	public:
 		virtual ~Vertex() {}
@@ -123,12 +125,12 @@ namespace Kross::Buffer {
 		virtual const bool IsDynamic() const = 0;
 		virtual const unsigned int GetID() const = 0;
 
-		static Ref<Vertex> Create(float* vertices, uint32_t size, bool dynamic = false);
+		static Ref<Vertex> Create(const char* name, float* vertices, uint32_t size, bool dynamic = false);
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	class Index
+	class Index : public Resource
 	{
 	public:
 		virtual ~Index() {};
@@ -138,6 +140,6 @@ namespace Kross::Buffer {
 
 		virtual uint32_t GetCount() const = 0;
 
-		static Ref<Index> Create(uint32_t* indices, uint32_t count);
+		static Ref<Index> Create(const char* name, uint32_t* indices, uint32_t count);
 	};
 }

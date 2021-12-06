@@ -53,16 +53,16 @@ namespace Kross {
 			KROSS_PROFILE_SCOPE("glfwCreateWindow");
 			if ((props.nWidth == 0 || props.nHeight == 0) && props.fullscreen)
 			{
-				m_Window = glfwCreateWindow(mode->width, mode->height, props.strTitle.c_str(), m_Monitor, NULL);
+				m_Window = glfwCreateWindow(mode->width, mode->height, props.strTitle, m_Monitor, NULL);
 			}
 			else if ((props.nWidth > 0 && props.nHeight > 0) && props.fullscreen)
 			{
-				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), m_Monitor, NULL);
+				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle, m_Monitor, NULL);
 				glfwSetWindowMonitor(m_Window, m_Monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 			}
 			else if ((props.nWidth > 0 && props.nHeight > 0) && !props.fullscreen)
 			{
-				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle.c_str(), nullptr, NULL);
+				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle, nullptr, NULL);
 			}
 			else
 			{

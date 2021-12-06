@@ -11,9 +11,20 @@ namespace Kross {
 		{
 			s_device.seed(std::_Random_device());
 		}
-		static float Float()
+		template<typename Number>
+		static Number rand()
 		{
-			return (float)s_distribution(s_device) / (float)std::numeric_limits<uint32_t>::max();
+			return ((Number)s_distribution(s_device) / (Number)std::numeric_limits<Number>::max());
+		}
+		static uint64_t hash(uint64_t state)
+		{
+			state ^= 2747636419u;
+			state *= 2654435769u;
+			state ^= state >> 16;
+			state *= 2654435769u;
+			state ^= state >> 16;
+			state *= 2654435769u;
+			return state;
 		}
 	private:
 		static std::mt19937 s_device;

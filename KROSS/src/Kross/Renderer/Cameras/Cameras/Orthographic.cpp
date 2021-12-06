@@ -3,40 +3,25 @@
 
 
 namespace Kross::Camera2D {
-	Orthographic::Orthographic(float left, float right, float bottom, float top, const std::string& name)
-		:	m_ProjMat(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)),
-			m_ViewMat(glm::mat4(1.0f)),
-			m_strName(name)
-
+	Orthographic::Orthographic(const char* name, float left, float right, float bottom, float top)
+		:	m_ProjMat(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), m_ViewMat(glm::mat4(1.0f))
 	{
-		KROSS_PROFILE_FUNC();
 		APIorder();
-		KROSS_CORE_INFO("Camera Created");
+		SetName(name);
+		KROSS_CORE_INFO("'{0}' Constructed");
 	}
 
-	Orthographic::~Orthographic()
-	{
-		KROSS_PROFILE_FUNC();
-		KROSS_CORE_INFO("Camera Destroyed");
-	}
-
-	void Orthographic::SetProjMat(float left, float right, float bottom, float top)
-	{
-		KROSS_PROFILE_FUNC();
-		m_ProjMat = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
-	}
-
-	void Orthographic::SetPosition(const glm::vec3 & pos)
-	{
-		m_Position = pos;
-		RecalculateVPM();
-	}
-
-	void Orthographic::SetRotation(const glm::vec3& rot)
-	{
-		m_Rotation = rot;
-	}
-
+	bool Orthographic::isLookingAt() const { return false; }
+	void Orthographic::LockAt(const glm::vec3& target) {}
+	void Orthographic::unLock() {}
+	void Orthographic::SetProjMat(float left, float right, float bottom, float top) { m_ProjMat = glm::ortho(left, right, bottom, top, -1.0f, 1.0f); }
+	const glm::mat4& Orthographic::GetVPM() const { return m_VPM; }
+	const glm::mat4& Orthographic::GetProjMat() const { return m_ProjMat; }
+	const glm::mat4& Orthographic::GetViewMat() const { return m_ViewMat; }
+	const glm::vec3& Orthographic::GetPosition() const { return m_Position; }
+	const glm::vec3& Orthographic::GetRotation() const { return m_Rotation; }
+	void Orthographic::SetPosition(const glm::vec3 & pos) { m_Position = pos; RecalculateVPM(); }
+	void Orthographic::SetRotation(const glm::vec3& rot) { m_Rotation = rot; }
 	void Orthographic::SetRotation(float angle, Axis a)
 	{
 		switch (a) {

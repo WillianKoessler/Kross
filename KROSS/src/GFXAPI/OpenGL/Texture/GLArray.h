@@ -14,21 +14,24 @@ namespace Kross::OpenGL::Texture {
 			Ref<Kross::Texture::T2D> resource;
 		public:
 			Entry(const Ref<Kross::Texture::T2D>& r) : id(r ? r->GetID() : -1), resource(r) {}
-			const Ref<Kross::Texture::T2D>& get() const { return resource; }
-			int ID() const { return id; }
+			Entry &operator=(const Entry &other) { this->id = other.id; this->resource = other.resource; return *this; }
+
 			bool validate() const { return resource != nullptr; }
 
-			operator const Ref<Kross::Texture::T2D>& () { return resource; }
+			int ID() const { return id; }
+			const Ref<Kross::Texture::T2D>& get() const { return resource; }
 			Ref<Kross::Texture::T2D> operator->() { return resource; }
-			operator int() { return id; }
-			operator bool() { return resource != nullptr; }
+
 			bool operator <= (Entry& other) { return id <= other.id; }
 			bool operator <= (int other) { return id <= other; }
 			bool operator > (int other) { return id > other; }
-			//Entry& operator=(const Entry& other) { this->id = other.id; this->resource = other.resource; }
+
+			operator const Ref<Kross::Texture::T2D>& () { return resource; }
+			operator int() { return id; }
+			operator bool() { return resource != nullptr; }
 		};
 	public:
-		T2DArray(const size_t size);
+		T2DArray(const char* name, const size_t size);
 		~T2DArray();
 
 		virtual const int Get(const Ref<Kross::Texture::T2D>& texture) override;

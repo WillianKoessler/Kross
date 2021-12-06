@@ -9,10 +9,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\UI.h">
-      <Filter>Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\world.h">
+    <ClInclude Include="src\EditorLayer.h">
       <Filter>Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Panels\DockSpace.h" />
@@ -21,13 +18,10 @@
     <ClInclude Include="src\Panels\Viewport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\UI.cpp">
+    <ClCompile Include="src\EditorLayer.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\main.cpp">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\world.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Panels\DockSpace.cpp" />

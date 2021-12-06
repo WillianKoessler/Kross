@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Kross/Core/Core.h"
 #include "Kross/Renderer/Renderer.h"
+#include "Kross/Core/Resource.h"
 
-class Base
-{
-public:
-
-};
-
+namespace Kross::Mesh {
+	class Base : public Resource
+	{
+	public:
+		Base() { SetName("Unnamed_MeshBase"); }
+	};
+}

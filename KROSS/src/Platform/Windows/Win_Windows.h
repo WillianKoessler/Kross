@@ -17,9 +17,9 @@ namespace Kross {
 
 		virtual void OnUpdate() override;
 
-		virtual inline unsigned int GetWidth() const override { return m_Data.nWidth; }
-		virtual inline unsigned int GetHeight() const override { return m_Data.nHeight; }
-		virtual inline const std::string& GetName() const override { return m_Data.strTitle; }
+		virtual inline uint32_t GetWidth() const override { return m_Data.nWidth; }
+		virtual inline uint32_t GetHeight() const override { return m_Data.nHeight; }
+		virtual inline const char* GetName() const override { return m_Data.strTitle; }
 
 		// Window attributes
 		virtual bool FullScreen(bool active) const override;

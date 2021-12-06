@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "Kross/Core/Core.h"
 #include "Kross/Events/Event.h"
 
 namespace Kross {
@@ -8,45 +8,11 @@ namespace Kross {
 
 	struct WindowProps
 	{
-		std::string strTitle;
-		unsigned int nWidth, nHeight, x, y;
-		bool fullscreen;
-		bool bVSync;
+		const char* strTitle = "Kross Engine";
+		uint32_t nWidth = 380, nHeight = 240, x = 0, y = 0;
+		bool fullscreen = false;
+		bool bVSync = true;
 		EventCallbackFn EventCallback;
-
-		WindowProps(const std::string& title = "Kross Engine",
-			unsigned int width = 380,
-			unsigned int height = 240,
-			bool fullscreen = false,
-			bool vsync = true)
-			:
-			strTitle(title),
-			nWidth(width),
-			nHeight(height),
-			x(0),
-			y(0),
-			fullscreen(fullscreen),
-			bVSync(vsync)
-		{
-		}
-
-		void operator =(const WindowProps& other)
-		{
-			strTitle = other.strTitle;
-			nWidth = other.nWidth;
-			nHeight = other.nHeight;
-			bVSync = other.bVSync;
-			EventCallback = other.EventCallback;
-		}
-
-		void operator =(WindowProps&& other)
-		{
-			strTitle = other.strTitle;
-			nWidth = other.nWidth;
-			nHeight = other.nHeight;
-			bVSync = other.bVSync;
-			EventCallback = other.EventCallback;
-		}
 	};
 
 	// Interface representing a desktop system based on Windows
@@ -57,9 +23,9 @@ namespace Kross {
 
 		virtual void OnUpdate() = 0;
 
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
-		virtual const std::string& GetName() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
+		virtual const char* GetName() const = 0;
 
 		// Window attributes
 		virtual bool FullScreen(bool) const = 0;

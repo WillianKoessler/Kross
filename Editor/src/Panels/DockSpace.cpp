@@ -1,12 +1,10 @@
 #include "DockSpace.h"
 
 namespace Kross {
-	DockSpace::DockSpace(const std::string& name)
-		: m_strName(name)
+	DockSpace::DockSpace(const char* name)
 	{
-	}
-	DockSpace::~DockSpace()
-	{
+		SetName(name);
+		KROSS_INFO("DockSpace Panel '{0}' Constructed", name);
 	}
 	void DockSpace::Show(double ts)
 	{
@@ -16,9 +14,9 @@ namespace Kross {
 		ImGuiIO& io = ImGui::GetIO();
 		static MessageBoxSpecs mbSpecs;
 
-		AppManager().s_bKeyboardEnabled = io.ConfigFlags & ImGuiConfigFlags_NavEnableKeyboard;
-		AppManager().s_bGamepadEnabled = io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad;
-		AppManager().s_bViewportEnabled = io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable;
+		//AppManager().s_bKeyboardEnabled = io.ConfigFlags & ImGuiConfigFlags_NavEnableKeyboard;
+		//AppManager().s_bGamepadEnabled = io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad;
+		//AppManager().s_bViewportEnabled = io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable;
 
 		static ImGuiDockNodeFlags dock_flags = ImGuiDockNodeFlags_None;
 
@@ -40,7 +38,7 @@ namespace Kross {
 
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin(m_strName.c_str(), &m_bOpen, window_flags);
+		ImGui::Begin(GetName(), &m_bOpen, window_flags);
 		ImGui::PopStyleVar(m_bFullscreen ? 3 : 1);
 
 		// DockSpace
@@ -57,18 +55,21 @@ namespace Kross {
 					m_bOpen = false;
 				ImGui::EndMenu();
 			}
-			if (ImGui::BeginMenu("Config"))
+
+			if (ImGui::BeginMenu("View"))
 			{
-				if (ImGui::BeginMenu("Settings"))
-				{
-					if (ImGui::MenuItem("ImGui", NULL)) mbSpecs = { true, "Style Editor", OK, DefaultFunc };
-					ImGui::Separator();
-					ImGui::MenuItem("GUI Demo", NULL, &Manager().s_bDemoWindow);
-					ImGui::MenuItem("Status", NULL, &Manager().s_bRendererStats);
-					ImGui::MenuItem("Fullscreen", NULL, &Manager().s_bFullscreen);
-					ImGui::EndMenu();
-				}
+				ImGui::MenuItem("Viewport", NULL, &Manager().s_bViewport);
+				ImGui::MenuItem("GUI Demo", NULL, &Manager().s_bDemoWindow);
+				ImGui::MenuItem("Status", NULL, &Manager().s_bRendererStats);
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Settings"))
+			{
+				if (ImGui::MenuItem("ImGui", NULL)) mbSpecs = { true, "Style Editor", OK, DefaultFunc };
 				ImGui::Separator();
+				ShowHelperMarker("Enables or Disable FullScreen mode."); ImGui::SameLine();
+				ImGui::MenuItem("Fullscreen", NULL, &Manager().s_bFullscreen);
 				ShowHelperMarker("Enable or Disable Keyboard navigation through the Graphical Interfaces"); ImGui::SameLine();
 				ImGui::MenuItem("Keyboard", NULL, &AppManager().s_bKeyboardEnabled);
 				ShowHelperMarker("Enable or Disable Gamepad navigation through the Graphical Interfaces"); ImGui::SameLine();

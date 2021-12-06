@@ -1,32 +1,31 @@
 #include "Kross_pch.h"
-#include "Buffers.h"
+#include "GLBuffers.h"
 #include "GLErrors.h"
 
 namespace Kross::OpenGL::Buffer {
-	Vertex::Vertex(float* vertices, uint32_t size, bool dynamic)
+	Vertex::Vertex(const char* name, float* vertices, uint32_t size, bool dynamic)
 		: _size(size),
 		dynamic(dynamic)
 	{
 		KROSS_PROFILE_FUNC();
-		if (!vertices) { KROSS_CORE_WARN("Creating Vertex Buffer Object with nullptr data"); }
+		if (!vertices) { KROSS_CORE_INFO("Creating Vertex Buffer Object with nullptr data"); }
 		glCall(glGenBuffers(1, &m_RendererID));
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 		glCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+		SetName(name);
+		KROSS_CORE_INFO("'{0}' Constructed", GetName());
 	}
 	Vertex::~Vertex()
 	{
-		KROSS_PROFILE_FUNC();
 		glCall(glDeleteBuffers(1, &m_RendererID));
 	}
 	void Vertex::Bind() const
 	{
-		KROSS_PROFILE_FUNC();
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 	}
 	void Vertex::unBind() const
 	{
-		KROSS_PROFILE_FUNC();
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
 	void Vertex::upload(const void* data, size_t s) const
@@ -46,28 +45,27 @@ namespace Kross::OpenGL::Buffer {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	Index::Index(uint32_t* indices, uint32_t count)
+	Index::Index(const char* name, uint32_t* indices, uint32_t count)
 		: m_Count(count / sizeof(uint32_t))
 	{
 		KROSS_PROFILE_FUNC();
-		if (!indices) { KROSS_CORE_ERROR("Creating buffer with nullptr data"); }
+		if (!indices) { KROSS_CORE_INFO("Creating buffer with nullptr data"); }
 		glCall(glGenBuffers(1, &m_RendererID));
 		glCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
 		glCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count, indices, GL_STATIC_DRAW));
+		SetName(name);
+		KROSS_CORE_INFO("'{0}' Constructed", GetName());
 	}
 	Index::~Index()
 	{
-		KROSS_PROFILE_FUNC();
 		glCall(glDeleteBuffers(1, &m_RendererID));
 	}
 	void Index::Bind() const
 	{
-		KROSS_PROFILE_FUNC();
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 	}
 	void Index::unBind() const
 	{
-		KROSS_PROFILE_FUNC();
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
 

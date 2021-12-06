@@ -7,10 +7,11 @@ extern Kross::Application* Kross::CreateApp();
 #error Kross only supports Windows... for now
 #endif
 
-#if KROSS_MAIN == 1
 int main(int agrc, char** args)
 {
 	Kross::Logger::Init();
+	SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::critical, "Welcome to Kross Engine");
+	SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::info, "Logger Initialized");
 	Kross::Application* app;
 
 	KROSS_PROFILE_BEGIN("StartUp", "profiles/StartUp_Profile.json");
@@ -24,4 +25,3 @@ int main(int agrc, char** args)
 
 	KROSS_PROFILE_END;
 }
-#endif

@@ -9,10 +9,8 @@ namespace Kross {
 		bool m_bMessageBox = false;
 		bool m_bStyleEditor = false;
 		bool m_bFullscreen = true;
-		std::string m_strName;
 	public:
-		DockSpace(const std::string& name);
-		virtual ~DockSpace() override;
+		DockSpace(const char* name);
 		virtual void Show(double ts) override;
 	};
 }

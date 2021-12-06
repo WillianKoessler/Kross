@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "Editor\Main.vcxproj", "{4AF3887C-362A-8A0D-DF16-7010CB2C060F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Editor", "Editor\Editor.vcxproj", "{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dep", "Dep", "{A56CF67E-11D7-AAF5-5A15-5C9BC6BE884A}"
 EndProject
@@ -20,12 +20,12 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4AF3887C-362A-8A0D-DF16-7010CB2C060F}.Debug|x64.ActiveCfg = Debug|x64
-		{4AF3887C-362A-8A0D-DF16-7010CB2C060F}.Debug|x64.Build.0 = Debug|x64
-		{4AF3887C-362A-8A0D-DF16-7010CB2C060F}.Dist|x64.ActiveCfg = Dist|x64
-		{4AF3887C-362A-8A0D-DF16-7010CB2C060F}.Dist|x64.Build.0 = Dist|x64
-		{4AF3887C-362A-8A0D-DF16-7010CB2C060F}.Release|x64.ActiveCfg = Release|x64
-		{4AF3887C-362A-8A0D-DF16-7010CB2C060F}.Release|x64.Build.0 = Release|x64
+		{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}.Debug|x64.ActiveCfg = Debug|x64
+		{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}.Debug|x64.Build.0 = Debug|x64
+		{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}.Dist|x64.ActiveCfg = Dist|x64
+		{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}.Dist|x64.Build.0 = Dist|x64
+		{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}.Release|x64.ActiveCfg = Release|x64
+		{8C1A20B0-78BC-4A86-6177-5EDA4DB8D1D6}.Release|x64.Build.0 = Release|x64
 		{154B857C-0182-860D-AA6E-6C109684020F}.Debug|x64.ActiveCfg = Debug|x64
 		{154B857C-0182-860D-AA6E-6C109684020F}.Debug|x64.Build.0 = Debug|x64
 		{154B857C-0182-860D-AA6E-6C109684020F}.Dist|x64.ActiveCfg = Dist|x64

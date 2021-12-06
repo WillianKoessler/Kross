@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Kross/Core/Core.h"
 #include <chrono>
 
 namespace Kross {
