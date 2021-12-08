@@ -6,6 +6,6 @@ namespace Kross{
 	Layer::Layer(const char* name)
 	{
 		SetName(name);
-		KROSS_CORE_INFO("'{0}' Constructed", GetName());
+		KROSS_INFO("'{0}' Constructed", GetName());
 	}
 }

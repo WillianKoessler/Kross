@@ -38,8 +38,8 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		if (data) SetData(data, m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3));
-		else KROSS_CORE_WARN("Texture '{0}' NOT created. There were no data.", GetName());
-		KROSS_CORE_INFO("'{0}' Constructed", GetName());
+		else KROSS_WARN("Texture '{0}' NOT created. There were no data.", GetName());
+		KROSS_INFO("'{0}' Constructed", GetName());
 	}
 	T2D::T2D(const char *name, const char* path)
 		: m_strPath(path), m_unDataFormat(0), m_unInternalFormat(0), m_CurrentSlot(IncSlot())
@@ -68,7 +68,7 @@ namespace Kross::OpenGL::Texture {
 			m_unDataFormat = GL_RGBA;
 			m_unInternalFormat = GL_RGBA8;
 		} else
-			KROSS_CORE_WARN("Image format not suported!\nFILE: {0}", path);
+			KROSS_WARN("Image format not suported!\nFILE: {0}", path);
 
 		if (Context::GetVersion() < 4.5f)
 		{
@@ -95,7 +95,7 @@ namespace Kross::OpenGL::Texture {
 		}
 
 		//stbi_image_free(data);
-		KROSS_CORE_INFO("'{0}' Constructed", GetName());
+		KROSS_INFO("'{0}' Constructed", GetName());
 	}
 	void T2D::SetFilter(Filtering_Type filter)
 	{
@@ -107,7 +107,7 @@ namespace Kross::OpenGL::Texture {
 				case MAG_LINEAR: glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)); break;
 				case MIN_NEAREST: glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
 				case MAG_NEAREST: glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
-				default: KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter));
+				default: KROSS_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter));
 			}
 		} else {
 			switch (filter)
@@ -116,7 +116,7 @@ namespace Kross::OpenGL::Texture {
 				case MAG_LINEAR: glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR)); break;
 				case MIN_NEAREST: glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
 				case MAG_NEAREST: glCall(glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST)); break;
-				default: KROSS_CORE_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter));
+				default: KROSS_ERROR("Invalid Filtering Type. '{1}'", std::to_string(filter));
 			}
 		}
 	}
@@ -130,7 +130,7 @@ namespace Kross::OpenGL::Texture {
 		if (data)
 		{
 			if (size != m_unWidth * m_unHeight * (m_unDataFormat == GL_RGBA ? 4 : 3))
-				KROSS_CORE_WARN("Texture '{0}' Specified size does not match data size.", GetName());
+				KROSS_WARN("Texture '{0}' Specified size does not match data size.", GetName());
 			Bind();
 			glCall(glTexImage2D(GL_TEXTURE_2D, 0, m_unInternalFormat, m_unWidth, m_unHeight, 0, m_unDataFormat, GL_UNSIGNED_BYTE, (const void *)data));
 			raw_data.reset(data);

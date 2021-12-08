@@ -9,27 +9,27 @@ namespace Kross::Camera2D {
 	OrthographicCtrl::OrthographicCtrl(const char* name, float AR, bool rot)
 		: m_fAR(AR), m_bRotation(rot)
 	{
-		if (camera) KROSS_CORE_WARN("WARNING: Overriding previous camera");
+		if (camera) KROSS_WARN("WARNING: Overriding previous camera");
 		camera = makeRef<Camera::Orthographic>(-AR * m_fZoom, AR * m_fZoom, -m_fZoom, m_fZoom);
 		std::string str(name);
 		str += "_Controller";
 		m_strName = new char[str.size()];
 		memcpy((void *)m_strName, str.data(), str.size());
-		KROSS_CORE_INFO("Camera Controller Created");
+		KROSS_INFO("Camera Controller Created");
 	}
 
 	OrthographicCtrl::OrthographicCtrl(const char* name, Ref<Camera::Camera> cam, float AR, bool rot)
 		: m_fAR(AR), m_bRotation(rot)
 	{
-		if (camera) KROSS_CORE_WARN("WARNING: Overriding previous camera");
+		if (camera) KROSS_WARN("WARNING: Overriding previous camera");
 		camera = cam;
 		SetName(name);
-		KROSS_CORE_INFO("Camera Controller Created");
+		KROSS_INFO("Camera Controller Created");
 	}
 
 	void OrthographicCtrl::OnUpdate(double ts)
 	{
-		KROSS_CORE_ERROR("Not Implemented");
+		KROSS_ERROR("Not Implemented");
 		//KROSS_PROFILE_FUNC();
 		//glm::vec3& position = const_cast<glm::vec3&>(camera->GetPosition());
 		//float speed = fCameraMoveSpeed * (float)ts;

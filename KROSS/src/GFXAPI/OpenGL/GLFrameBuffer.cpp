@@ -17,7 +17,7 @@ namespace Kross::OpenGL {
 	FrameBuffer::~FrameBuffer()
 	{
 		if (!Delete())
-			KROSS_CORE_ERROR(
+			KROSS_ERROR(
 			"Destroying a invalid Framebuffer. '{0}' | IDs: m_RendererID = {1}, m_ColorAttachment = {2}, m_DepthAttachment = {3}",
 			GetName(), m_RendererID, m_ColorAttachment, m_DepthAttachment
 			);
@@ -45,7 +45,7 @@ namespace Kross::OpenGL {
 	{
 		if (m_Specification.Width == width && m_Specification.Height == height) return;
 		if (width == 0 || width > m_Specification.MAXWidth || height == 0 || height > m_Specification.MAXHeight) {
-			KROSS_CORE_WARN("Framebuffer set to be Invalid Value. [ width = {0}, height = {1}", width, height);
+			KROSS_WARN("Framebuffer set to be Invalid Value. [ width = {0}, height = {1}", width, height);
 			return;
 		}
 		m_Specification.Width = width;
@@ -81,16 +81,16 @@ namespace Kross::OpenGL {
 		glCall(framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER));
 		switch (framebufferStatus)
 		{
-			case GL_FRAMEBUFFER_UNDEFINED:						KROSS_CORE_ERROR("The specified framebuffer is the default read or draw framebuffer, but the default framebuffer does not exist. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:			KROSS_CORE_ERROR("Some of the framebuffer's attachment points are incomplete. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:	KROSS_CORE_ERROR("The framebuffer does not have at least one image attached to it. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:			KROSS_CORE_ERROR("The value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for any color attachment point(s) named by GL_DRAW_BUFFERi. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:			KROSS_CORE_ERROR("GL_READ_BUFFER is not GL_NONE and the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for the color attachment point named by GL_READ_BUFFER. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_UNSUPPORTED:					KROSS_CORE_ERROR("The combination of internal formats of the attached images violates an implementation - dependent set of restrictions. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:			KROSS_CORE_ERROR("The value of GL_RENDERBUFFER_SAMPLES is not the same for all attached renderbuffers; if the value of GL_TEXTURE_SAMPLES is the not same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_RENDERBUFFER_SAMPLES does not match the value of GL_TEXTURE_SAMPLES. Or the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:		KROSS_CORE_ERROR("One of the framebuffer's attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_COMPLETE:						KROSS_CORE_INFO("Framebuffer validated. [ width = {0}, height = {1} ]", m_Specification.Width, m_Specification.Height); break;
-			default:											KROSS_CORE_ERROR("Unknown Error. ID={0}", framebufferStatus); break;
+			case GL_FRAMEBUFFER_UNDEFINED:						KROSS_ERROR("The specified framebuffer is the default read or draw framebuffer, but the default framebuffer does not exist. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:			KROSS_ERROR("Some of the framebuffer's attachment points are incomplete. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:	KROSS_ERROR("The framebuffer does not have at least one image attached to it. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:			KROSS_ERROR("The value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for any color attachment point(s) named by GL_DRAW_BUFFERi. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:			KROSS_ERROR("GL_READ_BUFFER is not GL_NONE and the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for the color attachment point named by GL_READ_BUFFER. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_UNSUPPORTED:					KROSS_ERROR("The combination of internal formats of the attached images violates an implementation - dependent set of restrictions. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:			KROSS_ERROR("The value of GL_RENDERBUFFER_SAMPLES is not the same for all attached renderbuffers; if the value of GL_TEXTURE_SAMPLES is the not same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_RENDERBUFFER_SAMPLES does not match the value of GL_TEXTURE_SAMPLES. Or the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:		KROSS_ERROR("One of the framebuffer's attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
+			case GL_FRAMEBUFFER_COMPLETE:						KROSS_INFO("Framebuffer validated. [ width = {0}, height = {1} ]", m_Specification.Width, m_Specification.Height); break;
+			default:											KROSS_ERROR("Unknown Error. ID={0}", framebufferStatus); break;
 		}
 		if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) Delete();
 		glCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));

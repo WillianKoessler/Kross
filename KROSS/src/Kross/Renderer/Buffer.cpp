@@ -38,11 +38,11 @@ namespace Kross::Buffer {
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
+			case RendererAPI::API::None:		KROSS_WARN("Renderer API (None) is not supported"); return nullptr;
 			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Vertex>(name, vertices, size, dynamic);
 		}
 
-		KROSS_CORE_WARN("Renderer API (None) is not supported");
+		KROSS_WARN("Renderer API (None) is not supported");
 		return nullptr;
 	}
 
@@ -52,12 +52,13 @@ namespace Kross::Buffer {
 	{
 		switch (Renderer::GetAPI())
 		{
-			case RendererAPI::API::None:		KROSS_CORE_WARN("Renderer API (None) is not supported"); return nullptr;
+			case RendererAPI::API::None:		KROSS_WARN("Renderer API (None) is not supported"); return nullptr;
 			case RendererAPI::API::OpenGL:		return makeRef<OpenGL::Buffer::Index>(name, indices, size);
 		}
 
-		KROSS_CORE_WARN("Renderer API (None) is not supported");
+		KROSS_WARN("Renderer API (None) is not supported");
 		return nullptr;
 	}
+
 
 }

@@ -86,7 +86,7 @@ namespace Kross {
 	void Renderer2D::Init()
 	{
 		KROSS_PROFILE_FUNC();
-		if (s_bInitiated) { KROSS_CORE_WARN("Renderer2D is already initialized. Cannot call Renderer2D::Init(void) twice. Forget to call Renderer2D::Shutdown(void)?"); return; }
+		if (s_bInitiated) { KROSS_WARN("Renderer2D is already initialized. Cannot call Renderer2D::Init(void) twice. Forget to call Renderer2D::Shutdown(void)?"); return; }
 		s_bInitiated = true;
 
 		data = new R2DData;
@@ -150,7 +150,7 @@ namespace Kross {
 	void Renderer2D::Shutdown()
 	{
 		KROSS_PROFILE_FUNC();
-		if (!s_bInitiated) { KROSS_CORE_WARN("Renderer2D is not initialized. Cannot call Renderer2D::Shutdown(void) while Renderer2D::Init(void) is not called."); return; }
+		if (!s_bInitiated) { KROSS_WARN("Renderer2D is not initialized. Cannot call Renderer2D::Shutdown(void) while Renderer2D::Init(void) is not called."); return; }
 
 		delete data;
 	}
@@ -158,7 +158,7 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 		if (!s_bSceneBegan) s_bSceneBegan = true;
-		else KROSS_CORE_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
+		else KROSS_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
 		data->shader->Bind();
 		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
@@ -168,7 +168,7 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 		if (!s_bSceneBegan) s_bSceneBegan = true;
-		else KROSS_CORE_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
+		else KROSS_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
 		data->shader->Bind();
 		data->shader->SetMat4("u_ViewProjection", camera.camera.GetProjMat() * glm::inverse(transform.Transform));
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
@@ -176,10 +176,10 @@ namespace Kross {
 	}
 	void Renderer2D::Begin(Ref<Camera::Camera> &camera)
 	{
-		KROSS_CORE_ERROR("Not Implemented.");
+		KROSS_ERROR("Not Implemented.");
 		//KROSS_PROFILE_FUNC();
 		//if (!s_bSceneBegan) s_bSceneBegan = true;
-		//else KROSS_CORE_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
+		//else KROSS_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
 		//data->shader->Bind();
 		//data->shader->SetMat4("u_ViewProjection", camera->GetVPM());
 		//data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
@@ -187,7 +187,7 @@ namespace Kross {
 	}
 	void Renderer2D::BatchBegin()
 	{
-		if (s_bBatch) { KROSS_CORE_WARN("Batch already initiated."); return; }
+		if (s_bBatch) { KROSS_WARN("Batch already initiated."); return; }
 		data->quadIndex = 0;
 		s_bBatch = true;
 	}
@@ -203,14 +203,14 @@ namespace Kross {
 	}
 	void Renderer2D::BatchEnd()
 	{
-		if (!s_bBatch) { KROSS_CORE_WARN("Ending a non initiated batch"); return; }
+		if (!s_bBatch) { KROSS_WARN("Ending a non initiated batch"); return; }
 		data->vb->upload(data->myBuffer, sizeof(Quad) * data->quadIndex);
 		Flush();
 		s_bBatch = false;
 	}
 	void Renderer2D::End()
 	{
-		if (!s_bSceneBegan) { KROSS_CORE_WARN("Ending a non Initiated Scene. Did you forget to Begin the Scene?", __FUNCTION__); return; }
+		if (!s_bSceneBegan) { KROSS_WARN("Ending a non Initiated Scene. Did you forget to Begin the Scene?", __FUNCTION__); return; }
 		s_bSceneBegan = false;
 		BatchEnd();
 	}
@@ -220,7 +220,7 @@ namespace Kross {
 			data->shader->unBind();
 			data->shader = shader;
 			data->shader->Bind();
-		} else { KROSS_CORE_WARN("Shader provided is empty, or not supported."); return; }
+		} else { KROSS_WARN("Shader provided is empty, or not supported."); return; }
 	}
 	void Renderer2D::BatchQuad(const QuadParams &params)
 	{
@@ -253,7 +253,7 @@ namespace Kross {
 			tex = (float)data->texArray->Get(params.subTexture->GetTexture());
 			auto coords = params.subTexture->GetTexCoords();
 			for (int i = 0; i < 4; i++) texCoords[i] = coords[i];
-		} else if (params.texture && params.subTexture) { KROSS_CORE_ERROR("Texture AND subTexture was found. Please supply only one of each."); return; }
+		} else if (params.texture && params.subTexture) { KROSS_ERROR("Texture AND subTexture was found. Please supply only one of each."); return; }
 
 		if (params.rotation != glm::vec3(0.0f)) {
 			for (uint8_t i = 0; i < 4; i++)

@@ -23,7 +23,7 @@ namespace Kross::OpenGL::Texture {
 				glTex[i] = stack[i].get()->GetID() * stack[i].validate();
 			glCall(glBindTextures((GLuint)slot, (GLsizei)stack.size(), (GLuint *)glTex));
 		} else {
-			KROSS_CORE_ERROR("Not implemented.");
+			KROSS_ERROR("Not implemented.");
 		}
 	}
 	const int T2DArray::Get(const Ref<Kross::Texture::T2D>& texture)
@@ -32,27 +32,27 @@ namespace Kross::OpenGL::Texture {
 		{
 			auto i = location(texture->GetID());
 			if (i != stack.end() && texture->GetID() == i->get()->GetID()) return (int)(i - stack.begin());
-			KROSS_CORE_WARN("Texture '{0}' was not found.", texture->GetName());
+			KROSS_WARN("Texture '{0}' was not found.", texture->GetName());
 			Add(texture);
 			return Get(texture);
 		}
-		KROSS_CORE_WARN("Texture is empty.");
+		KROSS_WARN("Texture is empty.");
 		return -1;
 	}
 	void T2DArray::Add(const Ref<Kross::Texture::T2D> texture)
 	{
-		if (stack.size() >= _size) { KROSS_CORE_WARN("Texture Array reached maximum capacity. Ignoring new textures."); return; }
+		if (stack.size() >= _size) { KROSS_WARN("Texture Array reached maximum capacity. Ignoring new textures."); return; }
 		if (texture)
 		{
 			auto i = location(texture->GetID());
 			if (i != stack.end() && texture->GetID() == i->get()->GetID())
-			{ KROSS_CORE_WARN("Texture '{0}' is already in the Array.", texture->GetName()); return; }
+			{ KROSS_WARN("Texture '{0}' is already in the Array.", texture->GetName()); return; }
 
 			stack.emplace(i, texture);
-			KROSS_CORE_TRACE("Texture '{0}' added to Array", texture->GetName());
+			KROSS_TRACE("Texture '{0}' added to Array", texture->GetName());
 		}
 		else
-			KROSS_CORE_WARN("Adding a texture which was not yet created.");
+			KROSS_WARN("Adding a texture which was not yet created.");
 	}
 	void T2DArray::Del(const Ref<Kross::Texture::T2D> texture)
 	{
@@ -62,20 +62,20 @@ namespace Kross::OpenGL::Texture {
 			if (i != stack.end() && i->get()->GetID() == texture->GetID())
 				stack.erase(i);
 			else
-				KROSS_CORE_WARN("'{0}' Trying to delete texture that was not in Array.", texture->GetName());
+				KROSS_WARN("'{0}' Trying to delete texture that was not in Array.", texture->GetName());
 		}
 		else
-			KROSS_CORE_WARN("Trying to delete with a nullptr texture.");
+			KROSS_WARN("Trying to delete with a nullptr texture.");
 	}
 	void T2DArray::Del(const size_t index)
 	{
 		if (index < stack.size())
 		{
-			KROSS_CORE_TRACE("'{0}' texture deleted.", (stack.begin() + index)->get()->GetName());
+			KROSS_TRACE("'{0}' texture deleted.", (stack.begin() + index)->get()->GetName());
 			stack.erase(stack.begin() + index);
 		}
 		else
-			KROSS_CORE_WARN("Specified index is out of range.");
+			KROSS_WARN("Specified index is out of range.");
 	}
 	const size_t T2DArray::size() const
 	{
@@ -103,9 +103,9 @@ namespace Kross::OpenGL::Texture {
 	}
 	void T2DArray::DebugLog() const
 	{
-		KROSS_CORE_WARN("**********DEBUG LOG**********");
+		KROSS_WARN("**********DEBUG LOG**********");
 		for (Entry e : stack)
-			KROSS_CORE_TRACE("{0}", e->GetName());
-		KROSS_CORE_WARN("----------DEBUG LOG----------");
+			KROSS_TRACE("{0}", e->GetName());
+		KROSS_WARN("----------DEBUG LOG----------");
 	}
 }

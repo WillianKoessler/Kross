@@ -30,7 +30,7 @@ namespace Kross::OpenGL {
 		glCall(glGenVertexArrays(1, &m_RendererID));
 		Bind();
 		SetName(name);
-		KROSS_CORE_INFO("'{0}' Constructed", GetName());
+		KROSS_INFO("'{0}' Constructed", GetName());
 	}
 
 	VertexArray::~VertexArray()
@@ -54,14 +54,14 @@ namespace Kross::OpenGL {
 	void VertexArray::AddVoxel(const Ref<Kross::Buffer::Vertex>& voxel)
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_WARN("CALLING UNFINISHED CODE. BUGS MAY HAPPEN");
+		KROSS_WARN("CALLING UNFINISHED CODE. BUGS MAY HAPPEN");
 
 		this->Bind();
 		voxel->Bind();
 
 		if (voxel->GetLayout().GetElements().size() == 0)
 		{
-			KROSS_CORE_WARN("Voxel Buffer has no layout. Aborting.");
+			KROSS_WARN("Voxel Buffer has no layout. Aborting.");
 			return;
 		}
 
@@ -72,7 +72,7 @@ namespace Kross::OpenGL {
 		glCall(glVertexAttribIPointer(0, 2, GL_UNSIGNED_INT, 8, nullptr));
 
 		m_vecVertex.push_back(voxel);
-		KROSS_CORE_TRACE("Voxel Buffer Added");
+		KROSS_TRACE("Voxel Buffer Added");
 		//if ((layout.begin()->Type == Buffer::ShaderDataType::Int) ||
 		//	(layout.begin()->Type == Buffer::ShaderDataType::Int2) ||
 		//	(layout.begin()->Type == Buffer::ShaderDataType::Int3) ||
@@ -102,7 +102,7 @@ namespace Kross::OpenGL {
 		vertex->Bind();
 
 		if (vertex->GetLayout().GetElements().size() == 0)
-			KROSS_CORE_WARN("Vertex Buffer has no layout");
+			KROSS_WARN("Vertex Buffer has no layout");
 
 		uint32_t index = 0;
 		Buffer::Layout layout = vertex->GetLayout();
@@ -142,7 +142,7 @@ namespace Kross::OpenGL {
 		}
 
 		m_vecVertex.push_back(vertex);
-		KROSS_CORE_TRACE("Vertex Buffer Added");
+		KROSS_TRACE("Vertex Buffer Added");
 	}
 
 	void VertexArray::SetIndex(const Ref<Kross::Buffer::Index>& index)
@@ -151,7 +151,7 @@ namespace Kross::OpenGL {
 		this->Bind();
 		index->Bind();
 		m_Index = index;
-		KROSS_CORE_TRACE("Index Buffer Setted");
+		KROSS_TRACE("Index Buffer Setted");
 	}
 
 

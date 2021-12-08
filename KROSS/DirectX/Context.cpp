@@ -15,12 +15,12 @@ namespace Kross::DirectX {
 		{
 			KROSS_MSGBOX("Window pointer is NULL!", "[Kross::DirectX::Context]", _FATAL_);
 		}
-		KROSS_CORE_INFO("[Kross::DirectX::Context] DirectX Context Created(?)");
+		KROSS_INFO("[Kross::DirectX::Context] DirectX Context Created(?)");
 	}
 
 	Context::~Context()
 	{
-		KROSS_CORE_INFO("[Kross::DirectX::Context] DirectX Context Destructed(?)");
+		KROSS_INFO("[Kross::DirectX::Context] DirectX Context Destructed(?)");
 	}
 	
 	void Context::Init()

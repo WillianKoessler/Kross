@@ -20,6 +20,7 @@ namespace Kross {
 		};
 		struct AppSettings
 		{
+			bool s_bEditorCamera = true;
 			bool s_bKeyboardEnabled = false;
 			bool s_bGamepadEnabled = false;
 			bool s_bViewportEnabled = false;
@@ -41,7 +42,7 @@ namespace Kross {
 		void MessageBoxDialog(MessageBoxSpecs& specs);
 		virtual void Menu() {}
 
-		MessageBoxSpecs m_PopUpSpecs;
+		MessageBoxSpecs PopUpMessage;
 		uint32_t m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_Popup;
 
 	public:

@@ -31,10 +31,10 @@ namespace Kross::Camera {
 	}
 	std::pair<float, float> Editor::PanSpeed() const
 	{
-		float x = std::min(m_ViewportWidth / 1000.0f, 2.4f); // max = 2.4f
+		float x = std::min(m_ViewportWidth / 1000.0f, glm::pi<float>()); // max = 3.14159265358979323846264338327950288f
 		float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
 
-		float y = std::min(m_ViewportHeight / 1000.0f, 2.4f); // max = 2.4f
+		float y = std::min(m_ViewportHeight / 1000.0f, glm::pi<float>()); // max = 3.14159265358979323846264338327950288f
 		float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
 
 		return { xFactor, yFactor };
@@ -94,7 +94,7 @@ namespace Kross::Camera {
 	void Editor::MouseZoom(float delta)
 	{
 		m_Distance -= delta * ZoomSpeed();
-		m_Distance = std::max(m_Distance, glm::pi<float>()*0.1f); // Maximum zoom = 0.314159265358979323846264338327950288
+		m_Distance = std::max(m_Distance, glm::pi<float>()*0.1f); // Maximum zoom = 0.314159265358979323846264338327950288f
 	}
 	glm::vec3 Editor::GetUpDir() const { return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f)); }
 	glm::vec3 Editor::GetRightDir() const { return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f)); }

@@ -115,7 +115,7 @@
 
 #ifdef KROSS_ENABLE_ASSERTS
 	#define KROSS_ASSERT(x, ...) { if(!(x)) { KROSS_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-	#define KROSS_CORE_ASSERT(x, ...) { if(!(x)) { KROSS_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+	#define KROSS_CORE_ASSERT(x, ...) { if(!(x)) { KROSS_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
 	#define KROSS_ASSERT(x, ...)
 	#define KROSS_CORE_ASSERT(x, ...)

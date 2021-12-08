@@ -10,22 +10,25 @@ namespace Kross {
 	Scene::Scene()
 	{
 		m_Registry = entt::registry();
-		KROSS_CORE_INFO("Scene Constructed");
+		KROSS_INFO("Scene Constructed");
 	}
 	Scene::~Scene()
 	{
 		m_Registry.view<NativeScriptComponent>().each(
 			[](auto entity, auto &cmp) { if (cmp.m_Instance) { cmp.m_Instance->OnDestroy(); cmp.Destroy(&cmp); }}
 		);
-		KROSS_CORE_INFO("Scene Destructed");
+		KROSS_INFO("Scene Destructed");
 	}
 
 	Entity Scene::CreateEntity(const char* name)
 	{
+		static std::vector<std::string> usedNames;
+		for (auto& stored : usedNames) { std::string now(name); if (stored == now) { KROSS_WARN("Entity Tagname is already in use."); return Entity(); } }
 		Entity entity{ (uint32_t)m_Registry.create(), this};
 		entity.AddComponent<TransformComponent>();
 		entity.AddComponent<TagComponent>(name);
-		KROSS_CORE_TRACE("Entity '{0}' Created", name);
+		KROSS_TRACE("Entity '{0}' Created", name);
+		usedNames.push_back(std::string(name));
 		return entity;
 	}
 
@@ -37,11 +40,26 @@ namespace Kross {
 			auto& [Tag] = view.get(e);
 			if (strcmp(Tag.tag, name) == 0) pool.push_back(e);
 		}
-		if (pool.size() > 1) { KROSS_CORE_ERROR("More than one entity shares the same Tagname"); return Entity(); }
-		if (pool.empty()) { KROSS_CORE_ERROR("There is no entity with that Tagname"); return Entity(); }
-		return Entity((uint32_t)pool[0], this);
+		if (pool.size() > 1) { KROSS_ERROR("More than one entity shares the same Tagname"); return Entity(); }
+		if (pool.empty()) { KROSS_ERROR("There is no entity with that Tagname"); return Entity(); }
+		return Entity((uint32_t)pool.front(), this);
 	}
-
+#ifdef KROSS_DLL
+	Scene::Entities Scene::GetAllEntities()
+	{
+		static std::vector<Entity> pool;
+		pool = std::vector<Entity>();
+		m_Registry.each([&](auto &id) { pool.emplace_back((uint32_t)id, this); });
+		return Entities{(uintptr_t)pool.data(), pool.size(), sizeof(Entity)};
+	}
+#else
+	std::vector<Entity> Scene::GetAllEntities()
+	{
+		std::vector<Entity> pool;
+		m_Registry.each([&](auto &id) {pool.emplace_back((uint32_t)id, this); });
+		return pool;
+	}
+#endif
 	void Scene::OnUpdateEditor(double ts, const Camera::Editor &camera)
 	{
 		Renderer2D::Begin(camera);
@@ -50,7 +68,7 @@ namespace Kross {
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
 			for (auto entity : group)
 			{
-				auto &[tranform, sprite] = group.get(entity);
+				auto [tranform, sprite] = group.get(entity);
 				Renderer2D::BatchQuad(tranform, sprite.tint);
 			}
 		}
@@ -70,13 +88,20 @@ namespace Kross {
 
 		if (primaryCamera != entt::null) {
 			Entity camera((uint32_t)primaryCamera, this);
-			Renderer2D::Begin(camera.GetComponent<CameraComponent>(), camera.GetComponent<TransformComponent>());
+			auto camC = camera.GetComponent<CameraComponent>();
+			auto tranC = camera.GetComponent<TransformComponent>();
+			if (!camC) KROSS_WARN("Primary Camera does not have CameraComponent");
+			if (!tranC) KROSS_WARN("Primary Camera does not have TransformComponent");
+			if (!camC || !tranC) return;
+
+			Renderer2D::Begin(*camC, *tranC);
 			{
 				// Render Sprites
 				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
+
 				for (auto entity : group)
 				{
-					auto &[tranform, sprite] = group.get(entity);
+					auto [tranform, sprite] = group.get(entity);
 					Renderer2D::BatchQuad(tranform, sprite.tint);
 				}
 			}
@@ -94,10 +119,11 @@ namespace Kross {
 
 	void Scene::SetPrimaryCamera(Entity entity)
 	{
-		if (entity.p_Scene != this) { KROSS_CORE_WARN("Trying to set a Primary Camera with entity from another Scene."); return; }
-		if (!entity.HasComponent<CameraComponent>()) { KROSS_CORE_WARN("Entity does not have a Camera Component to be setted as Scene's Primary Camera."); return; }
-		if (primaryCamera != entt::null) KROSS_CORE_WARN("Overriding previous Camera.");
+		if (entity.p_Scene != this) { KROSS_WARN("Trying to set a Primary Camera with entity from another Scene."); return; }
+		if (!entity.HasComponent<CameraComponent>()) { KROSS_WARN("Entity does not have a Camera Component to be setted as Scene's Primary Camera."); return; }
+		//if (entity.GetComponent<CameraComponent>().camera) { KROSS_WARN("Entity does not have a valid camera inside Camera Component to be setted as Scene's Primary Camera."); return; }
+		if (primaryCamera != entt::null) KROSS_WARN("Overriding previous Camera.");
 		if (m_Registry.view<CameraComponent>().contains(entity.m_ID)) primaryCamera = entity.m_ID;
-		KROSS_CORE_TRACE("Scene Primary Camera has been set.");
+		KROSS_TRACE("Scene Primary Camera has been set.");
 	}
 }

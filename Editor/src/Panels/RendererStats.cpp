@@ -1,14 +1,15 @@
 #include "RendererStats.h"
 
 namespace Kross {
-	RendererStats::RendererStats(const char* name)
+	RendererStats::RendererStats()
 		: frames(new float[plotsize])
 	{
-		SetName(name);
-		KROSS_INFO("RendererStats Panel '{0}' Constructed", name);
+		m_strName = "Renderer Status";
+		KROSS_INFO("RendererStats Panel Constructed");
 	}
 	RendererStats::~RendererStats()
 	{
+
 		delete[] frames;
 	}
 	void RendererStats::Show(double ts)
@@ -35,7 +36,7 @@ namespace Kross {
 		if (frame_count++ % rate_tick == 0) { FrameRate = framerate_buffer / rate_tick; framerate_buffer = 0; }
 
 
-		std::string title = GetName();
+		std::string title(m_strName);
 		char buf[64];
 		if(plot_type == 0) sprintf_s(buf, " | FPS: %.1f###StatusTitle", FrameRate);
 		else if(plot_type == 1) sprintf_s(buf, " | Elapsed: %.4lf###StatusTitle", ts);

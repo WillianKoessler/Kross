@@ -19,12 +19,12 @@ namespace Kross {
 		RenderCommand::Init();
 		switch (s_uDims) {
 		case Renderer::TWO_D: Renderer2D::Init(); break;
-		case Renderer::THREE_D: KROSS_CORE_ERROR("3D is not supported yet."); break;
+		case Renderer::THREE_D: KROSS_ERROR("3D is not supported yet."); break;
 		case Renderer::VOXEL:	VoxelRenderer::Init(); break;
-		default: { KROSS_CORE_ERROR("Renderer::Dimentions not supported"); return; }
+		default: { KROSS_ERROR("Renderer::Dimentions not supported"); return; }
 		}
 
-		KROSS_CORE_TRACE("Renderer Initiated");
+		KROSS_TRACE("Renderer Initiated");
 	}
 
 	void Renderer::Shutdown()
@@ -35,11 +35,11 @@ namespace Kross {
 
 		switch (s_uDims) {
 		case Renderer::TWO_D: Renderer2D::Shutdown(); break;
-		case Renderer::THREE_D: KROSS_CORE_ERROR("3D is not supported yet."); break;
+		case Renderer::THREE_D: KROSS_ERROR("3D is not supported yet."); break;
 		case Renderer::VOXEL:	VoxelRenderer::Shutdown(); break;
-		default: { KROSS_CORE_ERROR("Renderer::Dimentions not supported"); return; }
+		default: { KROSS_ERROR("Renderer::Dimentions not supported"); return; }
 		}
-		KROSS_CORE_TRACE("Renderer Finished");
+		KROSS_TRACE("Renderer Finished");
 	}
 
 	//void Renderer::Scene::Begin(Camera::Camera& camera)
@@ -91,7 +91,7 @@ namespace Kross {
 
 	//void Renderer::ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	//{
-	//	if (exist(name)) { KROSS_CORE_WARN("Shader '{1}' already in library. ", name); }
+	//	if (exist(name)) { KROSS_WARN("Shader '{1}' already in library. ", name); }
 	//	shaders[name] = shader;
 	//}
 
@@ -117,7 +117,7 @@ namespace Kross {
 
 	//Ref<Shader> Renderer::ShaderLibrary::Get(const std::string& name)
 	//{
-	//	if (!exist(name)) { KROSS_CORE_WARN("Shader '{1}' NOT FOUND in library. ", name); }
+	//	if (!exist(name)) { KROSS_WARN("Shader '{1}' NOT FOUND in library. ", name); }
 	//	return shaders[name];
 	//}
 }

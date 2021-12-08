@@ -30,7 +30,7 @@ namespace Kross {
 		fTime = float(end - start) * 0.001f;
 		bStoped = true;
 
-		//KROSS_CORE_TRACE("[Timer: {1}] Duration: {0}ms", fTime, cName);
+		//KROSS_TRACE("[Timer: {1}] Duration: {0}ms", fTime, cName);
 		if (rtp)
 			RTP_add({ cName, fTime });
 		//else
@@ -46,7 +46,7 @@ namespace Kross {
 		}
 		if (!RTP_cleared)
 		{
-			KROSS_CORE_WARN("[Kross::Timer] Reading from a not cleared Profiling Buffer.\nTry use Kross::Timer::read_c instead.");
+			KROSS_WARN("[Kross::Timer] Reading from a not cleared Profiling Buffer.\nTry use Kross::Timer::read_c instead.");
 		}
 	}
 
@@ -68,7 +68,7 @@ namespace Kross {
 
 	void Timer::RTP_add(const step& step)
 	{
-		//KROSS_CORE_TRACE("RunTime Profiler: add {0}", step.cName);
+		//KROSS_TRACE("RunTime Profiler: add {0}", step.cName);
 		RTP.emplace_back(step);
 	}
 
@@ -77,7 +77,7 @@ namespace Kross {
 		for (auto& t : RTP)
 			if (name == t.cName)
 				return t.fTime;
-		KROSS_CORE_WARN("Runtime Profiler: element '{0}' not found.", name);
+		KROSS_WARN("Runtime Profiler: element '{0}' not found.", name);
 		return -1;
 	}
 

@@ -140,9 +140,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Kross\Scene\EmptyComponent.h" />
-    <ClInclude Include="src\Kross\Scene\ScriptableEntity.h" />
-    <ClInclude Include="src\Kross\Renderer\Cameras\EditorCamera.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLBuffers.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLContext.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h" />
@@ -179,7 +176,7 @@
     <ClInclude Include="src\Kross\Renderer\Cameras\Controller.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.h" />
-    <ClInclude Include="src\Kross\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\EditorCamera.h" />
     <ClInclude Include="src\Kross\Renderer\Context.h" />
     <ClInclude Include="src\Kross\Renderer\FrameBuffer.h" />
     <ClInclude Include="src\Kross\Renderer\Mesh\Mesh.h" />
@@ -195,8 +192,11 @@
     <ClInclude Include="src\Kross\Renderer\VertexArray.h" />
     <ClInclude Include="src\Kross\Renderer\VoxelRenderer.h" />
     <ClInclude Include="src\Kross\Scene\Components.h" />
+    <ClInclude Include="src\Kross\Scene\EmptyComponent.h" />
     <ClInclude Include="src\Kross\Scene\Entity.h" />
     <ClInclude Include="src\Kross\Scene\Scene.h" />
+    <ClInclude Include="src\Kross\Scene\SceneCamera.h" />
+    <ClInclude Include="src\Kross\Scene\ScriptableEntity.h" />
     <ClInclude Include="src\Kross\Util\Constants.h" />
     <ClInclude Include="src\Kross\Util\NonCopyable.h" />
     <ClInclude Include="src\Kross\Util\NonMovable.h" />
@@ -576,7 +576,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Kross\Renderer\Cameras\EditorCamera.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLBuffers.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLContext.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp" />
@@ -599,6 +598,7 @@
     <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Perspective.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.cpp" />
+    <ClCompile Include="src\Kross\Renderer\Cameras\EditorCamera.cpp" />
     <ClCompile Include="src\Kross\Renderer\Context.cpp" />
     <ClCompile Include="src\Kross\Renderer\FrameBuffer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Mesh\Mesh.cpp" />

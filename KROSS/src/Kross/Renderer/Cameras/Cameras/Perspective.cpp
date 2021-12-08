@@ -12,7 +12,7 @@ namespace Kross::Camera {
 		m_Target(glm::vec3(0.0f))
 	{
 		m_ProjMat = glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 2000.0f);
-		KROSS_CORE_INFO("Perspective Camera Constructed");
+		KROSS_INFO("Perspective Camera Constructed");
 	}
 	bool Perspective::isLookingAt() const { return m_bLookingAt; }
 	void Perspective::LockAt(const glm::vec3& target) { m_bLookingAt = true; m_Target = target; }

@@ -14,7 +14,7 @@ namespace Kross {
 		int rate_tick = 10;
 		float* frames;
     public:
-        RendererStats(const char* name);
+        RendererStats();
         ~RendererStats();
 
         virtual void Show(double ts) override;

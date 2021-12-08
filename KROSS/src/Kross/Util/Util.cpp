@@ -28,7 +28,7 @@ const char* Kross::ReadFile(const char* filepath)
 	static std::vector<std::string> entries;
 	std::ifstream inFile(filepath);
 	if (!inFile.is_open())
-		KROSS_CORE_ERROR("Unable to Open file: {0}", filepath);
+		KROSS_ERROR("Unable to Open file: {0}", filepath);
 	std::stringstream stream;
 	stream << inFile.rdbuf();
 	inFile.close();

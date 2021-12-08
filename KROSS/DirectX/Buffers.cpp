@@ -9,7 +9,7 @@ namespace Kross::DirectX::Buffer {
 		KROSS_PROFILE_FUNC();
 		if (!vertices)
 		{
-			KROSS_CORE_ERROR("[Kross::DirectX::Buffer::Vertex] Creating buffer with nullptr data");
+			KROSS_ERROR("[Kross::DirectX::Buffer::Vertex] Creating buffer with nullptr data");
 		}
 	}
 
@@ -43,7 +43,7 @@ namespace Kross::DirectX::Buffer {
 		KROSS_PROFILE_FUNC();
 		if (!indices)
 		{
-			KROSS_CORE_ERROR("[Kross::DirectX::Buffer::Index] Creating buffer with nullptr data");
+			KROSS_ERROR("[Kross::DirectX::Buffer::Index] Creating buffer with nullptr data");
 		}
 	}
 

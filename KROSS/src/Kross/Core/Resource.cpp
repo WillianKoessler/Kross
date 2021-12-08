@@ -12,7 +12,7 @@ namespace Kross {
 	}
 	Resource::~Resource()
 	{
-		KROSS_CORE_INFO("'{0}' Destroyed", GetName());
+		KROSS_INFO("'{0}' Destroyed", GetName());
 	}
 }
 #undef _CRT_SECURE_NO_WARNINGS

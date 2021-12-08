@@ -35,7 +35,7 @@ namespace Shaders
 	//		Compile(DX_PIXEL_SHADER, pixelShader);
 	//		KROSS_CORE_INFO("Shader '{1}' Created Successfully", area, m_strName);
 	//	}
-	//	//KROSS_CORE_TRACE("Shader '{0}', ID {1}", m_strName, m_RendererID);
+	//	//KROSS_TRACE("Shader '{0}', ID {1}", m_strName, m_RendererID);
 	//}
 	//
 	//Shader::Shader(const std::string& filepath)
@@ -69,7 +69,7 @@ namespace Shaders
 	//	sources[DX_FRAGMENT_SHADER] = PreProcess(ReadFile(fragmentSource));
 	//	Compile(sources);
 	//	KROSS_CORE_INFO("Shader '{1}' Created Successfully", area, m_strName);
-	//	//KROSS_CORE_TRACE("Shader '{0}', ID {1}", m_strName, m_RendererID);
+	//	//KROSS_TRACE("Shader '{0}', ID {1}", m_strName, m_RendererID);
 	//}
 	//
 	//Shader::~Shader()
@@ -182,7 +182,7 @@ namespace Kross::DirectX {
 	void Shader::Compile(unsigned int type, const BYTE* source)
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_TRACE("Compiling Shader '{1}'...", m_strName);
+		KROSS_TRACE("Compiling Shader '{1}'...", m_strName);
 		HRESULT hr;
 		switch (type)
 		{

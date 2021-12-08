@@ -5,9 +5,11 @@
 namespace Kross {
 	class EntityInspector : public Panel
 	{
-		Ref<Scene> p_Scene;
+		Ref<Scene> m_Context;
 	public:
-		EntityInspector(const char *name, Ref<Scene> scene);
+		EntityInspector(const Ref<Scene>& scene);
 		virtual void Show(double ts) override;
+	private:
+		void DrawEntityNode(Entity &entity);
 	};
 }

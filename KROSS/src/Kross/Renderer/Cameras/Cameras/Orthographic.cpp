@@ -8,7 +8,7 @@ namespace Kross::Camera {
 	{
 		m_ProjMat = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 		APIorder();
-		KROSS_CORE_INFO("Orthographic Camera Constructed");
+		KROSS_INFO("Orthographic Camera Constructed");
 	}
 	bool Orthographic::isLookingAt() const { return false; }
 	void Orthographic::LockAt(const glm::vec3& target) {}

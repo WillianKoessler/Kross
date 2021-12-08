@@ -2,13 +2,13 @@
 
 #include "Panels/DockSpace.h"
 #include "Panels/RendererStats.h"
-#include "Panels/Viewport.h"
+#include "Panels/EntityInspector.h"
 #include <glm/gtc/type_ptr.hpp>
-#include "../assets/scripts/native/SceneCameraController.h"
+#include "SceneCameraController.h"
 
 namespace Kross {
 	EditorLayer::EditorLayer()
-		: Layer("EditorLayer"), m_ViewportSize(0.0f, 0.0f)
+		: Layer("EditorLayer"), m_ViewportSize(0.0f, 0.0f), m_Scene(makeRef<Scene>())
 		//m_Camera(makeRef<Camera3D::FirstPerson>("main_Camera", ((float)Application::Get().GetWindow().GetWidth()) / ((float)Application::Get().GetWindow().GetHeight()), 90.0f))
 	{
 	}
@@ -27,19 +27,18 @@ namespace Kross {
 
 		Panel::AppManager().s_bKeyboardEnabled = true;
 
-		m_pPanels.push_back(new DockSpace("Kross"));
-		m_pPanels.push_back(new RendererStats("Renderer Status"));
-
-		
-		m_Scene = makeRef<Scene>();
+		m_pPanels.push_back(new DockSpace());
+		m_pPanels.push_back(new RendererStats());
+		m_pPanels.push_back(new EntityInspector(m_Scene));
 
 		Entity sceneCamera = m_Scene->CreateEntity("SceneCamera");
-		//SceneCamera cmpt;
-		//cmpt.SetOrtho(10.0f, -1.0f, 1.0f);
-		//cmpt.SetViewportSize({ m_Frame->GetSpecs().Width, m_Frame->GetSpecs().Height });
+		KROSS_TRACE("");
+		SceneCamera cmpt;
+		cmpt.SetOrtho(10.0f, -1.0f, 1.0f);
+		cmpt.SetViewportSize({ m_Frame->GetSpecs().Width, m_Frame->GetSpecs().Height });
 		sceneCamera.AddComponent<CameraComponent>();
 
-		sceneCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+		sceneCamera.AddComponent<NativeScriptComponent>()->Bind<CameraController>();
 		m_Scene->SetPrimaryCamera(sceneCamera);
 
 
@@ -117,8 +116,10 @@ namespace Kross {
 			//}
 		}
 
-		//m_Scene->OnUpdateEditor(ts, m_Camera);
-		m_Scene->OnUpdateRuntime(ts);
+		if(Panel::AppManager().s_bEditorCamera)
+			m_Scene->OnUpdateEditor(ts, m_Camera);
+		else
+			m_Scene->OnUpdateRuntime(ts);
 
 		m_Frame->unBind();
 	}
@@ -130,40 +131,42 @@ namespace Kross {
 		Panel::setFlag(ImGuiConfigFlags_NavEnableKeyboard, Panel::AppManager().s_bKeyboardEnabled);
 		Panel::setFlag(ImGuiConfigFlags_NavEnableGamepad, Panel::AppManager().s_bGamepadEnabled);
 
-		if (!Panel::Manager().s_bViewport) return;
 
-		static bool m_bBackFaceCull = false;
-		static auto m_Flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar;
 
-		RenderCommand::BackCull(m_bBackFaceCull);
 
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		ImGui::Begin(GetName(), &Panel::Manager().s_bViewport, m_Flags);
+		if (Panel::Manager().s_bViewport) {
+			static bool m_bBackFaceCull = false;
+			static auto m_Flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar;
 
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("Settings")) {
-				ImGui::MenuItem("BackFaceCulling", NULL, &m_bBackFaceCull);
-				ImGui::EndMenu();
+			RenderCommand::BackCull(m_bBackFaceCull);
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			ImGui::Begin(GetName(), &Panel::Manager().s_bViewport, m_Flags);
+
+			if (ImGui::BeginMenuBar())
+			{
+				if (ImGui::BeginMenu("Settings")) {
+					ImGui::MenuItem("BackFaceCulling", NULL, &m_bBackFaceCull);
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenuBar();
 			}
-			ImGui::EndMenuBar();
+
+			ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+			if (m_ViewportSize != *(glm::vec2 *)&viewportPanelSize && viewportPanelSize.x > 0.0f && viewportPanelSize.y > 0.0f)
+			{
+				m_ViewportSize = *(glm::vec2 *)&viewportPanelSize;
+				m_Camera.SetViewportSize(m_ViewportSize);
+				m_Frame->Resize(m_ViewportSize);
+				m_Scene->GetEntity("SceneCamera").GetComponent<CameraComponent>()->camera.SetViewportSize(m_ViewportSize);
+			}
+
+			ImGui::Image((void *)(uintptr_t)m_Frame->GetColorAttachmentID(), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));
+			ImGui::PopStyleVar(3);
+			ImGui::End();
 		}
-
-		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		if (m_ViewportSize != *(glm::vec2 *)&viewportPanelSize && viewportPanelSize.x > 0.0f && viewportPanelSize.y > 0.0f)
-		{
-			m_ViewportSize = *(glm::vec2*)&viewportPanelSize;
-			m_Camera.SetViewportSize(m_ViewportSize);
-			m_Frame->Resize(m_ViewportSize);
-			m_Scene->GetEntity("SceneCamera").GetComponent<CameraComponent>().camera.SetViewportSize(m_ViewportSize);
-		}
-
-		ImGui::Image( (void *)(uintptr_t)m_Frame->GetColorAttachmentID(), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::PopStyleVar(3);
-		ImGui::End();
-
 	}
 
 	void EditorLayer::OnEvent(Event &e)

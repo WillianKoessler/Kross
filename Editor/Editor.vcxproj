@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;assets\scripts\native;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -95,7 +95,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;assets\scripts\native;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -115,7 +115,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;assets\scripts\native;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -131,21 +131,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="assets\scripts\native\SceneCameraController.h" />
-    <ClInclude Include="src\Panels\EntityInspector.h" />
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Panels\DockSpace.h" />
+    <ClInclude Include="src\Panels\EntityInspector.h" />
     <ClInclude Include="src\Panels\Panel.h" />
     <ClInclude Include="src\Panels\RendererStats.h" />
-    <ClInclude Include="src\Panels\Viewport.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Panels\EntityInspector.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\Panels\DockSpace.cpp" />
+    <ClCompile Include="src\Panels\EntityInspector.cpp" />
     <ClCompile Include="src\Panels\Panel.cpp" />
     <ClCompile Include="src\Panels\RendererStats.cpp" />
-    <ClCompile Include="src\Panels\Viewport.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

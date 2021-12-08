@@ -14,6 +14,18 @@ namespace Kross {
 
 		Entity CreateEntity(const char *Tag);
 		Entity GetEntity(const char *Tag);
+
+#ifdef KROSS_DLL
+		struct Entities
+		{
+			uintptr_t data;
+			uint64_t size;
+			uint32_t step;
+		};
+		Entities GetAllEntities();
+#else
+		std::vector<Entity> GetAllEntities();
+#endif
 		void SetPrimaryCamera(Entity entity);
 
 		void OnUpdateEditor(double ts, const Camera::Editor& camera);
@@ -25,5 +37,6 @@ namespace Kross {
 		glm::uvec2 m_ViewportSize;
 
 		friend class Entity;
+		friend class EntityInspector;
 	};
 }

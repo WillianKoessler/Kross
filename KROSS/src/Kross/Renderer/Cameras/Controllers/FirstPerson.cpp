@@ -13,7 +13,7 @@ namespace Kross::Camera3D {
 	FirstPerson::FirstPerson(const char* cname, float aspectRatio, float fov)
 		: m_fFOV(fov), mouseRotation(glm::vec3(0.0f, 0.0f, 1.0f))
 	{
-		if (camera) KROSS_CORE_WARN("WARNING: Overriding previous camera");
+		if (camera) KROSS_WARN("WARNING: Overriding previous camera");
 		camera = makeRef<Camera::Perspective>(aspectRatio, fov);
 		static const char *a = "_Controller";
 		std::string strname(cname);
@@ -24,25 +24,25 @@ namespace Kross::Camera3D {
 		//forward = glm::vec3(0.0f, 0.0f, 1.0f);
 		//right = glm::vec3(1.0f, 0.0f, 0.0f);
 		//up = glm::vec3(0.0f, 1.0f, 0.0f);
-		KROSS_CORE_INFO("'{0}' Constructed", m_strName);
+		KROSS_INFO("'{0}' Constructed", m_strName);
 	}
 
 	FirstPerson::FirstPerson(const char* name, Ref<Camera::Camera> cam, float fov)
 		: m_fFOV(fov), mouseRotation(glm::vec3(0.0f, 0.0f, 1.0f)), name(nullptr)
 	{
-		if (camera) KROSS_CORE_WARN("WARNING: Overriding previous Camera");
+		if (camera) KROSS_WARN("WARNING: Overriding previous Camera");
 		camera = cam;
 		m_strName = name;
 		//forward = glm::vec3(0.0f, 0.0f, 1.0f);
 		//right = glm::vec3(1.0f, 0.0f, 0.0f);
 		//up = glm::vec3(0.0f, 1.0f, 0.0f);
-		KROSS_CORE_INFO("'{0}' Constructed", m_strName);
+		KROSS_INFO("'{0}' Constructed", m_strName);
 	}
 
 	void FirstPerson::OnUpdate(double ts)
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_ERROR("Not implemented");
+		KROSS_ERROR("Not implemented");
 		//if (Input::IsKeyReleased(Key::Space))
 		//	m_bCursorEnabled = !m_bCursorEnabled;
 
@@ -61,7 +61,7 @@ namespace Kross::Camera3D {
 		//glm::vec3 up = glm::normalize(glm::cross(forward, right));
 		////char b[256]; sprintf_s(b, "before(%.4f, %.4f, %.4f)", right.x, right.y, right.z);
 		////char a[256]; sprintf_s(a, "after(%.4f, %.4f, %.4f)", right.x, right.y, right.z);
-		////KROSS_CORE_TRACE("right: {0} | {1}", b, a);
+		////KROSS_TRACE("right: {0} | {1}", b, a);
 
 		//char strForward[256];
 		//char strRight[256];
@@ -69,7 +69,7 @@ namespace Kross::Camera3D {
 		//sprintf_s(strForward, "forward(%.4f, %.4f, %.4f)", forward.x, forward.y, forward.z);
 		//sprintf_s(strRight, "right(%.4f, %.4f, %.4f)", right.x, right.y, right.z);
 		//sprintf_s(strUp, "up(%.4f, %.4f, %.4f)", up.x, up.y, up.z);
-		////KROSS_CORE_TRACE("{0} | {1} | {2}", strForward, strRight, strUp);
+		////KROSS_TRACE("{0} | {1} | {2}", strForward, strRight, strUp);
 
 
 		//if (Input::IsKeyHeld(Key::W)) position += forward * speed;
@@ -97,7 +97,7 @@ namespace Kross::Camera3D {
 	void FirstPerson::Zoom(float val) {}
 	bool FirstPerson::OnWindowResized(WindowResizeEvent& e)
 	{
-		KROSS_CORE_ERROR("Not Implemented");
+		KROSS_ERROR("Not Implemented");
 		//KROSS_PROFILE_FUNC();
 		//float ar = (float)e.GetWidth() / (float)e.GetHeight();
 		//camera->SetProjMat(m_fFOV, ar, 0.01f, 1000.0f);

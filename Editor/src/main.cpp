@@ -1,5 +1,6 @@
 #include "Kross.h"
 #include "Kross/Core/EntryPoint.h"
+
 #include "EditorLayer.h"
 
 namespace Kross {
@@ -15,9 +16,10 @@ namespace Kross {
 		{
 		}
 	};
-
-	Application* CreateApp()
-	{
-		return new KrossEditor();
-	}
 }
+
+Kross::Application* CreateApp()
+{
+	return new Kross::KrossEditor();
+}
+

@@ -39,7 +39,7 @@ namespace Kross::Texture {
 		uint32_t w = (uint32_t)(m_Atlas->GetSize().x / m_cellSize.x);
 		uint32_t h = (uint32_t)(m_Atlas->GetSize().y / m_cellSize.y);
 		uint32_t t = w * h;
-		if (index > t) { KROSS_CORE_WARN("index provided exceeds limit"); return; }
+		if (index > t) { KROSS_WARN("index provided exceeds limit"); return; }
 		GetSub({ index % w, index / h });
 	}
 	void T2DAtlas::GetSub(const glm::vec2 &index)

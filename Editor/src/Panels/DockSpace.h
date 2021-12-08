@@ -11,7 +11,7 @@ namespace Kross {
 		uint32_t m_DockFlags = 0;
 		virtual void Menu() override;
 	public:
-		DockSpace(const char* name);
+		DockSpace();
 		virtual void Show(double ts) override;
 	};
 }

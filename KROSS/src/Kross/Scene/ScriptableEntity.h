@@ -8,7 +8,7 @@ namespace Kross {
 	{
 	public:
 		template<typename Component>
-		Component &GetComponent()
+		Component *GetComponent()
 		{
 			return m_Entity.GetComponent<Component>();
 		}

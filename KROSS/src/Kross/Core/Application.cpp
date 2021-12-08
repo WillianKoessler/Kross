@@ -1,5 +1,9 @@
-#include "Kross_pch.h"
+#include <Kross_pch.h>
 #include "Application.h"
+
+#include "Kross/Core/Timestep.h"
+#include "Kross/Renderer/Renderer.h"
+#include "Kross/Renderer/Shaders.h"
 
 #include "Stack.h"
 #include "Kross/Renderer/Textures/Textures.h"
@@ -12,7 +16,7 @@ namespace Kross {
 	void Application::Construct(settings&& s)
 	{
 		KROSS_PROFILE_FUNC();
-		if (s_Instance) KROSS_CORE_FATAL("Application already exists!");
+		if (s_Instance) KROSS_FATAL("Application already exists!");
 		s_Instance = this;
 
 		m_pWindow = Window::Create({ s.title, s.width, s.height, s.fullscreen });
@@ -24,7 +28,7 @@ namespace Kross {
 		m_refImGuiLayer = l.get();
 		PushOverlay(l);
 
-		KROSS_CORE_INFO("Application Contructed");
+		KROSS_INFO("Application Contructed");
 	}
 	Application::~Application()
 	{
@@ -34,7 +38,7 @@ namespace Kross {
 		m_pLayerStack.clear();
 		Renderer::Shutdown();
 		delete m_pWindow;
-		KROSS_CORE_INFO("Application Destructed");
+		KROSS_INFO("Application Destructed");
 	}
 
 	void Application::PushLayer(const std::initializer_list<Ref<Layer>>& list)
@@ -43,7 +47,7 @@ namespace Kross {
 		for (const Ref<Layer>& l : list) {
 			m_pLayerStack.PushLayer(l);
 			l->OnAttach();
-			KROSS_CORE_TRACE("Application '{0}' Pushed", l->GetName());
+			KROSS_TRACE("Application '{0}' Pushed", l->GetName());
 		}
 	}
 
@@ -52,7 +56,7 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		m_pLayerStack.PushLayer(layer);
 		layer->OnAttach();
-		KROSS_CORE_TRACE("Application '{0}' Pushed", layer->GetName());
+		KROSS_TRACE("Application '{0}' Pushed", layer->GetName());
 	}
 
 	void Application::PushOverlay(const Ref<Layer>& layer)
@@ -60,7 +64,7 @@ namespace Kross {
 		KROSS_PROFILE_FUNC();
 		m_pLayerStack.PushOverlay(layer);
 		layer->OnAttach();
-		KROSS_CORE_TRACE("Application Overlay '{0}' Pushed", layer->GetName());
+		KROSS_TRACE("Application Overlay '{0}' Pushed", layer->GetName());
 	}
 
 	void Application::OnEvent(Event& e)
@@ -81,7 +85,7 @@ namespace Kross {
 	void Application::Run()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_TRACE("-----------------------RUNTIME STARTED-----------------------");
+		KROSS_TRACE("-----------------------RUNTIME STARTED-----------------------");
 		while (m_bRunning)
 		{
 			KROSS_PROFILE_SCOPE("Run Loop");
@@ -106,9 +110,9 @@ namespace Kross {
 
 			m_pWindow->OnUpdate();
 		}
-		KROSS_CORE_TRACE("-----------------------RUNTIME ENDED-----------------------");
+		KROSS_TRACE("-----------------------RUNTIME ENDED-----------------------");
 
-		KROSS_CORE_TRACE("Application Finished");
+		KROSS_TRACE("Application Finished");
 	}
 
 	inline double Application::GetTime() const
@@ -129,7 +133,7 @@ namespace Kross {
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_bMinimized = true;
-			KROSS_CORE_TRACE("Application Minimized");
+			KROSS_TRACE("Application Minimized");
 			return false;
 		}
 		m_bMinimized = false;

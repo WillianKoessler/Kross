@@ -14,7 +14,7 @@ namespace Kross {
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
-		KROSS_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+		KROSS_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
 	Win_Windows::Win_Windows(WindowProps&& props)
@@ -39,7 +39,7 @@ namespace Kross {
 			{
 				KROSS_PROFILE_SCOPE("glfwInit");
 				int success = glfwInit();
-				if (!success) KROSS_CORE_FATAL("Could not intialize GLFW!");
+				if (!success) KROSS_FATAL("Could not intialize GLFW!");
 			}
 			{
 				KROSS_PROFILE_SCOPE("glfwSetErrorCallback");
@@ -66,10 +66,10 @@ namespace Kross {
 			}
 			else
 			{
-				KROSS_CORE_ERROR(
+				KROSS_ERROR(
 					"Invalid Window Attributes.\nTitle: {1}\nWidth: {2}\nHeight: {3}\nFullcreen Mode: {4}",
 					__FUNCTION__, props.strTitle, props.nWidth, props.nHeight, props.fullscreen ? "ON" : "OFF" );
-				KROSS_CORE_FATAL("Invalid Window Attributes.\n(Prompt Log or File Log, for more information.");
+				KROSS_FATAL("Invalid Window Attributes.\n(Prompt Log or File Log, for more information.");
 			}
 
 			int x, y;
@@ -201,14 +201,14 @@ namespace Kross {
 			});
 		}
 
-		KROSS_CORE_INFO("Window Initialized {0} ({1}, {2})", m_Data.strTitle, m_Data.nWidth, m_Data.nHeight);
+		KROSS_INFO("Window Initialized {0} ({1}, {2})", m_Data.strTitle, m_Data.nWidth, m_Data.nHeight);
 	}
 
 	void Win_Windows::Shutdown() const
 	{
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
-		KROSS_CORE_INFO("Windows Window Destructed.");
+		KROSS_INFO("Windows Window Destructed.");
 	}
 
 	void Win_Windows::OnUpdate()

@@ -16,7 +16,7 @@ namespace Kross::Camera {
 		virtual const glm::mat4 &GetProjMat() const { return m_ProjMat; };
 
 	protected:
-		glm::mat4 m_ProjMat;
+		glm::mat4 m_ProjMat = glm::mat4(1.0f);
 	};
 
 }

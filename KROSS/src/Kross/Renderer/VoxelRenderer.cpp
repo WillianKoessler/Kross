@@ -46,7 +46,7 @@ namespace Kross {
 		//std::string ReadCompressed()
 		//{
 		//	char c1[128], c2[128];
-		//	try { sprintf_s(c1, "0x%" PRIx32, data.x); sprintf_s(c2, "_%" PRIx32, data.y); } catch (const std::exception& e) { KROSS_CORE_ERROR("{0}", e.what()); return ""; }
+		//	try { sprintf_s(c1, "0x%" PRIx32, data.x); sprintf_s(c2, "_%" PRIx32, data.y); } catch (const std::exception& e) { KROSS_ERROR("{0}", e.what()); return ""; }
 		//	return std::string(c1) + c2;
 		//}
 		//std::string ReadDecompressed()
@@ -56,7 +56,7 @@ namespace Kross {
 		//	try {
 		//		sprintf_s(c, "x=0x%" PRIx8 ", y=0x%" PRIx8 ", z=0x%" PRIx8 " | r=0x%" PRIx8 ", g=0x%" PRIx8 ", b=0x%" PRIx8 ", a=0x%" PRIx8 " | f=0x%" PRIx8,
 		//			dData.x, dData.y, dData.z, dData.r, dData.g, dData.b, dData.a, dData.f);
-		//	} catch (const std::exception& e) { KROSS_CORE_ERROR("{0}", e.what()); return ""; }
+		//	} catch (const std::exception& e) { KROSS_ERROR("{0}", e.what()); return ""; }
 		//	return c;
 		//}
 
@@ -85,8 +85,8 @@ namespace Kross {
 	void VoxelRenderer::Init()
 	{
 		KROSS_PROFILE_FUNC();
-		KROSS_CORE_WARN("CALLING UNFINISHED CODE. BUGS MAY HAPPEN");
-		if (s_bInitiated) { KROSS_CORE_WARN("VoxelRenderer is already initialized. Cannot call VoxelRenderer::Init(void) twice. Forget to call VoxelRenderer::Shutdown(void)?"); return; }
+		KROSS_WARN("CALLING UNFINISHED CODE. BUGS MAY HAPPEN");
+		if (s_bInitiated) { KROSS_WARN("VoxelRenderer is already initialized. Cannot call VoxelRenderer::Init(void) twice. Forget to call VoxelRenderer::Shutdown(void)?"); return; }
 		s_bInitiated = true;
 		data = new PointBatchData;
 
@@ -113,7 +113,7 @@ namespace Kross {
 	void VoxelRenderer::Shutdown()
 	{
 		KROSS_PROFILE_FUNC();
-		if (!s_bInitiated) { KROSS_CORE_WARN("VoxelRenderer is not initialized. Cannot call VoxelRenderer::Shutdown(void) while VoxelRenderer::Init(void) is not called."); return; }
+		if (!s_bInitiated) { KROSS_WARN("VoxelRenderer is not initialized. Cannot call VoxelRenderer::Shutdown(void) while VoxelRenderer::Init(void) is not called."); return; }
 
 		Stack<Texture::T2D>::clear();
 		Stack<Shader>::clear();
@@ -121,10 +121,10 @@ namespace Kross {
 	}
 	void VoxelRenderer::Begin(Ref<Camera::Camera>& camera)
 	{
-		KROSS_CORE_ERROR("Not Implemented");
+		KROSS_ERROR("Not Implemented");
 		//KROSS_PROFILE_FUNC();
 		//if (s_bSceneBegan) {
-		//	KROSS_CORE_WARN("Calling VoxelRenderer::Begin(Ref<Camera::Camera>&) without calling VoxelRenderer::End(void).");
+		//	KROSS_WARN("Calling VoxelRenderer::Begin(Ref<Camera::Camera>&) without calling VoxelRenderer::End(void).");
 		//	End();
 		//} else s_bSceneBegan = true;
 
@@ -143,7 +143,7 @@ namespace Kross {
 		//);
 		//p.data.x = 0x000000FF;
 		//p.data.y = 0xFFFFFFFF;
-		//KROSS_CORE_TRACE("C={0} - D={1}", p.ReadCompressed(), p.ReadDecompressed());
+		//KROSS_TRACE("C={0} - D={1}", p.ReadCompressed(), p.ReadDecompressed());
 
 		p.pos = params.position;
 		p.color = params.color;
@@ -151,7 +151,7 @@ namespace Kross {
 	void VoxelRenderer::End()
 	{
 		if (s_bSceneBegan) s_bSceneBegan = false;
-		else KROSS_CORE_WARN("Calling VoxelRenderer::End(void) without calling VoxelRenderer::Begin(Camera::Camera&). Did you forget to Begin the Scene?");
+		else KROSS_WARN("Calling VoxelRenderer::End(void) without calling VoxelRenderer::Begin(Camera::Camera&). Did you forget to Begin the Scene?");
 	}
 	void VoxelRenderer::SwitchShader(const Ref<Shader>& shader)
 	{
@@ -160,7 +160,7 @@ namespace Kross {
 			data->shader = shader;
 			data->shader->Bind();
 		} else {
-			KROSS_CORE_WARN("Shader provided is empty, or not supported."); return;
+			KROSS_WARN("Shader provided is empty, or not supported."); return;
 		}
 	}
 }

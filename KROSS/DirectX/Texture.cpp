@@ -24,7 +24,7 @@ namespace Kross::DirectX::Textures {
 		// create the texture
 		if (FAILED(hr = Context::Get().GetDevice()->CreateTexture2D(&sysTexDesc, nullptr, &pSysBufferTexture)))
 		{
-			KROSS_CORE_ERROR("Failed to Create 2D Texture");
+			KROSS_ERROR("Failed to Create 2D Texture");
 		}
 
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -35,7 +35,7 @@ namespace Kross::DirectX::Textures {
 		if (FAILED(hr = Context::Get().GetDevice()->CreateShaderResourceView(pSysBufferTexture.Get(),
 			&srvDesc, &pSysBufferTextureView)))
 		{
-			KROSS_CORE_ERROR("Failed to Create Resource View on 2D Texture");
+			KROSS_ERROR("Failed to Create Resource View on 2D Texture");
 		}
 
 	}

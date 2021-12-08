@@ -17,7 +17,7 @@ namespace Kross::Buffer {
 		Byte
 	};
 
-	static uint32_t ShaderDataTypeSize(ShaderDataType type, uint32_t size = 1u)
+	inline static uint32_t ShaderDataTypeSize(ShaderDataType type, uint32_t size = 1u)
 	{
 		switch (type)
 		{
@@ -38,7 +38,7 @@ namespace Kross::Buffer {
 			case ShaderDataType::Bool:		return 1;
 			case ShaderDataType::Byte:		return size;
 		}
-		KROSS_CORE_WARN("Not supported Shader Data Type. ('None' is selected).","");
+		KROSS_WARN("Not supported Shader Data Type. ('None' is selected).", "");
 		return NULL;
 	}
 
@@ -82,7 +82,7 @@ namespace Kross::Buffer {
 				case ShaderDataType::uInt4:    return 4;
 				case ShaderDataType::Bool:    return 1;
 			}
-			KROSS_CORE_WARN("Unknown Shader Data Type");
+			KROSS_WARN("Unknown Shader Data Type");
 			return NULL;
 		}
 	};

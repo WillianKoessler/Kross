@@ -1,10 +1,10 @@
 #include "DockSpace.h"
 
 namespace Kross {
-	DockSpace::DockSpace(const char* name)
+	DockSpace::DockSpace()
 	{
-		SetName(name);
-		KROSS_INFO("DockSpace Panel '{0}' Constructed", name);
+		m_strName = "Kross DockSpace";
+		KROSS_INFO("DockSpace Constructed");
 		m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
 	}
 
@@ -14,13 +14,12 @@ namespace Kross {
 		{
 			if (ImGui::BeginMenu("Menu"))
 			{
-				if (ImGui::MenuItem("Open", NULL)) m_PopUpSpecs = { true, "Open File Dialog", OK, DefaultFunc };
+				if (ImGui::MenuItem("Open", NULL)) PopUpMessage = { true, "Open File Dialog", OK, DefaultFunc };
 				ImGui::Separator();
 				if (ImGui::MenuItem("Close", "Alt+F4", false))
 					Manager().s_bDockspace = false;
 				ImGui::EndMenu();
 			}
-
 			if (ImGui::BeginMenu("View"))
 			{
 				ImGui::MenuItem("Viewport", NULL, &Manager().s_bViewport);
@@ -29,10 +28,9 @@ namespace Kross {
 				ImGui::MenuItem("Entity Inspector", NULL, &Manager().s_bEntityInspector);
 				ImGui::EndMenu();
 			}
-
 			if (ImGui::BeginMenu("Settings"))
 			{
-				if (ImGui::MenuItem("ImGui", NULL)) m_PopUpSpecs = { true, "Style Editor", OK, DefaultFunc };
+				if (ImGui::MenuItem("ImGui", NULL)) PopUpMessage = { true, "Style Editor", OK, DefaultFunc };
 				ImGui::Separator();
 				ShowHelperMarker("Enables or Disable FullScreen mode."); ImGui::SameLine();
 				ImGui::MenuItem("Fullscreen", NULL, &Manager().s_bFullscreen);
@@ -44,16 +42,16 @@ namespace Kross {
 				ImGui::MenuItem("Viewports", NULL, &AppManager().s_bViewportEnabled);
 				ImGui::EndMenu();
 			}
-
 			if (ImGui::BeginMenu("Camera"))
 			{
-				if (ImGui::MenuItem("Window", NULL)) m_PopUpSpecs = { true, "Camera Window", OK, []() { ImGui::Text("Camera Inspector is yet to be implemented."); } };
+				ImGui::MenuItem("Editor Camera", NULL, &AppManager().s_bEditorCamera);
+				ImGui::Separator();
+				if (ImGui::MenuItem("Window", NULL)) PopUpMessage = { true, "Camera Window", OK, []() { ImGui::Text("Camera Inspector is yet to be implemented."); } };
 				ImGui::EndMenu();
 			}
-
 			if (ImGui::BeginMenu("Help"))
 			{
-				if (ImGui::MenuItem("Show Help", NULL)) m_PopUpSpecs = { true, "Show Help", OK, DefaultFunc };
+				if (ImGui::MenuItem("Show Help", NULL)) PopUpMessage = { true, "Show Help", OK, DefaultFunc };
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -81,18 +79,18 @@ namespace Kross {
 
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin(GetName(), &Manager().s_bDockspace, m_Flags);
+		ImGui::Begin(m_strName, &Manager().s_bDockspace, m_Flags);
 		ImGui::PopStyleVar(m_bFullscreen ? 3 : 1);
 
 		// DockSpace
-		ImGui::DockSpace(ImGui::GetID(GetName()), ImVec2(0.0f, 0.0f), m_DockFlags);
+		ImGui::DockSpace(ImGui::GetID(m_strName), ImVec2(0.0f, 0.0f), m_DockFlags);
 
 		// MenuBar
 		Menu();
 
 		// ImGui Demo Window
 		if (Manager().s_bDemoWindow) ImGui::ShowDemoWindow(&Manager().s_bDemoWindow);
-		MessageBoxDialog(m_PopUpSpecs);
+		MessageBoxDialog(PopUpMessage);
 		ImGui::End();
 	}
 }
