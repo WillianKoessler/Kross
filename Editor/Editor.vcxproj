@@ -131,6 +131,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="assets\scripts\native\SceneCameraController.h" />
     <ClInclude Include="src\Panels\EntityInspector.h" />
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Panels\DockSpace.h" />

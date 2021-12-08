@@ -6,9 +6,12 @@
 namespace Kross {
 	class EditorLayer final : public Layer
 	{
+		Ref<Texture::T2D> m_Placeholder;
+		glm::vec2 m_ViewportSize;
 		Ref<FrameBuffer> m_Frame;
-		Ref<Camera::Controller> m_Camera;
 		std::vector<Panel*> m_pPanels;
+		Ref<Scene> m_Scene;
+		Camera::Editor m_Camera;
 	public:
 		EditorLayer();
 

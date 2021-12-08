@@ -25,7 +25,6 @@ namespace Kross::Camera {
 
 		virtual void Zoom(float val) = 0;
 	protected:
-		virtual void CalculateView() = 0;
 
 		struct Boundary {
 			float left = 0.0f;

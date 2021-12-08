@@ -29,6 +29,7 @@
 #include "Kross/Renderer/Renderer2D.h"
 
 #include "Kross/Renderer/Cameras/Camera.h"
+#include "Kross/Renderer/Cameras/EditorCamera.h"
 #include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
 #include "Kross/Renderer/Cameras/Cameras/Perspective.h"
 #include "Kross/Renderer/Cameras/Controllers/OrthographicCtrl.h"

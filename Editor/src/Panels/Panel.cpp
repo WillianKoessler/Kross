@@ -2,9 +2,6 @@
 #include "Kross.h"
 
 namespace Kross {
-	Panel::PanelManager Panel::s_Manager = Panel::PanelManager();
-	Panel::AppSettings Panel::s_AppManager = Panel::AppSettings();
-
 	void Panel::ShowHelperMarker(const std::string& msg, float size)
 	{
 		ImGui::TextDisabled("(?)");
@@ -17,7 +14,7 @@ namespace Kross {
 			ImGui::EndTooltip();
 		}
 	}
-	void Kross::Panel::MessageBoxDialog(MessageBoxSpecs& specs)
+	void Panel::MessageBoxDialog(MessageBoxSpecs& specs)
 	{
 		if (specs.show) {
 			if (!specs.id) {
@@ -46,6 +43,26 @@ namespace Kross {
 				ImGui::EndPopup();
 			}
 		}
+	}
+	Panel::PanelManager &Panel::Manager()
+	{
+		static PanelManager s_Manager;
+		static bool setted = false;
+		if (!setted) {
+			s_Manager.s_bDockspace = true;
+			s_Manager.s_bDemoWindow = false;
+			s_Manager.s_bRendererStats = false;
+			s_Manager.s_bViewport = true;
+			s_Manager.s_bEntityInspector = false;
+			s_Manager.s_bFullscreen = false;
+			setted = true;
+		}
+		return s_Manager;
+	}
+	Panel::AppSettings &Panel::AppManager()
+	{
+		static AppSettings s_AppManager;
+		return s_AppManager;
 	}
 }
 //if (id == "Style Open File")

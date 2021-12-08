@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Cameras/Camera.h"
+#include "Cameras/EditorCamera.h"
 #include "Textures/Textures.h"
 #include "Textures/Atlas.h"
 #include "Shaders.h"
+#include "Kross/Scene/Components.h"
 
 namespace Kross {
 	struct QuadParams;
@@ -33,6 +35,8 @@ namespace Kross {
 		static void Init();
 		static void Shutdown();
 
+		static void Begin(const Camera::Editor& camera);
+		static void Begin(const CameraComponent& camera, const TransformComponent& transform);
 		static void Begin(Ref<Camera::Camera>& camera);
 		static void End();
 
@@ -41,6 +45,8 @@ namespace Kross {
 		static void BatchQuad(const QuadParams& params);
 		static void BatchQuad(const glm::mat4& transform, const glm::vec4& color);
 		static void BatchQuad(const glm::mat4& transform, const Ref<Texture::T2D>& color);
+
+		static void DebugAxis();
 	};
 
 }

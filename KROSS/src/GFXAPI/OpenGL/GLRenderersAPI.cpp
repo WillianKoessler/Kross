@@ -9,8 +9,10 @@ namespace Kross::OpenGL {
 	void RendererAPI::Init() const {
 		glCall(glEnable(GL_BLEND));
 		glCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
 		glCall(glEnable(GL_DEPTH_TEST));
+		//glCall(glDepthFunc(GL_LESS));
+		//glCall(glDepthFunc(GL_GREATER));
+		//glCall(glDepthMask(GL_FALSE));
 	}
 	void RendererAPI::Clear() const {
 		glCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));

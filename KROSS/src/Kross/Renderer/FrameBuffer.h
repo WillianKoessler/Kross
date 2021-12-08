@@ -14,6 +14,7 @@ namespace Kross {
 	struct FrameBufferSpec
 	{
 		uint32_t Width, Height;
+		uint32_t MAXWidth, MAXHeight;
 		// FrameBufferFormat format;
 		uint32_t Samples = 1;
 

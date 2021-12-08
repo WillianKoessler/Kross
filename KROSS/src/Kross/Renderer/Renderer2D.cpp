@@ -10,6 +10,8 @@
 #include "VertexArray.h"
 #include "Textures/Array.h"
 
+#include "Kross/Core/Input.h"
+
 static constexpr size_t MaxQuadCount = 2048;
 static constexpr size_t MaxVertexCount = MaxQuadCount * 4;
 static constexpr size_t MaxIndexCount = MaxQuadCount * 6;
@@ -26,7 +28,7 @@ namespace Kross {
 			pos(x, y, 0.0f)
 		{
 		}
-		Vertex(const glm::vec3& pos, const glm::vec4& color, const glm::vec2& texCoord, float texIndex) :
+		Vertex(const glm::vec3 &pos, const glm::vec4 &color, const glm::vec2 &texCoord, float texIndex) :
 			pos(pos), color(color), texCoord(texCoord), texIndex(texIndex)
 		{
 		}
@@ -38,7 +40,7 @@ namespace Kross {
 	struct Quad
 	{
 		Quad() = default;
-		Quad(Vertex* vertices) { for (int i = 0; i < 4; i++) v[i] = vertices[i]; }
+		Quad(Vertex *vertices) { for (int i = 0; i < 4; i++) v[i] = vertices[i]; }
 		Vertex v[4];
 	};
 
@@ -55,7 +57,7 @@ namespace Kross {
 		Scope<VertexArray> va;
 		Ref<Buffer::Vertex> vb;
 		Ref<Buffer::Index> ib;
-		uint32_t* indices;
+		uint32_t *indices;
 
 		//Batch Buffer
 		Quad myBuffer[MaxQuadCount] = { Quad() };
@@ -72,8 +74,8 @@ namespace Kross {
 		//Quad first vertex positions
 		glm::vec4 basePositions[4];
 	};
-	static R2DData* data;
-	const Renderer2D::Stats& Renderer2D::getStats()
+	static R2DData *data;
+	const Renderer2D::Stats &Renderer2D::getStats()
 	{
 		return data->rendererStats;
 	}
@@ -101,7 +103,7 @@ namespace Kross {
 			});
 		data->va->AddVertex(data->vb);
 
-		uint32_t* indices = new uint32_t[MaxIndexCount];
+		uint32_t *indices = new uint32_t[MaxIndexCount];
 		uint32_t offset = 0;
 		for (int i = 0; i < MaxIndexCount; i += 6)
 		{
@@ -134,10 +136,10 @@ namespace Kross {
 
 		data->shader->SetIntV("u_Textures", Texture::Base::QueryMaxSlots(), nullptr);
 
-		unsigned char* white = new unsigned char[4]{ 255 };
+		unsigned char *white = new unsigned char[4]{ 255 };
 
 		Stack<Texture::T2D>::Add(data->whiteTex = Texture::T2D::CreateRef("blank", 1, 1, white));
-		data->texArray->Add(Stack<Texture::T2D>::Get("blank"));
+		data->texArray->Get(Stack<Texture::T2D>::Get("blank"));
 
 		delete[] indices;
 
@@ -152,30 +154,46 @@ namespace Kross {
 
 		delete data;
 	}
-	void Renderer2D::Begin(Ref<Camera::Camera>& camera)
+	void Renderer2D::Begin(const Camera::Editor &camera)
 	{
 		KROSS_PROFILE_FUNC();
 		if (!s_bSceneBegan) s_bSceneBegan = true;
-		else KROSS_CORE_WARN("Calling Renderer2D::Begin(Camera::Camera&) without calling Renderer2D::End(void). Overriding previous scene!");
+		else KROSS_CORE_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
 		data->shader->Bind();
-		data->shader->SetMat4("u_ViewProjection", camera->GetVPM());
+		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
 		BatchBegin();
 	}
+	void Renderer2D::Begin(const CameraComponent &camera, const TransformComponent &transform)
+	{
+		KROSS_PROFILE_FUNC();
+		if (!s_bSceneBegan) s_bSceneBegan = true;
+		else KROSS_CORE_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
+		data->shader->Bind();
+		data->shader->SetMat4("u_ViewProjection", camera.camera.GetProjMat() * glm::inverse(transform.Transform));
+		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
+		BatchBegin();
+	}
+	void Renderer2D::Begin(Ref<Camera::Camera> &camera)
+	{
+		KROSS_CORE_ERROR("Not Implemented.");
+		//KROSS_PROFILE_FUNC();
+		//if (!s_bSceneBegan) s_bSceneBegan = true;
+		//else KROSS_CORE_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
+		//data->shader->Bind();
+		//data->shader->SetMat4("u_ViewProjection", camera->GetVPM());
+		//data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
+		//BatchBegin();
+	}
 	void Renderer2D::BatchBegin()
 	{
-		if (s_bBatch == false)
-		{
-			data->quadIndex = 0;
-			s_bBatch = true;
-		} else
-		{
-			KROSS_CORE_WARN("Batch already initiated.");
-		}
+		if (s_bBatch) { KROSS_CORE_WARN("Batch already initiated."); return; }
+		data->quadIndex = 0;
+		s_bBatch = true;
 	}
 	void Renderer2D::Flush()
 	{
-		data->texArray->Bind(0);
+		data->texArray->Bind();
 		data->va->Bind();
 		RenderCommand::DrawIndexed(data->va);
 		data->rendererStats.DrawCount++;
@@ -192,25 +210,24 @@ namespace Kross {
 	}
 	void Renderer2D::End()
 	{
-		if (!s_bSceneBegan) { KROSS_CORE_WARN("Calling Renderer2D::End(void) without calling Renderer2D::Begin(Camera::Camera&). Did you forget to Begin the Scene?"); return; }
+		if (!s_bSceneBegan) { KROSS_CORE_WARN("Ending a non Initiated Scene. Did you forget to Begin the Scene?", __FUNCTION__); return; }
 		s_bSceneBegan = false;
 		BatchEnd();
 	}
-	void Renderer2D::SwitchShader(const Ref<Shader>& shader)
+	void Renderer2D::SwitchShader(const Ref<Shader> &shader)
 	{
-		if (shader)
-		{
+		if (shader) {
 			data->shader->unBind();
 			data->shader = shader;
 			data->shader->Bind();
-		} else
-		{
-			KROSS_CORE_WARN("Shader provided is empty, or not supported."); return;
-		}
+		} else { KROSS_CORE_WARN("Shader provided is empty, or not supported."); return; }
 	}
-	void Renderer2D::BatchQuad(const QuadParams& params)
+	void Renderer2D::BatchQuad(const QuadParams &params)
 	{
 		KROSS_PROFILE_FUNC();
+
+		if (!s_bBatch) return;
+
 		static const glm::mat4 m4(1.0f);
 		static glm::mat4 transform(1.0f);
 		static Vertex v[4] = { Vertex() };
@@ -223,7 +240,7 @@ namespace Kross {
 
 		if ((size_t)data->quadIndex + 1 >= MaxQuadCount) { BatchEnd(); BatchBegin(); }
 
-		float tex = (float)data->whiteTexIndex;
+		float tex = (float)data->texArray->Get(data->whiteTex);
 
 		if (params.texture && !params.subTexture)
 		{
@@ -232,47 +249,47 @@ namespace Kross {
 			texCoords[1] = { 1.0f, 0.0f };
 			texCoords[2] = { 1.0f, 1.0f };
 			texCoords[3] = { 0.0f, 1.0f };
-		} else if (params.subTexture && !params.texture)
-		{
+		} else if (params.subTexture && !params.texture) {
 			tex = (float)data->texArray->Get(params.subTexture->GetTexture());
 			auto coords = params.subTexture->GetTexCoords();
 			for (int i = 0; i < 4; i++) texCoords[i] = coords[i];
 		} else if (params.texture && params.subTexture) { KROSS_CORE_ERROR("Texture AND subTexture was found. Please supply only one of each."); return; }
 
-		if (params.rotation != glm::vec3(0.0f))
+		if (params.rotation != glm::vec3(0.0f)) {
 			for (uint8_t i = 0; i < 4; i++)
 			{
 				transform = glm::translate(m4, params.position) *
-					(params.rotation.x != 0.0f ? (glm::rotate(m4, params.rotation.x, { 1.0f, 0.0f, 0.0f })) : m4) *
-					(params.rotation.y != 0.0f ? (glm::rotate(m4, params.rotation.y, { 0.0f, 1.0f, 0.0f })) : m4) *
-					(params.rotation.z != 0.0f ? (glm::rotate(m4, params.rotation.z, { 0.0f, 0.0f, 1.0f })) : m4) *
+					glm::rotate(m4, params.rotation.x, { 1.0f, 0.0f, 0.0f }) *
+					glm::rotate(m4, params.rotation.y, { 0.0f, 1.0f, 0.0f }) *
+					glm::rotate(m4, params.rotation.z, { 0.0f, 0.0f, 1.0f }) *
 					glm::scale(m4, glm::vec3(params.size, 0.0f));
 
 				v[i].pos = transform * data->basePositions[i];
 				v[i].color = params.color;
 				v[i].texIndex = tex;
 				v[i].texCoord = texCoords[i];
+			}
+		} else {
+			for (uint8_t i = 0; i < 4; i++)
+			{
+				v[i].pos = {
+					params.position.x + (0.5f * params.size.x * (i == 1 || i == 2)) - (0.5f * params.size.x * (i == 0 || i == 3)),
+					params.position.y + (0.5f * params.size.y * (i == 2 || i == 3)) - (0.5f * params.size.y * (i == 0 || i == 1)),
+					params.position.z };
+				v[i].color = params.color;
+				v[i].texIndex = tex;
+				v[i].texCoord = texCoords[i];
 				//v[i].texCoord = { params.texOffSet.x + (params.texSubSize.x * (i == 1 || i == 2)), params.texOffSet.y + (params.texSubSize.y * (i == 2 || i == 3)) };
-			} else
-				for (uint8_t i = 0; i < 4; i++)
-				{
-					v[i].pos = {
-						params.position.x + (params.size.x * (i == 1 || i == 2)),
-						params.position.y + (params.size.y * (i == 2 || i == 3)),
-						params.position.z };
-					v[i].color = params.color;
-					v[i].texIndex = tex;
-					v[i].texCoord = texCoords[i];
-					//v[i].texCoord = { params.texOffSet.x + (params.texSubSize.x * (i == 1 || i == 2)), params.texOffSet.y + (params.texSubSize.y * (i == 2 || i == 3)) };
-				}
-
-			data->myBuffer[data->quadIndex] = Quad(v);
-			data->quadIndex++;
-			data->rendererStats.QuadCount++;
+			}
+		}
+		data->myBuffer[data->quadIndex] = Quad(v);
+		data->quadIndex++;
+		data->rendererStats.QuadCount++;
 	}
-	void Renderer2D::BatchQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::BatchQuad(const glm::mat4 &transform, const glm::vec4 &color)
 	{
 		KROSS_PROFILE_FUNC();
+		if (!s_bBatch) return;
 		static float tex = (float)data->texArray->Get(data->whiteTex);
 		static glm::vec2 texCoords[4] = {
 							{ 0.0f, 0.0f },
@@ -283,7 +300,7 @@ namespace Kross {
 
 		if ((size_t)data->quadIndex + 1 >= MaxQuadCount) { BatchEnd(); BatchBegin(); }
 
-		Vertex* v = data->myBuffer[data->quadIndex].v;
+		Vertex *v = data->myBuffer[data->quadIndex].v;
 
 		for (uint8_t i = 0; i < 4; i++)
 		{
@@ -295,7 +312,7 @@ namespace Kross {
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;
 	}
-	void Renderer2D::BatchQuad(const glm::mat4& transform, const Ref<Texture::T2D>& texture)
+	void Renderer2D::BatchQuad(const glm::mat4 &transform, const Ref<Texture::T2D> &texture)
 	{
 		KROSS_PROFILE_FUNC();
 		static float tex = (float)data->texArray->Get(data->whiteTex);
@@ -311,7 +328,7 @@ namespace Kross {
 		if (texture)
 			tex = (float)data->texArray->Get(texture);
 
-		Vertex* v = data->myBuffer[data->quadIndex].v;
+		Vertex *v = data->myBuffer[data->quadIndex].v;
 
 		for (uint8_t i = 0; i < 4; i++)
 		{
@@ -322,6 +339,71 @@ namespace Kross {
 		}
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;
+	}
+	void Renderer2D::DebugAxis()
+	{
+		static Timestep time;
+		float ts = (float)time.GetLap();
+		static float count = 0.0f;
+		count += ts * 100.0f;
+
+		// WORLD ORIGIN
+		static bool axis = true;
+		static bool zero = true;
+		{
+			QuadParams params;
+			params.texture = data->whiteTex;
+			params.position = glm::vec3(0.0f, 0.0f, 0.0f);
+
+			params.color = glm::vec4(1.0f, 0.0f, 0.0f, .7f);
+			BatchQuad(params);
+			params.rotation = glm::vec3(0.0f, glm::pi<float>(), 0.0f);
+			BatchQuad(params);
+
+			params.color = glm::vec4(0.0f, 1.0f, 0.0f, .7f);
+			params.rotation = glm::vec3(0.0f, glm::half_pi<float>(), 0.0f);
+			BatchQuad(params);
+			params.rotation = glm::vec3(0.0f, glm::half_pi<float>() * 3.0f, 0.0f);
+			BatchQuad(params);
+
+			params.color = glm::vec4(0.0f, 0.0f, 1.0f, .7f);
+			params.rotation = glm::vec3(glm::half_pi<float>(), 0.0f, 0.0f);
+			BatchQuad(params);
+			params.rotation = glm::vec3(glm::half_pi<float>() * 3.0f, 0.0f, 0.0f);
+			BatchQuad(params);
+		}
+
+		QuadParams params;
+		// Y
+		if (axis)
+		{
+			params.color = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+			params.size = { 0.2f, 2.0f };
+			params.position = glm::vec3(0.0f, 1.0f, 0.0f);
+			params.rotation = glm::vec3(0.0f);
+			for (int i = 0; i < 4; i++) {
+				params.rotation.y = glm::half_pi<float>() * i;
+				BatchQuad(params);
+			}
+
+			params.color = glm::vec4(0.0f, 1.0f, 1.0f, 1.0f);
+			params.size = { 2.f, .2f };
+			params.position = glm::vec3(1.0f, 0.0f, 0.0f);
+			params.rotation = glm::vec3(0.0f);
+			for (int i = 0; i < 4; i++) {
+				params.rotation.x = glm::half_pi<float>() * i;
+				BatchQuad(params);
+			}
+
+			params.color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+			params.size = { 2.f, .2f };
+			params.position = glm::vec3(0.0f, 0.0f, 1.0f);
+
+			for (int i = 0; i < 4; i++) {
+				params.rotation = glm::vec3(glm::half_pi<float>(), glm::half_pi<float>() * i, glm::half_pi<float>());
+				BatchQuad(params);
+			}
+		}
 	}
 }
 

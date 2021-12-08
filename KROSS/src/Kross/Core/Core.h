@@ -122,7 +122,9 @@
 #endif
 
 #define BIT(x) (1 << x)
-#define KROSS_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
+//#define KROSS_BIND_EVENT_FN(func) std::bind(&func, this, std::placeholders::_1)
+
+#define KROSS_BIND_EVENT_FN(func) [this](auto&&...args)->decltype(auto){ return this->func(std::forward<decltype(args)>(args)...); }
 
 #include <memory>
 

@@ -140,6 +140,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Kross\Scene\EmptyComponent.h" />
+    <ClInclude Include="src\Kross\Scene\ScriptableEntity.h" />
+    <ClInclude Include="src\Kross\Renderer\Cameras\EditorCamera.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLBuffers.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLContext.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="src\Kross\Renderer\Cameras\Controller.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\FirstPerson.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Controllers\OrthographicCtrl.h" />
+    <ClInclude Include="src\Kross\Scene\SceneCamera.h" />
     <ClInclude Include="src\Kross\Renderer\Context.h" />
     <ClInclude Include="src\Kross\Renderer\FrameBuffer.h" />
     <ClInclude Include="src\Kross\Renderer\Mesh\Mesh.h" />
@@ -572,6 +576,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Kross\Renderer\Cameras\EditorCamera.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLBuffers.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLContext.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp" />
@@ -607,6 +612,7 @@
     <ClCompile Include="src\Kross\Renderer\VoxelRenderer.cpp" />
     <ClCompile Include="src\Kross\Scene\Entity.cpp" />
     <ClCompile Include="src\Kross\Scene\Scene.cpp" />
+    <ClCompile Include="src\Kross\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Kross\Util\Util.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiLayer.cpp" />

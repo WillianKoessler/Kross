@@ -5,6 +5,7 @@
 namespace Kross {
 	class KAPI Resource
 	{
+	protected:
 		const char* m_strName;
 	public:
 		Resource();

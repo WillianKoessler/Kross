@@ -16,6 +16,7 @@ project "Editor"
 	includedirs
 	{
 		"src",
+		"assets/scripts/native",
 		"../%{IncludeDir.Kross}/src",
 		"../%{IncludeDir.Kross}/vendor",
 		"../%{IncludeDir.spdlog}",

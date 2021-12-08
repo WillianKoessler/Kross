@@ -121,15 +121,16 @@ namespace Kross {
 	}
 	void VoxelRenderer::Begin(Ref<Camera::Camera>& camera)
 	{
-		KROSS_PROFILE_FUNC();
-		if (s_bSceneBegan) {
-			KROSS_CORE_WARN("Calling VoxelRenderer::Begin(Ref<Camera::Camera>&) without calling VoxelRenderer::End(void).");
-			End();
-		} else s_bSceneBegan = true;
+		KROSS_CORE_ERROR("Not Implemented");
+		//KROSS_PROFILE_FUNC();
+		//if (s_bSceneBegan) {
+		//	KROSS_CORE_WARN("Calling VoxelRenderer::Begin(Ref<Camera::Camera>&) without calling VoxelRenderer::End(void).");
+		//	End();
+		//} else s_bSceneBegan = true;
 
-		data->shader->Bind();
-		data->shader->SetMat4("u_ViewProjection", camera->GetVPM());
-		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
+		//data->shader->Bind();
+		//data->shader->SetMat4("u_ViewProjection", camera->GetVPM());
+		//data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
 	}
 	void VoxelRenderer::DrawVoxel(const Voxel& params)
 	{

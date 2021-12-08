@@ -8,7 +8,7 @@ namespace Kross::Texture {
 	public:
 		virtual ~Array() = default;
 
-		virtual void Bind(const size_t slot) = 0;
+		virtual void Bind(const size_t slot = 0) = 0;
 		virtual void Add(const Ref<T2D> texture) = 0;
 		virtual void Del(const Ref<T2D> texture) = 0;
 		virtual void Del(const size_t index) = 0;
@@ -16,6 +16,8 @@ namespace Kross::Texture {
 		virtual const size_t size() const = 0;
 		virtual const size_t maxSize() const = 0;
 		virtual const unsigned int* IDs() const = 0;
+
+		virtual void DebugLog() const = 0;
 	};
 
 	class KAPI T2DArray : public Array

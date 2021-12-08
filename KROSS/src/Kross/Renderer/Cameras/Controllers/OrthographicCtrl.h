@@ -9,7 +9,7 @@ namespace Kross::Camera2D {
 	{
 	public:
 		OrthographicCtrl(const char* name, float AR = 1.0f, bool rot = false);
-		OrthographicCtrl(const char* name, Ref<Orthographic> camera, float AR = 1.0f, bool rot = false);
+		OrthographicCtrl(const char* name, Ref<Camera::Camera> camera, float AR = 1.0f, bool rot = false);
 
 		virtual void OnUpdate(double ts) override;
 		virtual void OnEvent(Event& e) override;
@@ -22,7 +22,6 @@ namespace Kross::Camera2D {
 		virtual bool OnWindowResized(WindowResizeEvent& e) override;
 		virtual bool OnMouseScrolled(MouseScrolledEvent& e) override;
 		virtual bool OnMouseMoved(MouseMovedEvent& e) override;
-		virtual void CalculateView() override;
 	private:
 		float m_fAR;
 		float m_fZoomRate = -0.1f;

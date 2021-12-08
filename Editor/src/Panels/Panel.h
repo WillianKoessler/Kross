@@ -10,10 +10,13 @@ namespace Kross {
 	protected:
 		struct PanelManager
 		{
-			bool s_bDemoWindow = false;
-			bool s_bRendererStats = false;
-			bool s_bViewport = true;
-			bool s_bFullscreen = false;
+			bool s_bDockspace;
+			bool s_bDemoWindow;
+			bool s_bRendererStats;
+			bool s_bViewport;
+			bool s_bEntityInspector;
+
+			bool s_bFullscreen;
 		};
 		struct AppSettings
 		{
@@ -33,17 +36,23 @@ namespace Kross {
 			MessageBoxButtons buttontype = OK;
 			std::function<void()> func;
 		};
+
+		void ShowHelperMarker(const std::string& msg, float size = 35.0f);
+		void MessageBoxDialog(MessageBoxSpecs& specs);
+		virtual void Menu() {}
+
+		MessageBoxSpecs m_PopUpSpecs;
+		uint32_t m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_Popup;
+
 	public:
 		Panel() { SetName("Unnamed_Panel"); }
 		virtual ~Panel() {};
-		void ShowHelperMarker(const std::string& msg, float size = 35.0f);
-		void MessageBoxDialog(MessageBoxSpecs& specs);
+
 		virtual void Show(double ts) = 0;
-		inline static void setFlag(ImGuiConfigFlags flag, bool value) { value ? ImGui::GetIO().ConfigFlags |= flag : ImGui::GetIO().ConfigFlags &= ~flag; }
-		static PanelManager& Manager() { return s_Manager; }
-		static AppSettings& AppManager() { return s_AppManager; }
-	protected:
-		static PanelManager s_Manager;
-		static AppSettings s_AppManager;
+
+		static void setFlag(ImGuiConfigFlags flag, bool value) { value ? ImGui::GetIO().ConfigFlags |= flag : ImGui::GetIO().ConfigFlags &= ~flag; }
+
+		static PanelManager &Manager();
+		static AppSettings &AppManager();
 	};
 }
