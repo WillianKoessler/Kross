@@ -1,8 +1,7 @@
+#include "Editor_pch.h"
 #include "EditorLayer.h"
 
-#include "Panels/DockSpace.h"
-#include "Panels/RendererStats.h"
-#include "Panels/EntityInspector.h"
+#include "Panels.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "SceneCameraController.h"
 
@@ -15,7 +14,7 @@ namespace Kross {
 
 	void EditorLayer::OnAttach()
 	{
-		RenderCommand::SetClear(0x0a0a10FF);
+		RenderCommand::SetClear(0x0a0a32FF);
 		//RenderCommand::SetClear(0xFF00FFFF);
 
 		m_Frame = FrameBuffer::CreateRef("EditorLayer_Framebuffer", { 800, 600, 1, false });
@@ -27,31 +26,25 @@ namespace Kross {
 
 		Panel::AppManager().s_bKeyboardEnabled = true;
 
-		m_pPanels.push_back(new DockSpace());
-		m_pPanels.push_back(new RendererStats());
-		m_pPanels.push_back(new EntityInspector(m_Scene));
+		m_pPanels.push_back(makeScope<DockSpace>());
+		m_pPanels.push_back(makeScope<RendererStats>());
+		m_pPanels.push_back(makeScope<SceneHierarchy>(m_Scene));
+		m_pPanels.push_back(makeScope<EntityProperties>(m_Scene));
 
 		Entity sceneCamera = m_Scene->CreateEntity("SceneCamera");
-		KROSS_TRACE("");
-		SceneCamera cmpt;
-		cmpt.SetOrtho(10.0f, -1.0f, 1.0f);
-		cmpt.SetViewportSize({ m_Frame->GetSpecs().Width, m_Frame->GetSpecs().Height });
-		sceneCamera.AddComponent<CameraComponent>();
-
-		sceneCamera.AddComponent<NativeScriptComponent>()->Bind<CameraController>();
+		sceneCamera.Add<CameraComponent>();
+		sceneCamera.Add<NativeScriptComponent>()->Bind<CameraController>();
 		m_Scene->SetPrimaryCamera(sceneCamera);
 
+		m_Scene->CreateEntity("mySquare").Add<SpriteComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		m_Scene->CreateEntity("otherSquare").Add<SpriteComponent>();
 
-
-		m_Scene->CreateEntity("mySquare");
-		Entity square = m_Scene->GetEntity("mySquare");
-		square.AddComponent<SpriteComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+		m_Scene->CreateEntity("Second Camera").Add<CameraComponent>();
 
 		RenderCommand::BackCull(true);
 	}
 	void EditorLayer::OnDetach()
 	{
-		for (int i = (int)m_pPanels.size() - 1; i > -1; i--) delete m_pPanels[i];
 		m_Frame->unBind();
 	}
 
@@ -144,7 +137,7 @@ namespace Kross {
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 			ImGui::Begin(GetName(), &Panel::Manager().s_bViewport, m_Flags);
-
+			PassEvent = ImGui::IsWindowHovered() && ImGui::IsWindowFocused();
 			if (ImGui::BeginMenuBar())
 			{
 				if (ImGui::BeginMenu("Settings")) {
@@ -160,7 +153,7 @@ namespace Kross {
 				m_ViewportSize = *(glm::vec2 *)&viewportPanelSize;
 				m_Camera.SetViewportSize(m_ViewportSize);
 				m_Frame->Resize(m_ViewportSize);
-				m_Scene->GetEntity("SceneCamera").GetComponent<CameraComponent>()->camera.SetViewportSize(m_ViewportSize);
+				m_Scene->GetEntity("SceneCamera").Get<CameraComponent>()->camera.SetViewportSize(m_ViewportSize);
 			}
 
 			ImGui::Image((void *)(uintptr_t)m_Frame->GetColorAttachmentID(), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));
@@ -171,6 +164,6 @@ namespace Kross {
 
 	void EditorLayer::OnEvent(Event &e)
 	{
-		m_Camera.OnEvent(e);
+		if(PassEvent && Panel::AppManager().s_bEditorCamera) m_Camera.OnEvent(e);
 	}
 }

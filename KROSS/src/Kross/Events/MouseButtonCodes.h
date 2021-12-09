@@ -3,20 +3,20 @@
 // from glfw3.h
 
 namespace Kross {
-	enum class Mouse
+	enum class MouseButton
 	{
-		Button0 = 0,
-		Button1 = 1,
-		Button2 = 2,
-		Button3 = 3,
-		Button4 = 4,
-		Button5 = 5,
-		Button6 = 6,
-		Button7 = 7,
+		b0 = 0,
+		b1 = 1,
+		b2 = 2,
+		b3 = 3,
+		b4 = 4,
+		b5 = 5,
+		b6 = 6,
+		b7 = 7,
 
-		ButtonLast = Button7,
-		ButtonLeft = Button0,
-		ButtonRight = Button1,
-		ButtonMiddle = Button2
+		Last = b7,
+		Left = b0,
+		Right = b1,
+		Middle = b2
 	};
 }

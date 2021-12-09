@@ -1,3 +1,4 @@
+#include "Editor_pch.h"
 #include "RendererStats.h"
 
 namespace Kross {
@@ -5,7 +6,7 @@ namespace Kross {
 		: frames(new float[plotsize])
 	{
 		m_strName = "Renderer Status";
-		KROSS_INFO("RendererStats Panel Constructed");
+		KROSS_INFO("Panel '{0}' Constructed", m_strName);
 	}
 	RendererStats::~RendererStats()
 	{

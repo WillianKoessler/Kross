@@ -19,7 +19,7 @@ namespace Kross {
 			if (Input::IsKeyHeld(Key::Right)) acc.x += speed;
 			if (Input::IsKeyHeld(Key::Left)) acc.x -= speed;
 			vel = (vel * 0.95f) + acc;
-			GetComponent<TransformComponent>().Transform[3] += vel;
+			Get<TransformComponent>().Transform[3] += vel;
 		}
 	};
 }

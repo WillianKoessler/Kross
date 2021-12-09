@@ -1,59 +1,64 @@
 #pragma once
 
-#include <string>
-#include <functional>
-#include "Kross.h"
-
 namespace Kross {
-	class Panel : public Resource
+	class Panel
 	{
 	protected:
-		struct PanelManager
+		static struct PanelManager
 		{
-			bool s_bDockspace;
-			bool s_bDemoWindow;
-			bool s_bRendererStats;
-			bool s_bViewport;
-			bool s_bEntityInspector;
+			bool s_bDockspace = true;
+			bool s_bDemoWindow = false;
+			bool s_bRendererStats = false;
+			bool s_bViewport = true;
+			bool s_bSceneHierarchy = true;
+			bool s_bPropertiesInspector = true;
 
 			bool s_bFullscreen;
-		};
-		struct AppSettings
+		} s_Manager;
+		static struct AppSettings
 		{
 			bool s_bEditorCamera = true;
 			bool s_bKeyboardEnabled = false;
 			bool s_bGamepadEnabled = false;
 			bool s_bViewportEnabled = false;
-		};
+		} s_AppManager;
 
-		enum MessageBoxButtons { OK, OK_CANCEL, OK_RETRY_CANCEL, YES_NO, YES_NO_CANCEL };
-		
-		std::function<void()> DefaultFunc = []() { ImGui::Text("This feature has not been yet implemented."); };
+		enum class ButtonType { OK, OK_CANCEL, OK_RETRY_CANCEL, YES_NO, YES_NO_CANCEL };
 		
 		struct MessageBoxSpecs
 		{
 			bool show = false;
 			char* id = nullptr;
-			MessageBoxButtons buttontype = OK;
-			std::function<void()> func;
+			ButtonType type = ButtonType::OK;
+			void(*func)(void) = DefaultFunc;
 		};
-
+	
+	protected:
+		virtual void Menu() {}
 		void ShowHelperMarker(const std::string& msg, float size = 35.0f);
 		void MessageBoxDialog(MessageBoxSpecs& specs);
-		virtual void Menu() {}
-
+		void ButtonOK(MessageBoxSpecs &specs);
+		void ButtonOK_CANCEL(MessageBoxSpecs &specs);
+		void ButtonOK_RETRY_CANCEL(MessageBoxSpecs &specs);
+		void ButtonYES_NO(MessageBoxSpecs &specs);
+		void ButtonYES_NO_CANCEL(MessageBoxSpecs &specs);
+	
+	protected:
+		static void(*DefaultFunc)(void);
+		static Entity s_Selection;
 		MessageBoxSpecs PopUpMessage;
 		uint32_t m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_Popup;
+		const char *m_strName;
 
 	public:
-		Panel() { SetName("Unnamed_Panel"); }
+		Panel() { m_strName = "Unnamed_Panel"; }
 		virtual ~Panel() {};
 
 		virtual void Show(double ts) = 0;
 
 		static void setFlag(ImGuiConfigFlags flag, bool value) { value ? ImGui::GetIO().ConfigFlags |= flag : ImGui::GetIO().ConfigFlags &= ~flag; }
 
-		static PanelManager &Manager();
-		static AppSettings &AppManager();
+		static PanelManager &Manager() { return s_Manager; }
+		static AppSettings &AppManager() { return s_AppManager; }
 	};
 }

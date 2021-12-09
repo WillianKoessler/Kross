@@ -37,6 +37,6 @@ namespace Kross {
 		glm::uvec2 m_ViewportSize;
 
 		friend class Entity;
-		friend class EntityInspector;
+		friend class SceneHierarchy;
 	};
 }

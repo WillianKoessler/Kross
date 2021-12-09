@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <stdlib.h>
 #include "SceneCamera.h"
 #include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
 #include "ScriptableEntity.h"
@@ -33,12 +34,12 @@ namespace Kross {
 
 	struct TagComponent : public EmptyComponent
 	{
-		const char* tag = "TAG_NULL";
+		static const uint32_t limit = 128;
+		char tag[limit];
 
 		TagComponent() = default;
 		TagComponent(const TagComponent&) = default;
-		TagComponent(const char* tag)
-			: tag(tag) {}
+		TagComponent(const char *newTag) { memset(tag, 0, sizeof(tag)); memcpy(tag, newTag, sizeof(tag)); }
 	};
 
 	struct RefCameraComponent : public EmptyComponent
@@ -54,6 +55,7 @@ namespace Kross {
 	struct CameraComponent : public EmptyComponent
 	{
 		SceneCamera camera;
+		bool Active = false;
 		bool fixedAspectRatio = false;
 
 		CameraComponent() = default;

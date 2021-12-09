@@ -1,8 +1,14 @@
+#include "Editor_pch.h"
 #include "Panel.h"
 #include "Kross.h"
 
 namespace Kross {
-	void Panel::ShowHelperMarker(const std::string& msg, float size)
+	void(*Panel::DefaultFunc)(void) = []() { ImGui::Text("This feature has not been yet implemented."); };
+	Panel::PanelManager Panel::s_Manager = PanelManager();
+	Panel::AppSettings Panel::s_AppManager = AppSettings();
+	Entity Panel::s_Selection = Entity();
+
+	void Panel::ShowHelperMarker(const std::string &msg, float size)
 	{
 		ImGui::TextDisabled("(?)");
 		if (ImGui::IsItemHovered())
@@ -14,57 +20,55 @@ namespace Kross {
 			ImGui::EndTooltip();
 		}
 	}
-	void Panel::MessageBoxDialog(MessageBoxSpecs& specs)
+	void Panel::MessageBoxDialog(MessageBoxSpecs &specs)
 	{
 		if (specs.show) {
 			if (!specs.id) {
 				specs.id = "Invalid Name for PopUp";
 				specs.func = []() {ImGui::Text("The 'MessageBoxDialog was called with invalid (bool *show)."); };
-				specs.buttontype = OK;
+				specs.type = ButtonType::OK;
 			}
 
 			ImGui::OpenPopup(specs.id);
 			if (ImGui::BeginPopupModal(specs.id, NULL, ImGuiWindowFlags_AlwaysAutoResize))
 			{
 				specs.func();
-
-				switch (specs.buttontype) {
-					default:
-						if (ImGui::Button("OK", ImVec2(50, 0))) {
-							ImGui::CloseCurrentPopup();
-							specs.show = false;
-						}
-					case OK:
-						if (ImGui::Button("OK", ImVec2(50, 0))) {
-							ImGui::CloseCurrentPopup();
-							specs.show = false;
-						}
+				switch (specs.type) {
+					case ButtonType::OK: ButtonOK(specs); break;
+					case ButtonType::OK_CANCEL: ButtonOK_CANCEL(specs); break;
+					case ButtonType::OK_RETRY_CANCEL: ButtonOK_RETRY_CANCEL(specs); break;
+					case ButtonType::YES_NO: ButtonYES_NO(specs); break;
+					case ButtonType::YES_NO_CANCEL: ButtonYES_NO_CANCEL(specs); break;
+					default: ButtonOK(specs); break;
 				}
 				ImGui::EndPopup();
 			}
 		}
 	}
-	Panel::PanelManager &Panel::Manager()
+	void Panel::ButtonOK(MessageBoxSpecs &specs)
 	{
-		static PanelManager s_Manager;
-		static bool setted = false;
-		if (!setted) {
-			s_Manager.s_bDockspace = true;
-			s_Manager.s_bDemoWindow = false;
-			s_Manager.s_bRendererStats = false;
-			s_Manager.s_bViewport = true;
-			s_Manager.s_bEntityInspector = false;
-			s_Manager.s_bFullscreen = false;
-			setted = true;
+		auto w = ImGui::GetWindowSize().x;
+		ImGui::PushItemWidth(-w / 2);
+		if (ImGui::Button("OK", ImVec2(50, 0))) {
+			ImGui::CloseCurrentPopup();
+			specs.show = false;
 		}
-		return s_Manager;
+		ImGui::PopItemWidth();
 	}
-	Panel::AppSettings &Panel::AppManager()
+	void Panel::ButtonOK_CANCEL(MessageBoxSpecs &specs)
 	{
-		static AppSettings s_AppManager;
-		return s_AppManager;
+	}
+	void Panel::ButtonOK_RETRY_CANCEL(MessageBoxSpecs &specs)
+	{
+	}
+	void Panel::ButtonYES_NO(MessageBoxSpecs &specs)
+	{
+	}
+	void Panel::ButtonYES_NO_CANCEL(MessageBoxSpecs &specs)
+	{
 	}
 }
+
 //if (id == "Style Open File")
 //{
 //	//char buff[256] = { 0 };

@@ -11,13 +11,13 @@ namespace Kross {
 	{
 	public:
 		static enum class KeyState { NOT_PRESSED = 0, PRESSED = 1, HELD = 2, RELEASED = 3 } GetKeyState(Key keycode);
-		static enum class MouseButtonState { NOT_PRESSED = 0, PRESSED = 1, HELD = 2, RELEASED = 3 } GetMouseButtonState(Mouse button);
+		static enum class MouseButtonState { NOT_PRESSED = 0, PRESSED = 1, HELD = 2, RELEASED = 3 } GetMouseButtonState(MouseButton button);
 		static bool IsKeyHeld(Key keycode);
 		static bool IsKeyPressed(Key keycode);
 		static bool IsKeyReleased(Key keycode);
-		static bool IsMouseButtonHeld(Mouse button);
-		static bool IsMouseButtonPressed(Mouse button);
-		static bool IsMouseButtonReleased(Mouse button);
+		static bool IsMouseButtonHeld(MouseButton button);
+		static bool IsMouseButtonPressed(MouseButton button);
+		static bool IsMouseButtonReleased(MouseButton button);
 		static glm::vec2 GetMousePosition();
 		static void SetMousePosition(const glm::vec2& pos);
 		static void SetMousePosition(double x, double y);

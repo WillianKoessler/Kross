@@ -47,3 +47,21 @@ const char *Kross::FileName(const char *cpath)
 	entries.emplace_back(path.substr(slash, count));
 	return entries.back().c_str();
 }
+
+ int Kross::FlipBits(int &flags, int mask)
+{
+	 flags ^= mask;
+	 return flags;
+}
+
+ int Kross::ClearBits(int &flags, int mask)
+ {
+	 flags &= ~mask;
+	 return flags;
+ }
+
+ int Kross::SetBits(int &flags, int mask)
+ {
+	 flags |= mask;
+	 return flags;
+ }

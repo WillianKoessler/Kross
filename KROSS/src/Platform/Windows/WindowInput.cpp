@@ -66,7 +66,7 @@ namespace Kross {
 		oldState = state;
 		return now;
 	}
-	Input::MouseButtonState Input::GetMouseButtonState(Mouse keycode)
+	Input::MouseButtonState Input::GetMouseButtonState(MouseButton keycode)
 	{
 		static constexpr uint16_t maxKeys = 16u;
 		static Input::MouseButtonState keys[maxKeys] = { Input::MouseButtonState::NOT_PRESSED };
@@ -103,7 +103,7 @@ namespace Kross {
 	bool Input::IsKeyHeld(Key keycode) { return GetKeyState(keycode) == Input::KeyState::HELD; }
 	bool Input::IsKeyPressed(Key keycode) { return GetKeyState(keycode) == Input::KeyState::PRESSED; }
 	bool Input::IsKeyReleased(Key keycode) { return GetKeyState(keycode) == Input::KeyState::RELEASED; }
-	bool Input::IsMouseButtonHeld(Mouse keycode) { return GetMouseButtonState(keycode) == Input::MouseButtonState::HELD; }
-	bool Input::IsMouseButtonPressed(Mouse keycode) { return GetMouseButtonState(keycode) == Input::MouseButtonState::PRESSED; }
-	bool Input::IsMouseButtonReleased(Mouse keycode) { return GetMouseButtonState(keycode) == Input::MouseButtonState::RELEASED; }
+	bool Input::IsMouseButtonHeld(MouseButton keycode) { return GetMouseButtonState(keycode) == Input::MouseButtonState::HELD; }
+	bool Input::IsMouseButtonPressed(MouseButton keycode) { return GetMouseButtonState(keycode) == Input::MouseButtonState::PRESSED; }
+	bool Input::IsMouseButtonReleased(MouseButton keycode) { return GetMouseButtonState(keycode) == Input::MouseButtonState::RELEASED; }
 }

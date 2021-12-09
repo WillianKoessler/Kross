@@ -9,9 +9,10 @@ namespace Kross {
 		Ref<Texture::T2D> m_Placeholder;
 		glm::vec2 m_ViewportSize;
 		Ref<FrameBuffer> m_Frame;
-		std::vector<Panel*> m_pPanels;
+		std::vector<Scope<Panel>> m_pPanels;
 		Ref<Scene> m_Scene;
 		Camera::Editor m_Camera;
+		bool PassEvent = true;
 	public:
 		EditorLayer();
 

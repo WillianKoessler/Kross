@@ -1,11 +1,12 @@
+#include "Editor_pch.h"
 #include "DockSpace.h"
 
 namespace Kross {
 	DockSpace::DockSpace()
 	{
-		m_strName = "Kross DockSpace";
-		KROSS_INFO("DockSpace Constructed");
 		m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		m_strName = "Kross DockSpace";
+		KROSS_INFO("Panel '{0}' Constructed", m_strName);
 	}
 
 	void DockSpace::Menu()
@@ -14,7 +15,7 @@ namespace Kross {
 		{
 			if (ImGui::BeginMenu("Menu"))
 			{
-				if (ImGui::MenuItem("Open", NULL)) PopUpMessage = { true, "Open File Dialog", OK, DefaultFunc };
+				if (ImGui::MenuItem("Open", NULL)) PopUpMessage = { true, "Open File Dialog", ButtonType::OK, DefaultFunc };
 				ImGui::Separator();
 				if (ImGui::MenuItem("Close", "Alt+F4", false))
 					Manager().s_bDockspace = false;
@@ -25,12 +26,13 @@ namespace Kross {
 				ImGui::MenuItem("Viewport", NULL, &Manager().s_bViewport);
 				ImGui::MenuItem("GUI Demo", NULL, &Manager().s_bDemoWindow);
 				ImGui::MenuItem("Status", NULL, &Manager().s_bRendererStats);
-				ImGui::MenuItem("Entity Inspector", NULL, &Manager().s_bEntityInspector);
+				ImGui::MenuItem("Scene Hierarchy", NULL, &Manager().s_bSceneHierarchy);
+				ImGui::MenuItem("Entity Inspector", NULL, &Manager().s_bPropertiesInspector);
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Settings"))
 			{
-				if (ImGui::MenuItem("ImGui", NULL)) PopUpMessage = { true, "Style Editor", OK, DefaultFunc };
+				if (ImGui::MenuItem("ImGui", NULL)) PopUpMessage = { true, "Style Editor", ButtonType::OK, DefaultFunc };
 				ImGui::Separator();
 				ShowHelperMarker("Enables or Disable FullScreen mode."); ImGui::SameLine();
 				ImGui::MenuItem("Fullscreen", NULL, &Manager().s_bFullscreen);
@@ -46,12 +48,12 @@ namespace Kross {
 			{
 				ImGui::MenuItem("Editor Camera", NULL, &AppManager().s_bEditorCamera);
 				ImGui::Separator();
-				if (ImGui::MenuItem("Window", NULL)) PopUpMessage = { true, "Camera Window", OK, []() { ImGui::Text("Camera Inspector is yet to be implemented."); } };
+				if (ImGui::MenuItem("Window", NULL)) PopUpMessage = { true, "Camera Window", ButtonType::OK, []() { ImGui::Text("Camera Inspector is yet to be implemented."); } };
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Help"))
 			{
-				if (ImGui::MenuItem("Show Help", NULL)) PopUpMessage = { true, "Show Help", OK, DefaultFunc };
+				if (ImGui::MenuItem("Show Help", NULL)) PopUpMessage = { true, "Show Help", ButtonType::OK, DefaultFunc };
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();

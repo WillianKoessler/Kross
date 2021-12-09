@@ -115,36 +115,22 @@
 
 #ifdef KROSS_ENABLE_ASSERTS
 	#define KROSS_ASSERT(x, ...) { if(!(x)) { KROSS_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
-	#define KROSS_CORE_ASSERT(x, ...) { if(!(x)) { KROSS_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 #else
 	#define KROSS_ASSERT(x, ...)
-	#define KROSS_CORE_ASSERT(x, ...)
 #endif
 
 #define BIT(x) (1 << x)
-//#define KROSS_BIND_EVENT_FN(func) std::bind(&func, this, std::placeholders::_1)
-
 #define KROSS_BIND_EVENT_FN(func) [this](auto&&...args)->decltype(auto){ return this->func(std::forward<decltype(args)>(args)...); }
 
 #include <memory>
 
 namespace Kross {
 
-	template<class T>
-	using Ref = std::shared_ptr<T>;
-
+	template<class T> using Ref = std::shared_ptr<T>;
 	template<class T, class ... Args>
-	constexpr Ref<T> makeRef(Args&& ... args)
-	{
-		return std::make_shared<T>(std::forward<Args>(args)...);
-	}
+	constexpr Ref<T> makeRef(Args&& ... args) { return std::make_shared<T>(std::forward<Args>(args)...); }
 
-	template<class T>
-	using Scope = std::unique_ptr<T>;
-
+	template<class T> using Scope = std::unique_ptr<T>;
 	template<class T, class ... Args>
-	constexpr Scope<T> makeScope(Args&& ... args)
-	{
-		return std::make_unique<T>(std::forward<Args>(args)...);
-	}
+	constexpr Scope<T> makeScope(Args&& ... args) { return std::make_unique<T>(std::forward<Args>(args)...); }
 }

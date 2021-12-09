@@ -53,30 +53,36 @@ namespace Kross::Camera {
 	}
 	void Editor::OnUpdate(double ts)
 	{
-		auto &mouse = Input::GetMousePosition();
-		glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
-		m_InitialMousePosition = mouse;
-		if (Input::IsMouseButtonHeld(Mouse::ButtonMiddle))
-		{
-			if (Input::IsKeyHeld(Key::LeftShift))
-				MousePan(delta);
-			else if (Input::IsKeyHeld(Key::LeftControl))
-				MouseZoom(delta.y);
-			else
-				MouseRotate(delta);
-		}
 		UpdateView();
 	}
 	void Editor::OnEvent(Event &e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseScroll));
+		dispatcher.Dispatch<MouseMovedEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseMoved));
 	}
 	bool Editor::OnMouseScroll(MouseScrolledEvent &e)
 	{
 		float delta = e.GetYOffSet() * 0.1f;
 		MouseZoom(delta);
 		UpdateView();
+		return false;
+	}
+	bool Editor::OnMouseMoved(MouseMovedEvent &e)
+	{
+		m_MousePosition = { e.GetX(), e.GetY() };
+		m_Delta = (m_MousePosition - m_InitialMousePosition) * 0.003f;
+		m_InitialMousePosition = m_MousePosition;
+
+		if (Input::IsMouseButtonHeld(MouseButton::Middle))
+		{
+			if (Input::IsKeyHeld(Key::LeftShift))
+				MousePan(m_Delta);
+			else if (Input::IsKeyHeld(Key::LeftControl))
+				MouseZoom(m_Delta.y);
+			else
+				MouseRotate(m_Delta);
+		}
 		return false;
 	}
 	void Editor::MousePan(const glm::vec2 &delta)
