@@ -32,7 +32,7 @@ namespace Kross {
 		return entity;
 	}
 
-	Entity Scene::GetEntity(const char *name)
+	Entity Scene::GetEntity(const char *name) const
 	{
 		auto view = m_Registry.view<TagComponent>();
 		std::vector<entt::entity> pool;
@@ -60,6 +60,19 @@ namespace Kross {
 		return pool;
 	}
 #endif
+	void Scene::SetPrimaryCamera(const Entity &entity)
+	{
+		if (entity.p_Scene != this) { KROSS_WARN("Trying to set a Primary Camera with entity from another Scene."); return; }
+		if (!entity.Has<CameraComponent>()) { KROSS_WARN("Entity does not have a Camera Component to be setted as Scene's Primary Camera."); return; }
+		if (!entity.Has<TransformComponent>()) { KROSS_WARN("Entity does not have a Transform Component to be setted as Scene's Primary Camera."); return; }
+		if (!entity.Has<TagComponent>()) { KROSS_WARN("Entity does not have a Tag Component to be setted as Scene's Primary Camera."); return; }
+		if (m_Registry.view<CameraComponent>().contains(entity.m_ID)) m_PrimaryCameraID = entity.m_ID;
+		else KROSS_WARN("Scene does not contain entity supplied to be Primary Camera.");
+	}
+	Entity Scene::GetCurrentCamera() const
+	{
+		return Entity{ (uint32_t)m_PrimaryCameraID, this };
+	}
 	void Scene::OnUpdateEditor(double ts, const Camera::Editor &camera)
 	{
 		Renderer2D::Begin(camera);
@@ -86,23 +99,23 @@ namespace Kross {
 			cmp.m_Instance->OnUpdate(ts);
 			});
 
-		{
-			int count = 0;
-			auto view = m_Registry.view<CameraComponent, TransformComponent>();
-			for (auto e : view) {
-				auto camera = view.get<CameraComponent>(e);
-				if (camera.Active) { count++; camera.Active = false; }
-				if (count == 1) SetPrimaryCamera({ (uint32_t)e, this });
-			}
-			if (count == 0) primaryCamera = entt::null;
-		}
+		//{
+		//	auto view = m_Registry.view<CameraComponent, TransformComponent, TagComponent>();
+		//	for (auto e : view)
+		//	{
+		//		auto [cameraComponent, transformComponent, tagComponent] = view.get(e);
+		//		if (cameraComponent.makeActive) { m_PrimaryCameraID = e; cameraComponent.makeActive = false; }
+		//	}
+		//}
 
-		if (primaryCamera != entt::null) {
-			Entity camera((uint32_t)primaryCamera, this);
-			auto camC = camera.Get<CameraComponent>(); auto tranC = camera.Get<TransformComponent>();
-			if (!camC) KROSS_WARN("Primary Camera does not have CameraComponent"); if (!tranC) KROSS_WARN("Primary Camera does not have TransformComponent"); if (!camC || !tranC) return;
-
-			Renderer2D::Begin(*camC, *tranC);
+		if (m_PrimaryCameraID != entt::null) {
+			Entity primaryCamera((uint32_t)m_PrimaryCameraID, this);
+			auto camera = primaryCamera.Get<CameraComponent>();
+			auto tranform = primaryCamera.Get<TransformComponent>();
+			if (!camera) KROSS_WARN("Primary Camera does not have CameraComponent");
+			if (!tranform) KROSS_WARN("Primary Camera does not have TransformComponent");
+			if (!camera || !tranform) return;
+			Renderer2D::Begin(*camera, *tranform);
 			{
 				// Render Sprites
 				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
@@ -117,24 +130,10 @@ namespace Kross {
 		}
 	}
 
-	void Scene::OnViewportResize(const glm::uvec2 &size)
+	void Scene::OnViewportResize(const glm::vec2 &size)
 	{
 		m_ViewportSize = size;
-
 		auto view = m_Registry.view<CameraComponent>();
 		view.each([&size](CameraComponent &cmpt) { if (!cmpt.fixedAspectRatio) { cmpt.camera.SetViewportSize(size); }});
-	}
-
-	void Scene::SetPrimaryCamera(Entity entity)
-	{
-		if (entity.p_Scene != this) { KROSS_WARN("Trying to set a Primary Camera with entity from another Scene."); return; }
-		if (!entity.Has<CameraComponent>()) { KROSS_WARN("Entity does not have a Camera Component to be setted as Scene's Primary Camera."); return; }
-		//if (entity.Get<CameraComponent>().camera) { KROSS_WARN("Entity does not have a valid camera inside Camera Component to be setted as Scene's Primary Camera."); return; }
-		//if (primaryCamera != entt::null) { KROSS_WARN("Overriding previous Camera."); Entity((uint32_t)primaryCamera, this).Get<CameraComponent>()->Active = false; }
-		if (m_Registry.view<CameraComponent>().contains(entity.m_ID)) {
-			primaryCamera = entity.m_ID;
-			Entity((uint32_t)primaryCamera, this).Get<CameraComponent>()->Active = true;
-			//KROSS_TRACE("Scene Primary Camera has been set.");
-		} else KROSS_WARN("Scene does not contain entity supplied to be Primary Camera.");
 	}
 }

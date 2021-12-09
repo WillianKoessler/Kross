@@ -114,7 +114,9 @@
 //#endif
 
 #ifdef KROSS_ENABLE_ASSERTS
-	#define KROSS_ASSERT(x, ...) { if(!(x)) { KROSS_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+//{ if(!(x)) { KROSS_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+
+	#define KROSS_ASSERT(condition, message) static_assert(condition, message)
 #else
 	#define KROSS_ASSERT(x, ...)
 #endif
@@ -133,4 +135,11 @@ namespace Kross {
 	template<class T> using Scope = std::unique_ptr<T>;
 	template<class T, class ... Args>
 	constexpr Scope<T> makeScope(Args&& ... args) { return std::make_unique<T>(std::forward<Args>(args)...); }
+	template<typename genType>
+	genType phi()
+	{
+		KROSS_ASSERT(std::numeric_limits<genType>::is_iec559, "'phi' only accepts floating-point inputs");
+		return static_cast<genType>(1.61903398874989484920721002966692491);
+	}
 }
+

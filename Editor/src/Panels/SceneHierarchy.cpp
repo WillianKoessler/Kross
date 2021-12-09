@@ -25,15 +25,17 @@ namespace Kross {
 	}
 	void SceneHierarchy::DrawEntityNode(Entity &entity)
 	{
-		auto tc = entity.Get<TagComponent>();
-		if (tc)
-		{
-			ImGuiTreeNodeFlags flags = (s_Selection == entity) ? ImGuiTreeNodeFlags_Selected : 0;
-			bool opened = ImGui::TreeNodeEx((void *)entity, flags, tc->tag);
-			if (ImGui::IsItemClicked()) s_Selection = entity;
-			if (opened) {
-				Manager().s_bPropertiesInspector = true;
-				ImGui::TreePop();
+		if (entity.Has<TagComponent>() == 1) {
+			auto tc = entity.Get<TagComponent>();
+			if (tc)
+			{
+				ImGuiTreeNodeFlags flags = (s_Selection == entity) ? ImGuiTreeNodeFlags_Selected : 0;
+				bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc->tag), flags, tc->tag);
+				if (ImGui::IsItemClicked()) s_Selection = entity;
+				if (opened) {
+					Manager().s_bPropertiesInspector = true;
+					ImGui::TreePop();
+				}
 			}
 		}
 	}

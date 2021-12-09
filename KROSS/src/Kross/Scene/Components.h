@@ -7,18 +7,40 @@
 #include "ScriptableEntity.h"
 #include "EmptyComponent.h"
 
+static constexpr glm::mat4 mat4 = glm::mat4(1.0f);
+
 namespace Kross {
+	struct TagComponent : public EmptyComponent
+	{
+		static const uint32_t limit = 128;
+		char tag[limit];
+
+		TagComponent() = default;
+		TagComponent(const TagComponent &) = default;
+		TagComponent(const char *newTag) { memset(tag, 0, limit); memcpy(tag, newTag, limit); }
+	};
+
 	struct TransformComponent : public EmptyComponent
 	{
-		glm::mat4 Transform = glm::mat4(1.0f);
+		glm::vec3 Position = glm::vec3(0.0f);
+		glm::vec3 Rotation = glm::vec3(0.0f);
+		glm::vec3 Scale = glm::vec3(1.0f);
 
 		TransformComponent() = default;
-		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::mat4& mat)
-			: Transform(mat) { }
+		TransformComponent(const TransformComponent &) = default;
+		TransformComponent(const glm::vec3 &position)
+			: Position(position) {}
 
-		operator glm::mat4& () { return Transform; }
-		operator const glm::mat4& () const { return Transform; }
+		operator glm::mat4() const
+		{
+			return (
+				glm::translate(mat4, Position) * 
+				(glm::rotate(mat4, Rotation.x, { 1.0f, 0.0f, 0.0f }) *
+				glm::rotate(mat4, Rotation.y, { 0.0f, 1.0f, 0.0f }) *
+				glm::rotate(mat4, Rotation.z, { 0.0f, 0.0f, 1.0f })) *
+				glm::scale(mat4, Scale)
+				);
+		}
 	};
 
 	struct SpriteComponent : public EmptyComponent
@@ -27,35 +49,14 @@ namespace Kross {
 		//Ref<Texture::T2D> sprite = nullptr;
 
 		SpriteComponent() = default;
-		SpriteComponent(const SpriteComponent&) = default;
-		SpriteComponent(const glm::vec4& tintColor)
-			: tint(tintColor) { }
-	};
-
-	struct TagComponent : public EmptyComponent
-	{
-		static const uint32_t limit = 128;
-		char tag[limit];
-
-		TagComponent() = default;
-		TagComponent(const TagComponent&) = default;
-		TagComponent(const char *newTag) { memset(tag, 0, sizeof(tag)); memcpy(tag, newTag, sizeof(tag)); }
-	};
-
-	struct RefCameraComponent : public EmptyComponent
-	{
-		Ref<Camera::Camera> camera = makeRef<Camera::Orthographic>("UnnamedRefCameraComponent", -16.0f, 16.0f, -9.0f, 9.0f);
-
-		RefCameraComponent() = default;
-		RefCameraComponent(const RefCameraComponent&) = default;
-		RefCameraComponent(const Ref<Camera::Camera>& camera)
-			: camera(camera) {}
+		SpriteComponent(const SpriteComponent &) = default;
+		SpriteComponent(const glm::vec4 &tintColor)
+			: tint(tintColor) {}
 	};
 
 	struct CameraComponent : public EmptyComponent
 	{
 		SceneCamera camera;
-		bool Active = false;
 		bool fixedAspectRatio = false;
 
 		CameraComponent() = default;
@@ -68,8 +69,8 @@ namespace Kross {
 	{
 		ScriptableEntity *m_Instance = nullptr;
 
-		ScriptableEntity*(*Instantiate)();
-		void(*Destroy)(NativeScriptComponent*);
+		ScriptableEntity *(*Instantiate)();
+		void(*Destroy)(NativeScriptComponent *);
 
 		template<typename T>
 		void Bind()

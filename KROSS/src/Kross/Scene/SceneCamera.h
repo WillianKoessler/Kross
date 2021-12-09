@@ -35,7 +35,7 @@ namespace Kross {
 	private:
 		ProjectionType m_ProjType = ProjectionType::Orthographic;
 		float m_fOrthoSize = 10.0f;
-		float m_fOrthoNear = -1.0f, m_fOrthoFar = 1.0f;
+		float m_fOrthoNear = -1.0f, m_fOrthoFar = 1000.0f;
 		float m_fAspectRatio = 16.0f / 9.0f;
 
 		float m_fPerspFOV = glm::radians(90.0f);

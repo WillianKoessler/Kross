@@ -34,12 +34,14 @@ namespace Kross {
 		Entity sceneCamera = m_Scene->CreateEntity("SceneCamera");
 		sceneCamera.Add<CameraComponent>();
 		sceneCamera.Add<NativeScriptComponent>()->Bind<CameraController>();
-		m_Scene->SetPrimaryCamera(sceneCamera);
 
 		m_Scene->CreateEntity("mySquare").Add<SpriteComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
 		m_Scene->CreateEntity("otherSquare").Add<SpriteComponent>();
 
 		m_Scene->CreateEntity("Second Camera").Add<CameraComponent>();
+		auto camera = m_Scene->CreateEntity("Third Camera");
+		camera.Add<CameraComponent>();
+		camera.Remove<TagComponent>();
 
 		RenderCommand::BackCull(true);
 	}
@@ -153,7 +155,7 @@ namespace Kross {
 				m_ViewportSize = *(glm::vec2 *)&viewportPanelSize;
 				m_Camera.SetViewportSize(m_ViewportSize);
 				m_Frame->Resize(m_ViewportSize);
-				m_Scene->GetEntity("SceneCamera").Get<CameraComponent>()->camera.SetViewportSize(m_ViewportSize);
+				m_Scene->OnViewportResize(m_ViewportSize);
 			}
 
 			ImGui::Image((void *)(uintptr_t)m_Frame->GetColorAttachmentID(), viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));

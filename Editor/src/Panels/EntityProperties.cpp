@@ -4,6 +4,8 @@
 #include <glm/glm/gtc/type_ptr.hpp>
 
 namespace Kross {
+	const float EntityProperties::s_DisabledColor = phi<float>();
+
 	EntityProperties::EntityProperties(const Ref<Scene> &scene)
 		: p_Scene(scene)
 	{
@@ -22,28 +24,37 @@ namespace Kross {
 	void EntityProperties::DrawEntity(Entity &entity)
 	{
 		if (entity) {
-			DrawSelectionComponent<TagComponent>("Tag: ", [](const char *id, TagComponent *cmp) {
-				char buffer[256];
-				memset(buffer, 0, sizeof(buffer));
-				strcpy_s(buffer, sizeof(buffer), cmp->tag);
-				if (ImGui::InputText(id, buffer, sizeof(buffer)) && Input::IsKeyPressed(Key::Enter))
+			DrawSelectionComponent<TagComponent>("Tag", [](const Ref<Scene> &scene, const char *id, TagComponent *cmp) {
+				char buffer[TagComponent::limit];
+				memset(buffer, 0, TagComponent::limit);
+				strcpy_s(buffer, TagComponent::limit, cmp->tag);
+				if (ImGui::InputText(id, buffer, TagComponent::limit) && Input::IsKeyPressed(Key::Enter))
 					strcpy_s(cmp->tag, TagComponent::limit, buffer);
 				});
-			DrawSelectionComponent<TransformComponent>("", [](const char *id, TransformComponent *cmp) {
-				if (ImGui::TreeNodeEx((const void *)typeid(TransformComponent).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Tranform")) {
-					ImGui::Text("Position: "); ImGui::SameLine();
-					ImGui::DragFloat3("##Position: ", glm::value_ptr(cmp->Transform[3]), 0.1f);
-					ImGui::TreePop();
-				}
+			DrawSelectionComponent<TransformComponent>("Transform", [](const Ref<Scene> &scene, const char *id, TransformComponent *cmp) {
+				ImGui::Text("Position: "); ImGui::SameLine(); ImGui::DragFloat3("##Position: ", glm::value_ptr(cmp->Position), 0.1f);
+				ImGui::Text("Rotation: "); ImGui::SameLine(); ImGui::DragFloat3("##Rotation: ", glm::value_ptr(cmp->Rotation), 0.1f);
+				ImGui::Text("Scale: "); ImGui::SameLine(); ImGui::DragFloat3("##Scale: ", glm::value_ptr(cmp->Scale), 0.1f);
 				});
-			DrawSelectionComponent<SpriteComponent>("Sprite: ", [](const char *id, SpriteComponent *cmp) {
+			DrawSelectionComponent<SpriteComponent>("Sprite", [](const Ref<Scene> &scene, const char *id, SpriteComponent *cmp) {
 				ImGui::ColorEdit4("##Sprite: ", glm::value_ptr(cmp->tint));
 				});
-			DrawSelectionComponent<CameraComponent>("Camera: ", [](const char *cid, CameraComponent *cmp) {
+			DrawSelectionComponent<CameraComponent>("Camera", [](const Ref<Scene> &scene, const char *id, CameraComponent *cmp) {
 				SceneCamera &camera = cmp->camera;
-				std::string id(cid);
+				if (s_Selection) {
+					Entity activeCamera = scene->GetCurrentCamera();
+					ImGui::Text("Current Active Camera: %s", activeCamera.Has<TagComponent>() == 1 ? activeCamera.Get<TagComponent>()->tag : "(null)");
+					ImGui::Text("Active Camera: "); ImGui::SameLine();
+					if (s_Selection.Has<TagComponent>() == 1 && s_Selection.Has<TransformComponent>() == 1) {
+						if (ImGui::Button("SET")) scene->SetPrimaryCamera(s_Selection);
+					} else {
+						ImGui::SameLine();
+						EntityProperties::SetDisabledStyle(ImGuiCol_Button, ImGuiCol_ButtonHovered, ImGuiCol_ButtonActive);
+						ImGui::Button("SET");
+						ImGui::PopStyleColor(3);
+					}
+				}
 
-				ImGui::Text(" ");
 				const char *projTypeStr[] = { "Perspective", "Orthographic" };
 				const char *selection = projTypeStr[(int)cmp->camera.GetProjType()];
 				ImGui::Text("Projection Type: "); ImGui::SameLine(); if (ImGui::BeginCombo("##Projection Type: ", selection, ImGuiComboFlags_NoArrowButton)) {
@@ -57,9 +68,11 @@ namespace Kross {
 					}
 					ImGui::EndCombo();
 				}
-				ImGui::Text("Active Camera: "); ImGui::SameLine(); ImGui::Checkbox("##Active Camera: ", &cmp->Active);
+
 
 				if (cmp->camera.GetProjType() == SceneCamera::ProjectionType::Orthographic) {
+					ImGui::Text("Fixed Aspect Ratio"); ImGui::SameLine(); ImGui::Checkbox("##Fixed Aspect Ratio", &cmp->fixedAspectRatio);
+
 					float fSize = camera.OrthoSize();
 					float fNear = camera.GetNearClip();
 					float fFar = camera.GetFarClip();
@@ -78,4 +91,19 @@ namespace Kross {
 				});
 		}
 	}
+	void EntityProperties::SetDisabledStyle(int item, int hovered, int activated)
+	{
+		glm::vec4 color = *(glm::vec4 *)&ImGui::GetStyleColorVec4(item);
+		color /= s_DisabledColor;
+		if (item > -1 && item < ImGuiCol_COUNT) ImGui::PushStyleColor(item, *(ImVec4 *)&color);
+		if (hovered > -1 && hovered < ImGuiCol_COUNT) ImGui::PushStyleColor(hovered, *(ImVec4 *)&color);
+		if (activated > -1 && activated < ImGuiCol_COUNT) ImGui::PushStyleColor(activated, *(ImVec4 *)&color);
+	}
+	//void EntityProperties::SetEnabledStyle(int item, int hovered, int activated)
+	//{
+	//	glm::vec4 color = *(glm::vec4 *)&ImGui::GetStyleColorVec4(item);
+	//	color *= s_DisabledColor;
+	//	ImGui::PushStyleColor(item, *(ImVec4 *)&color);
+	//	if (hovered > -1 && hovered < ImGuiCol_COUNT) ImGui::PushStyleColor(hovered, *(ImVec4 *)&color);
+	//}
 }

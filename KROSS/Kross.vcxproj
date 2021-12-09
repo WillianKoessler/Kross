@@ -610,7 +610,6 @@
     <ClCompile Include="src\Kross\Renderer\Textures\Textures.cpp" />
     <ClCompile Include="src\Kross\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Kross\Renderer\VoxelRenderer.cpp" />
-    <ClCompile Include="src\Kross\Scene\Entity.cpp" />
     <ClCompile Include="src\Kross\Scene\Scene.cpp" />
     <ClCompile Include="src\Kross\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Kross\Util\Util.cpp" />

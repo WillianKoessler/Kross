@@ -170,7 +170,7 @@ namespace Kross {
 		if (!s_bSceneBegan) s_bSceneBegan = true;
 		else KROSS_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
 		data->shader->Bind();
-		data->shader->SetMat4("u_ViewProjection", camera.camera.GetProjMat() * glm::inverse(transform.Transform));
+		data->shader->SetMat4("u_ViewProjection", camera.camera.GetProjMat() * glm::inverse((glm::mat4)transform));
 		data->shader->SetMat4("u_Transform", glm::mat4(1.0f));
 		BatchBegin();
 	}

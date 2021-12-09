@@ -1487,9 +1487,6 @@
     <ClCompile Include="src\Kross\Renderer\VoxelRenderer.cpp">
       <Filter>src\Kross\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Kross\Scene\Entity.cpp">
-      <Filter>src\Kross\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Kross\Scene\Scene.cpp">
       <Filter>src\Kross\Scene</Filter>
     </ClCompile>

@@ -13,7 +13,7 @@ namespace Kross {
 		~Scene();
 
 		Entity CreateEntity(const char *Tag);
-		Entity GetEntity(const char *Tag);
+		Entity GetEntity(const char *Tag) const;
 
 #ifdef KROSS_DLL
 		struct Entities
@@ -26,15 +26,17 @@ namespace Kross {
 #else
 		std::vector<Entity> GetAllEntities();
 #endif
-		void SetPrimaryCamera(Entity entity);
+		void SetPrimaryCamera(const Entity &entity);
+		Entity GetCurrentCamera() const;
 
 		void OnUpdateEditor(double ts, const Camera::Editor& camera);
 		void OnUpdateRuntime(double ts);
-		void OnViewportResize(const glm::uvec2& size);
+		void OnViewportResize(const glm::vec2& size);
+
 	private:
 		entt::registry m_Registry;
-		entt::entity primaryCamera = entt::null;
-		glm::uvec2 m_ViewportSize;
+		entt::entity m_PrimaryCameraID = entt::null;
+		glm::vec2 m_ViewportSize;
 
 		friend class Entity;
 		friend class SceneHierarchy;

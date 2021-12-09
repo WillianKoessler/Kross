@@ -7,24 +7,21 @@ namespace Kross {
 	{
 	public:
 		EntityProperties(const Ref<Scene>& scene);
-		void Show(double ts) override;
+		virtual void Show(double ts) override;
 		void DrawEntity(Entity &entity);
 	private:
-		template<typename Component> void DrawComponent(Entity &entity, const char* label, void(*show)(const char* id, Component*))
+		static const float s_DisabledColor;
+		static void SetDisabledStyle(int item, int hovered = 0, int activated = 0);
+		//static void SetEnabledStyle(int item, int hovered = 0, int activated = 0);
+		template<typename Component> void DrawSelectionComponent(const char* clabel, void(*show)(const Ref<Scene>&,const char*, Component*))
 		{
-			static std::string emptyID("");
-			if (entity.Has<Component>() == 1) {
-				ImGui::Text(label); ImGui::SameLine();
-				show(emptyID.append(" ").c_str(), entity.Get<Component>());
-			}
-		}
-		template<typename Component> void DrawSelectionComponent(const char* label, void(*show)(const char* id, Component*))
-		{
-			static std::string emptyID("");
+			std::string label(clabel);
 			if (s_Selection.Has<Component>() == 1) {
-				ImGui::Text(label); ImGui::SameLine();
-				show(emptyID.append(" ").c_str(), s_Selection.Get<Component>());
-				ImGui::Separator();
+				if (ImGui::TreeNodeEx((const void *)(typeid(Component).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, label.c_str())) {
+					show(p_Scene, ("##" + label).c_str(), s_Selection.Get<Component>());
+					ImGui::Separator();
+					ImGui::TreePop();
+				}
 			}
 		}
 	private:
