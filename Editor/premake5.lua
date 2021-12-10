@@ -22,6 +22,8 @@ project "Editor"
 		"../%{IncludeDir.spdlog}",
 		"../%{IncludeDir.entt}",
 		"../%{IncludeDir.glm}",
+		"../%{IncludeDir.stb_image}",
+		"../%{IncludeDir.ImGui}",
 	}
 
 	links

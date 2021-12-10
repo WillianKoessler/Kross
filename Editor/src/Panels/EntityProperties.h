@@ -10,9 +10,7 @@ namespace Kross {
 		virtual void Show(double ts) override;
 		void DrawEntity(Entity &entity);
 	private:
-		static const float s_DisabledColor;
 		static void SetDisabledStyle(int item, int hovered = 0, int activated = 0);
-		//static void SetEnabledStyle(int item, int hovered = 0, int activated = 0);
 		template<typename Component> void DrawSelectionComponent(const char* clabel, void(*show)(const Ref<Scene>&,const char*, Component*))
 		{
 			std::string label(clabel);
