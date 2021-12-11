@@ -14,9 +14,12 @@ namespace Kross {
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
+		virtual void OnEvent(Event &e) override;
 		virtual void OnImGuiRender(double ts) override;
 
 		void Begin();
 		void End();
+
+		void SetDarkTheme();
 	};
 }

@@ -14,11 +14,11 @@ namespace Kross {
 		inline float GetX() const { return m_fMouseX; }
 		inline float GetY() const { return m_fMouseY; }
 
-		std::string ToString() const override
+		const char *ToString() const override
 		{
 			std::stringstream ss;
 			ss << "Event: MouseMove -> (" << m_fMouseX << ", " << m_fMouseY << ")";
-			return ss.str();
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved)
@@ -36,11 +36,11 @@ namespace Kross {
 		inline float GetXOffSet() const { return m_fXOffSet; }
 		inline float GetYOffSet() const { return m_fYOffSet; }
 
-		std::string ToString() const override
+		const char *ToString() const override
 		{
 			std::stringstream ss;
 			ss << "Event: MouseScrolled -> (" << m_fXOffSet<< ", " << m_fYOffSet << ")";
-			return ss.str();
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(MouseScrolled)
@@ -56,9 +56,9 @@ namespace Kross {
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	protected:
-		MouseButtonEvent(int button)
-			: m_nButton(button) {}
-		int m_nButton;
+		int m_nButton, m_nRepeat;
+		MouseButtonEvent(int button, int repeat = -1)
+			: m_nButton(button), m_nRepeat(repeat) {}
 	};
 
 	class KAPI MouseButtonPressedEvent : public MouseButtonEvent
@@ -67,11 +67,11 @@ namespace Kross {
 		MouseButtonPressedEvent(int button)
 			: MouseButtonEvent(button) {}
 
-		std::string ToString() const override
+		const char *ToString() const override
 		{
 			std::stringstream ss;
 			ss << "Event: MousePressed -> " << m_nButton;
-			return ss.str();
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(MousePressed)
@@ -83,13 +83,29 @@ namespace Kross {
 		MouseButtonReleasedEvent(int button)
 			: MouseButtonEvent(button) {}
 
-		std::string ToString() const override
+		const char *ToString() const override
 		{
 			std::stringstream ss;
 			ss << "Event: MouseReleased -> " << m_nButton;
-			return ss.str();
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(MouseReleased)
+	};
+
+	class KAPI MouseButtonHeldEvent : public MouseButtonEvent
+	{
+	public:
+		MouseButtonHeldEvent(int button, int repeat)
+			: MouseButtonEvent(button, repeat) {}
+
+		const char *ToString() const override
+		{
+			std::stringstream ss;
+			ss << "Event: MouseHeld -> " << m_nButton;
+			return ss.str().c_str();
+		}
+
+		EVENT_CLASS_TYPE(MouseHeld)
 	};
 }

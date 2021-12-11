@@ -12,12 +12,12 @@ namespace Kross {
 
 	static bool s_GLFWInitialized = false;
 
-	static void GLFWErrorCallback(int error, const char* description)
+	static void GLFWErrorCallback(int error, const char *description)
 	{
 		KROSS_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Win_Windows::Win_Windows(WindowProps&& props)
+	Win_Windows::Win_Windows(WindowProps &&props)
 	{
 		KROSS_PROFILE_FUNC();
 		Init(std::move(props));
@@ -29,7 +29,7 @@ namespace Kross {
 		Shutdown();
 	}
 
-	void Win_Windows::Init(WindowProps&& props)
+	void Win_Windows::Init(WindowProps &&props)
 	{
 		KROSS_PROFILE_FUNC();
 		m_Data = props;
@@ -54,22 +54,19 @@ namespace Kross {
 			if ((props.nWidth == 0 || props.nHeight == 0) && props.fullscreen)
 			{
 				m_Window = glfwCreateWindow(mode->width, mode->height, props.strTitle, m_Monitor, NULL);
-			}
-			else if ((props.nWidth > 0 && props.nHeight > 0) && props.fullscreen)
+			} else if ((props.nWidth > 0 && props.nHeight > 0) && props.fullscreen)
 			{
 				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle, m_Monitor, NULL);
 				glfwSetWindowMonitor(m_Window, m_Monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-			}
-			else if ((props.nWidth > 0 && props.nHeight > 0) && !props.fullscreen)
+			} else if ((props.nWidth > 0 && props.nHeight > 0) && !props.fullscreen)
 			{
 				m_Window = glfwCreateWindow((int)props.nWidth, (int)props.nHeight, m_Data.strTitle, nullptr, NULL);
-			}
-			else
+			} else
 			{
-				KROSS_ERROR(
-					"Invalid Window Attributes.\nTitle: {1}\nWidth: {2}\nHeight: {3}\nFullcreen Mode: {4}",
-					__FUNCTION__, props.strTitle, props.nWidth, props.nHeight, props.fullscreen ? "ON" : "OFF" );
-				KROSS_FATAL("Invalid Window Attributes.\n(Prompt Log or File Log, for more information.");
+				KROSS_FATAL(
+					"Invalid Window Attributes.\n\tTitle: {0}\n\tWidth: {1}\n\tHeight: {2}\n\tFullcreen Mode: {3}\n{4}",
+					props.strTitle, props.nWidth, props.nHeight, props.fullscreen ? "ON" : "OFF",
+					"(Prompt Log or File Log, for more information.)");
 			}
 
 			int x, y;
@@ -86,121 +83,53 @@ namespace Kross {
 			m_Context->Init(m_Data.nWidth, m_Data.nHeight);
 		}
 
-		{
-			KROSS_PROFILE_SCOPE("glfwSetWindowUserPointer");
-			glfwSetWindowUserPointer(m_Window, &m_Data);
-		}
-		{
-			KROSS_PROFILE_SCOPE("SetVSync");
-			SetVSync(true);
-		}
+		glfwSetWindowUserPointer(m_Window, &m_Data);
+		SetVSync(true);
 
 		// Set GLFW callbacks
 		{
-			KROSS_PROFILE_SCOPE("glfwSetWindowSizeCallback");
-			glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			KROSS_PROFILE_SCOPE("EventsCallbacks");
+			glfwSetWindowSizeCallback(m_Window, [](GLFWwindow *window, int width, int height) {
+				WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
 				data.nWidth = width;
 				data.nHeight = height;
-
-				WindowResizeEvent event(width, height);
-
-				data.EventCallback(event);
-			});
+				data.EventCallback(WindowResizeEvent(width, height));
+				});
+			glfwSetWindowCloseCallback(m_Window, [](GLFWwindow *window) {
+				WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+				data.EventCallback(WindowCloseEvent());
+				});
+			glfwSetKeyCallback(m_Window, [](GLFWwindow *window, int keycode, int scancode, int action, int mods) {
+				static uint32_t repeats = GLFW_RELEASE;
+				WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+				if (action == GLFW_RELEASE) {
+					data.EventCallback(KeyReleasedEvent(keycode)); repeats = GLFW_RELEASE;
+				} else if (action == GLFW_PRESS) {
+					data.EventCallback(KeyPressedEvent(keycode)); repeats = GLFW_PRESS;
+				} else if (action == GLFW_REPEAT) data.EventCallback(KeyHeldEvent(keycode, repeats++));
+				});
+			glfwSetCharCallback(m_Window, [](GLFWwindow *window, unsigned int keycode) {
+				WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+				data.EventCallback(KeyTypedEvent(keycode));
+				});
+			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow *window, int button, int action, int mods) {
+				static uint32_t repeats = GLFW_RELEASE;
+				WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+				if (action == GLFW_RELEASE) {
+					data.EventCallback(MouseButtonReleasedEvent(button)); repeats = GLFW_RELEASE;
+				} else if (action == GLFW_PRESS) {
+					data.EventCallback(MouseButtonPressedEvent(button)); repeats = GLFW_PRESS;
+				} else if (action == GLFW_REPEAT) data.EventCallback(MouseButtonHeldEvent(button, repeats++));
+				});
+			glfwSetScrollCallback(m_Window, [](GLFWwindow *window, double xOffset, double yOffset) {
+				WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+				data.EventCallback(MouseScrolledEvent((float)xOffset, (float)yOffset));
+				});
+			glfwSetCursorPosCallback(m_Window, [](GLFWwindow *window, double xPos, double yPos) {
+				WindowData &data = *(WindowData *)glfwGetWindowUserPointer(window);
+				data.EventCallback(MouseMovedEvent((int)xPos, (int)yPos));
+				});
 		}
-		{
-			KROSS_PROFILE_SCOPE("glfwSetWindowCloseCallback");
-			glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-				WindowCloseEvent event;
-				data.EventCallback(event);
-			});
-		}
-		{
-			KROSS_PROFILE_SCOPE("glfwSetKeyCallback");
-			glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				switch (action)
-				{
-				case GLFW_PRESS:
-				{
-					KeyPressedEvent event(key, 0);
-					data.EventCallback(event);
-					break;
-				}
-				case GLFW_RELEASE:
-				{
-					KeyReleasedEvent event(key);
-					data.EventCallback(event);
-					break;
-				}
-				case GLFW_REPEAT:
-				{
-					KeyPressedEvent event(key, 1);
-					data.EventCallback(event);
-					break;
-				}
-				}
-			});
-		}
-		{
-			KROSS_PROFILE_SCOPE("glfwSetCharCallback");
-			glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
-			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				KeyTypedEvent event(keycode);
-				data.EventCallback(event);
-			});
-		}
-		{
-			KROSS_PROFILE_SCOPE("glfwSetMouseButtonCallback");
-			glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
-			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				switch (action)
-				{
-				case GLFW_PRESS:
-				{
-					MouseButtonPressedEvent event(button);
-					data.EventCallback(event);
-					break;
-				}
-				case GLFW_RELEASE:
-				{
-					MouseButtonReleasedEvent event(button);
-					data.EventCallback(event);
-					break;
-				}
-				}
-			});
-		}
-		{
-			KROSS_PROFILE_SCOPE("glfwSetScrollCallback");
-			glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				MouseScrolledEvent event((float)xOffset, (float)yOffset);
-				data.EventCallback(event);
-			});
-		}
-		{
-			KROSS_PROFILE_SCOPE("glfwSetCursorPosCallback");
-			glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-			{
-				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-
-				MouseMovedEvent event((int)xPos, (int)yPos);
-				data.EventCallback(event);
-			});
-		}
-
 		KROSS_INFO("Window Initialized {0} ({1}, {2})", m_Data.strTitle, m_Data.nWidth, m_Data.nHeight);
 	}
 
@@ -222,14 +151,14 @@ namespace Kross {
 	{
 		static bool previous_state = false;
 		if (enable == previous_state) return false;
+		previous_state = enable;
 
 		auto mode = glfwGetVideoMode(m_Monitor);
 		if (enable) glfwSetWindowMonitor(m_Window, m_Monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 		else glfwSetWindowMonitor(m_Window, nullptr, 100, 100, m_Data.nWidth, m_Data.nHeight, mode->refreshRate);
-		glfwGetFramebufferSize(m_Window, nullptr, nullptr);
-		m_Context->UpdateViewport(0, 0, m_Data.nWidth, m_Data.nHeight);
-		printf_s("size = {%u, %u}\n", m_Data.nWidth, m_Data.nHeight);
-		previous_state = enable;
+		//glfwGetFramebufferSize(m_Window, nullptr, nullptr);
+		//m_Context->UpdateViewport(0, 0, m_Data.nWidth, m_Data.nHeight);
+		//KROSS_TRACE("Size = ({0}, {1})", m_Data.nWidth, m_Data.nHeight);
 		return enable;
 	}
 

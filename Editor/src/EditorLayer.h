@@ -7,12 +7,15 @@ namespace Kross {
 	class EditorLayer final : public Layer
 	{
 		Ref<Texture::T2D> m_Placeholder;
-		glm::vec2 m_ViewportSize;
 		Ref<FrameBuffer> m_Frame;
 		std::vector<Scope<Panel>> m_pPanels;
 		Ref<Scene> m_Scene;
 		Camera::Editor m_Camera;
-		bool PassEvent = true;
+		glm::vec2 m_ViewportSize;
+		bool m_bMouseMoved;
+		bool m_bMouseClick;
+		//bool m_bViewportFocused = false;
+		//bool m_bViewportHovered = false;
 	public:
 		EditorLayer();
 
@@ -20,6 +23,6 @@ namespace Kross {
 		virtual void OnDetach() override;
 		virtual void OnUpdate(double) override;
 		virtual void OnImGuiRender(double) override;
-		virtual void OnEvent(Event& event) override;
+		virtual void OnEvent(Event& e) override;
 	};
 }

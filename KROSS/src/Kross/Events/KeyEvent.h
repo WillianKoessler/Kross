@@ -12,31 +12,44 @@ namespace Kross {
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
-		KeyEvent(){}
-		KeyEvent(int keycode)
-			: m_nKeyCode(keycode) {}
+		int m_nKeyCode = -1;
+		int m_nRepeatCount = -1;
 
-		int m_nKeyCode;
+		KeyEvent() = default;
+		KeyEvent(int keycode, int repeat = -1)
+			: m_nKeyCode(keycode), m_nRepeatCount(repeat) {}
+	};
+
+	class KAPI KeyHeldEvent : public KeyEvent
+	{
+	public:
+		KeyHeldEvent(int keycode, int repeatCount)
+			: KeyEvent(keycode, repeatCount) {}
+
+		const char *ToString() const override
+		{
+			std::stringstream ss;
+			ss << "Event: KeyHeld-> " << m_nKeyCode << " (" << m_nRepeatCount << ") times";
+			return ss.str().c_str();
+		}
+
+		EVENT_CLASS_TYPE(KeyHeld)
 	};
 
 	class KAPI KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(int keycode, int repeatCount)
-			: KeyEvent(keycode), m_nRepeatCount(repeatCount) {}
+		KeyPressedEvent(int keycode)
+			: KeyEvent(keycode) {}
 
-		inline int GetRepeatCount() const { return m_nRepeatCount; }
-
-		std::string ToString() const override
+		const char* ToString() const override
 		{
 			std::stringstream ss;
-			ss << "Event: KeyPressed-> " << m_nKeyCode << " (" << m_nRepeatCount << ") times";
-			return ss.str();
+			ss << "Event: KeyPressed-> " << m_nKeyCode;
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
-	protected:
-		int m_nRepeatCount;
 	};
 
 	class KAPI KeyReleasedEvent : public KeyEvent
@@ -45,11 +58,11 @@ namespace Kross {
 		KeyReleasedEvent(int keycode)
 			: KeyEvent(keycode) {}
 
-		std::string ToString()
+		const char *ToString() const override
 		{
 			std::stringstream ss;
 			ss << "Event: KeyReleased-> " << m_nKeyCode;
-			return ss.str();
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(KeyReleased)
@@ -61,11 +74,11 @@ namespace Kross {
 		KeyTypedEvent(int keycode)
 			: KeyEvent(keycode) {}
 
-		std::string ToString() const override
+		const char* ToString() const override
 		{
 			std::stringstream ss;
 			ss << "Event: KeyTyped-> " << m_nKeyCode;
-			return ss.str();
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(KeyTyped)

@@ -11,7 +11,7 @@
 #include "Kross/Events/Event.h"
 #include "Kross/Events/ApplicationEvent.h"
 
-
+int main(int argc, char **args);
 
 namespace Kross {
 	class Application
@@ -32,6 +32,8 @@ namespace Kross {
 		void Run();
 
 		void OnEvent(Event& e);
+		void SetDarkTheme() const { m_ImGuiLayer->SetDarkTheme(); }
+		const Ref<Layer> &GetGUILayer() { return m_ImGuiLayer; }
 		void PushLayer(const Ref<Layer>& layer);
 		void PushLayer(const std::initializer_list<Ref<Layer>>& list);
 		void PushOverlay(const Ref<Layer>& layer);
@@ -48,9 +50,13 @@ namespace Kross {
 		bool m_bMinimized = false;
 		Window* m_pWindow;
 		LayerStack m_pLayerStack;
-		ImGuiLayer* m_refImGuiLayer;
+		Ref<ImGuiLayer> m_ImGuiLayer;
 
 	private:
 		static Application* s_Instance;
+		friend int ::main(int argc, char **args);
 	};
+	
+	//Client-side Definition
+	Application* CreateApp();
 }

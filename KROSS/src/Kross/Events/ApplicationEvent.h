@@ -14,11 +14,11 @@ namespace Kross {
 		inline unsigned int GetWidth()  const { return m_unWidth; }
 		inline unsigned int GetHeight() const { return m_unHeight; }
 
-		std::string ToString() const override
+		const char *ToString() const override
 		{
 			std::stringstream ss;
 			ss << "Event: Window Resize -> " << m_unWidth << " x " << m_unHeight;
-			return ss.str();
+			return ss.str().c_str();
 		}
 
 		EVENT_CLASS_TYPE(WindowResize)

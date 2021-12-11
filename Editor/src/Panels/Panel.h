@@ -51,7 +51,7 @@ namespace Kross {
 		const char *m_strName;
 
 	public:
-		Panel() { m_strName = "Unnamed_Panel"; }
+		Panel();
 		virtual ~Panel() {};
 
 		virtual void Show(double ts) = 0;

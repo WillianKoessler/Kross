@@ -3,144 +3,143 @@
 #include "EntityProperties.h"
 #include <glm/glm/gtc/type_ptr.hpp>
 
-#include <imgui/imgui_internal.h>
-
 static constexpr float m_fGlobalLabelsWidth = 100.0f;
 namespace Kross {
-	/*
-	static void DrawColorControl(const std::string &label, glm::vec4 &values, float resetValue = 0.0f, float speed = 0.1f, float columnWidth = 100.0f)
+	
+	static bool DrawColorControl(const std::string &label, glm::vec4 &values, float columnWidth = 100.0f)
 	{
 		using namespace ImGui;
 
-		Columns(2, label.c_str());
-		SetColumnWidth(0, columnWidth);
-		PushID(label.c_str());
-		Text(label.c_str());
-
-		NextColumn();
-		PushMultiItemsWidths(3, CalcItemWidth());
-
-		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-		ImVec2 buttonSize = { lineHeight * phi<float>(), lineHeight };
-		static const ImVec2 inBetween = { phi<float>() * phi<float>() , 0.0f };
-		static const ImVec2 buttonToDrag = { phi<float>(), 0.0f };
-		static const glm::vec4 Rcolor = { 0.838096f, 0.161903f, 0.161903f, 1.0f };
-		static const glm::vec4 Gcolor = { 0.161903f, 0.838096f, 0.161903f, 1.0f };
-		static const glm::vec4 Bcolor = { 0.161903f, 0.161903f, 0.838096f, 1.0f };
-		static const glm::vec4 Acolor = { 0.838096f, 0.838096f, 0.838096f, 1.0f };
-		auto part = [&](const std::string &str, glm::vec4 color) {
-			PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&color);
-			PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(color * phi<float>()));
-			PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(color * phi<float>() * phi<float>()));
-			PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-			if (Button((str+ "##" + label).c_str()))
-				values.r = resetValue;
-			PopStyleColor(3);
-			PopStyleVar();
-			ImGui::SameLine();
-
-			PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween);
-			ImGui::DragFloat(("##" + str + label).c_str(), &values.r, speed);
-			PopStyleVar();
-			PopItemWidth();
-			ImGui::SameLine();
+		float lineHeight = GetFont()->FontSize + GetStyle().FramePadding.y * 2.0f;
+		ImVec2 buttonSize = { lineHeight * 1.61903f * 0.75f, lineHeight };
+		//static constexpr float x = 0.424389f, o = 0.262126f;
+		static constexpr float x = 0.262126f, o = 0.161903f;
+		static constexpr glm::vec4 colors[4] = {
+			{ x, o, o, 1.0f },
+			{ o, x, o, 1.0f },
+			{ o, o, x, 1.0f },
+			{ x, x, x, 1.0f }
 		};
-		
-		part("R", Rcolor);
-		part("G", Gcolor);
-		part("B", Bcolor);
-		part("A", Acolor);
+		static const std::string fields[4] = { "R", "G", "B", "A" };
 
-		static const glm::vec4 Xcolor = { 0.838096f, 0.161903f, 0.161903f, 1.0f };
-		PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Xcolor);
-		PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Xcolor * phi<float>()));
-		PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Xcolor * phi<float>() * phi<float>()));
-		PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		if (Button(("X##" + label).c_str()))
-			values.x = resetValue;
-		PopStyleColor(3);
-		ImGui::SameLine();
+		PushID(label.c_str());
+		ImGuiTableFlags flags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp;
+		glm::vec4 ranged = values * 255.f;
+		int nVals[4] = { (int)ranged.r, (int)ranged.g, (int)ranged.b, (int)ranged.a };
+		int column = 0;
+
+		bool used = false;
+
+		PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(0, 0));
+		BeginTable(label.c_str(), 6, flags);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, columnWidth);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, buttonSize.x);
+		TableNextRow();
+		TableSetColumnIndex(column++);
+		Text(label.c_str());
+		float fVals[4];
+		for (int i = 0; i < 4; i++)
+		{
+			TableSetColumnIndex(column++);
+			PushItemWidth(GetContentRegionAvail().x);
+
+			PushStyleColor(ImGuiCol_FrameBg, *(ImVec4 *)&colors[i]);
+			PushStyleColor(ImGuiCol_FrameBgHovered, *(ImVec4 *)&(colors[i] * phi<float>()));
+			PushStyleColor(ImGuiCol_FrameBgActive, *(ImVec4 *)&(colors[i] * phi<float>() * phi<float>()));
+			used |= DragInt(("##" + fields[i] + label).c_str(), &nVals[i], 1, 0, 255, (fields[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp);
+			PopStyleColor(3);
+			fVals[i] = nVals[i] / 255.f;
+		}
+
+		ImVec4 ImGuiValues = { fVals[0], fVals[1], fVals[2], fVals[3] };
+		TableSetColumnIndex(column++);
+		if (used |= ColorButton("##ColorButton", ImGuiValues, ImGuiColorEditFlags_AlphaPreviewHalf))
+		{
+			OpenPopupOnItemClick("picker", ImGuiPopupFlags_MouseButtonLeft);
+			SetNextWindowPos(*(ImVec2 *)&Input::GetMousePosition(), ImGuiCond_Always);
+		}
+		if (BeginPopup("picker"))
+		{
+			used |= ColorPicker4("##picker", fVals);
+			EndPopup();
+		}
 		PopStyleVar();
-
-		PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween);
-		ImGui::DragFloat(("##X" + label).c_str(), &values.x, speed);
-		PopItemWidth();
-		ImGui::SameLine();
-		PopStyleVar();
-
-
-		//static const glm::vec4 Rcolor = { 0.838096f, 0.161903f, 0.161903f, 1.0f };
-		//PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Rcolor);
-		//PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Rcolor * phi<float>()));
-		//PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Rcolor * phi<float>() * phi<float>()));
-		//PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		//if (Button(("R##" + label).c_str())) values.r = resetValue; PopStyleColor(3); ImGui::SameLine(); PopStyleVar(); PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween); ImGui::DragFloat(("##R" + label).c_str(), &values.r, speed); PopItemWidth(); ImGui::SameLine(); PopStyleVar();
-		//
-		//static const glm::vec4 Gcolor = { 0.161903f, 0.838096f, 0.161903f, 1.0f };
-		//PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Gcolor);
-		//PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Gcolor * phi<float>()));
-		//PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Gcolor * phi<float>() * phi<float>()));
-		//PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		//if (Button(("G##" + label).c_str())) values.g = resetValue; PopStyleColor(3); ImGui::SameLine(); PopStyleVar(); PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween); ImGui::DragFloat(("##G" + label).c_str(), &values.g, speed); PopItemWidth(); ImGui::SameLine(); PopStyleVar();
-		//
-		//static const glm::vec4 Bcolor = { 0.161903f, 0.838096f, 0.161903f, 1.0f };
-		//PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Bcolor);
-		//PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Bcolor * phi<float>()));
-		//PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Bcolor * phi<float>() * phi<float>()));
-		//PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		//if (Button(("B##" + label).c_str())) values.b = resetValue; PopStyleColor(3); ImGui::SameLine(); PopStyleVar(); PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween); ImGui::DragFloat(("##B" + label).c_str(), &values.b, speed); PopItemWidth(); ImGui::SameLine(); PopStyleVar();
-		//
-		//static const glm::vec4 Zcolor = { 0.161903f, 0.161903f, 0.838096f, 1.0f };
-		//PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Zcolor);
-		//PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Zcolor * phi<float>()));
-		//PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Zcolor * phi<float>() * phi<float>()));
-		//PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		//if (Button(("A##" + label).c_str())) values.a = resetValue; PopStyleColor(3); ImGui::SameLine(); PopStyleVar(); PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween); ImGui::DragFloat(("##A" + label).c_str(), &values.a, speed); PopItemWidth();// ImGui::SameLine(); PopStyleVar();
-		//
-		//PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		//ColorEdit4(("##ColorEdit4_" + label).c_str(), glm::value_ptr(values));
-		//PopStyleVar();
+		EndTable();
 		PopID();
-		Columns(1, label.c_str());
+		values = { fVals[0], fVals[1], fVals[2], fVals[3] };
+		return used;
 	}
-	*/
-	static void DrawFloat3Control(const std::string &label, glm::vec3 &values, float resetValue = 0.0f, float speed = 0.1f, float columnWidth = 100.0f)
+	static bool DrawFloat3Control(const std::string &label, glm::vec3 &values, float resetValue = 0.0f, float speed = .01f, float columnWidth = 100.0f)
 	{
 		using namespace ImGui;
-		Columns(2);
-		SetColumnWidth(0, (columnWidth > 0.0f ? columnWidth : m_fGlobalLabelsWidth));
 
+		std::string format = "%.";
+		int max_decimal_places = 5;
+		{
+			static std::string buffer;
+			buffer = std::to_string(speed);
+			buffer = buffer.substr(buffer.find_first_of('.')+1, max_decimal_places);
+			int discount = 0;
+			for (size_t i = buffer.size() - 1; i >= 0; i--)
+				if (buffer[i] == '0') discount++;
+				else break;
+			format += std::to_string(max_decimal_places-discount) + "f";
+		}
+
+		float lineHeight = GetFont()->FontSize + GetStyle().FramePadding.y * 2.0f;
+		ImVec2 buttonSize = { lineHeight * 1.61903f * 0.5f, lineHeight };
+		static constexpr float x = 0.838096f, o = 0.161903f;
+		static constexpr glm::vec4 colors[3] = {
+			{ x, o, o, 1.0f },
+			{ o, x, o, 1.0f },
+			{ o, o, x, 1.0f },
+		};
+		static const std::string axis[3] = { "X", "Y", "Z" };
+		
+		PushID(label.c_str());
+		ImGuiTableFlags flags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp;
+		float fvalues[3] = { values.x, values.y, values.z };
+		int column = 0;
+
+		bool used = false;
+
+		PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(.5f, 1));
+		BeginTable(label.c_str(), 7, flags);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, columnWidth);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, buttonSize.x);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 83.8096f);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, buttonSize.x);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 83.8096f);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, buttonSize.x);
+		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 83.8096f);
+		TableNextRow();
+		TableSetColumnIndex(column++);
 		Text(label.c_str());
+		for (int i = 0; i < 3; i++)
+		{
+			TableSetColumnIndex(column++);
+			PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&colors[i]);
+			PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(colors[i] * phi<float>()));
+			PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(colors[i] * phi<float>() * phi<float>()));
+			PushItemWidth(ImGui::GetContentRegionAvail().x);
+			if (used |= Button((axis[i] + "##" + label).c_str()))
+				fvalues[i] = resetValue;
+			PopStyleColor(3);
 
-		NextColumn();
-		PushMultiItemsWidths(3, CalcItemWidth());
+			TableSetColumnIndex(column++);
+			PushItemWidth(ImGui::GetContentRegionAvail().x);
+			used |= DragFloat(("##" + axis[i] + label).c_str(), &fvalues[i], speed, 0.0f, 0.0f, format.c_str(), ImGuiSliderFlags_NoRoundToFormat);
+		}
+		PopStyleVar();
+		EndTable();
+		PopID();
 
-		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-		ImVec2 buttonSize = { lineHeight * phi<float>(), lineHeight };
-		static const ImVec2 inBetween = { phi<float>() * phi<float>() , 0.0f };
-		static const ImVec2 buttonToDrag = { phi<float>(), 0.0f };
-
-		static const glm::vec4 Xcolor = { 0.838096f, 0.161903f, 0.161903f, 1.0f };
-		PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Xcolor);
-		PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Xcolor * phi<float>()));
-		PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Xcolor * phi<float>() * phi<float>()));
-		PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		if (Button(("X##" + label).c_str())) values.x = resetValue; PopStyleColor(3); ImGui::SameLine(); PopStyleVar(); PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween); ImGui::DragFloat(("##X" + label).c_str(), &values.x, speed); PopItemWidth(); ImGui::SameLine(); PopStyleVar();
-
-		static const glm::vec4 Ycolor = { 0.161903f, 0.838096f, 0.161903f, 1.0f };
-		PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Ycolor);
-		PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Ycolor * phi<float>()));
-		PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Ycolor * phi<float>() * phi<float>()));
-		PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		if (Button(("Y##" + label).c_str())) values.y = resetValue; PopStyleColor(3); ImGui::SameLine(); PopStyleVar(); PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween); ImGui::DragFloat(("##Y" + label).c_str(), &values.y, speed); PopItemWidth(); ImGui::SameLine(); PopStyleVar();
-
-		static const glm::vec4 Zcolor = { 0.161903f, 0.161903f, 0.838096f, 1.0f };
-		PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&Zcolor);
-		PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(Zcolor * phi<float>()));
-		PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(Zcolor * phi<float>() * phi<float>()));
-		PushStyleVar(ImGuiStyleVar_ItemSpacing, buttonToDrag);
-		if (Button(("Z##" + label).c_str())) values.z = resetValue; PopStyleColor(3); ImGui::SameLine(); PopStyleVar(); PushStyleVar(ImGuiStyleVar_ItemSpacing, inBetween); ImGui::DragFloat(("##Z" + label).c_str(), &values.z, speed); PopItemWidth(); PopStyleVar();
-		Columns(1);
+		values = { fvalues[0], fvalues[1], fvalues[2] };
+		return used;
 	}
 
 	EntityProperties::EntityProperties(const Ref<Scene> &scene)
@@ -169,13 +168,14 @@ namespace Kross {
 					strcpy_s(cmp->tag, TagComponent::limit, buffer);
 				});
 			DrawSelectionComponent<TransformComponent>("Transform", [](const Ref<Scene> &scene, const char *id, TransformComponent *cmp) {
+				ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(ImGui::GetStyle().ItemSpacing.x, 0.0f));
 				DrawFloat3Control("Position", cmp->Position);
 				DrawFloat3Control("Rotation", cmp->Rotation);
 				DrawFloat3Control("Scale", cmp->Scale, 1.0f);
+				ImGui::PopStyleVar();
 				});
 			DrawSelectionComponent<SpriteComponent>("Sprite", [](const Ref<Scene> &scene, const char *id, SpriteComponent *cmp) {
-				//DrawColorControl("Tint Color: ", cmp->tint, 1.0f, 0.01f);
-				ImGui::ColorEdit4("##Sprite: ", glm::value_ptr(cmp->tint));
+				DrawColorControl("Tint", cmp->tint);
 				});
 			DrawSelectionComponent<CameraComponent>("Camera", [](const Ref<Scene> &scene, const char *id, CameraComponent *cmp) {
 				SceneCamera &camera = cmp->camera;

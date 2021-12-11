@@ -17,8 +17,8 @@ namespace Kross {
 		None = 0,
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased, KeyTyped,
-		MousePressed, MouseReleased, MouseMoved, MouseScrolled
+		KeyPressed, KeyReleased, KeyTyped, KeyHeld,
+		MousePressed, MouseReleased, MouseHeld, MouseMoved, MouseScrolled
 	};
 
 	enum EventCategory
@@ -45,7 +45,7 @@ namespace Kross {
 		virtual EventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;
 		virtual int GetCategoryFlags() const = 0;
-		virtual std::string ToString() const { return GetName(); }
+		virtual const char* ToString() const { return GetName(); }
 
 		inline bool IsInCategory(EventCategory category)
 		{

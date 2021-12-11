@@ -32,7 +32,7 @@ namespace Kross {
 			}
 			if (ImGui::BeginMenu("Settings"))
 			{
-				if (ImGui::MenuItem("ImGui", NULL)) PopUpMessage = { true, "Style Editor", ButtonType::OK, DefaultFunc };
+				if (ImGui::MenuItem("Style", NULL)) PopUpMessage = { true, "Style Editor", ButtonType::OK, DefaultFunc };
 				ImGui::Separator();
 				ShowHelperMarker("Enables or Disable FullScreen mode."); ImGui::SameLine();
 				ImGui::MenuItem("Fullscreen", NULL, &Manager().s_bFullscreen);
@@ -42,13 +42,6 @@ namespace Kross {
 				ImGui::MenuItem("Gamepad", NULL, &AppManager().s_bGamepadEnabled);
 				ShowHelperMarker("Enable or Disable Viewports to create another window on the operting system"); ImGui::SameLine();
 				ImGui::MenuItem("Viewports", NULL, &AppManager().s_bViewportEnabled);
-				ImGui::EndMenu();
-			}
-			if (ImGui::BeginMenu("Camera"))
-			{
-				ImGui::MenuItem("Editor Camera", NULL, &AppManager().s_bEditorCamera);
-				ImGui::Separator();
-				if (ImGui::MenuItem("Window", NULL)) PopUpMessage = { true, "Camera Window", ButtonType::OK, []() { ImGui::Text("Camera Inspector is yet to be implemented."); } };
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Help"))

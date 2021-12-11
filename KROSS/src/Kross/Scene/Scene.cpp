@@ -75,6 +75,8 @@ namespace Kross {
 	}
 	void Scene::OnUpdateEditor(double ts, const Camera::Editor &camera)
 	{
+		Renderer2D::ResetStats();
+
 		Renderer2D::Begin(camera);
 		{
 			// Render Sprites
@@ -98,15 +100,6 @@ namespace Kross {
 			}
 			cmp.m_Instance->OnUpdate(ts);
 			});
-
-		//{
-		//	auto view = m_Registry.view<CameraComponent, TransformComponent, TagComponent>();
-		//	for (auto e : view)
-		//	{
-		//		auto [cameraComponent, transformComponent, tagComponent] = view.get(e);
-		//		if (cameraComponent.makeActive) { m_PrimaryCameraID = e; cameraComponent.makeActive = false; }
-		//	}
-		//}
 
 		if (m_PrimaryCameraID != entt::null) {
 			Entity primaryCamera((uint32_t)m_PrimaryCameraID, this);

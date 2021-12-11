@@ -18,7 +18,7 @@ namespace Kross {
 	};
 }
 
-Kross::Application *CreateApp()
+Kross::Application *Kross::CreateApp()
 {
 	return new Kross::KrossEditor();
 }

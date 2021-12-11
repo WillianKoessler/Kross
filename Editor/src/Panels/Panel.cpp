@@ -8,6 +8,11 @@ namespace Kross {
 	Panel::AppSettings Panel::s_AppManager = AppSettings();
 	Entity Panel::s_Selection = Entity();
 
+	Panel::Panel()
+	{
+		m_strName = "Unnamed Panel";
+	}
+
 	void Panel::ShowHelperMarker(const std::string &msg, float size)
 	{
 		ImGui::TextDisabled("(?)");

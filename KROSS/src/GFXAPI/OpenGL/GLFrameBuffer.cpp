@@ -35,7 +35,7 @@ namespace Kross::OpenGL {
 
 	void FrameBuffer::Resize(const glm::uvec2 &size)
 	{
-		if (m_Specification.Width == size.x && m_Specification.Height == size.y) return;
+		//if (m_Specification.Width == size.x && m_Specification.Height == size.y) return;
 		m_Specification.Width = size.x;
 		m_Specification.Height = size.y;
 		Invalidate();
@@ -89,7 +89,7 @@ namespace Kross::OpenGL {
 			case GL_FRAMEBUFFER_UNSUPPORTED:					KROSS_ERROR("The combination of internal formats of the attached images violates an implementation - dependent set of restrictions. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
 			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:			KROSS_ERROR("The value of GL_RENDERBUFFER_SAMPLES is not the same for all attached renderbuffers; if the value of GL_TEXTURE_SAMPLES is the not same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_RENDERBUFFER_SAMPLES does not match the value of GL_TEXTURE_SAMPLES. Or the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
 			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:		KROSS_ERROR("One of the framebuffer's attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target. m_RendererID={0}, m_ColorAttachment={1}, m_DepthAttachment={2}", m_RendererID, m_ColorAttachment, m_DepthAttachment); break;
-			case GL_FRAMEBUFFER_COMPLETE:						KROSS_INFO("Framebuffer validated. [ width = {0}, height = {1} ]", m_Specification.Width, m_Specification.Height); break;
+			case GL_FRAMEBUFFER_COMPLETE:						break;// KROSS_INFO("Framebuffer validated. [ width = {0}, height = {1} ]", m_Specification.Width, m_Specification.Height); break;
 			default:											KROSS_ERROR("Unknown Error. ID={0}", framebufferStatus); break;
 		}
 		if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) Delete();

@@ -24,9 +24,7 @@ namespace Kross {
 		m_pWindow->SetEventCallback(KROSS_BIND_EVENT_FN(Application::OnEvent));
 		Renderer::Init(s.dims);
 
-		auto l = makeRef<ImGuiLayer>();
-		m_refImGuiLayer = l.get();
-		PushOverlay(l);
+		PushOverlay(m_ImGuiLayer = makeRef<ImGuiLayer>());
 
 		KROSS_INFO("Application Contructed");
 	}
@@ -73,13 +71,7 @@ namespace Kross {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(KROSS_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(KROSS_BIND_EVENT_FN(Application::OnWindowResize));
-
-		for(auto& layer : m_pLayerStack)
-		{
-			layer->OnEvent(e);
-			if (e.handled)
-				break;
-		}
+		m_pLayerStack.PropagateEvent(e);
 	}
 
 	void Application::Run()
@@ -92,21 +84,19 @@ namespace Kross {
 			static Timestep time;
 			static double ts = 0.0;
 			ts = time.GetLap();
-			if (!m_bMinimized)
-			{
+			if (!m_bMinimized) {
 				KROSS_PROFILE_SCOPE("LayerStack OnUpdate");
-				for(auto& layer : m_pLayerStack)
-					layer->OnUpdate(ts);
+				for(auto& layer : m_pLayerStack) layer->OnUpdate(ts);
 			}
 
-			m_refImGuiLayer->Begin();
-			if(!m_bMinimized)
-			{
+			m_ImGuiLayer->Begin();
+			if(!m_bMinimized) {
 				KROSS_PROFILE_SCOPE("LayerStack ImGuiRender");
-				for (auto& layer : m_pLayerStack)
+				for (auto &layer : m_pLayerStack) {
 					layer->OnImGuiRender(ts);
+				}
 			}
-			m_refImGuiLayer->End();
+			m_ImGuiLayer->End();
 
 			m_pWindow->OnUpdate();
 		}

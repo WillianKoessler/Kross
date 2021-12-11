@@ -24,10 +24,9 @@ namespace Kross::Camera {
 	{
 		// m_Yaw = m_Pitch = 0.0f; // Lock the camera's rotation
 		m_Position = CalculatePosition();
-
+		static constexpr glm::mat4 mat4(1.0f);
 		glm::quat orientation = GetOrientation();
-		m_ViewMat = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(orientation);
-		m_ViewMat = glm::inverse(m_ViewMat);
+		m_ViewMat = glm::inverse(glm::translate(mat4, m_Position) * glm::toMat4(orientation));
 	}
 	std::pair<float, float> Editor::PanSpeed() const
 	{
@@ -54,19 +53,15 @@ namespace Kross::Camera {
 	void Editor::OnUpdate(double ts)
 	{
 		UpdateView();
+		m_bLeftShift = m_bLeftCtrl = m_bMouseMiddle = false;
 	}
 	void Editor::OnEvent(Event &e)
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseScroll));
 		dispatcher.Dispatch<MouseMovedEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseMoved));
-	}
-	bool Editor::OnMouseScroll(MouseScrolledEvent &e)
-	{
-		float delta = e.GetYOffSet() * 0.1f;
-		MouseZoom(delta);
-		UpdateView();
-		return false;
+		dispatcher.Dispatch<MouseButtonHeldEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseClicked));
+		dispatcher.Dispatch<KeyHeldEvent>(KROSS_BIND_EVENT_FN(Editor::OnKeyHeld));
 	}
 	bool Editor::OnMouseMoved(MouseMovedEvent &e)
 	{
@@ -75,14 +70,30 @@ namespace Kross::Camera {
 		m_InitialMousePosition = m_MousePosition;
 
 		if (Input::IsMouseButtonHeld(MouseButton::Middle))
-		{
-			if (Input::IsKeyHeld(Key::LeftShift))
-				MousePan(m_Delta);
-			else if (Input::IsKeyHeld(Key::LeftControl))
-				MouseZoom(m_Delta.y);
-			else
-				MouseRotate(m_Delta);
-		}
+			if (Input::IsKeyHeld(Key::LeftShift)) MousePan(m_Delta);
+			else if (Input::IsKeyHeld(Key::LeftControl)) MouseZoom(m_Delta.y);
+			else MouseRotate(m_Delta);
+
+		return false;
+	}
+	bool Editor::OnMouseScroll(MouseScrolledEvent &e)
+	{
+		float delta = e.GetYOffSet() * 0.1f;
+		MouseZoom(delta);
+		UpdateView();
+		return false;
+	}
+	bool Editor::OnMouseClicked(MouseButtonHeldEvent &e)
+	{
+		KROSS_TRACE("held");
+		m_bMouseMiddle = e.GetMouseButton() == (int)MouseButton::Middle;
+		return false;
+	}
+	bool Editor::OnKeyHeld(KeyHeldEvent &e)
+	{
+		int code = e.GetKeyCode();
+		m_bLeftCtrl = code == (int)Key::LeftControl;
+		m_bLeftShift = code == (int)Key::LeftShift;
 		return false;
 	}
 	void Editor::MousePan(const glm::vec2 &delta)
@@ -100,7 +111,7 @@ namespace Kross::Camera {
 	void Editor::MouseZoom(float delta)
 	{
 		m_Distance -= delta * ZoomSpeed();
-		m_Distance = std::max(m_Distance, phi<float>()*0.1f); // Maximum zoom = 0.161903398874989484920721002966692491f
+		m_Distance = std::max(m_Distance, phi<float>() * 0.1f); // Maximum zoom = 0.161903398874989484920721002966692491f
 	}
 	glm::vec3 Editor::GetUpDir() const { return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f)); }
 	glm::vec3 Editor::GetRightDir() const { return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f)); }

@@ -4,6 +4,7 @@
 #include "Kross/Core/Timestep.h"
 #include "Kross/Events/Event.h"
 #include "Kross/Events/MouseEvent.h"
+#include "Kross/Events/KeyEvent.h"
 
 #include <glm/glm.hpp>
 
@@ -40,8 +41,10 @@ namespace Kross::Camera {
 		void UpdateProj();
 		void UpdateView();
 
-		bool OnMouseScroll(MouseScrolledEvent &e);
 		bool OnMouseMoved(MouseMovedEvent &e);
+		bool OnMouseScroll(MouseScrolledEvent &e);
+		bool OnMouseClicked(MouseButtonHeldEvent &e);
+		bool OnKeyHeld(KeyHeldEvent &e);
 
 		void MousePan(const glm::vec2 &delta);
 		void MouseRotate(const glm::vec2 &delta);
@@ -68,6 +71,10 @@ namespace Kross::Camera {
 		float m_Pitch = 0.0f, m_Yaw = 0.0f;
 
 		float m_ViewportWidth = 600, m_ViewportHeight = 400;
+
+		bool m_bMouseMiddle = false;
+		bool m_bLeftShift = false;
+		bool m_bLeftCtrl = false;
 	};
 
 }
