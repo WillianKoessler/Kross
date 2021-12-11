@@ -62,13 +62,13 @@ namespace Kross {
 #define KROSS_INFO(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::info, __VA_ARGS__)
 #define KROSS_WARN(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::warn, __VA_ARGS__)
 #define KROSS_ERROR(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::err, __VA_ARGS__)
-#define KROSS_FATAL(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::critical, __VA_ARGS__)
+#define KROSS_FATAL(...)	{SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::critical, __VA_ARGS__); ::exit(1);}
 #else
 #define KROSS_TRACE(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::trace, __VA_ARGS__)
 #define KROSS_INFO(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::info, __VA_ARGS__)
 #define KROSS_WARN(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::warn, __VA_ARGS__)
 #define KROSS_ERROR(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::err, __VA_ARGS__)
-#define KROSS_FATAL(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::critical, __VA_ARGS__)
+#define KROSS_FATAL(...)	{SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::critical, __VA_ARGS__); ::exit(1);}
 #endif
 
 #define KROSS_TRACE_ONCE(...) { static bool called = false; if(!called) { KROSS_TRACE(__VA_ARGS__); called = true; } }

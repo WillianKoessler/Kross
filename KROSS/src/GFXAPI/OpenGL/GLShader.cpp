@@ -19,6 +19,7 @@ namespace Kross::OpenGL {
 				if (Compile(PreProcess(src)))
 				{
 					KROSS_INFO("Shader '{0}' Created Successfully", GetName());
+					delete src;
 					return;
 				}
 		}
@@ -67,8 +68,11 @@ namespace Kross::OpenGL {
 		glCall(programID = glCreateProgram());
 
 		for (const std::string &path : sources)
-			shaders.push_back(Compile(programID, GetGlType(path.substr(path.find_last_of('.')).c_str()), ReadFile(path.c_str())));
-
+		{
+			const char *data = ReadFile(path.c_str());
+			shaders.push_back(Compile(programID, GetGlType(path.substr(path.find_last_of('.')).c_str()), data));
+			delete data;
+		}
 		bool valid = true;
 		for (int i = 0; i < sources.size(); i++) if (!shaders[i]) valid = false;
 

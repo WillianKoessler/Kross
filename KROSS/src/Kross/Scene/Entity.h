@@ -12,10 +12,17 @@ namespace Kross {
 		Entity(uint32_t id, const Scene *scene) : m_ID((entt::entity)id), p_Scene(const_cast<Scene*>(scene)) {}
 		Entity(const Entity &other) = default;
 
-		template<typename T> int Has() const
+		//template<typename Component> int Has() const
+		//{
+		//	if (!p_Scene) return -1;
+		//	if (m_ID == entt::null) return -2;
+		//	return (int)p_Scene->m_Registry.any_of<Component>(m_ID);
+		//}
+		template<typename...Components> int Has() const
 		{
-			if (p_Scene != nullptr && m_ID != entt::null) return (int)p_Scene->m_Registry.any_of<T>(m_ID); 
-			else return -1;
+			if (!p_Scene) return -1;
+			if (m_ID == entt::null) return -2;
+			return (int)p_Scene->m_Registry.all_of<Components...>(m_ID);
 		}
 		template<typename T> T *Get()
 		{
@@ -40,6 +47,8 @@ namespace Kross {
 			else KROSS_ERROR("Invalid Scene pointer. (No valid Scene was found)");
 		}
 
+
+		const Scene *GetScene() const { return p_Scene; }
 		operator bool() const { return m_ID != entt::null; }
 		operator uint32_t() const { return (uint32_t)m_ID; }
 		operator void *() const { return (void *)(uintptr_t)m_ID; }

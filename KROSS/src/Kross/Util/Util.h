@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Kross {
-	const char *append(const char *str1, const char *str2);
+	void append(char* dest, size_t size, const char *str);
 	const char *ReadFile(const char *filepath);
 	const char *FileName(const char *path);
 	int FlipBits(int &flags, int mask);
