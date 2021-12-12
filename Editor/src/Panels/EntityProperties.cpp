@@ -2,7 +2,7 @@
 #include "Kross/Util/Util.h"
 #include "EntityProperties.h"
 #include <glm/glm/gtc/type_ptr.hpp>
-
+static bool debug = false;
 static constexpr float x = 0.838096f, o = 0.161903f;
 static constexpr glm::vec4 colors[4] = {
 	{ x, o, o, 1.0f },
@@ -26,18 +26,63 @@ namespace Kross {
 		ImGui::PopStyleColor(count);
 	}
 	// turns 1234.1234f into "%.4f"
+	static const std::string GetFloatFormat(float val1, float val2, uint8_t max = 6, uint8_t min = 1)
+	{
+		static std::string buffer;
+		int r[2] = { 0, 0 };
+		float vals[2] = { val1, val2 };
+		bool zero[2] = { false };
+		uint8_t _max, _min;
+		if (max > min) {
+			_max = max; _min = min;
+		} else { _max = min; _min = max; }
+		for (int i = 0; i < 2; i++)
+		{
+			buffer = std::to_string(vals[i]);
+			auto dot = buffer.find_first_of('.') + 1;
+			buffer = buffer.substr(dot, dot + _max);
+			int discount = 0;
+			int size = (int)buffer.size();
+			for (int i = size - 1; i > -1; i--) {
+				if (buffer[i] != '0') break;
+				else discount++;
+			}
+			int n = size - discount;
+			zero[i] = n == 0;
+			r[i] = std::clamp<int>(n, _min, _max);
+		}
+		if (!zero[0]) return "%." + std::to_string((r[0] > r[1] ? r[0] : r[1])) + "f";
+		else return "%.0f";
+	}
 	static const std::string GetFloatFormat(float value, uint8_t max = 6, uint8_t min = 1)
 	{
 		static std::string buffer;
+		int _max, _min; if (max > min) { _max = max; _min = min; } else { _max = min; _min = max; }
 		buffer = std::to_string(value);
-		buffer = buffer.substr(1 + buffer.find_first_of('.'), max > min ? max : min);
+		if (false)
+		{
+			static int column = 0, rows = 0;;
+			column++;
+			printf("%s\t", buffer.c_str());
+			if (column > 2) {
+				column = 0;
+				printf("\n");
+				rows++;
+			}
+			if (rows > 2) {
+				rows = 0;
+				printf("\n");
+			}
+		}
+		int dot = (int)buffer.find_first_of('.') + 1;
+		buffer = buffer.substr(dot, (size_t)(dot + _max));
 		int discount = 0;
-		for (int i = (int)buffer.size() - 1; i > -1; i--) {
+		int size = (int)buffer.size();
+		for (int i = size - 1; i > -1; i--) {
 			if (buffer[i] != '0') break;
 			else discount++;
 		}
-		int result = max - discount;
-		return "%." + std::to_string((result > min ? result : min)) + "f";
+		return "%." + std::to_string(std::clamp<int>(size - discount, _min, _max)) + "f";
 	}
 	// turns 1234.1234f into 0.0001f
 	static float GetSpeed(float value, float limit = 0.00001f)
@@ -73,7 +118,7 @@ namespace Kross {
 			SameLine(0.0f, 0.0f);
 			PushItemWidth(dragWidth);
 			PushColor(colors[i] * o, ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
-			DragFloat("", &vec[i], speed, .0f, .0f, GetFloatFormat(speed, 6).c_str());
+			DragFloat("", &vec[i], speed, .0f, .0f, GetFloatFormat(speed).c_str());
 			value_changed |= IsItemFocused();
 
 			PopColor(3);
@@ -87,121 +132,49 @@ namespace Kross {
 	{
 		return DrawScalarN(id, glm::value_ptr(vec), 3, reset_value, speed);
 	}
-	static bool DrawColorControl(const std::string &ID, const std::string &label, glm::vec4 &values, float columnWidth = 100.0f)
+	static bool DrawColorControl(const char *id, float *values)
 	{
 		using namespace ImGui;
 
-		float lineHeight = GetFont()->FontSize + GetStyle().FramePadding.y * 2.0f;
-		ImVec2 buttonSize = { lineHeight * 1.61903f * 0.75f, lineHeight };
+		float pickerWidth = GetFont()->FontSize + GetStyle().FramePadding.y * 2.428545f;
+		float dragWidth = (GetContentRegionAvail().x - pickerWidth) / 4;
+		PushID(id); // push 1
+		bool value_changed = false;
 
-		std::string id = label + "_" + ID;
-
-		PushID(id.c_str());
-		ImGuiTableFlags flags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp;
-		glm::vec4 ranged = values * 255.f;
-		int nVals[4] = { (int)ranged.r, (int)ranged.g, (int)ranged.b, (int)ranged.a };
-		int column = 0;
-
-		bool used = false;
-
-		PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(0, 0));
-		BeginTable(id.c_str(), 6, flags);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, columnWidth);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, 80.9515f);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, buttonSize.x);
-		TableNextRow();
-		TableSetColumnIndex(column++);
-		Text((label + " ##Label_" + id).c_str());
-		float fVals[4];
-		for (int i = 0; i < 4; i++)
-		{
-			TableSetColumnIndex(column++);
-			PushItemWidth(GetContentRegionAvail().x);
-
-			PushStyleColor(ImGuiCol_FrameBg, *(ImVec4 *)&colors[i]);
-			PushStyleColor(ImGuiCol_FrameBgHovered, *(ImVec4 *)&(colors[i] * phi<float>()));
-			PushStyleColor(ImGuiCol_FrameBgActive, *(ImVec4 *)&(colors[i] * phi<float>() * phi<float>()));
-			used |= DragInt(("##" + channel[i] + id).c_str(), &nVals[i], 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp);
-			PopStyleColor(3);
-			fVals[i] = nVals[i] / 255.f;
+		for (int i = 0; i < 4; i++) {
+			PushID(i); // push 2 3 4 5
+			PushItemWidth(dragWidth);
+			int val = (int)(values[i] * 255.f);
+			if (i != 3)  PushColor(colors[i] * x * values[i], ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
+			else PushColor(colors[i] * o * values[i], ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
+			DragInt(("##" __FUNCSIG__ + channel[i] + id).c_str(), &val, 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp); SameLine(0.0f, 0.0f);
+			PopColor(3);
+			value_changed |= IsItemFocused();
+			values[i] = val / 255.f;
+			PopID(); // pop 5 4 3 2
 		}
-
-		ImVec4 ImGuiValues = { fVals[0], fVals[1], fVals[2], fVals[3] };
-		TableSetColumnIndex(column++);
-		if (used |= ColorButton(("##ColorButton_" + id).c_str(), ImGuiValues, ImGuiColorEditFlags_AlphaPreviewHalf))
 		{
-			OpenPopupOnItemClick("picker", ImGuiPopupFlags_MouseButtonLeft);
-			SetNextWindowPos(*(ImVec2 *)&Input::GetMousePosition(), ImGuiCond_Always);
+			ImVec4 ImGuiValues = { values[0], values[1], values[2], values[3] };
+			PushItemWidth(pickerWidth);
+			if (ColorButton("##ColorButton_" __FUNCSIG__, ImGuiValues, ImGuiColorEditFlags_AlphaPreviewHalf)) {
+				OpenPopupOnItemClick("picker" __FUNCSIG__, ImGuiPopupFlags_MouseButtonLeft);
+			}
+			if (BeginPopup("picker" __FUNCSIG__)) {
+				ColorPicker4("##ColorPicker_" __FUNCSIG__, values);
+				EndPopup();
+			}
 		}
-		if (BeginPopup("picker"))
-		{
-			used |= ColorPicker4(("##ColorPicker_" + id).c_str(), fVals);
-			EndPopup();
-		}
-		PopStyleVar();
-		EndTable();
-		PopID();
-		values = { fVals[0], fVals[1], fVals[2], fVals[3] };
-		return used;
-	}
-	static bool DrawFloat3Control(const std::string &id, glm::vec3 &values, float resetValue = 0.0f, float speed = .01f, float columnWidth = 100.0f)
-	{
-		using namespace ImGui;
-
-
-		float lineHeight = GetFont()->FontSize + GetStyle().FramePadding.y * 2.0f;
-		ImVec2 buttonSize = { lineHeight * 1.61903f * 0.5f, lineHeight };
-		PushID(id.c_str());
-		ImGuiTableFlags flags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp;
-		float fvalues[3] = { values.x, values.y, values.z };
-		int column = 0;
-
-		bool used = false;
-
-		PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(.5f, 1));
-		BeginTable(id.c_str(), 6, flags);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, buttonSize.x);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, x * 100.0f);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, buttonSize.x);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, x * 100.0f);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, buttonSize.x);
-		ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch, x * 100.0f);
-		TableNextRow();
-		TableNextColumn();
-		for (int i = 0; i < 3; i++)
-		{
-			TableNextColumn();
-			PushStyleColor(ImGuiCol_Button, *(ImVec4 *)&colors[i]);
-			PushStyleColor(ImGuiCol_ButtonHovered, *(ImVec4 *)&(colors[i] * phi<float>()));
-			PushStyleColor(ImGuiCol_ButtonActive, *(ImVec4 *)&(colors[i] * phi<float>() * phi<float>()));
-			if (used |= Button((axis[i] + ("##" + id)).c_str()))
-				fvalues[i] = resetValue;
-			PopStyleColor(3);
-
-			TableNextColumn();
-			used |= DragFloat(("##" + (axis[i] + id)).c_str(), &fvalues[i], speed, 0.0f, 0.0f, GetFloatFormat(speed, 5).c_str(), ImGuiSliderFlags_NoRoundToFormat);
-		}
-		PopStyleVar();
-		EndTable();
-		PopID();
-
-		values = { fvalues[0], fvalues[1], fvalues[2] };
-		return used;
+		PopID(); // pop 1
+		return value_changed;
 	}
 	template<typename Component>
 	static void DrawComponent(const std::string &label, Entity entity, void(*show)(Scene *, const std::string &, Component *))
 	{
 		if (!entity.GetScene()) return;
-		static ImGuiTableFlags flags =
-			ImGuiTableFlags_NoHostExtendX |
-			ImGuiTableFlags_SizingStretchProp |
-			ImGuiTableFlags_Borders |
-			ImGuiTableFlags_NoPadInnerX |
-			ImGuiTableFlags_NoPadOuterX;
+		ImGuiTableFlags flags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp |
+			ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX | (debug ? ImGuiTableFlags_Borders : 0);
 		if (entity.Has<Component>() == 1) {
+			ImGui::PushID(("##" + label).c_str());
 			if (ImGui::TreeNodeEx((const void *)(typeid(Component).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, label.c_str())) {
 				ImGui::BeginTable(("##" + label).c_str(), 2, flags);
 				ImGui::TableSetupColumn(("##" + label + "_Label").c_str(), ImGuiTableColumnFlags_WidthFixed, 100.0f);
@@ -213,6 +186,7 @@ namespace Kross {
 				ImGui::Separator();
 				ImGui::TreePop();
 			}
+			ImGui::PopID();
 		}
 	}
 	static void PushDisabled(int item, int hovered, int activated)
@@ -224,7 +198,6 @@ namespace Kross {
 		if (activated > -1 && activated < ImGuiCol_COUNT) ImGui::PushStyleColor(activated, *(ImVec4 *)&color);
 	}
 	static void PopDisabled() { ImGui::PopStyleColor(3); }
-
 	EntityProperties::EntityProperties(const Ref<Scene> &scene)
 		: p_Scene(scene)
 	{
@@ -237,10 +210,8 @@ namespace Kross {
 		ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
 		if (ImGui::Begin(m_strName, &Panel::Manager().s_bPropertiesInspector))
 		{
-			ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(.5f, 1));
-			ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(ImGui::GetStyle().ItemSpacing.x, 0.0f));
+			//ImGui::Checkbox("Debug", &debug);
 			DrawEntity(s_Selection);
-			ImGui::PopStyleVar(2);
 		}
 		ImGui::End();
 	}
@@ -260,9 +231,9 @@ namespace Kross {
 				});
 			DrawComponent<TransformComponent>("Transform", entity, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
 				bool active = false;
-				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.001f); ImGui::TableNextColumn();
-				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.001f); ImGui::TableNextColumn();
-				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.001f);
+				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();
+				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.01f); ImGui::TableNextColumn();
+				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.01f);
 				if (Input::IsMouseButtonHeld(MouseButton::Left)) {
 					setFlag(ImGuiConfigFlags_NoMouse, active);
 					Application::Get().GetWindow().CursorEnabled(!active);
@@ -272,81 +243,87 @@ namespace Kross {
 				}
 				});
 			DrawComponent<SpriteComponent>("Sprite", entity, [](Scene *scene, const std::string &id, SpriteComponent *cmp) {
-				DrawColorControl("Sprite", "Tint", cmp->tint);
+				ImGui::Text("Tint"); ImGui::TableNextColumn(); DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint));
 				});
 			DrawComponent<CameraComponent>("Camera", entity, [](Scene *scene, const std::string &id, CameraComponent *cmp) {
 				SceneCamera &camera = cmp->camera;
 				Entity activeCamera = scene->GetCurrentCamera();
-
-				ImGui::PushID("Camera");
-				ImGuiTableFlags flags =
-					ImGuiTableFlags_NoHostExtendX |
-					ImGuiTableFlags_SizingStretchProp |
-					ImGuiTableFlags_Borders;
-				ImGui::BeginTable("Camera_Table", 2, flags);
-				ImGui::TableSetupColumn("Camera_Table_Labels", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-				ImGui::TableSetupColumn("Camera_Table_Contents", ImGuiTableColumnFlags_WidthStretch, ImGui::GetContentRegionAvail().x);
 				{
-					ImGui::TableNextRow();
-					ImGui::TableSetColumnIndex(0);
-					ImGui::Text("Active Camera: ");
-					ImGui::TableNextColumn();
+					ImGui::Text("Active Camera: "); ImGui::TableNextColumn();
 
-					if (activeCamera) {
-						if (activeCamera.Has<TagComponent>() == 1) ImGui::Text("(%s)", activeCamera.Get<TagComponent>()->tag);
-						else ImGui::Text("(%d)", (uint32_t)activeCamera);
-					} else ImGui::Text("(null)");
-				}
-				{
-					ImGui::TableNextColumn();
-					ImGui::Text("Activate Camera: ");
-					ImGui::TableNextColumn();
 					if (s_Selection) {
-						bool activate = false;
-						ImGui::BeginDisabled(s_Selection.Has<TagComponent, TransformComponent>() != 1);
-						if (activeCamera) activate = s_Selection == activeCamera;
-						if (ImGui::Checkbox("##Activate Camera", &activate))
+						bool disable = s_Selection.Has<TagComponent, TransformComponent>() != 1;
+						ImGui::BeginDisabled(disable);
+						if (ImGui::Button("SET##Activate Camera"))
 							scene->SetPrimaryCamera(s_Selection);
 						ImGui::EndDisabled();
-					}
-				}
-				ImGui::EndTable();
-
-
-				const char *projTypeStr[] = { "Perspective", "Orthographic" };
-				const char *selection = projTypeStr[(int)cmp->camera.GetProjType()];
-				ImGui::Text("Projection Type: "); ImGui::SameLine(); if (ImGui::BeginCombo("##Projection Type: ", selection, ImGuiComboFlags_NoArrowButton)) {
-					for (int i = 0; i < sizeof(projTypeStr) / sizeof(const char *); i++) {
-						bool isSelected = selection == projTypeStr[i];
-						if (ImGui::Selectable(projTypeStr[i], isSelected)) {
-							selection = projTypeStr[i];
-							camera.SetProjType((SceneCamera::ProjectionType)i);
+						if (disable) {
+							ImGui::SameLine();
+							Panel::ShowHelperMarker("This Entity does not have a TagComponent or a TransformComponent");
 						}
-						if (isSelected) ImGui::SetItemDefaultFocus();
+						ImGui::SameLine();
 					}
-					ImGui::EndCombo();
-				}
 
-
-				if (cmp->camera.GetProjType() == SceneCamera::ProjectionType::Orthographic) {
-					ImGui::Text("Fixed Aspect Ratio"); ImGui::SameLine(); ImGui::Checkbox("##Fixed Aspect Ratio", &cmp->fixedAspectRatio);
-
-					float fSize = camera.OrthoSize();
-					float fNear = camera.GetNearClip();
-					float fFar = camera.GetFarClip();
-					ImGui::Text("OrthoSize: "); ImGui::SameLine(); if (ImGui::DragFloat("##OrthographicOrthoSize: ", &fSize, 0.1f)) camera.SetOrthoSize(fSize);
-					ImGui::Text("NearClip: ");  ImGui::SameLine(); if (ImGui::DragFloat("##OrthographicNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear);
-					ImGui::Text("FarClip: ");   ImGui::SameLine(); if (ImGui::DragFloat("##OrthographicFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar);
+					if (activeCamera) {
+						if (activeCamera.Has<TagComponent>() == 1) ImGui::Text("(Current: %s)", activeCamera.Get<TagComponent>()->tag);
+						else ImGui::Text("(Current: %d)", (uint32_t)activeCamera);
+					} else ImGui::Text("(Current: null)");
+					ImGui::TableNextColumn();
 				}
-				if (cmp->camera.GetProjType() == SceneCamera::ProjectionType::Perspective) {
-					float fFOV = glm::degrees(camera.GetPerspVerticalFOV());
-					float fNear = camera.GetNearClip();
-					float fFar = camera.GetFarClip();
-					ImGui::Text("FOV: ");		ImGui::SameLine(); if (ImGui::DragFloat("##PerspectiveFOV: ", &fFOV, 0.1f)) camera.SetPerspVerticalFOV(glm::radians(fFOV));
-					ImGui::Text("NearClip: ");  ImGui::SameLine(); if (ImGui::DragFloat("##PerspectiveNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear);
-					ImGui::Text("FarClip: ");   ImGui::SameLine(); if (ImGui::DragFloat("##PerspectiveFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar);
+				{
+					static constexpr char *projTypeStr[] = { "Perspective", "Orthographic" };
+					const char *selection = projTypeStr[(int)cmp->camera.GetProjType()];
+					ImGui::Text("Projection: "); ImGui::TableNextColumn();
+					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+					if (ImGui::BeginCombo("##Projection", selection, ImGuiComboFlags_NoArrowButton))
+					{
+						for (int i = 0; i < 2; i++) {
+							bool match = selection == projTypeStr[i];
+							if (ImGui::Selectable(projTypeStr[i], match)) {
+								selection = projTypeStr[i];
+								camera.SetProjType((SceneCamera::ProjectionType)i);
+							}
+							if (match) ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+					ImGui::TableNextColumn();
 				}
-				ImGui::PopID();
+				{
+					switch (cmp->camera.GetProjType()) {
+						default: ImGui::Text("Invalid Camera Projection Type"); break;
+						case SceneCamera::ProjectionType::Orthographic:
+							{
+								float fSize = camera.OrthoSize();
+								float fNear = camera.GetNearClip();
+								float fFar = camera.GetFarClip();
+								ImGui::Text("OrthoSize: "); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##OrthographicOrthoSize: ", &fSize, 0.1f)) camera.SetOrthoSize(fSize); ImGui::TableNextColumn();
+								ImGui::Text("NearClip: "); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##OrthographicNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear); ImGui::TableNextColumn();
+								ImGui::Text("FarClip: "); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##OrthographicFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar); ImGui::TableNextColumn();
+								break;
+							}
+						case SceneCamera::ProjectionType::Perspective:
+							{
+								float fFOV = glm::degrees(camera.GetPerspVerticalFOV());
+								float fNear = camera.GetNearClip();
+								float fFar = camera.GetFarClip();
+								ImGui::Text("FOV: "); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##PerspectiveFOV: ", &fFOV, 0.1f)) camera.SetPerspVerticalFOV(glm::radians(fFOV)); ImGui::TableNextColumn();
+								ImGui::Text("NearClip: "); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##PerspectiveNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear); ImGui::TableNextColumn();
+								ImGui::Text("FarClip: "); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##PerspectiveFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar); ImGui::TableNextColumn();
+								break;
+							}
+					}
+					ImGui::Text("Fixed AR"); ImGui::TableNextColumn();
+					ImGui::BeginDisabled(cmp->camera.GetProjType() != SceneCamera::ProjectionType::Orthographic);
+					ImGui::Checkbox("##Fixed Aspect Ratio", &cmp->fixedAspectRatio);
+					ImGui::EndDisabled();
+				}
 				});
 		}
 	}

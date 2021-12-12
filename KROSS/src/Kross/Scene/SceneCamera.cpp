@@ -43,7 +43,6 @@ namespace Kross {
 				break;
 
 			case ProjectionType::Perspective:
-				KROSS_TRACE("{0}", glm::degrees(m_fPerspFOV));
 				m_ProjMat = glm::perspective(
 					m_fPerspFOV,
 					m_fAspectRatio,

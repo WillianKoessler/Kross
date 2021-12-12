@@ -12,10 +12,6 @@ namespace Kross {
 		Ref<Scene> m_Scene;
 		Camera::Editor m_Camera;
 		glm::vec2 m_ViewportSize;
-		bool m_bMouseMoved;
-		bool m_bMouseClick;
-		//bool m_bViewportFocused = false;
-		//bool m_bViewportHovered = false;
 	public:
 		EditorLayer();
 

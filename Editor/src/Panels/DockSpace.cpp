@@ -34,13 +34,13 @@ namespace Kross {
 			{
 				if (ImGui::MenuItem("Style", NULL)) PopUpMessage = { true, "Style Editor", ButtonType::OK, DefaultFunc };
 				ImGui::Separator();
-				ShowHelperMarker("Enables or Disable FullScreen mode."); ImGui::SameLine();
+				Panel::ShowHelperMarker("Enables or Disable FullScreen mode."); ImGui::SameLine();
 				ImGui::MenuItem("Fullscreen", NULL, &Manager().s_bFullscreen);
-				ShowHelperMarker("Enable or Disable Keyboard navigation through the Graphical Interfaces"); ImGui::SameLine();
+				Panel::ShowHelperMarker("Enable or Disable Keyboard navigation through the Graphical Interfaces"); ImGui::SameLine();
 				ImGui::MenuItem("Keyboard", NULL, &AppManager().s_bKeyboardEnabled);
-				ShowHelperMarker("Enable or Disable Gamepad navigation through the Graphical Interfaces"); ImGui::SameLine();
+				Panel::ShowHelperMarker("Enable or Disable Gamepad navigation through the Graphical Interfaces"); ImGui::SameLine();
 				ImGui::MenuItem("Gamepad", NULL, &AppManager().s_bGamepadEnabled);
-				ShowHelperMarker("Enable or Disable Viewports to create another window on the operting system"); ImGui::SameLine();
+				Panel::ShowHelperMarker("Enable or Disable Viewports to create another window on the operting system"); ImGui::SameLine();
 				ImGui::MenuItem("Viewports", NULL, &AppManager().s_bViewportEnabled);
 				ImGui::EndMenu();
 			}
@@ -85,7 +85,7 @@ namespace Kross {
 
 		// ImGui Demo Window
 		if (Manager().s_bDemoWindow) ImGui::ShowDemoWindow(&Manager().s_bDemoWindow);
-		MessageBoxDialog(PopUpMessage);
+		Panel::MessageBoxDialog(PopUpMessage);
 		ImGui::End();
 	}
 }

@@ -35,13 +35,13 @@ namespace Kross {
 	
 	protected:
 		virtual void Menu() {}
-		void ShowHelperMarker(const std::string& msg, float size = 35.0f);
-		void MessageBoxDialog(MessageBoxSpecs& specs);
-		void ButtonOK(MessageBoxSpecs &specs);
-		void ButtonOK_CANCEL(MessageBoxSpecs &specs);
-		void ButtonOK_RETRY_CANCEL(MessageBoxSpecs &specs);
-		void ButtonYES_NO(MessageBoxSpecs &specs);
-		void ButtonYES_NO_CANCEL(MessageBoxSpecs &specs);
+		static void ShowHelperMarker(const std::string& msg, float size = 35.0f);
+		static void MessageBoxDialog(MessageBoxSpecs& specs);
+		static void ButtonOK(MessageBoxSpecs &specs);
+		static void ButtonOK_CANCEL(MessageBoxSpecs &specs);
+		static void ButtonOK_RETRY_CANCEL(MessageBoxSpecs &specs);
+		static void ButtonYES_NO(MessageBoxSpecs &specs);
+		static void ButtonYES_NO_CANCEL(MessageBoxSpecs &specs);
 	
 	protected:
 		static void(*DefaultFunc)(void);

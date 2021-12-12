@@ -64,9 +64,6 @@ namespace Kross {
 			m_Scene->OnUpdateEditor(ts, m_Camera);
 		} else m_Scene->OnUpdateRuntime(ts);
 		m_Frame->unBind();
-
-		m_bMouseClick = false;
-		m_bMouseMoved = false;
 	}
 
 	void EditorLayer::OnImGuiRender(double ts)
@@ -121,8 +118,6 @@ namespace Kross {
 	void EditorLayer::OnEvent(Event &e)
 	{
 		if (Panel::AppManager().s_bEditorCamera) m_Camera.OnEvent(e);
-		if (e.GetEventType() == MouseButtonPressedEvent::GetStaticType()) m_bMouseClick = true;
-		if (e.GetEventType() == MouseMovedEvent::GetStaticType()) m_bMouseMoved = true;
 	}
 
 }
