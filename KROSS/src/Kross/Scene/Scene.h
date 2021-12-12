@@ -33,7 +33,8 @@ namespace Kross {
 		void OnUpdateEditor(double ts, const Camera::Editor& camera);
 		void OnUpdateRuntime(double ts);
 		void OnViewportResize(const glm::vec2& size);
-
+	private:
+		void OnComponentAdded(Entity e, uint64_t componentID);
 	private:
 		entt::registry m_Registry;
 		entt::entity m_PrimaryCameraID = entt::null;

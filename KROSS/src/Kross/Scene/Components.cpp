@@ -3,14 +3,13 @@
 
 namespace Kross {
 	static std::vector<std::string> usedNames;
-	static int find(const char *tag)
+	static int find(const std::string &tag)
 	{
-		std::string t(tag);
-		for (int i = 0; i < (int)usedNames.size(); i++) 
-			if (usedNames[i] == t) return i;
+		for (int i = 0; i < (int)usedNames.size(); i++)
+			if (usedNames[i] == tag) return i;
 		return -1;
 	}
-	static void add(const char *tag)
+	static void add(const std::string &tag)
 	{
 		usedNames.emplace_back(tag);
 	}
@@ -21,33 +20,28 @@ namespace Kross {
 	}
 	static bool has(const char *tag)
 	{
-		return find(tag) > 0;
+		return find(tag) >= 0;
 	}
-	static std::string getAvail(const char *tag)
+	static std::string getAvail(const std::string &tag)
 	{
-		std::string now(tag);
+		std::string now = tag;
 		uint32_t count = 0;
 		for (auto &stored : usedNames) {
 			if (now == stored) count++;
-			if (count > 0) {
-				now = tag + ("(" + std::to_string(count) + ")");
-				if (now == stored) count++;
-			}
+			if (count > 0) now = tag + "(" + std::to_string(count) + ")";
 		}
+		add(now);
 		return now;
 	}
 	void TagComponent::Set(const char *newTag)
 	{
-		const char *target;
-		if (std::string(newTag).empty()) target = "null";
-		else target = newTag;
+		std::string target = newTag;
+		if (target.empty()) target = "(null)";
+		KROSS_TRACE(target);
 
-		if (has(tag))
-			remove(tag);
-		std::string avail = getAvail(target);
+		if (has(tag)) remove(tag);
 		memset(tag, 0, limit);
-		memcpy(tag, avail.c_str(), limit);
-		add(tag);
+		memcpy(tag, getAvail(target).c_str(), limit);
 	}
 	TagComponent::~TagComponent()
 	{

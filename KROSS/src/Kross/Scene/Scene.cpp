@@ -1,4 +1,4 @@
-#include "Kross_pch.h"
+#include <Kross_pch.h>
 #include "Scene.h"
 #include "Components.h"
 #include "Entity.h"
@@ -23,8 +23,8 @@ namespace Kross {
 	Entity Scene::CreateEntity(const char *name)
 	{
 		Entity entity{ (uint32_t)m_Registry.create(), this };
-		auto tag = entity.Add<TagComponent>(name);
-		KROSS_TRACE("Entity '{0}' Created", tag->Get());
+		const char *tag = entity.Add<TagComponent>(name)->Get();
+		KROSS_TRACE("Entity '{0}' Created", tag);
 		return entity;
 	}
 
@@ -47,7 +47,11 @@ namespace Kross {
 			KROSS_INFO("Entity '{0}' Destroyed", (uint32_t)e);
 		}
 	}
-#ifdef KROSS_DLL
+	/*
+	*	TODO: put it in Header file so it separates Kross's heap from Client's heap,
+	*	and uses the corresponding heap to create and return an array with all entities
+	*/
+#ifdef KROSS_DLL 
 	Scene::Entities Scene::GetAllEntities()
 	{
 		static std::vector<Entity> pool;
@@ -92,9 +96,15 @@ namespace Kross {
 		}
 		Renderer2D::End();
 	}
-
 	void Scene::OnUpdateRuntime(double ts)
 	{
+		Entity primaryCamera((uint32_t)m_PrimaryCameraID, this);
+		int valid = primaryCamera.Has<TransformComponent, CameraComponent>();
+
+		static bool validated = false;
+		if (!Validate(&validated, valid == 1, "PrimaryCamera is not valid"))
+			return;
+
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto &cmp) {
 			if (!cmp.m_Instance) {
 				cmp.m_Instance = cmp.Instantiate();
@@ -104,26 +114,21 @@ namespace Kross {
 			cmp.m_Instance->OnUpdate(ts);
 			});
 
-		if (m_PrimaryCameraID != entt::null) {
-			Entity primaryCamera((uint32_t)m_PrimaryCameraID, this);
-			auto camera = primaryCamera.Get<CameraComponent>();
-			auto tranform = primaryCamera.Get<TransformComponent>();
-			if (!camera) KROSS_WARN("Primary Camera does not have CameraComponent");
-			if (!tranform) KROSS_WARN("Primary Camera does not have TransformComponent");
-			if (!camera || !tranform) return;
-			Renderer2D::Begin(*camera, *tranform);
-			{
-				// Render Sprites
-				auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
+		auto camera = primaryCamera.Get<CameraComponent>();
+		auto tranform = primaryCamera.Get<TransformComponent>();
+		Renderer2D::Begin(*camera, *tranform);
+		{
+			// Render Sprites
+			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
 
-				for (auto entity : group)
-				{
-					auto [tranform, sprite] = group.get(entity);
-					Renderer2D::BatchQuad(tranform, sprite.tint);
-				}
+			for (auto entity : group)
+			{
+				auto [tranform, sprite] = group.get(entity);
+				Renderer2D::BatchQuad(tranform, sprite.tint);
 			}
-			Renderer2D::End();
 		}
+		Renderer2D::End();
+
 	}
 
 	void Scene::OnViewportResize(const glm::vec2 &size)
@@ -131,5 +136,15 @@ namespace Kross {
 		m_ViewportSize = size;
 		auto view = m_Registry.view<CameraComponent>();
 		view.each([&size](CameraComponent &cmpt) { if (!cmpt.fixedAspectRatio) { cmpt.camera.SetViewportSize(size); }});
+	}
+	void Scene::OnComponentAdded(Entity e, uint64_t componentID)
+	{
+		if (componentID == typeid(TagComponent).hash_code()) {
+		} else if (componentID == typeid(TransformComponent).hash_code()) {
+		} else if (componentID == typeid(SpriteComponent).hash_code()) {
+		} else if (componentID == typeid(CameraComponent).hash_code()) {
+			e.Get<CameraComponent>()->camera.SetViewportSize(m_ViewportSize);
+		} else if (componentID == typeid(NativeScriptComponent).hash_code()) {
+		}
 	}
 }

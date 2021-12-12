@@ -186,12 +186,9 @@ namespace Kross {
 
 			bool markForDelete = false;
 			bool opened = ImGui::TreeNodeEx((const void *)(typeid(Component).hash_code()), treeFlags, label.c_str());
-			float nodeWidth = ImGui::CalcItemWidth();
-			float totalWidth = ImGui::GetContentRegionAvail().x;
-			float buttonWidth = ImGui::CalcTextSize("...").x;
-			float labelWidth = ImGui::CalcTextSize(label.c_str()).x;
 			if (removable) {
-				ImGui::SameLine(0.0f, totalWidth - labelWidth - buttonWidth - (opened ? 0.0f : buttonWidth));
+//				ImGui::SameLine(0.0f, totalWidth - labelWidth - buttonWidth - (opened ? 0.0f : buttonWidth));
+				ImGui::SameLine(ImGui::GetWindowWidth() - ImGui::CalcTextSize("....").x);
 
 				if (ImGui::BeginPopupContextItem("RemoveComponentPopup")) {
 					markForDelete |= ImGui::MenuItem("Remove Component");
@@ -273,7 +270,7 @@ namespace Kross {
 				bool active = false;
 				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();
 				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.01f); ImGui::TableNextColumn();
-				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.01f);
+				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.01f, 1.0f);
 				if (Input::IsMouseButtonHeld(MouseButton::Left)) {
 					setFlag(ImGuiConfigFlags_NoMouse, active);
 					Application::Get().GetWindow().CursorEnabled(!active);

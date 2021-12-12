@@ -24,7 +24,7 @@ namespace Kross {
 	public:
 
 		template<typename...Args>
-		static void MsgBox(uint8_t s, const char* srcFunc, const char* fmt, const Args&...args)
+		static void MsgBox(uint8_t s, const char *srcFunc, const char *fmt, const Args&...args)
 		{
 			std::string format;
 			format += "[";
@@ -33,7 +33,7 @@ namespace Kross {
 			format += fmt;
 
 #ifdef KROSS_PLATFORM_WINDOWS
-			auto MB_MESSAGETITLE = [&srcFunc](const char* mod) { return std::string(srcFunc) + " [" + mod + "] Code: "; };
+			auto MB_MESSAGETITLE = [&srcFunc](const char *mod) { return std::string(srcFunc) + " [" + mod + "] Code: "; };
 			switch (s)
 			{
 				case info:     s_CoreLogger->info(format, args...); MessageBoxA(ACTIVEWINDOW, format.c_str(), MB_MESSAGETITLE("[INFO] ").c_str(), MB_ICONASTERISK); break;
@@ -75,3 +75,21 @@ namespace Kross {
 #define KROSS_INFO_ONCE(...)  { static bool called = false; if(!called) { KROSS_INFO(__VA_ARGS__); called = true; } }
 #define KROSS_WARN_ONCE(...)  { static bool called = false; if(!called) { KROSS_WARN(__VA_ARGS__); called = true; } }
 #define KROSS_ERROR_ONCE(...) { static bool called = false; if(!called) { KROSS_ERROR(__VA_ARGS__); called = true; } }
+
+template<typename...error_message_args>
+bool Validate(bool *wasValid, bool condition, const char *fmt, error_message_args&&...args)
+{
+	if (!wasValid) {
+		KROSS_ERROR("Validation failed. (bool *wasValid == nullptr)");
+		return false;
+	}
+	if (!condition) {
+		if (*wasValid) {
+			KROSS_WARN(fmt, std::forward<error_message_args>(args)...);
+			*wasValid = false;
+		}
+		return false;
+	}
+	*wasValid = true;
+	return true;
+}

@@ -34,7 +34,19 @@ namespace Kross {
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;				// Enable Multi-Viewports / Platform Windows
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
-
+		float fontSize = 16.f;
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-Regular.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-Italic.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-Light.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-LightItalic.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-Medium.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-MediumItalic.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-SemiBold.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-SemiBoldItalic.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-Bold.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-BoldItalic.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-ExtraBold.ttf", fontSize);
+		io.Fonts->AddFontFromFileTTF("assets/fonts/OpenSans/static/OpenSans/OpenSans-ExtraBoldItalic.ttf", fontSize);
 		ImGui::StyleColorsDark();	// Setup Style
 
 		ImGuiStyle& style = ImGui::GetStyle();

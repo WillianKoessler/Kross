@@ -21,9 +21,11 @@ namespace Kross {
 		const char *Get() const { return tag; }
 
 		~TagComponent();
-		TagComponent() = default;
-		TagComponent(const TagComponent &) = default;
+		TagComponent() { Set(nullptr); }
+		TagComponent(const TagComponent &other) { Set(other); }
 		TagComponent(const char *newTag) { Set(newTag); }
+
+		operator const char*() const { return tag; }
 	};
 
 	struct TransformComponent : public EmptyComponent

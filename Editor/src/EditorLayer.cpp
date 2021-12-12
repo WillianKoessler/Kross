@@ -31,6 +31,8 @@ namespace Kross {
 		m_pPanels.push_back(makeScope<SceneHierarchy>(m_Scene));
 		m_pPanels.push_back(makeScope<EntityProperties>(m_Scene));
 
+		Panel::AppManager().s_bEditorCamera = false;
+
 		RenderCommand::BackCull(true);
 	}
 	void EditorLayer::OnDetach()
@@ -43,7 +45,6 @@ namespace Kross {
 		if (!Panel::Manager().s_bDockspace) Application::Get().OnEvent(WindowCloseEvent());
 		m_Frame->Resize(m_ViewportSize);
 		m_Camera.SetViewportSize(m_ViewportSize);
-		m_Scene->OnViewportResize(m_ViewportSize);
 
 		m_Frame->Bind();
 		RenderCommand::Clear();
@@ -88,9 +89,11 @@ namespace Kross {
 
 			ImVec2 ImGuiViewportPanelSize = ImGui::GetContentRegionAvail();
 			glm::vec2 glmViewportSize = { ImGuiViewportPanelSize.x, ImGuiViewportPanelSize.y };
-			
-			if (m_ViewportSize != glmViewportSize && ImGuiViewportPanelSize.x > 0.0f && ImGuiViewportPanelSize.y > 0.0f)
-					m_ViewportSize = glmViewportSize;
+
+			if (m_ViewportSize != glmViewportSize && ImGuiViewportPanelSize.x > 0.0f && ImGuiViewportPanelSize.y > 0.0f) {
+				m_ViewportSize = glmViewportSize;
+				m_Scene->OnViewportResize(m_ViewportSize);
+			}
 
 			ImGui::Image(
 				(void *)(uintptr_t)m_Frame->GetColorAttachmentID(),
