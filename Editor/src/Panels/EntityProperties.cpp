@@ -175,7 +175,15 @@ namespace Kross {
 			ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX | (debug ? ImGuiTableFlags_Borders : 0);
 		if (entity.Has<Component>() == 1) {
 			ImGui::PushID(("##" + label).c_str());
-			if (ImGui::TreeNodeEx((const void *)(typeid(Component).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, label.c_str())) {
+			bool markForDelete = false;
+			bool opened = ImGui::TreeNodeEx((const void *)(typeid(Component).hash_code()), ImGuiTreeNodeFlags_DefaultOpen, label.c_str());
+			if (removable)
+				if (ImGui::BeginPopupContextItem("RemoveComponentPopup")) {
+					if (ImGui::MenuItem("Remove Component")) markForDelete = true;
+					ImGui::EndPopup();
+				}
+
+			if(opened) {
 				ImGui::BeginTable(("##" + label).c_str(), 2, flags);
 				ImGui::TableSetupColumn(("##" + label + "_Label").c_str(), ImGuiTableColumnFlags_WidthFixed, 100.0f);
 				ImGui::TableSetupColumn(("##" + label + "_Value").c_str(), ImGuiTableColumnFlags_WidthStretch, ImGui::GetContentRegionAvail().x);
@@ -184,14 +192,10 @@ namespace Kross {
 				show(const_cast<Scene *>(entity.GetScene()), "##" + label, entity.Get<Component>());
 				ImGui::EndTable();
 				ImGui::Separator();
-				if (removable)
-					if (ImGui::BeginPopupContextItem("RemoveComponentPopup", 1)) {
-						if (ImGui::MenuItem("Remove Component")) entity.Remove<Component>();
-						ImGui::EndPopup();
-					}
 				ImGui::TreePop();
 			}
 			ImGui::PopID();
+			if (markForDelete) entity.Remove<Component>();
 		}
 	}
 	EntityProperties::EntityProperties(const Ref<Scene> &scene)
@@ -210,7 +214,6 @@ namespace Kross {
 				DrawEntity(s_Selection);
 				if (ImGui::Button("Add Component")) ImGui::OpenPopup("Add_Component_Popup");
 				if (ImGui::BeginPopup("Add_Component_Popup")) {
-					//if (ImGui::MenuItem("Tag")) { s_Selection.Add<TagComponent>(); ImGui::CloseCurrentPopup(); }
 					if (ImGui::MenuItem("Transform")) { s_Selection.Add<TransformComponent>(); ImGui::CloseCurrentPopup(); }
 					if (ImGui::MenuItem("Sprite")) { s_Selection.Add<SpriteComponent>(); ImGui::CloseCurrentPopup(); }
 					if (ImGui::MenuItem("Camera")) { s_Selection.Add<CameraComponent>(); ImGui::CloseCurrentPopup(); }

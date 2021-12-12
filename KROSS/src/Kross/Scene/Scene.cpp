@@ -23,9 +23,8 @@ namespace Kross {
 	Entity Scene::CreateEntity(const char *name)
 	{
 		Entity entity{ (uint32_t)m_Registry.create(), this };
-		entity.Add<TransformComponent>();
-		entity.Add<TagComponent>(name);
-		KROSS_TRACE("Entity '{0}' Created", entity.Get<TagComponent>()->Get());
+		auto tag = entity.Add<TagComponent>(name);
+		KROSS_TRACE("Entity '{0}' Created", tag->Get());
 		return entity;
 	}
 

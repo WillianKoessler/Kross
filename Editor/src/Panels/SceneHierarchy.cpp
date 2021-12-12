@@ -40,16 +40,16 @@ namespace Kross {
 			ImGuiTreeNodeFlags flags = (s_Selection == entity) ? ImGuiTreeNodeFlags_Selected : 0;
 			bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc->Get()), flags, tc->Get());
 			if (ImGui::IsItemClicked()) s_Selection = entity;
-			bool markToDelete = false;
+			bool markForDelete = false;
 			if (ImGui::BeginPopupContextItem()) {
 				if (ImGui::MenuItem("Delete Entity"))
-					markToDelete = true;
+					markForDelete = true;
 				ImGui::EndPopup();
 			}
 			if (opened)
 				ImGui::TreePop();
 
-			if (markToDelete) {
+			if (markForDelete) {
 				if (s_Selection == entity) s_Selection = {};
 				p_Scene->DestroyEntity(entity);
 			}
