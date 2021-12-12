@@ -612,6 +612,7 @@
     <ClCompile Include="src\Kross\Renderer\VoxelRenderer.cpp" />
     <ClCompile Include="src\Kross\Scene\Scene.cpp" />
     <ClCompile Include="src\Kross\Scene\SceneCamera.cpp" />
+    <ClCompile Include="src\Kross\Scene\Components.cpp" />
     <ClCompile Include="src\Kross\Util\Util.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiLayer.cpp" />

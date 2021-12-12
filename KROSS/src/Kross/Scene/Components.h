@@ -2,22 +2,28 @@
 
 #include <glm/glm.hpp>
 #include <stdlib.h>
+#include <vector>
+#include "Kross/Util/Constants.h"
 #include "SceneCamera.h"
 #include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
 #include "ScriptableEntity.h"
 #include "EmptyComponent.h"
 
-static constexpr glm::mat4 mat4 = glm::mat4(1.0f);
 
 namespace Kross {
 	struct TagComponent : public EmptyComponent
 	{
 		static const uint32_t limit = 128;
+	private:
 		char tag[limit];
+	public:
+		void Set(const char *newTag);
+		const char *Get() const { return tag; }
 
+		~TagComponent();
 		TagComponent() = default;
 		TagComponent(const TagComponent &) = default;
-		TagComponent(const char *newTag) { memset(tag, 0, limit); memcpy(tag, newTag, limit); }
+		TagComponent(const char *newTag) { Set(newTag); }
 	};
 
 	struct TransformComponent : public EmptyComponent
@@ -34,11 +40,11 @@ namespace Kross {
 		operator glm::mat4() const
 		{
 			return (
-				glm::translate(mat4, Position) * 
-				(glm::rotate(mat4, Rotation.x, { 1.0f, 0.0f, 0.0f }) *
-				glm::rotate(mat4, Rotation.y, { 0.0f, 1.0f, 0.0f }) *
-				glm::rotate(mat4, Rotation.z, { 0.0f, 0.0f, 1.0f })) *
-				glm::scale(mat4, Scale)
+				glm::translate(const_mat4, Position) *
+				(glm::rotate(const_mat4, Rotation.x, { 1.0f, 0.0f, 0.0f }) *
+				glm::rotate(const_mat4, Rotation.y, { 0.0f, 1.0f, 0.0f }) *
+				glm::rotate(const_mat4, Rotation.z, { 0.0f, 0.0f, 1.0f })) *
+				glm::scale(const_mat4, Scale)
 				);
 		}
 	};

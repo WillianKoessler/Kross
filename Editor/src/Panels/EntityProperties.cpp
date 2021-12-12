@@ -168,7 +168,7 @@ namespace Kross {
 		return value_changed;
 	}
 	template<typename Component>
-	static void DrawComponent(const std::string &label, Entity entity, void(*show)(Scene *, const std::string &, Component *))
+	static void DrawComponent(const std::string &label, Entity entity, bool removable, void(*show)(Scene *, const std::string &, Component *))
 	{
 		if (!entity.GetScene()) return;
 		ImGuiTableFlags flags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp |
@@ -184,20 +184,16 @@ namespace Kross {
 				show(const_cast<Scene *>(entity.GetScene()), "##" + label, entity.Get<Component>());
 				ImGui::EndTable();
 				ImGui::Separator();
+				if (removable)
+					if (ImGui::BeginPopupContextItem("RemoveComponentPopup", 1)) {
+						if (ImGui::MenuItem("Remove Component")) entity.Remove<Component>();
+						ImGui::EndPopup();
+					}
 				ImGui::TreePop();
 			}
 			ImGui::PopID();
 		}
 	}
-	static void PushDisabled(int item, int hovered, int activated)
-	{
-		glm::vec4 color = *(glm::vec4 *)&ImGui::GetStyleColorVec4(item);
-		color /= phi<float>();
-		if (item > -1 && item < ImGuiCol_COUNT) ImGui::PushStyleColor(item, *(ImVec4 *)&color);
-		if (hovered > -1 && hovered < ImGuiCol_COUNT) ImGui::PushStyleColor(hovered, *(ImVec4 *)&color);
-		if (activated > -1 && activated < ImGuiCol_COUNT) ImGui::PushStyleColor(activated, *(ImVec4 *)&color);
-	}
-	static void PopDisabled() { ImGui::PopStyleColor(3); }
 	EntityProperties::EntityProperties(const Ref<Scene> &scene)
 		: p_Scene(scene)
 	{
@@ -207,29 +203,38 @@ namespace Kross {
 	void EntityProperties::Show(double ts)
 	{
 		if (!Manager().s_bPropertiesInspector) return;
-		ImGui::GetIO().ConfigWindowsMoveFromTitleBarOnly = true;
+
 		if (ImGui::Begin(m_strName, &Panel::Manager().s_bPropertiesInspector))
 		{
-			//ImGui::Checkbox("Debug", &debug);
-			DrawEntity(s_Selection);
+			if (s_Selection) {
+				DrawEntity(s_Selection);
+				if (ImGui::Button("Add Component")) ImGui::OpenPopup("Add_Component_Popup");
+				if (ImGui::BeginPopup("Add_Component_Popup")) {
+					//if (ImGui::MenuItem("Tag")) { s_Selection.Add<TagComponent>(); ImGui::CloseCurrentPopup(); }
+					if (ImGui::MenuItem("Transform")) { s_Selection.Add<TransformComponent>(); ImGui::CloseCurrentPopup(); }
+					if (ImGui::MenuItem("Sprite")) { s_Selection.Add<SpriteComponent>(); ImGui::CloseCurrentPopup(); }
+					if (ImGui::MenuItem("Camera")) { s_Selection.Add<CameraComponent>(); ImGui::CloseCurrentPopup(); }
+					ImGui::EndPopup();
+				}
+			}
 		}
 		ImGui::End();
 	}
 	void EntityProperties::DrawEntity(Entity &entity)
 	{
 		if (entity && entity.GetScene()) {
-			DrawComponent<TagComponent>("Tag", entity, [](Scene *scene, const std::string &id, TagComponent *cmp) {
+			DrawComponent<TagComponent>("Tag", entity, false, [](Scene *scene, const std::string &id, TagComponent *cmp) {
 				char buffer[TagComponent::limit];
 				memset(buffer, 0, TagComponent::limit);
-				strcpy_s(buffer, TagComponent::limit, cmp->tag);
+				strcpy_s(buffer, TagComponent::limit, cmp->Get());
 				ImGui::Text("Name: ");
 				ImGui::TableNextColumn();
-				ImGuiInputTextFlags flags = ImGuiInputTextFlags_CharsNoBlank | ImGuiInputTextFlags_EnterReturnsTrue;
+				ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 				if (ImGui::InputText(id.c_str(), buffer, TagComponent::limit, flags))
-					strcpy_s(cmp->tag, TagComponent::limit, buffer);
+					cmp->Set(buffer);
 				});
-			DrawComponent<TransformComponent>("Transform", entity, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
+			DrawComponent<TransformComponent>("Transform", entity, true, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
 				bool active = false;
 				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();
 				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.01f); ImGui::TableNextColumn();
@@ -242,10 +247,10 @@ namespace Kross {
 					Application::Get().GetWindow().CursorEnabled(true);
 				}
 				});
-			DrawComponent<SpriteComponent>("Sprite", entity, [](Scene *scene, const std::string &id, SpriteComponent *cmp) {
+			DrawComponent<SpriteComponent>("Sprite", entity, true, [](Scene *scene, const std::string &id, SpriteComponent *cmp) {
 				ImGui::Text("Tint"); ImGui::TableNextColumn(); DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint));
 				});
-			DrawComponent<CameraComponent>("Camera", entity, [](Scene *scene, const std::string &id, CameraComponent *cmp) {
+			DrawComponent<CameraComponent>("Camera", entity, true, [](Scene *scene, const std::string &id, CameraComponent *cmp) {
 				SceneCamera &camera = cmp->camera;
 				Entity activeCamera = scene->GetCurrentCamera();
 				{
@@ -265,7 +270,7 @@ namespace Kross {
 					}
 
 					if (activeCamera) {
-						if (activeCamera.Has<TagComponent>() == 1) ImGui::Text("(Current: %s)", activeCamera.Get<TagComponent>()->tag);
+						if (activeCamera.Has<TagComponent>() == 1) ImGui::Text("(Current: %s)", activeCamera.Get<TagComponent>()->Get());
 						else ImGui::Text("(Current: %d)", (uint32_t)activeCamera);
 					} else ImGui::Text("(Current: null)");
 					ImGui::TableNextColumn();

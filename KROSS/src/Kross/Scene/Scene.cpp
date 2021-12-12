@@ -22,13 +22,10 @@ namespace Kross {
 
 	Entity Scene::CreateEntity(const char *name)
 	{
-		static std::vector<std::string> usedNames;
-		for (auto &stored : usedNames) { std::string now(name); if (stored == now) { KROSS_WARN("Entity Tagname is already in use."); return Entity(); } }
 		Entity entity{ (uint32_t)m_Registry.create(), this };
 		entity.Add<TransformComponent>();
 		entity.Add<TagComponent>(name);
-		KROSS_TRACE("Entity '{0}' Created", name);
-		usedNames.push_back(std::string(name));
+		KROSS_TRACE("Entity '{0}' Created", entity.Get<TagComponent>()->Get());
 		return entity;
 	}
 
@@ -38,11 +35,18 @@ namespace Kross {
 		std::vector<entt::entity> pool;
 		for (auto e : view) {
 			auto [Tag] = view.get(e);
-			if (strcmp(Tag.tag, name) == 0) pool.push_back(e);
+			if (strcmp(Tag.Get(), name) == 0) pool.push_back(e);
 		}
 		if (pool.size() > 1) { KROSS_ERROR("More than one entity shares the same Tagname"); return Entity(); }
 		if (pool.empty()) { KROSS_ERROR("There is no entity with that Tagname"); return Entity(); }
 		return Entity((uint32_t)pool.front(), this);
+	}
+	void Scene::DestroyEntity(Entity e)
+	{
+		if (e) {
+			m_Registry.destroy(e);
+			KROSS_INFO("Entity '{0}' Destroyed", (uint32_t)e);
+		}
 	}
 #ifdef KROSS_DLL
 	Scene::Entities Scene::GetAllEntities()

@@ -10,6 +10,10 @@ namespace Kross {
 		if (!scene) KROSS_WARN("Scene supplied is nullptr");
 		KROSS_INFO("Panel '{0}' Constructed", m_strName);
 	}
+	void SceneHierarchy::SetContext(const Ref<Scene> &scene)
+	{
+		if (scene) p_Scene = scene;
+	}
 	void SceneHierarchy::Show(double ts)
 	{
 		if (!Manager().s_bSceneHierarchy) return;
@@ -20,6 +24,12 @@ namespace Kross {
 
 			if (Input::IsMouseButtonPressed(MouseButton::Left) && ImGui::IsWindowHovered())
 				s_Selection = {};
+
+			if (ImGui::BeginPopupContextWindow("SceneHierarchy_Popup", 1, false))
+			{
+				if (ImGui::MenuItem("New Entity")) p_Scene->CreateEntity("New Entity");
+				ImGui::EndPopup();
+			}
 		}
 		ImGui::End();
 	}
@@ -27,15 +37,21 @@ namespace Kross {
 	{
 		if (entity.Has<TagComponent>() == 1) {
 			auto tc = entity.Get<TagComponent>();
-			if (tc)
-			{
-				ImGuiTreeNodeFlags flags = (s_Selection == entity) ? ImGuiTreeNodeFlags_Selected : 0;
-				bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc->tag), flags, tc->tag);
-				if (ImGui::IsItemClicked()) s_Selection = entity;
-				if (opened) {
-					Manager().s_bPropertiesInspector = true;
-					ImGui::TreePop();
-				}
+			ImGuiTreeNodeFlags flags = (s_Selection == entity) ? ImGuiTreeNodeFlags_Selected : 0;
+			bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc->Get()), flags, tc->Get());
+			if (ImGui::IsItemClicked()) s_Selection = entity;
+			bool markToDelete = false;
+			if (ImGui::BeginPopupContextItem()) {
+				if (ImGui::MenuItem("Delete Entity"))
+					markToDelete = true;
+				ImGui::EndPopup();
+			}
+			if (opened)
+				ImGui::TreePop();
+
+			if (markToDelete) {
+				if (s_Selection == entity) s_Selection = {};
+				p_Scene->DestroyEntity(entity);
 			}
 		}
 	}

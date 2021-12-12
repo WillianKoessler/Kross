@@ -31,18 +31,6 @@ namespace Kross {
 		m_pPanels.push_back(makeScope<SceneHierarchy>(m_Scene));
 		m_pPanels.push_back(makeScope<EntityProperties>(m_Scene));
 
-		Entity sceneCamera = m_Scene->CreateEntity("SceneCamera");
-		sceneCamera.Add<CameraComponent>();
-		sceneCamera.Add<NativeScriptComponent>()->Bind<CameraController>();
-
-		m_Scene->CreateEntity("mySquare").Add<SpriteComponent>(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
-		m_Scene->CreateEntity("otherSquare").Add<SpriteComponent>();
-
-		m_Scene->CreateEntity("Second Camera").Add<CameraComponent>();
-		auto camera = m_Scene->CreateEntity("Third Camera");
-		camera.Add<CameraComponent>();
-		camera.Remove<TransformComponent>();
-
 		RenderCommand::BackCull(true);
 	}
 	void EditorLayer::OnDetach()

@@ -14,6 +14,7 @@ namespace Kross {
 
 		Entity CreateEntity(const char *Tag);
 		Entity GetEntity(const char *Tag) const;
+		void DestroyEntity(Entity e);
 
 #ifdef KROSS_DLL
 		struct Entities
