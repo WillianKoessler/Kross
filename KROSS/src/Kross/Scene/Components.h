@@ -43,9 +43,9 @@ namespace Kross {
 		{
 			return (
 				glm::translate(const_mat4, Position) *
-				(glm::rotate(const_mat4, Rotation.x, { 1.0f, 0.0f, 0.0f }) *
-				glm::rotate(const_mat4, Rotation.y, { 0.0f, 1.0f, 0.0f }) *
-				glm::rotate(const_mat4, Rotation.z, { 0.0f, 0.0f, 1.0f })) *
+				(glm::rotate(const_mat4, glm::radians(Rotation.x), { 1.0f, 0.0f, 0.0f }) *
+				glm::rotate(const_mat4, glm::radians(Rotation.y), { 0.0f, 1.0f, 0.0f }) *
+				glm::rotate(const_mat4, glm::radians(Rotation.z), { 0.0f, 0.0f, 1.0f })) *
 				glm::scale(const_mat4, Scale)
 				);
 		}

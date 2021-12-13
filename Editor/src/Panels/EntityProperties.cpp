@@ -148,11 +148,10 @@ namespace Kross {
 			PushID(i); // push 2 3 4 5
 			PushItemWidth(dragWidth);
 			int val = (int)(values[i] * 255.f);
-			if (i != 3)  PushColor(colors[i] * x * values[i], ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
-			else PushColor(colors[i] * o * values[i], ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
-			DragInt(("##" __FUNCSIG__ + channel[i] + id).c_str(), &val, 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp); SameLine(0.0f, 0.0f);
-			PopColor(3);
+			PushColor(colors[i] * values[i] * (i != 3 ? x : o), ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
+			DragInt("", &val, 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp); SameLine(0.0f, 0.0f);
 			value_changed |= IsItemFocused();
+			PopColor(3);
 			values[i] = val / 255.f;
 			PopID(); // pop 5 4 3 2
 		}
@@ -172,9 +171,10 @@ namespace Kross {
 	}
 
 	template<typename Component>
-	static void DrawComponent(const std::string &label, Entity entity, bool removable, void(*show)(Scene *, const std::string &, Component *))
+	static bool DrawComponent(const std::string &label, Entity entity, bool removable, bool(*show)(Scene *, const std::string &, Component *))
 	{
-		if (!entity.GetScene()) return;
+		bool used = false;
+		if (!entity.GetScene()) return used;
 
 		ImGuiTableFlags tableFlags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp |
 			ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX | (debug ? ImGuiTableFlags_Borders : 0);
@@ -188,8 +188,6 @@ namespace Kross {
 			bool markForDelete = false;
 			bool opened = ImGui::TreeNodeEx((const void *)(typeid(Component).hash_code()), treeFlags, label.c_str());
 			if (removable) {
-				//				ImGui::SameLine(0.0f, totalWidth - labelWidth - buttonWidth - (opened ? 0.0f : buttonWidth));
-
 				if (ImGui::BeginPopupContextItem("RemoveComponentPopup")) {
 					markForDelete |= ImGui::MenuItem("Remove Component");
 					ImGui::EndPopup();
@@ -210,7 +208,7 @@ namespace Kross {
 				ImGui::TableSetupColumn(("##" + label + "_Label").c_str(), ImGuiTableColumnFlags_WidthFixed, 100.0f);
 				ImGui::TableSetupColumn(("##" + label + "_Value").c_str(), ImGuiTableColumnFlags_WidthStretch, ImGui::GetContentRegionAvail().x);
 				ImGui::TableNextRow(); ImGui::TableNextColumn();
-				show(const_cast<Scene *>(entity.GetScene()), "##" + label, entity.Get<Component>());
+				used = show(const_cast<Scene *>(entity.GetScene()), "##" + label, entity.Get<Component>());
 				ImGui::EndTable();
 				ImGui::TreePop();
 			}
@@ -218,6 +216,7 @@ namespace Kross {
 			ImGui::PopID();
 			if (markForDelete) entity.Remove<Component>();
 		}
+		return used;
 	}
 	EntityProperties::EntityProperties(const Ref<Scene> &scene)
 		: p_Scene(scene)
@@ -274,23 +273,19 @@ namespace Kross {
 	void EntityProperties::DrawEntity(Entity &entity)
 	{
 		if (entity && entity.GetScene()) {
-			DrawComponent<TransformComponent>("Transform", entity, true, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
+			bool used = false;
+			used |= DrawComponent<TransformComponent>("Transform", entity, true, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
 				bool active = false;
 				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();
 				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.01f); ImGui::TableNextColumn();
 				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.01f, 1.0f);
-				if (Input::IsMouseButtonHeld(MouseButton::Left)) {
-					setFlag(ImGuiConfigFlags_NoMouse, active);
-					Application::Get().GetWindow().CursorEnabled(!active);
-				} else {
-					setFlag(ImGuiConfigFlags_NoMouse, false);
-					Application::Get().GetWindow().CursorEnabled(true);
-				}
+				return active;
 				});
-			DrawComponent<SpriteComponent>("Sprite", entity, true, [](Scene *scene, const std::string &id, SpriteComponent *cmp) {
-				ImGui::Text("Tint"); ImGui::TableNextColumn(); DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint));
+			used |= DrawComponent<SpriteComponent>("Sprite", entity, true, [](Scene *scene, const std::string &id, SpriteComponent *cmp) {
+				ImGui::Text("Tint"); ImGui::TableNextColumn(); return DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint));
 				});
-			DrawComponent<CameraComponent>("Camera", entity, true, [](Scene *scene, const std::string &id, CameraComponent *cmp) {
+			used |= DrawComponent<CameraComponent>("Camera", entity, true, [](Scene *scene, const std::string &id, CameraComponent *cmp) {
+				bool used = false;
 				SceneCamera &camera = cmp->camera;
 				Entity activeCamera = scene->GetCurrentCamera();
 				{
@@ -344,10 +339,13 @@ namespace Kross {
 								float fFar = camera.GetFarClip();
 								ImGui::Text("OrthoSize: "); ImGui::TableNextColumn();
 								if (ImGui::DragFloat("##OrthographicOrthoSize: ", &fSize, 0.1f)) camera.SetOrthoSize(fSize); ImGui::TableNextColumn();
+								used |= ImGui::IsItemFocused();
 								ImGui::Text("NearClip: "); ImGui::TableNextColumn();
 								if (ImGui::DragFloat("##OrthographicNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear); ImGui::TableNextColumn();
+								//used |= ImGui::IsItemFocused();
 								ImGui::Text("FarClip: "); ImGui::TableNextColumn();
 								if (ImGui::DragFloat("##OrthographicFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar); ImGui::TableNextColumn();
+								used |= ImGui::IsItemFocused();
 								break;
 							}
 						case SceneCamera::ProjectionType::Perspective:
@@ -356,11 +354,14 @@ namespace Kross {
 								float fNear = camera.GetNearClip();
 								float fFar = camera.GetFarClip();
 								ImGui::Text("FOV: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##PerspectiveFOV: ", &fFOV, 0.1f)) camera.SetPerspVerticalFOV(glm::radians(fFOV)); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##PerspectiveFOV: ", &fFOV)) camera.SetPerspVerticalFOV(glm::radians(fFOV)); ImGui::TableNextColumn();
+								used |= ImGui::IsItemFocused();
 								ImGui::Text("NearClip: "); ImGui::TableNextColumn();
 								if (ImGui::DragFloat("##PerspectiveNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear); ImGui::TableNextColumn();
+								used |= ImGui::IsItemFocused();
 								ImGui::Text("FarClip: "); ImGui::TableNextColumn();
 								if (ImGui::DragFloat("##PerspectiveFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar); ImGui::TableNextColumn();
+								used |= ImGui::IsItemFocused();
 								break;
 							}
 					}
@@ -369,7 +370,15 @@ namespace Kross {
 					ImGui::Checkbox("##Fixed Aspect Ratio", &cmp->fixedAspectRatio);
 					ImGui::EndDisabled();
 				}
+				return used;
 				});
+			if (Input::IsMouseButtonHeld(MouseButton::Left)) {
+				setFlag(ImGuiConfigFlags_NoMouse, used);
+				Application::Get().GetWindow().CursorEnabled(!used);
+			} else {
+				setFlag(ImGuiConfigFlags_NoMouse, false);
+				Application::Get().GetWindow().CursorEnabled(true);
+			}
 		}
 	}
 }
