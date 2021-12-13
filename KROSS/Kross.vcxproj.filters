@@ -114,10 +114,10 @@
     <ClInclude Include="src\Kross\Core\Application.h">
       <Filter>src\Kross\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Core\Core.h">
+    <ClInclude Include="src\Kross\Core\Asserts.h">
       <Filter>src\Kross\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Core\CoreConfig.h">
+    <ClInclude Include="src\Kross\Core\Core.h">
       <Filter>src\Kross\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Kross\Core\CoreLog.h">
@@ -1487,6 +1487,9 @@
     <ClCompile Include="src\Kross\Renderer\VoxelRenderer.cpp">
       <Filter>src\Kross\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Kross\Scene\Components.cpp">
+      <Filter>src\Kross\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\Kross\Scene\Scene.cpp">
       <Filter>src\Kross\Scene</Filter>
     </ClCompile>
@@ -1514,6 +1517,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Kross\Scene\Components.cpp" />
   </ItemGroup>
 </Project>

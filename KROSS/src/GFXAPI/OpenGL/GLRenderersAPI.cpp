@@ -4,7 +4,7 @@
 
 namespace Kross::OpenGL {
 	void RendererAPI::Shutdown() const {
-
+		
 	}
 	void RendererAPI::Init() const {
 		glCall(glEnable(GL_BLEND));

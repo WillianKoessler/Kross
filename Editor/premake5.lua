@@ -37,6 +37,8 @@ project "Editor"
 		defines
 		{
 			"KROSS_PLATFORM_WINDOWS",
+			"KROSS_FATAL_BREAK",
+			"KROSS_ENABLE_ASSERTS"
 			-- "KROSS_DLL"
 		}
 

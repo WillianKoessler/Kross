@@ -25,6 +25,8 @@
 		{
 			"KROSS_BUILD",
 			"KROSS_GLAD",
+			"KROSS_FATAL_BREAK",
+			"KROSS_ENABLE_ASSERTS"
 			-- "KROSS_DLL",
 			-- "KROSS_BUILD_DLL"
 		}

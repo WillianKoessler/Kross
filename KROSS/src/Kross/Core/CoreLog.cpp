@@ -1,6 +1,8 @@
 #include <Kross_pch.h>
 #include "Kross/Core/CoreLog.h"
 
+#include "spdlog/include/spdlog/fmt/ostr.h"
+#include "spdlog/include/spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/ostream_sink.h"
 

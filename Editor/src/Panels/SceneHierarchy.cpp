@@ -38,7 +38,7 @@ namespace Kross {
 		if (entity.Has<TagComponent>() == 1) {
 			auto tc = entity.Get<TagComponent>();
 			ImGuiTreeNodeFlags flags = (s_Selection == entity) ? ImGuiTreeNodeFlags_Selected : 0;
-			bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc->Get()), flags, tc->Get());
+			bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc.Get()), flags, tc.Get());
 			if (ImGui::IsItemClicked()) s_Selection = entity;
 			bool markForDelete = false;
 			if (ImGui::BeginPopupContextItem()) {

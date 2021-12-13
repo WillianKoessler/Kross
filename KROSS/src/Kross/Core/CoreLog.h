@@ -2,15 +2,6 @@
 
 #include "Kross/Core/Core.h"
 
-#include "spdlog/include/spdlog/spdlog.h"
-#include "spdlog/include/spdlog/fmt/ostr.h"
-#include "spdlog/include/spdlog/sinks/stdout_color_sinks.h"
-
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/sinks/ostream_sink.h"
-
-#include <iostream>
-
 namespace Kross {
 	class KAPI Logger
 	{
@@ -51,45 +42,4 @@ namespace Kross {
 		static Ref<spdlog::logger> s_CoreLogger;
 		static Ref<spdlog::logger> s_ClientLogger;
 	};
-}
-#define KROSS_MSGBOX_TRACE(fmt, ...)	::Kross::Logger::MsgBox(Kross::Logger::trace, __FUNCTION__, fmt, __VA_ARGS__)
-#define KROSS_MSGBOX_INFO(fmt, ...)		::Kross::Logger::MsgBox(Kross::Logger::info, __FUNCTION__, fmt, __VA_ARGS__)
-#define KROSS_MSGBOX_WARN(fmt, ...)		::Kross::Logger::MsgBox(Kross::Logger::warn, __FUNCTION__, fmt, __VA_ARGS__)
-#define KROSS_MSGBOX_ERROR(fmt, ...)	::Kross::Logger::MsgBox(Kross::Logger::error, __FUNCTION__, fmt, __VA_ARGS__)
-
-#if KROSS_BUILD
-#define KROSS_TRACE(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::trace, __VA_ARGS__)
-#define KROSS_INFO(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::info, __VA_ARGS__)
-#define KROSS_WARN(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::warn, __VA_ARGS__)
-#define KROSS_ERROR(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::err, __VA_ARGS__)
-#define KROSS_FATAL(...)	{SPDLOG_LOGGER_CALL(Kross::Logger::Core(), spdlog::level::critical, __VA_ARGS__); ::exit(1);}
-#else
-#define KROSS_TRACE(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::trace, __VA_ARGS__)
-#define KROSS_INFO(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::info, __VA_ARGS__)
-#define KROSS_WARN(...)		SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::warn, __VA_ARGS__)
-#define KROSS_ERROR(...)	SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::err, __VA_ARGS__)
-#define KROSS_FATAL(...)	{SPDLOG_LOGGER_CALL(Kross::Logger::Client(), spdlog::level::critical, __VA_ARGS__); ::exit(1);}
-#endif
-
-#define KROSS_TRACE_ONCE(...) { static bool called = false; if(!called) { KROSS_TRACE(__VA_ARGS__); called = true; } }
-#define KROSS_INFO_ONCE(...)  { static bool called = false; if(!called) { KROSS_INFO(__VA_ARGS__); called = true; } }
-#define KROSS_WARN_ONCE(...)  { static bool called = false; if(!called) { KROSS_WARN(__VA_ARGS__); called = true; } }
-#define KROSS_ERROR_ONCE(...) { static bool called = false; if(!called) { KROSS_ERROR(__VA_ARGS__); called = true; } }
-
-template<typename...error_message_args>
-bool Validate(bool *wasValid, bool condition, const char *fmt, error_message_args&&...args)
-{
-	if (!wasValid) {
-		KROSS_ERROR("Validation failed. (bool *wasValid == nullptr)");
-		return false;
-	}
-	if (!condition) {
-		if (*wasValid) {
-			KROSS_WARN(fmt, std::forward<error_message_args>(args)...);
-			*wasValid = false;
-		}
-		return false;
-	}
-	*wasValid = true;
-	return true;
 }

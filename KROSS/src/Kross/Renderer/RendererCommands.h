@@ -11,6 +11,7 @@ namespace Kross {
 		inline static void Shutdown()
 		{
 			s_RendererAPI->Shutdown();
+			delete s_RendererAPI;
 		}
 		inline static void Init()
 		{

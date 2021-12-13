@@ -8,7 +8,7 @@
 #include "voxelRenderer.h"
 
 namespace Kross {
-	KAPI RendererAPI* RenderCommand::s_RendererAPI = new GraphicsAPI::RendererAPI;
+	KAPI RendererAPI* RenderCommand::s_RendererAPI = new OpenGL::RendererAPI;
 	KAPI uint8_t Renderer::s_uDims = 2;
 
 	void Renderer::Init(uint8_t dims)

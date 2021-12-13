@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kross/Core/Core.h"
 #include "entt.hpp"
 #include "Kross/Renderer/Cameras/Camera.h"
 #include "Kross/Renderer/Cameras/EditorCamera.h"

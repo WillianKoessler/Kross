@@ -76,7 +76,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -96,7 +96,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -120,7 +120,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;KROSS_PLATFORM_WINDOWS;GLFW_INCLUDE_NONE;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -151,8 +151,8 @@
     <ClInclude Include="src\GFXAPI\OpenGL\Texture\GLTexture.h" />
     <ClInclude Include="src\Kross.h" />
     <ClInclude Include="src\Kross\Core\Application.h" />
+    <ClInclude Include="src\Kross\Core\Asserts.h" />
     <ClInclude Include="src\Kross\Core\Core.h" />
-    <ClInclude Include="src\Kross\Core\CoreConfig.h" />
     <ClInclude Include="src\Kross\Core\CoreLog.h" />
     <ClInclude Include="src\Kross\Core\EntryPoint.h" />
     <ClInclude Include="src\Kross\Core\Input.h" />
@@ -610,9 +610,9 @@
     <ClCompile Include="src\Kross\Renderer\Textures\Textures.cpp" />
     <ClCompile Include="src\Kross\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Kross\Renderer\VoxelRenderer.cpp" />
+    <ClCompile Include="src\Kross\Scene\Components.cpp" />
     <ClCompile Include="src\Kross\Scene\Scene.cpp" />
     <ClCompile Include="src\Kross\Scene\SceneCamera.cpp" />
-    <ClCompile Include="src\Kross\Scene\Components.cpp" />
     <ClCompile Include="src\Kross\Util\Util.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiLayer.cpp" />

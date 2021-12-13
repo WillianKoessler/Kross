@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kross/Core/Core.h"
 #include "Scene.h"
 #include "EmptyComponent.h"
 
@@ -18,24 +19,22 @@ namespace Kross {
 			if (m_ID == entt::null) return -2;
 			return (int)p_Scene->m_Registry.all_of<Components...>(m_ID);
 		}
-		template<typename T> T *Get()
+		template<typename...Components>
+		[[nodiscard]] decltype(auto) Get()
 		{
+			KROSS_ASSERT(p_Scene != nullptr, "Scene cannot be NULL");
 			if (p_Scene) {
-				//static bool validated = false;
-				//if (!Validate(validated, Has<T>() == 1, "Entity (ID = '{0}') does not have specified component '{1}'.", (uint32_t)m_ID, typeid(T).name())) return nullptr;
-				//else return &p_Scene->m_Registry.get<T>(m_ID);
-				if (Has<T>() == 1) return &p_Scene->m_Registry.get<T>(m_ID);
-				else {
-				//	static bool wasValid = false;
-					//if (wasValid) {
-						KROSS_WARN("Entity (ID = '{0}') does not have specified component '{1}'.", (uint32_t)m_ID, typeid(T).name());
-					//	wasValid = false;
-						//return nullptr;
-					//}
-					//wasValid = true;
-				}
+				static bool validated = false;
+				if (!Validate(&validated, Has<Components...>() == 1, "Entity (ID = '{0}') does not have specified component.", (uint32_t)m_ID))
+				{}//return std::tuple<Components...>();
+				else return p_Scene->m_Registry.get<Components...>(m_ID);
+
+				//if (Has<T>() == 1) return &p_Scene->m_Registry.get<T>(m_ID);
+				//else {
+				//		KROSS_WARN("Entity (ID = '{0}') does not have specified component '{1}'.", (uint32_t)m_ID, typeid(T).name());
+				//}
 			} else KROSS_ERROR("Invalid Scene pointer. (No valid Scene was found) ");
-			return nullptr;
+			//return std::tuple<Components...>();
 		}
 
 		template<typename T, typename...Args> T *Add(Args&&...args)

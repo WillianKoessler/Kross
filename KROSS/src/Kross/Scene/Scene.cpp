@@ -114,9 +114,9 @@ namespace Kross {
 			cmp.m_Instance->OnUpdate(ts);
 			});
 
-		auto camera = primaryCamera.Get<CameraComponent>();
-		auto tranform = primaryCamera.Get<TransformComponent>();
-		Renderer2D::Begin(*camera, *tranform);
+		//m_Registry.get<CameraComponent, TransformComponent>(m_PrimaryCameraID);
+		auto[camera, transform] = primaryCamera.Get<CameraComponent, TransformComponent>();
+		Renderer2D::Begin(*(&camera), *(&transform));
 		{
 			// Render Sprites
 			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
@@ -143,7 +143,7 @@ namespace Kross {
 		} else if (componentID == typeid(TransformComponent).hash_code()) {
 		} else if (componentID == typeid(SpriteComponent).hash_code()) {
 		} else if (componentID == typeid(CameraComponent).hash_code()) {
-			e.Get<CameraComponent>()->camera.SetViewportSize(m_ViewportSize);
+			e.Get<CameraComponent>().camera.SetViewportSize(m_ViewportSize);
 		} else if (componentID == typeid(NativeScriptComponent).hash_code()) {
 		}
 	}
