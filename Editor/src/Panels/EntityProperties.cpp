@@ -172,7 +172,7 @@ namespace Kross {
 	}
 	
 	template<typename Component>
-	static void DrawComponent(const std::string &label, Entity entity, bool removable, void(*show)(Scene *, const std::string &, Component&))
+	static void DrawComponent(const std::string &label, Entity entity, bool removable, void(*show)(Scene *, const std::string &, Component*))
 	{
 		if (!entity.GetScene()) return;
 
@@ -255,22 +255,22 @@ namespace Kross {
 	void EntityProperties::DrawEntity(Entity &entity)
 	{
 		if (entity && entity.GetScene()) {
-			DrawComponent<TagComponent>("Tag", entity, false, [](Scene *scene, const std::string &id, TagComponent &cmp) {
+			DrawComponent<TagComponent>("Tag", entity, false, [](Scene *scene, const std::string &id, TagComponent *cmp) {
 				char buffer[TagComponent::limit];
 				memset(buffer, 0, TagComponent::limit);
-				strcpy_s(buffer, TagComponent::limit, cmp.Get());
+				strcpy_s(buffer, TagComponent::limit, cmp->Get());
 				ImGui::Text("Name: ");
 				ImGui::TableNextColumn();
 				ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
 				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 				if (ImGui::InputText(id.c_str(), buffer, TagComponent::limit, flags))
-					cmp.Set(buffer);
+					cmp->Set(buffer);
 				});
-			DrawComponent<TransformComponent>("Transform", entity, true, [](Scene *scene, const std::string &id, TransformComponent &cmp) {
+			DrawComponent<TransformComponent>("Transform", entity, true, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
 				bool active = false;
-				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp.Position, 0.01f); ImGui::TableNextColumn();
-				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp.Rotation, 0.01f); ImGui::TableNextColumn();
-				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp.Scale, 0.01f, 1.0f);
+				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();
+				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.01f); ImGui::TableNextColumn();
+				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.01f, 1.0f);
 				if (Input::IsMouseButtonHeld(MouseButton::Left)) {
 					setFlag(ImGuiConfigFlags_NoMouse, active);
 					Application::Get().GetWindow().CursorEnabled(!active);
@@ -279,11 +279,11 @@ namespace Kross {
 					Application::Get().GetWindow().CursorEnabled(true);
 				}
 				});
-			DrawComponent<SpriteComponent>("Sprite", entity, true, [](Scene *scene, const std::string &id, SpriteComponent &cmp) {
-				ImGui::Text("Tint"); ImGui::TableNextColumn(); DrawColorControl("Sprite_Tint", glm::value_ptr(cmp.tint));
+			DrawComponent<SpriteComponent>("Sprite", entity, true, [](Scene *scene, const std::string &id, SpriteComponent *cmp) {
+				ImGui::Text("Tint"); ImGui::TableNextColumn(); DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint));
 				});
-			DrawComponent<CameraComponent>("Camera", entity, true, [](Scene *scene, const std::string &id, CameraComponent &cmp) {
-				SceneCamera &camera = cmp.camera;
+			DrawComponent<CameraComponent>("Camera", entity, true, [](Scene *scene, const std::string &id, CameraComponent *cmp) {
+				SceneCamera &camera = cmp->camera;
 				Entity activeCamera = scene->GetCurrentCamera();
 				{
 					ImGui::Text("Active Camera: "); ImGui::TableNextColumn();
@@ -302,14 +302,14 @@ namespace Kross {
 					}
 
 					if (activeCamera) {
-						if (activeCamera.Has<TagComponent>() == 1) ImGui::Text("(Current: %s)", activeCamera.Get<TagComponent>().Get());
+						if (activeCamera.Has<TagComponent>() == 1) ImGui::Text("(Current: %s)", activeCamera.Get<TagComponent>()->Get());
 						else ImGui::Text("(Current: %d)", (uint32_t)activeCamera);
 					} else ImGui::Text("(Current: null)");
 					ImGui::TableNextColumn();
 				}
 				{
 					static constexpr char *projTypeStr[] = { "Perspective", "Orthographic" };
-					const char *selection = projTypeStr[(int)cmp.camera.GetProjType()];
+					const char *selection = projTypeStr[(int)cmp->camera.GetProjType()];
 					ImGui::Text("Projection: "); ImGui::TableNextColumn();
 					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 					if (ImGui::BeginCombo("##Projection", selection, ImGuiComboFlags_NoArrowButton))
@@ -327,7 +327,7 @@ namespace Kross {
 					ImGui::TableNextColumn();
 				}
 				{
-					switch (cmp.camera.GetProjType()) {
+					switch (cmp->camera.GetProjType()) {
 						default: ImGui::Text("Invalid Camera Projection Type"); break;
 						case SceneCamera::ProjectionType::Orthographic:
 							{
@@ -357,8 +357,8 @@ namespace Kross {
 							}
 					}
 					ImGui::Text("Fixed AR"); ImGui::TableNextColumn();
-					ImGui::BeginDisabled(cmp.camera.GetProjType() != SceneCamera::ProjectionType::Orthographic);
-					ImGui::Checkbox("##Fixed Aspect Ratio", &cmp.fixedAspectRatio);
+					ImGui::BeginDisabled(cmp->camera.GetProjType() != SceneCamera::ProjectionType::Orthographic);
+					ImGui::Checkbox("##Fixed Aspect Ratio", &cmp->fixedAspectRatio);
 					ImGui::EndDisabled();
 				}
 				});

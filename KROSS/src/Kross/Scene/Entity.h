@@ -8,53 +8,55 @@ namespace Kross {
 	class Entity
 	{
 		friend class Scene;
+		template<typename Component>
+		Component *GetImpl()
+		{
+
+		}
 	public:
 		Entity() = default;
-		Entity(uint32_t id, const Scene *scene) : m_ID((entt::entity)id), p_Scene(const_cast<Scene *>(scene)) {}
+		Entity(uint32_t id, const Scene *scene)
+			: m_ID((entt::entity)id), p_Scene(const_cast<Scene *>(scene))
+		{
+			KROSS_ASSERT(p_Scene != nullptr, "Invalid Scene pointer. (No valid Scene was found)");
+		}
 		Entity(const Entity &other) = default;
 
-		template<typename...Components> int Has() const
+		template<typename...Components>
+		int Has() const
 		{
-			if (!p_Scene) return -1;
-			if (m_ID == entt::null) return -2;
+			KROSS_ASSERT(p_Scene != nullptr, "Invalid Scene pointer. (No valid Scene was found)");
+			if (m_ID == entt::null) return -1;
 			return (int)p_Scene->m_Registry.all_of<Components...>(m_ID);
 		}
-		template<typename...Components>
-		[[nodiscard]] decltype(auto) Get()
-		{
-			KROSS_ASSERT(p_Scene != nullptr, "Scene cannot be NULL");
-			if (p_Scene) {
-				static bool validated = false;
-				if (!Validate(&validated, Has<Components...>() == 1, "Entity (ID = '{0}') does not have specified component.", (uint32_t)m_ID))
-				{}//return std::tuple<Components...>();
-				else return p_Scene->m_Registry.get<Components...>(m_ID);
 
-				//if (Has<T>() == 1) return &p_Scene->m_Registry.get<T>(m_ID);
-				//else {
-				//		KROSS_WARN("Entity (ID = '{0}') does not have specified component '{1}'.", (uint32_t)m_ID, typeid(T).name());
-				//}
-			} else KROSS_ERROR("Invalid Scene pointer. (No valid Scene was found) ");
-			//return std::tuple<Components...>();
+		template<typename Component>
+		Component *Get()
+		{
+			static bool validation = true;
+			static constexpr char *msg = "Entity (ID = '{0}') does not have specified component.";
+			if (!Validate(&validation, Has<Component>(), msg, (uint32_t)m_ID))
+				return nullptr;
+			return &p_Scene->m_Registry.get<Component>(m_ID);
 		}
 
-		template<typename T, typename...Args> T *Add(Args&&...args)
+		template<typename Component, typename...Args>
+		Component *Add(Args&&...args)
 		{
-			if (p_Scene) {
-				if (Has<T>() == 1) KROSS_WARN("Entity (ID = '{0}') already have specified component '{1}'.", (uint32_t)m_ID, typeid(T).name());
-				else {
-					auto cmp = &p_Scene->m_Registry.emplace<T>(m_ID, std::forward<Args>(args)...);
-					p_Scene->OnComponentAdded(*this, typeid(T).hash_code());
-					return cmp;
-				}
-			} else KROSS_ERROR("Invalid Scene pointer. (No valid Scene was found) ");
-			return nullptr;
+			static bool validation = true;
+			const char *msg = "Entity (ID = '{0}') already have specified component '{1}'.";
+			if (!Validate(&validation, !Has<Component>(), msg, (uint32_t)m_ID, typeid(Component).name()))
+				return nullptr;
+			auto cmp = &p_Scene->m_Registry.emplace<Component>(m_ID, std::forward<Args>(args)...);
+			p_Scene->OnComponentAdded(*this, typeid(Component).hash_code());
+			return cmp;
 		}
 
-		template<typename T>
+		template<typename Component>
 		void Remove()
 		{
-			if (p_Scene) p_Scene->m_Registry.remove<T>(m_ID);
-			else KROSS_ERROR("Invalid Scene pointer. (No valid Scene was found)");
+			if (Has<Component>() == 1)
+				p_Scene->m_Registry.remove<Component>(m_ID);
 		}
 
 

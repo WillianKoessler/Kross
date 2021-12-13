@@ -164,7 +164,20 @@ namespace Kross {
 
 // Alteratively we could use the same "default" message for both "WITH_MSG" and "NO_MSG" and
 // provide support for custom formatting by concatenating the formatting string instead of having the format inside the default message
-#define KROSS_INTERNAL_ASSERT_IMPL(check, msg, ...) { if(!(check)) { KROSS_FATAL(msg, __VA_ARGS__); KROSS_DEBUGBREAK(); } }
+#define KROSS_INTERNAL_ASSERT_IMPL_FATAL(check, msg, ...) { if(!(check)) { KROSS_ERROR(msg, __VA_ARGS__); KROSS_DEBUGBREAK(); } }
+#define KROSS_INTERNAL_ASSERT_WITH_MSG_FATAL(check, ...) KROSS_INTERNAL_ASSERT_IMPL_FATAL(check, "Assertion failed: {0}", __VA_ARGS__)
+#define KROSS_INTERNAL_ASSERT_NO_MSG_FATAL(check) KROSS_INTERNAL_ASSERT_IMPL_FATAL(check, "Assertion '{0}' failed at {1}:{2}", KROSS_STRINGIFY_MACRO(check), std::filesystem::path(__FILE__).filename().string(), __LINE__)
+
+#define KROSS_INTERNAL_ASSERT_GET_MACRO_NAME_FATAL(arg1, arg2, macro, ...) macro
+#define KROSS_INTERNAL_ASSERT_GET_MACRO_FATAL(...) KROSS_EXPAND_MACRO( KROSS_INTERNAL_ASSERT_GET_MACRO_NAME(__VA_ARGS__, KROSS_INTERNAL_ASSERT_WITH_MSG_FATAL, KROSS_INTERNAL_ASSERT_NO_MSG_FATAL) )
+
+// Currently accepts at least the condition and one additional parameter (the message) being optional
+#define KROSS_HARD_ASSERT(...) KROSS_EXPAND_MACRO( KROSS_INTERNAL_ASSERT_GET_MACRO_FATAL(__VA_ARGS__)(__VA_ARGS__) )
+
+
+// Alteratively we could use the same "default" message for both "WITH_MSG" and "NO_MSG" and
+// provide support for custom formatting by concatenating the formatting string instead of having the format inside the default message
+#define KROSS_INTERNAL_ASSERT_IMPL(check, msg, ...) { if(!(check)) { KROSS_ERROR(msg, __VA_ARGS__); KROSS_DEBUGBREAK(); } }
 #define KROSS_INTERNAL_ASSERT_WITH_MSG(check, ...) KROSS_INTERNAL_ASSERT_IMPL(check, "Assertion failed: {0}", __VA_ARGS__)
 #define KROSS_INTERNAL_ASSERT_NO_MSG(check) KROSS_INTERNAL_ASSERT_IMPL(check, "Assertion '{0}' failed at {1}:{2}", KROSS_STRINGIFY_MACRO(check), std::filesystem::path(__FILE__).filename().string(), __LINE__)
 
@@ -172,7 +185,14 @@ namespace Kross {
 #define KROSS_INTERNAL_ASSERT_GET_MACRO(...) KROSS_EXPAND_MACRO( KROSS_INTERNAL_ASSERT_GET_MACRO_NAME(__VA_ARGS__, KROSS_INTERNAL_ASSERT_WITH_MSG, KROSS_INTERNAL_ASSERT_NO_MSG) )
 
 // Currently accepts at least the condition and one additional parameter (the message) being optional
-#define KROSS_ASSERT(...) KROSS_EXPAND_MACRO( KROSS_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(__VA_ARGS__) )
+#define KROSS_SOFT_ASSERT(...) KROSS_EXPAND_MACRO( KROSS_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(__VA_ARGS__) )
+
+#if KROSS_DEBUG
+#define KROSS_ASSERT(...) KROSS_SOFT_ASSERT(__VA_ARGS__)
+#else
+#define KROSS_ASSERT(...) KROSS_HARD_ASSERT(__VA_ARGS__)
+#endif
+
 #else
 #define KROSS_ASSERT(...)
 #endif
