@@ -14,7 +14,7 @@ namespace Kross {
 
 	void EditorLayer::OnAttach()
 	{
-		RenderCommand::SetClear(0x0a0a32FF);
+		RenderCommand::SetClear(*(glm::vec4*)&ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
 		//RenderCommand::SetClear(0xFF00FFFF);
 
 		m_Frame = FrameBuffer::CreateRef("EditorLayer_Framebuffer", { 800, 600, 1, false });
@@ -65,7 +65,7 @@ namespace Kross {
 		if (Panel::Manager().s_bViewport) {
 			static bool m_bBackFaceCull = false;
 			static bool m_bWireFrame = false;
-			static auto m_Flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar;
+			static auto m_Flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration;
 
 			RenderCommand::BackCull(m_bBackFaceCull);
 			RenderCommand::SetMode(m_bWireFrame ? RendererAPI::Mode::Wireframe : RendererAPI::Mode::Fill);

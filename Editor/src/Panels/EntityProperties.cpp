@@ -97,7 +97,7 @@ namespace Kross {
 		if (speed < limit) return limit;
 		else return speed;
 	}
-	
+
 	static bool DrawScalarN(const char *id, float *vec, uint8_t n, float reset_value, float speed)
 	{
 		using namespace ImGui;
@@ -129,12 +129,12 @@ namespace Kross {
 		PopID();
 		return value_changed;
 	}
-	
+
 	static bool DrawVec3(const char *id, glm::vec3 &vec, float speed = 0.1f, float reset_value = 0.0f)
 	{
 		return DrawScalarN(id, glm::value_ptr(vec), 3, reset_value, speed);
 	}
-	
+
 	static bool DrawColorControl(const char *id, float *values)
 	{
 		using namespace ImGui;
@@ -170,31 +170,32 @@ namespace Kross {
 		PopID(); // pop 1
 		return value_changed;
 	}
-	
+
 	template<typename Component>
-	static void DrawComponent(const std::string &label, Entity entity, bool removable, void(*show)(Scene *, const std::string &, Component*))
+	static void DrawComponent(const std::string &label, Entity entity, bool removable, void(*show)(Scene *, const std::string &, Component *))
 	{
 		if (!entity.GetScene()) return;
 
 		ImGuiTableFlags tableFlags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchProp |
 			ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX | (debug ? ImGuiTableFlags_Borders : 0);
 
-		ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap;
-		
+		ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_AllowItemOverlap |
+			ImGuiTreeNodeFlags_SpanAvailWidth;
+
 		if (entity.Has<Component>() == 1) {
 			ImGui::PushID(("##" + label).c_str());
-
+			float totalWidth = ImGui::GetContentRegionAvail().x;
 			bool markForDelete = false;
 			bool opened = ImGui::TreeNodeEx((const void *)(typeid(Component).hash_code()), treeFlags, label.c_str());
 			if (removable) {
-//				ImGui::SameLine(0.0f, totalWidth - labelWidth - buttonWidth - (opened ? 0.0f : buttonWidth));
-				ImGui::SameLine(ImGui::GetWindowWidth() - ImGui::CalcTextSize("....").x);
+				//				ImGui::SameLine(0.0f, totalWidth - labelWidth - buttonWidth - (opened ? 0.0f : buttonWidth));
 
 				if (ImGui::BeginPopupContextItem("RemoveComponentPopup")) {
 					markForDelete |= ImGui::MenuItem("Remove Component");
 					ImGui::EndPopup();
 				}
 
+				ImGui::SameLine(totalWidth - ImGui::CalcTextSize("...").x);
 				if (ImGui::SmallButton("..."))
 					ImGui::OpenPopup("ComponentSettings");
 
@@ -232,22 +233,40 @@ namespace Kross {
 		if (ImGui::Begin(m_strName, &Panel::Manager().s_bPropertiesInspector))
 		{
 			if (s_Selection) {
-				DrawEntity(s_Selection);
-				bool hasTransform = s_Selection.Has<TransformComponent>() == 1;
-				bool hasSprite = s_Selection.Has<SpriteComponent>() == 1;
-				bool hasCamera = s_Selection.Has<CameraComponent>() == 1;
-				bool hasAll = hasTransform && hasSprite && hasCamera;
+				if (s_Selection.Has<TagComponent>() == 1) {
+					bool hasTransform = s_Selection.Has<TransformComponent>() == 1;
+					bool hasSprite = s_Selection.Has<SpriteComponent>() == 1;
+					bool hasCamera = s_Selection.Has<CameraComponent>() == 1;
+					bool hasAll = hasTransform && hasSprite && hasCamera;
 
-				if(!hasAll)
-					if (ImGui::Button("Add Component"))
-						ImGui::OpenPopup("Add_Component_Popup");
+					float buttonWidth = 0.0f;
+					if (!hasAll) buttonWidth = ImGui::CalcTextSize("Add Component__").x;
+					{
+						auto cmp = s_Selection.Get<TagComponent>();
+						char buffer[TagComponent::limit];
+						memset(buffer, 0, TagComponent::limit);
+						strcpy_s(buffer, TagComponent::limit, cmp->Get());
+						ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
+						if (ImGui::InputText("##Tag", buffer, TagComponent::limit, flags))
+							cmp->Set(buffer);
+					}
 
-				if (!hasAll && ImGui::BeginPopup("Add_Component_Popup")) {
-					if (!hasTransform && ImGui::MenuItem("Transform")) { s_Selection.Add<TransformComponent>(); ImGui::CloseCurrentPopup(); }
-					if (!hasSprite && ImGui::MenuItem("Sprite")) { s_Selection.Add<SpriteComponent>(); ImGui::CloseCurrentPopup(); }
-					if (!hasCamera && ImGui::MenuItem("Camera")) { s_Selection.Add<CameraComponent>(); ImGui::CloseCurrentPopup(); }
-					ImGui::EndPopup();
+
+					if (!hasAll) {
+						ImGui::SameLine();
+						ImGui::PushItemWidth(-1.0f);
+						if (ImGui::Button("Add Component"))
+							ImGui::OpenPopup("Add_Component_Popup");
+						if (ImGui::BeginPopup("Add_Component_Popup")) {
+							if (!hasTransform && ImGui::MenuItem("Transform")) { s_Selection.Add<TransformComponent>(); ImGui::CloseCurrentPopup(); }
+							if (!hasSprite && ImGui::MenuItem("Sprite")) { s_Selection.Add<SpriteComponent>(); ImGui::CloseCurrentPopup(); }
+							if (!hasCamera && ImGui::MenuItem("Camera")) { s_Selection.Add<CameraComponent>(); ImGui::CloseCurrentPopup(); }
+							ImGui::EndPopup();
+						}
+					}
 				}
+				DrawEntity(s_Selection);
 			}
 		}
 		ImGui::End();
@@ -255,17 +274,6 @@ namespace Kross {
 	void EntityProperties::DrawEntity(Entity &entity)
 	{
 		if (entity && entity.GetScene()) {
-			DrawComponent<TagComponent>("Tag", entity, false, [](Scene *scene, const std::string &id, TagComponent *cmp) {
-				char buffer[TagComponent::limit];
-				memset(buffer, 0, TagComponent::limit);
-				strcpy_s(buffer, TagComponent::limit, cmp->Get());
-				ImGui::Text("Name: ");
-				ImGui::TableNextColumn();
-				ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-				if (ImGui::InputText(id.c_str(), buffer, TagComponent::limit, flags))
-					cmp->Set(buffer);
-				});
 			DrawComponent<TransformComponent>("Transform", entity, true, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
 				bool active = false;
 				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();

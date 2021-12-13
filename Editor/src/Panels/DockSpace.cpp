@@ -77,6 +77,8 @@ namespace Kross {
 		ImGui::Begin(m_strName, &Manager().s_bDockspace, m_Flags);
 		ImGui::PopStyleVar(m_bFullscreen ? 3 : 1);
 
+		ImGui::GetStyle().WindowMinSize.x = 300.0f;
+
 		// DockSpace
 		ImGui::DockSpace(ImGui::GetID(m_strName), ImVec2(0.0f, 0.0f), m_DockFlags);
 
