@@ -5,12 +5,12 @@
 [submodule "KROSS/vendor/glm"]
 	path = KROSS/vendor/glm
 	url = https://github.com/g-truc/glm.git
-[submodule "KROSS/vendor/glfw"]
-	path = KROSS/vendor/glfw
-	url = https://github.com/WillianKoessler/glfw.git
+	branch = master
 [submodule "KROSS/vendor/serializer/yaml"]
 	path = KROSS/vendor/serializer/yaml
 	url = https://github.com/WillianKoessler/yaml-cpp.git
+	branch = master
 [submodule "KROSS/vendor/spdlog"]
 	path = KROSS/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+	branch = master
