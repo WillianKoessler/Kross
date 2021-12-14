@@ -30,6 +30,16 @@ namespace Kross {
 				if (ImGui::MenuItem("New Entity")) p_Scene->CreateEntity("New Entity");
 				ImGui::EndPopup();
 			}
+
+			if (Input::IsKeyHeld(Key::LeftControl)) {
+				if (s_Selection)
+					if (Input::IsKeyPressed(Key::C))
+						m_Clipboard = s_Selection;
+				if (Input::IsKeyPressed(Key::V)) {
+					if (m_Clipboard)
+						p_Scene->CreateEntity(m_Clipboard);
+				}
+			}
 		}
 		ImGui::End();
 	}
@@ -52,6 +62,7 @@ namespace Kross {
 
 			if (markForDelete) {
 				if (s_Selection == entity) s_Selection = {};
+				if (m_Clipboard == entity) m_Clipboard = {};
 				p_Scene->DestroyEntity(entity);
 			}
 		}

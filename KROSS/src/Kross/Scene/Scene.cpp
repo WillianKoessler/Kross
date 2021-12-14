@@ -28,6 +28,31 @@ namespace Kross {
 		return entity;
 	}
 
+	template<typename Component>
+	static bool copyTo(Entity &to, Entity &from)
+	{
+		if (from.Has<Component>() == 1) {
+			to.Add<Component>(*from.Get<Component>());
+			return true;
+		}
+		return false;
+	}
+	Entity Scene::CreateEntity(Entity e)
+	{
+
+		Entity entity{ (uint32_t)m_Registry.create(), this };
+		copyTo<TagComponent>(entity, e);
+		copyTo<TransformComponent>(entity, e);
+		copyTo<SpriteComponent>(entity, e);
+		copyTo<CameraComponent>(entity, e);
+		copyTo<NativeScriptComponent>(entity, e);
+		if (entity.Has<TagComponent>() == 1)
+			KROSS_TRACE("Entity '{0}' Created", entity.Get<TagComponent>()->Get());
+		else
+			KROSS_TRACE("Unnamed Entity Created. ID = {0}", (uint32_t)entity.m_ID);
+		return entity;
+	}
+
 	Entity Scene::GetEntity(const char *name) const
 	{
 		auto view = m_Registry.view<TagComponent>();

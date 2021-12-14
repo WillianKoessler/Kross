@@ -14,6 +14,7 @@ namespace Kross {
 		~Scene();
 
 		Entity CreateEntity(const char *Tag);
+		Entity CreateEntity(Entity e);
 		Entity GetEntity(const char *Tag) const;
 		void DestroyEntity(Entity e);
 

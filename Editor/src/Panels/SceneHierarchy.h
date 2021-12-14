@@ -14,5 +14,6 @@ namespace Kross {
 		void DrawEntityNode(Entity &entity);
 	private:
 		Ref<Scene> p_Scene;
+		Entity m_Clipboard;
 	};
 }

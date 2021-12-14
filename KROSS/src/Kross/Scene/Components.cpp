@@ -16,6 +16,7 @@ namespace Kross {
 	static void remove(const char *tag)
 	{
 		int i = find(tag);
+		//KROSS_TRACE("Remove '{0}'", *(usedNames.begin() + i));
 		if (i > -1) usedNames.erase(usedNames.begin() + i);
 	}
 	static bool has(const char *tag)
@@ -37,7 +38,6 @@ namespace Kross {
 	{
 		std::string target = newTag;
 		if (target.empty()) target = "(null)";
-		KROSS_TRACE(target);
 
 		if (has(tag)) remove(tag);
 		memset(tag, 0, limit);
