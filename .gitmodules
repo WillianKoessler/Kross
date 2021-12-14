@@ -1,7 +1,7 @@
-[submodule "KROSS/vendor/imgui"]
-	path = KROSS/vendor/imgui
-	url = https://github.com/WillianKoessler/imgui.git
-	branch = docking
+[submodule "KROSS/vendor/glfw"]
+	path = KROSS/vendor/glfw
+	url = https://github.com/williankoessler/glfw.git
+	branch = master
 [submodule "KROSS/vendor/glm"]
 	path = KROSS/vendor/glm
 	url = https://github.com/g-truc/glm.git
@@ -14,3 +14,7 @@
 	path = KROSS/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
 	branch = master
+[submodule "KROSS/vendor/imgui"]
+	path = KROSS/vendor/imgui
+	url = https://github.com/williankoessler/imgui.git
+	branch = docking
