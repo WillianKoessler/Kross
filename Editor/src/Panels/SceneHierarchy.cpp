@@ -12,7 +12,7 @@ namespace Kross {
 	}
 	void SceneHierarchy::SetContext(const Ref<Scene> &scene)
 	{
-		if (scene) p_Scene = scene;
+		p_Scene = scene;
 	}
 	void SceneHierarchy::Show(double ts)
 	{

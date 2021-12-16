@@ -7,7 +7,7 @@
 #include "Kross/Renderer/Cameras/Cameras/Perspective.h"
 
 namespace Kross {
-	Scene::Scene()
+	Scene::Scene(const char *name)
 	{
 		m_Registry = entt::registry();
 		KROSS_INFO("Scene Constructed");
@@ -24,7 +24,7 @@ namespace Kross {
 	{
 		Entity entity{ (uint32_t)m_Registry.create(), this };
 		const char *tag = entity.Add<TagComponent>(name)->Get();
-		KROSS_TRACE("Entity '{0}' Created", tag);
+		//KROSS_TRACE("Entity '{0}' Created", tag);
 		return entity;
 	}
 
@@ -39,17 +39,12 @@ namespace Kross {
 	}
 	Entity Scene::CreateEntity(Entity e)
 	{
-
 		Entity entity{ (uint32_t)m_Registry.create(), this };
 		copyTo<TagComponent>(entity, e);
 		copyTo<TransformComponent>(entity, e);
 		copyTo<SpriteComponent>(entity, e);
 		copyTo<CameraComponent>(entity, e);
 		copyTo<NativeScriptComponent>(entity, e);
-		if (entity.Has<TagComponent>() == 1)
-			KROSS_TRACE("Entity '{0}' Created", entity.Get<TagComponent>()->Get());
-		else
-			KROSS_TRACE("Unnamed Entity Created. ID = {0}", (uint32_t)entity.m_ID);
 		return entity;
 	}
 
@@ -57,21 +52,29 @@ namespace Kross {
 	{
 		auto view = m_Registry.view<TagComponent>();
 		std::vector<entt::entity> pool;
-		for (auto e : view) {
-			auto [Tag] = view.get(e);
-			if (strcmp(Tag.Get(), name) == 0) pool.push_back(e);
-		}
-		if (pool.size() > 1) { KROSS_ERROR("More than one entity shares the same Tagname"); return Entity(); }
+		for (auto e : view)
+			if (!strcmp(view.get(e)._Myfirst._Val, name)) pool.push_back(e);
+		if (pool.size() > 1) KROSS_ERROR("More than one entity shares the same Tagname");
 		if (pool.empty()) { KROSS_ERROR("There is no entity with that Tagname"); return Entity(); }
 		return Entity((uint32_t)pool.front(), this);
 	}
 	void Scene::DestroyEntity(Entity e)
 	{
 		if (e) {
+			if (e.Has<TagComponent>())
+				e.Get<TagComponent>()->Set(nullptr);
 			m_Registry.destroy(e);
-			KROSS_INFO("Entity '{0}' Destroyed", (uint32_t)e);
 		}
 	}
+	void Scene::Clear()
+	{
+		m_Registry.each([&](auto &id) {
+			if (m_Registry.any_of<TagComponent>(id))
+				m_Registry.get<TagComponent>(id).Set(nullptr);
+			m_Registry.destroy(id);
+			});
+	}
+
 	/*
 	*	TODO: put it in Header file so it separates Kross's heap from Client's heap,
 	*	and uses the corresponding heap to create and return an array with all entities
@@ -88,7 +91,7 @@ namespace Kross {
 	std::vector<Entity> Scene::GetAllEntities()
 	{
 		std::vector<Entity> pool;
-		m_Registry.each([&](auto &id) {pool.emplace_back((uint32_t)id, this); });
+		m_Registry.each([&pool, this](auto &id) {pool.emplace_back((uint32_t)id, this); });
 		return pool;
 	}
 #endif
@@ -108,7 +111,6 @@ namespace Kross {
 	void Scene::OnUpdateEditor(double ts, const Camera::Editor &camera)
 	{
 		Renderer2D::ResetStats();
-
 		Renderer2D::Begin(camera);
 		{
 			// Render Sprites
@@ -116,7 +118,7 @@ namespace Kross {
 			for (auto entity : group)
 			{
 				auto [tranform, sprite] = group.get(entity);
-				Renderer2D::BatchQuad(tranform, sprite.tint);
+				Renderer2D::BatchQuad(tranform, sprite.tint, sprite.texture);
 			}
 		}
 		Renderer2D::End();
@@ -142,6 +144,7 @@ namespace Kross {
 		//m_Registry.get<CameraComponent, TransformComponent>(m_PrimaryCameraID);
 		auto camera = primaryCamera.Get<CameraComponent>();
 		auto transform = primaryCamera.Get<TransformComponent>();
+		Renderer2D::ResetStats();
 		Renderer2D::Begin(*camera, *transform);
 		{
 			// Render Sprites
@@ -150,7 +153,7 @@ namespace Kross {
 			for (auto entity : group)
 			{
 				auto [tranform, sprite] = group.get(entity);
-				Renderer2D::BatchQuad(tranform, sprite.tint);
+				Renderer2D::BatchQuad(tranform, sprite.tint, sprite.texture);
 			}
 		}
 		Renderer2D::End();
@@ -173,4 +176,4 @@ namespace Kross {
 		} else if (componentID == typeid(NativeScriptComponent).hash_code()) {
 		}
 	}
-}
+	}

@@ -27,6 +27,7 @@ namespace Kross {
 		{
 			KROSS_ASSERT(p_Scene != nullptr, "Invalid Scene pointer. (No valid Scene was found)");
 			if (m_ID == entt::null) return -1;
+			if (!p_Scene->m_Registry.valid(m_ID)) return -2;
 			return (int)p_Scene->m_Registry.all_of<Components...>(m_ID);
 		}
 

@@ -7,14 +7,13 @@
 
 namespace Kross {
 	EditorLayer::EditorLayer()
-		: Layer("EditorLayer"), m_ViewportSize(400.0f, 400.0f), m_Scene(makeRef<Scene>())
-		//m_Camera(makeRef<Camera3D::FirstPerson>("main_Camera", ((float)Application::Get().GetWindow().GetWidth()) / ((float)Application::Get().GetWindow().GetHeight()), 90.0f))
+		: Layer("EditorLayer"), m_ViewportSize(400.0f, 400.0f), m_Scene(makeRef<Scene>("main"))
 	{
 	}
 
 	void EditorLayer::OnAttach()
 	{
-		RenderCommand::SetClear(*(glm::vec4*)&ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
+		RenderCommand::SetClear(*(glm::vec4 *)&ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
 		//RenderCommand::SetClear(0xFF00FFFF);
 
 		m_Frame = FrameBuffer::CreateRef("EditorLayer_Framebuffer", { 800, 600, 1, false });
@@ -42,6 +41,17 @@ namespace Kross {
 
 	void EditorLayer::OnUpdate(double ts)
 	{
+		if (Input::IsKeyPressed(Key::F1)) {
+			SceneSerializer ss(m_Scene);
+			ss.Serialize("assets/scenes/demo.kross");
+		}
+		if (Input::IsKeyPressed(Key::F2)) {
+			m_Scene->Clear();
+			SceneSerializer ss(m_Scene);
+			ss.Deserialize("assets/scenes/demo.kross");
+		}
+		if (Input::IsKeyPressed(Key::Space)) TagComponent::ShowAll();
+		if (Input::IsKeyPressed(Key::Enter)) KROSS_TRACE("----------------------------------------------------------------");
 		if (!Panel::Manager().s_bDockspace) Application::Get().OnEvent(WindowCloseEvent());
 		m_Frame->Resize(m_ViewportSize);
 		m_Camera.SetViewportSize(m_ViewportSize);

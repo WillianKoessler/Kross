@@ -1,0 +1,38 @@
+Scene: Untitled
+ActiveCameraID: 2097154
+Entities:
+  - Entity: 2097154
+    TagComponent:
+      Tag: Camera
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 1.57079637
+        PerspectiveNear: 0.100000001
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1000
+      FixedAspectRatio: false
+  - Entity: 2097153
+    TagComponent:
+      Tag: square1
+    TransformComponent:
+      Position: [-1.02999997, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Tint: [1, 1, 1, 1]
+  - Entity: 3145728
+    TagComponent:
+      Tag: square2
+    TransformComponent:
+      Position: [0.720000029, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Tint: [1, 0, 0, 1]

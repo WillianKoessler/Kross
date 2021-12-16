@@ -7,16 +7,18 @@
 
 namespace Kross {
 	class Entity;
+	class SceneSerializer;
 	class Scene
 	{
 	public:
-		Scene();
+		Scene(const char* name);
 		~Scene();
 
 		Entity CreateEntity(const char *Tag);
 		Entity CreateEntity(Entity e);
 		Entity GetEntity(const char *Tag) const;
 		void DestroyEntity(Entity e);
+		void Clear();
 
 #ifdef KROSS_DLL
 		struct Entities
@@ -43,6 +45,7 @@ namespace Kross {
 		glm::vec2 m_ViewportSize;
 
 		friend class Entity;
+		friend class SceneSerializer;
 		friend class SceneHierarchy;
 	};
 }

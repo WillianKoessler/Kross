@@ -354,13 +354,13 @@ namespace Kross {
 								float fNear = camera.GetNearClip();
 								float fFar = camera.GetFarClip();
 								ImGui::Text("FOV: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##PerspectiveFOV: ", &fFOV)) camera.SetPerspVerticalFOV(glm::radians(fFOV)); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##PerspectiveFOV: ", &fFOV, 0.1f, 1.0f, 179.0f, "%.1f")) camera.SetPerspVerticalFOV(glm::radians(fFOV)); ImGui::TableNextColumn();
 								used |= ImGui::IsItemFocused();
 								ImGui::Text("NearClip: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##PerspectiveNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##PerspectiveNearClip: ", &fNear, 0.1f, 0.1f, 10000.0f, GetFloatFormat(fNear).c_str())) camera.SetNearClip(fNear); ImGui::TableNextColumn();
 								used |= ImGui::IsItemFocused();
 								ImGui::Text("FarClip: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##PerspectiveFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar); ImGui::TableNextColumn();
+								if (ImGui::DragFloat("##PerspectiveFarClip: ", &fFar, 0.1f, 0.1f, 10000.0f, "%.1f")) camera.SetFarClip(fFar); ImGui::TableNextColumn();
 								used |= ImGui::IsItemFocused();
 								break;
 							}

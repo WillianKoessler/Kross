@@ -13,7 +13,7 @@ namespace Kross {
 	{
 		if (ImGui::BeginMenuBar())
 		{
-			if (ImGui::BeginMenu("Menu"))
+			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("Open", NULL)) PopUpMessage = { true, "Open File Dialog", ButtonType::OK, DefaultFunc };
 				ImGui::Separator();

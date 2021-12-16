@@ -6,6 +6,7 @@
 #include "Kross/Util/Constants.h"
 #include "SceneCamera.h"
 #include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
+#include "Kross/Renderer/Textures/Textures.h"
 #include "ScriptableEntity.h"
 #include "EmptyComponent.h"
 
@@ -19,12 +20,10 @@ namespace Kross {
 	public:
 		void Set(const char *newTag);
 		const char *Get() const { return tag; }
-
-		~TagComponent();
-		TagComponent() { Set(nullptr); }
-		TagComponent(const TagComponent &other) { Set(other); }
-		TagComponent(const char *newTag) { Set(newTag); }
-
+		static void ShowAll();
+		TagComponent() = default;
+		TagComponent(const TagComponent &other) = default;
+		TagComponent(const char *newTag);
 		operator const char*() const { return tag; }
 	};
 
@@ -54,12 +53,12 @@ namespace Kross {
 	struct SpriteComponent : public EmptyComponent
 	{
 		glm::vec4 tint = glm::vec4(1.0f);
-		//Ref<Texture::T2D> sprite = nullptr;
+		Ref<Texture::T2D> texture = nullptr;
 
 		SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent &) = default;
-		SpriteComponent(const glm::vec4 &tintColor)
-			: tint(tintColor) {}
+		SpriteComponent(const glm::vec4 &tintColor, const Ref<Texture::T2D>& spriteTexture = nullptr)
+			: tint(tintColor), texture(spriteTexture) {}
 	};
 
 	struct CameraComponent : public EmptyComponent

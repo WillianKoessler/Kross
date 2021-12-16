@@ -43,8 +43,7 @@ namespace Kross {
 		static void SwitchShader(const Ref<Shader>& shader);
 
 		static void BatchQuad(const QuadParams& params);
-		static void BatchQuad(const glm::mat4& transform, const glm::vec4& color);
-		static void BatchQuad(const glm::mat4& transform, const Ref<Texture::T2D>& color);
+		static void BatchQuad(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture::T2D>& sprite = nullptr);
 
 		static void DebugAxis();
 	};

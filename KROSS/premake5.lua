@@ -26,7 +26,8 @@
 			"KROSS_BUILD",
 			"KROSS_GLAD",
 			"KROSS_FATAL_BREAK",
-			"KROSS_ENABLE_ASSERTS"
+			"KROSS_ENABLE_ASSERTS",
+			"YAML_CPP_STATIC_DEFINE"
 			-- "KROSS_DLL",
 			-- "KROSS_BUILD_DLL"
 		}
@@ -35,13 +36,24 @@
 		{
 			"vendor",
 			"src",
-			"vendor/GLFW/include",
-			"vendor/Glad/include",
-			"vendor/imgui",
-			"vendor/glm",
-			"vendor/stb_image",
-			"vendor/spdlog/include",
-			"vendor/entt",
+			"%{IncludeDir.GLFW}",		
+			"%{IncludeDir.Glad}",		
+			"%{IncludeDir.ImGui}",		
+			"%{IncludeDir.glm}",		
+			"%{IncludeDir.stb_image}",	
+			"%{IncludeDir.spdlog}",	
+			"%{IncludeDir.entt}",		
+			"%{IncludeDir.yaml}",		
+
+
+			--"vendor/GLFW/include",
+			--"vendor/Glad/include",
+			--"vendor/imgui",
+			--"vendor/glm",
+			--"vendor/stb_image",
+			--"vendor/spdlog/include",
+			--"vendor/entt",
+			--"vendor/serializer/yaml"
 		}
 
 		links 
@@ -49,6 +61,7 @@
 			"GLFW",
 			"Glad",
 			"ImGui",
+			"yaml-cpp",
 			"opengl32.lib",
 		}
 

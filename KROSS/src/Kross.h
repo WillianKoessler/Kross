@@ -23,6 +23,7 @@
 #include "Kross/Scene/Scene.h"
 #include "Kross/Scene/Components.h"
 #include "Kross/Scene/Entity.h"
+#include "Kross/Scene/SceneSerializer.h"
 
 #include "Kross/Renderer/Renderer.h"
 #include "Kross/Renderer/RenderTypes.h"

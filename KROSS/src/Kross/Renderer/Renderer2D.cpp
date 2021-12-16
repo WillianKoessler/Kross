@@ -286,7 +286,7 @@ namespace Kross {
 		data->quadIndex++;
 		data->rendererStats.QuadCount++;
 	}
-	void Renderer2D::BatchQuad(const glm::mat4 &transform, const glm::vec4 &color)
+	void Renderer2D::BatchQuad(const glm::mat4 &transform, const glm::vec4 &color, const Ref<Texture::T2D>& sprite)
 	{
 		KROSS_PROFILE_FUNC();
 		if (!s_bBatch) return;
@@ -300,40 +300,14 @@ namespace Kross {
 
 		if ((size_t)data->quadIndex + 1 >= MaxQuadCount) { BatchEnd(); BatchBegin(); }
 
+		if (sprite) tex = (float)data->texArray->Get(sprite);
+		
 		Vertex *v = data->myBuffer[data->quadIndex].v;
 
 		for (uint8_t i = 0; i < 4; i++)
 		{
 			v[i].pos = transform * data->basePositions[i];
 			v[i].color = color;
-			v[i].texIndex = tex;
-			v[i].texCoord = texCoords[i];
-		}
-		data->quadIndex++;
-		data->rendererStats.QuadCount++;
-	}
-	void Renderer2D::BatchQuad(const glm::mat4 &transform, const Ref<Texture::T2D> &texture)
-	{
-		KROSS_PROFILE_FUNC();
-		static float tex = (float)data->texArray->Get(data->whiteTex);
-		static glm::vec2 texCoords[4] = {
-							{ 0.0f, 0.0f },
-							{ 1.0f, 0.0f },
-							{ 1.0f, 1.0f },
-							{ 0.0f, 1.0f }
-		};
-
-		if ((size_t)data->quadIndex + 1 >= MaxQuadCount) { BatchEnd(); BatchBegin(); }
-
-		if (texture)
-			tex = (float)data->texArray->Get(texture);
-
-		Vertex *v = data->myBuffer[data->quadIndex].v;
-
-		for (uint8_t i = 0; i < 4; i++)
-		{
-			v[i].pos = transform * data->basePositions[i];
-			v[i].color = glm::vec4(1.0f);
 			v[i].texIndex = tex;
 			v[i].texCoord = texCoords[i];
 		}
