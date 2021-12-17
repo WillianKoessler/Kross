@@ -12,12 +12,7 @@ namespace Kross {
 	{
 		KROSS_PROFILE_FUNC();
 		for (auto &layer : m_vecLayers)
-		{
-			std::string name = layer->GetName();
-			KROSS_INFO("Deleting layer '{0}'", name);
-			layer.reset();
-			KROSS_INFO("Layer '{0}' deleted", name);
-		}
+			KROSS_INFO("Layer '{0}' deleted", layer->GetName());
 	}
 
 	void LayerStack::PropagateEvent(Event &e)
@@ -61,6 +56,7 @@ namespace Kross {
 	}
 	void LayerStack::clear()
 	{
+		for (auto &l : m_vecLayers) l->OnDetach();
 		m_vecLayers.clear();
 	}
 }

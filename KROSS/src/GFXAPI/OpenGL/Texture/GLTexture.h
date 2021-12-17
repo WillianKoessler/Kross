@@ -23,6 +23,7 @@ namespace Kross::OpenGL::Texture {
 		virtual void SetData(uint8_t* data, uint32_t size) override;
 		virtual void ResetData() const override;
 		virtual const Ref<uint8_t>& GetData() const override;
+		virtual const char *GetPath() const override { return m_strPath; }
 
 		virtual ~T2D() override;
 
@@ -35,7 +36,7 @@ namespace Kross::OpenGL::Texture {
 		virtual void Bind(uint32_t slot = 0) const override;
 	private:
 		Ref<uint8_t> raw_data = nullptr;
-		const char* m_strPath;
+		const char* m_strPath = nullptr;
 		uint32_t m_RendererID = UINT32_MAX, m_unWidth = UINT32_MAX, m_unHeight = UINT32_MAX;
 		uint8_t m_CurrentSlot = UINT8_MAX;
 		int32_t m_unInternalFormat = INT32_MAX;

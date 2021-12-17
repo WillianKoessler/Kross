@@ -10,6 +10,10 @@ namespace Kross {
 		if (!scene) KROSS_WARN("Scene supplied is nullptr");
 		KROSS_INFO("Panel '{0}' Constructed", m_strName);
 	}
+	SceneHierarchy::~SceneHierarchy()
+	{
+		p_Scene.reset();
+	}
 	void SceneHierarchy::SetContext(const Ref<Scene> &scene)
 	{
 		p_Scene = scene;

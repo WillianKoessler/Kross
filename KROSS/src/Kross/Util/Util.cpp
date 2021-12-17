@@ -45,11 +45,13 @@ namespace Kross {
 	{
 		std::string path(cpath);
 		size_t slash = path.find_last_of("/\\");
-		slash = (slash == std::string::npos) ? 0 : slash + 1;
-		size_t dot = path.rfind('.');
-		size_t count = (dot == std::string::npos) ? path.size() - slash : dot - slash;
-		char *ptr = new char[count - slash];
-		memcpy_s(ptr, count - slash, path.substr(slash, count).c_str(), count - slash);
+		slash = (slash != std::string::npos) ? slash + 1 : 0;
+		size_t dot = path.find_last_of(".");
+		std::string name = path.substr(slash, dot);
+		size_t count = name.length();
+		char *ptr = new char[count ];
+		memset(ptr, 0, count);
+		memcpy_s(ptr, count, name.c_str(), count);
 		return ptr;
 	}
 

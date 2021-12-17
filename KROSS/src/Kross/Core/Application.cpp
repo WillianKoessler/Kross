@@ -30,10 +30,11 @@ namespace Kross {
 	}
 	Application::~Application()
 	{
+		for (auto &l : m_pLayerStack) l->OnDetach();
 		KROSS_PROFILE_FUNC();
 		Stack<Shader>::clear();
 		Stack<Texture::T2D>::clear();
-		m_pLayerStack.clear();
+		//m_pLayerStack.clear();
 		Renderer::Shutdown();
 		delete m_pWindow;
 		KROSS_INFO("Application Destructed");

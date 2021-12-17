@@ -17,6 +17,9 @@ namespace Kross {
 		m_Registry.view<NativeScriptComponent>().each(
 			[](auto entity, auto &cmp) { if (cmp.m_Instance) { cmp.m_Instance->OnDestroy(); cmp.Destroy(&cmp); }}
 		);
+		m_Registry.view<TagComponent>().each(
+			[](auto entity, auto &cmp) { cmp.Set(nullptr); }
+		);
 		KROSS_INFO("Scene Destructed");
 	}
 
@@ -24,7 +27,6 @@ namespace Kross {
 	{
 		Entity entity{ (uint32_t)m_Registry.create(), this };
 		const char *tag = entity.Add<TagComponent>(name)->Get();
-		//KROSS_TRACE("Entity '{0}' Created", tag);
 		return entity;
 	}
 

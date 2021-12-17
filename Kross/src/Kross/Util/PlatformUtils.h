@@ -1,10 +1,13 @@
 #pragma once
 
+#include "Kross/Core/Core.h"
+
 namespace Kross {
-	class FileDialog
+	struct KAPI File { const char *name, *path, *extension; };
+	class KAPI FileDialog
 	{
 	public:
-		static const char *SaveFile(const char *filter);
-		static const char *OpenFile(const char *filter);
+		static File SaveFile(const char *filter);
+		static File OpenFile(const char *filter);
 	};
 }

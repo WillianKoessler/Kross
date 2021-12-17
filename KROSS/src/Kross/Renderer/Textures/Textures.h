@@ -23,6 +23,7 @@ namespace Kross::Texture {
 		virtual void SetData(uint8_t* data, uint32_t size) = 0;
 		virtual void ResetData() const = 0;
 		virtual const Ref<uint8_t>& GetData()  const = 0;
+		virtual const char *GetPath() const = 0;
 
 		virtual void Bind(uint32_t slot = 0) const = 0;
 

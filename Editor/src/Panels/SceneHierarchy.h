@@ -8,6 +8,7 @@ namespace Kross {
 	{
 	public:
 		SceneHierarchy(const Ref<Scene>& scene);
+		virtual ~SceneHierarchy() override;
 		void SetContext(const Ref<Scene> &scene);
 		virtual void Show(double ts) override;
 	private:

@@ -9,9 +9,6 @@
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Editor_pch.h" />
     <ClInclude Include="src\Panels.h" />
-    <ClInclude Include="src\Panels\DockSpace.h">
-      <Filter>Panels</Filter>
-    </ClInclude>
     <ClInclude Include="src\Panels\EntityProperties.h">
       <Filter>Panels</Filter>
     </ClInclude>
@@ -28,9 +25,6 @@
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\Editor_pch.cpp" />
-    <ClCompile Include="src\Panels\DockSpace.cpp">
-      <Filter>Panels</Filter>
-    </ClCompile>
     <ClCompile Include="src\Panels\EntityProperties.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
@@ -44,5 +38,7 @@
       <Filter>Panels</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Dockspace.cpp" />
+    <ClCompile Include="src\Viewport.cpp" />
   </ItemGroup>
 </Project>

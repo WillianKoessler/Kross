@@ -25,6 +25,28 @@ namespace Kross {
 			ImGui::EndTooltip();
 		}
 	}
+	static void ButtonOK(Panel::MessageBoxSpecs &specs)
+	{
+		auto w = ImGui::GetWindowSize().x;
+		ImGui::PushItemWidth(-w / 2);
+		if (ImGui::Button("OK", ImVec2(50, 0))) {
+			ImGui::CloseCurrentPopup();
+			specs.show = false;
+		}
+		ImGui::PopItemWidth();
+	}
+	static void ButtonOK_CANCEL(Panel::MessageBoxSpecs &specs)
+	{
+	}
+	static void ButtonOK_RETRY_CANCEL(Panel::MessageBoxSpecs &specs)
+	{
+	}
+	static void ButtonYES_NO(Panel::MessageBoxSpecs &specs)
+	{
+	}
+	static void ButtonYES_NO_CANCEL(Panel::MessageBoxSpecs &specs)
+	{
+	}
 	void Panel::MessageBoxDialog(MessageBoxSpecs &specs)
 	{
 		if (specs.show) {
@@ -49,28 +71,6 @@ namespace Kross {
 				ImGui::EndPopup();
 			}
 		}
-	}
-	void Panel::ButtonOK(MessageBoxSpecs &specs)
-	{
-		auto w = ImGui::GetWindowSize().x;
-		ImGui::PushItemWidth(-w / 2);
-		if (ImGui::Button("OK", ImVec2(50, 0))) {
-			ImGui::CloseCurrentPopup();
-			specs.show = false;
-		}
-		ImGui::PopItemWidth();
-	}
-	void Panel::ButtonOK_CANCEL(MessageBoxSpecs &specs)
-	{
-	}
-	void Panel::ButtonOK_RETRY_CANCEL(MessageBoxSpecs &specs)
-	{
-	}
-	void Panel::ButtonYES_NO(MessageBoxSpecs &specs)
-	{
-	}
-	void Panel::ButtonYES_NO_CANCEL(MessageBoxSpecs &specs)
-	{
 	}
 }
 

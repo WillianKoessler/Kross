@@ -14,7 +14,6 @@ namespace Kross {
 	void EditorLayer::OnAttach()
 	{
 		RenderCommand::SetClear(*(glm::vec4 *)&ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
-		//RenderCommand::SetClear(0xFF00FFFF);
 
 		m_Frame = FrameBuffer::CreateRef("EditorLayer_Framebuffer", { 800, 600, 1, false });
 
@@ -25,17 +24,15 @@ namespace Kross {
 
 		Panel::AppManager().s_bKeyboardEnabled = true;
 
-		m_pPanels.push_back(makeScope<DockSpace>());
-		m_pPanels.push_back(makeScope<RendererStats>());
-		m_pPanels.push_back(makeScope<SceneHierarchy>(m_Scene));
-		m_pPanels.push_back(makeScope<EntityProperties>(m_Scene));
-
-		Panel::AppManager().s_bEditorCamera = false;
-
-		RenderCommand::BackCull(true);
+		rs = new RendererStats();
+		sh = new SceneHierarchy(m_Scene);
+		ep = new EntityProperties(m_Scene);
 	}
 	void EditorLayer::OnDetach()
 	{
+		delete rs;
+		delete sh;
+		delete ep;
 		m_Frame->unBind();
 	}
 
@@ -46,7 +43,8 @@ namespace Kross {
 			ss.Serialize("assets/scenes/demo.kross");
 		}
 		if (Input::IsKeyPressed(Key::F2)) {
-			m_Scene->Clear();
+			m_Scene = makeRef<Scene>("main");
+			sh->SetContext(m_Scene);
 			SceneSerializer ss(m_Scene);
 			ss.Deserialize("assets/scenes/demo.kross");
 		}
@@ -67,58 +65,18 @@ namespace Kross {
 
 	void EditorLayer::OnImGuiRender(double ts)
 	{
-		for (auto &p : m_pPanels) p->Show(ts);
+		Dockspace();
+		rs->Show(ts);
+		sh->Show(ts);
+		ep->Show(ts);
 		Panel::setFlag(ImGuiConfigFlags_ViewportsEnable, Panel::AppManager().s_bViewportEnabled);
 		Panel::setFlag(ImGuiConfigFlags_NavEnableKeyboard, Panel::AppManager().s_bKeyboardEnabled);
 		Panel::setFlag(ImGuiConfigFlags_NavEnableGamepad, Panel::AppManager().s_bGamepadEnabled);
-
-		if (Panel::Manager().s_bViewport) {
-			static bool m_bBackFaceCull = false;
-			static bool m_bWireFrame = false;
-			static auto m_Flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoDecoration;
-
-			RenderCommand::BackCull(m_bBackFaceCull);
-			RenderCommand::SetMode(m_bWireFrame ? RendererAPI::Mode::Wireframe : RendererAPI::Mode::Fill);
-
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-			ImGui::Begin("Viewport", &Panel::Manager().s_bViewport, m_Flags);
-
-			PassEvents(ImGui::IsWindowFocused() && ImGui::IsWindowHovered());
-
-			if (ImGui::BeginMenuBar())
-			{
-				if (ImGui::BeginMenu("Settings")) {
-					ImGui::MenuItem("BackFaceCulling", NULL, &m_bBackFaceCull);
-					ImGui::MenuItem("WireFrame", NULL, &m_bWireFrame);
-					ImGui::EndMenu();
-				}
-				ImGui::EndMenuBar();
-			}
-
-			ImVec2 ImGuiViewportPanelSize = ImGui::GetContentRegionAvail();
-			glm::vec2 glmViewportSize = { ImGuiViewportPanelSize.x, ImGuiViewportPanelSize.y };
-
-			if (m_ViewportSize != glmViewportSize && ImGuiViewportPanelSize.x > 0.0f && ImGuiViewportPanelSize.y > 0.0f) {
-				m_ViewportSize = glmViewportSize;
-				m_Scene->OnViewportResize(m_ViewportSize);
-			}
-
-			ImGui::Image(
-				(void *)(uintptr_t)m_Frame->GetColorAttachmentID(),
-				ImGuiViewportPanelSize,
-				ImVec2(0.0f, 1.0f),
-				ImVec2(1.0f, 0.0f)
-			);
-			ImGui::PopStyleVar(3);
-			ImGui::End();
-		}
+		Viewport();
 	}
 
 	void EditorLayer::OnEvent(Event &e)
 	{
 		if (Panel::AppManager().s_bEditorCamera) m_Camera.OnEvent(e);
 	}
-
 }

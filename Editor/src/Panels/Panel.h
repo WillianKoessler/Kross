@@ -3,7 +3,7 @@
 namespace Kross {
 	class Panel
 	{
-	protected:
+	public:
 		static struct PanelManager
 		{
 			bool s_bDockspace = true;
@@ -33,24 +33,16 @@ namespace Kross {
 			void(*func)(void) = DefaultFunc;
 		};
 	
-	protected:
 		virtual void Menu() {}
 		static void ShowHelperMarker(const std::string& msg, float size = 35.0f);
 		static void MessageBoxDialog(MessageBoxSpecs& specs);
-		static void ButtonOK(MessageBoxSpecs &specs);
-		static void ButtonOK_CANCEL(MessageBoxSpecs &specs);
-		static void ButtonOK_RETRY_CANCEL(MessageBoxSpecs &specs);
-		static void ButtonYES_NO(MessageBoxSpecs &specs);
-		static void ButtonYES_NO_CANCEL(MessageBoxSpecs &specs);
 	
-	protected:
 		static void(*DefaultFunc)(void);
 		static Entity s_Selection;
 		MessageBoxSpecs PopUpMessage;
 		uint32_t m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_Popup;
 		const char *m_strName;
 
-	public:
 		Panel();
 		virtual ~Panel() {};
 

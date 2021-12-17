@@ -92,7 +92,7 @@ namespace Kross {
 				if (valid(k, i)) return i->resource;
 				else if (filepath && strcmp(filepath, "") != 0) return stack.emplace(i, k, T::CreateRef(k, filepath), filepath)->resource;
 				else KROSS_WARN("\n\tT={0}\n\tResource named '{1}' has a not valid filepath, therefore, it could not be loaded.\n\tEntries are:\n{2}", typeid(T).name(), k, Entry::GetTable());
-			} else KROSS_WARN("\n\tT={0}\n\tKEY is a empty, and because of it, resource could not be loaded to Stack.\n\tEntries are:\n{1}", typeid(T).name(), Entry::GetTable());
+			} else KROSS_WARN("\n\tT={0}\n\tKEY is empty, and because of it, resource could not be loaded to Stack.\n\tEntries are:\n{1}", typeid(T).name(), Entry::GetTable());
 			return nullptr;
 		}
 		static auto location(const char *key) { return std::lower_bound(stack.begin(), stack.end(), key); }
