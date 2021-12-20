@@ -9,7 +9,7 @@ namespace Kross::OpenGL::Buffer {
 		dynamic(dynamic)
 	{
 		KROSS_PROFILE_FUNC();
-		if (!vertices) { KROSS_INFO("Creating Vertex Buffer Object with nullptr data"); }
+		//if (!vertices) { KROSS_INFO("Creating Vertex Buffer Object with nullptr data"); }
 		glCall(glGenBuffers(1, &m_RendererID));
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 		glCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
@@ -29,12 +29,20 @@ namespace Kross::OpenGL::Buffer {
 	{
 		glCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
-	void Vertex::upload(const void *data, size_t s) const
+	void Vertex::Upload(const void *data, size_t s) const
 	{
 		if (m_RendererID != UINT32_MAX)
 		{
 			Bind();
 			glCall(glBufferSubData(GL_ARRAY_BUFFER, 0, (s > _size ? _size : s), data));
+		}
+	}
+	void Vertex::Clear() const
+	{
+		if (m_RendererID != UINT32_MAX)
+		{
+			Bind();
+			glCall(glBufferData(GL_ARRAY_BUFFER, _size, NULL, GL_STATIC_DRAW));
 		}
 	}
 	void Vertex::SetLayout(const Kross::Buffer::Layout &layout)

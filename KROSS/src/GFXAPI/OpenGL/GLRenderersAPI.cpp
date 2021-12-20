@@ -10,6 +10,14 @@ namespace Kross::OpenGL {
 		glCall(glEnable(GL_BLEND));
 		glCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		glCall(glEnable(GL_DEPTH_TEST));
+
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(glDebugMessage, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
+
+#ifdef KROSS_DEBUG
+#endif
 		//glCall(glDepthFunc(GL_LESS));
 		//glCall(glDepthFunc(GL_GREATER));
 		//glCall(glDepthMask(GL_FALSE));
@@ -30,14 +38,17 @@ namespace Kross::OpenGL {
 	}
 	void RendererAPI::DrawArrays(const Ref<VertexArray>& va) const {
 	}
-	void RendererAPI::DrawArrays(const Scope<VertexArray>& va, bool drawPoints) const {
-		glCall(glDrawArrays(GL_POINTS, 0, (GLsizei)va->GetVertex().size()));
+	void RendererAPI::DrawArrays(const Scope<VertexArray>& va, uint32_t indexCount, bool drawPoints) const {
+		uint32_t size = indexCount ? indexCount : va->GetIndex()->GetCount();
+		glCall(glDrawArrays(GL_POINTS, 0, va->GetIndex()->GetCount()));
 	}
 	void RendererAPI::DrawIndexed(const Ref<VertexArray>& va) const {
 		glCall(glDrawElements(GL_POINTS, va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr));
 	}
-	void RendererAPI::DrawIndexed(const Scope<VertexArray>& va, bool drawPoints) const {
-		glCall(glDrawElements(drawPoints ? GL_POINTS : GL_TRIANGLES, va->GetIndex()->GetCount(), GL_UNSIGNED_INT, nullptr));
+	void RendererAPI::DrawIndexed(const Scope<VertexArray>& va, uint32_t indexCount, bool drawPoints) const {
+		uint32_t size = indexCount ? indexCount : va->GetIndex()->GetCount();
+		glCall(glDrawElements(drawPoints ? GL_POINTS : GL_TRIANGLES, size, GL_UNSIGNED_INT, nullptr));
+		glCall(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 	void RendererAPI::SetViewport(uint32_t width, uint32_t height) const {
 		glCall(glViewport(0, 0, width, height));

@@ -32,6 +32,7 @@ IncludeDir["glm"]		= "%{wks.location}/Kross/vendor/glm"
 IncludeDir["stb_image"]	= "%{wks.location}/Kross/vendor/stb_image"
 IncludeDir["spdlog"]	= "%{wks.location}/Kross/vendor/spdlog/include"
 IncludeDir["entt"]		= "%{wks.location}/Kross/vendor/entt"
+IncludeDir["ImGuizmo"]	= "%{wks.location}/Kross/vendor/ImGuizmo"
 IncludeDir["yaml"]		= "%{wks.location}/Kross/vendor/serializer/yaml/include"
 IncludeDir["Kross"]		= "%{wks.location}/Kross"
 

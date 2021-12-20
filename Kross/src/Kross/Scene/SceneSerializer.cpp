@@ -63,6 +63,10 @@ namespace YAML {
 }
 
 namespace Kross {
+	SceneSerializer::SceneSerializer(Scene *scene)
+		: m_pScene(scene)
+	{
+	}
 	SceneSerializer::SceneSerializer(const Ref<Scene> &scene)
 		: m_Scene(scene)
 	{
@@ -128,44 +132,60 @@ namespace Kross {
 		}
 		out << EndMap;
 	}
-	void SceneSerializer::Serialize(const char *filepath)
+	void SceneSerializer::Serialize(const File &file)
 	{
+		Scene *scene = nullptr;
+		if (m_pScene) scene = m_pScene;
+		else if (m_Scene) scene = m_Scene.get();
+		else {
+			KROSS_ERROR("Trying to serialize a nullptr Scene.");
+			return;
+		}
+		KROSS_ASSERT((m_pScene || m_Scene) && !(m_pScene && m_Scene), "Ambiguity found. Cannot have both pointers.");
 		using namespace YAML;
 		Emitter out;
 		out << BeginMap;
-		out << Key << "Scene" << Value << "Untitled"; // TODO: create Scene m_Name
-		out << Key << "ActiveCameraID" << Value << (uint32_t)m_Scene->m_PrimaryCameraID;
+		out << Key << "Scene" << Value << scene->m_strName;
+		out << Key << "ActiveCameraID" << Value << (uint32_t)scene->m_PrimaryCameraID;
 		out << Key << "Entities" << BeginSeq;
-		m_Scene->m_Registry.each([&](auto &e) {
-			Entity entity((uint32_t)e, m_Scene.get());
+		scene->m_Registry.each([&](auto &e) {
+			Entity entity{ e, scene };
 			if (!entity) return;
 			else SerializeEntity(out, entity);
 			});
-		KROSS_TRACE("Serializing Scene to '{0}'", filepath);
+		KROSS_TRACE("Serializing Scene to file '{0}' ({1})\n\tpath: {2}", file.name, file.extension, file.path);
 		//if (!std::filesystem::exists(std::filesystem::path(filepath)))
 		//	std::filesystem::create_directory(std::filesystem::path(filepath));
-		std::ofstream file(filepath);
-		file << out.c_str();
-		file.close();
+		std::ofstream fileData(file.path, std::ofstream::trunc);
+		fileData << out.c_str();
+		fileData.close();
 	}
-	bool SceneSerializer::Deserialize(const char *filepath)
+	bool SceneSerializer::Deserialize(const File &file)
 	{
-		KROSS_TRACE("Deserializing Scene from '{0}'", filepath);
-		std::ifstream file(filepath);
+		Scene *scene = nullptr;
+		if (m_pScene) scene = m_pScene;
+		else if (m_Scene) scene = m_Scene.get();
+		else {
+			KROSS_ERROR("Trying to serialize a nullptr Scene.");
+			return false;
+		}
+		KROSS_ASSERT((m_pScene || m_Scene) && !(m_pScene && m_Scene), "Ambiguity found. Cannot have both pointers.");
+		std::ifstream fileData(file.path);
 		std::stringstream ss;
-		ss << file.rdbuf();
+		ss << fileData.rdbuf();
 
 		using namespace YAML;
 		Node data = Load(ss.str());
 		if (!data["Scene"]) return false;
 
 		std::string sceneName = data["Scene"].as<std::string>();
+		scene->SetName(sceneName.c_str());
 
-		Entity activeCamera = { data["ActiveCameraID"].as<uint32_t>(), m_Scene.get() };
-		m_Scene->m_PrimaryCameraID = entt::null;
+		Entity activeCamera = { (entt::entity)data["ActiveCameraID"].as<uint32_t>(), scene };
+		scene->m_PrimaryCameraID = entt::null;
 
 		auto entities = data["Entities"];
-		if (entities) {
+		if (entities)
 			for (auto entity : entities) {
 				uint32_t uuid = entity["Entity"].as<uint32_t>();
 
@@ -173,7 +193,7 @@ namespace Kross {
 				std::string tag = "";
 				if (tagComponent)
 					tag = tagComponent["Tag"].as<std::string>();
-				Entity newEntity = m_Scene->CreateEntity(tag.c_str());
+				Entity newEntity = scene->CreateEntity(tag.c_str());
 
 				auto transform = entity["TransformComponent"];
 				if (transform) {
@@ -208,15 +228,15 @@ namespace Kross {
 					cmp->fixedAspectRatio = cameraNode["FixedAspectRatio"].as<bool>();
 				}
 			}
-		}
+
 		return true;
 	}
-	void SceneSerializer::SerializeRuntime(const char *filepath)
+	void SceneSerializer::SerializeRuntime(const File &file)
 	{
 		//Not Implemented
 		KROSS_ASSERT(false);
 	}
-	bool SceneSerializer::DeserializeRuntime(const char *filepath)
+	bool SceneSerializer::DeserializeRuntime(const File &file)
 	{
 		//Not Implemented
 		KROSS_ASSERT(false);

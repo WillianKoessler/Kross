@@ -8,26 +8,29 @@
 #include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
 #include "Kross/Renderer/Textures/Textures.h"
 #include "ScriptableEntity.h"
-#include "EmptyComponent.h"
 
 
 namespace Kross {
-	struct TagComponent : public EmptyComponent
+	struct TagComponent
 	{
-		static const uint32_t limit = 128;
-	private:
-		char tag[limit];
-	public:
 		void Set(const char *newTag);
 		const char *Get() const { return tag; }
-		static void ShowAll();
+
 		TagComponent() = default;
-		TagComponent(const TagComponent &other) = default;
-		TagComponent(const char *newTag);
+		TagComponent(const TagComponent &other);
+		TagComponent(const char *newTag, std::vector<std::string> *pool);
 		operator const char*() const { return tag; }
+
+		static const uint32_t limit = 128;
+	private:
+		std::vector<std::string> *pool;
+
+	private:
+		char tag[limit];
+		friend class Scene;
 	};
 
-	struct TransformComponent : public EmptyComponent
+	struct TransformComponent
 	{
 		glm::vec3 Position = glm::vec3(0.0f);
 		glm::vec3 Rotation = glm::vec3(0.0f);
@@ -50,18 +53,20 @@ namespace Kross {
 		}
 	};
 
-	struct SpriteComponent : public EmptyComponent
+	struct SpriteComponent
 	{
 		glm::vec4 tint = glm::vec4(1.0f);
-		Ref<Texture::T2D> texture = nullptr;
+		//Ref<Texture::T2D> texture = nullptr;
 
 		SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent &) = default;
-		SpriteComponent(const glm::vec4 &tintColor, const Ref<Texture::T2D>& spriteTexture = nullptr)
-			: tint(tintColor), texture(spriteTexture) {}
+		SpriteComponent(const glm::vec4 &tintColor)
+			: tint(tintColor) {}
+		//SpriteComponent(const glm::vec4 &tintColor, const Ref<Texture::T2D>& spriteTexture = nullptr)
+		//	: tint(tintColor), texture(spriteTexture) {}
 	};
 
-	struct CameraComponent : public EmptyComponent
+	struct CameraComponent
 	{
 		SceneCamera camera;
 		bool fixedAspectRatio = false;

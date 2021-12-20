@@ -93,7 +93,7 @@ namespace Kross::OpenGL {
 			{
 				int major, minor;
 				glCall(glGetIntegerv(GL_MAJOR_VERSION, &major));
-				glCall(glGetIntegerv(GL_MAJOR_VERSION, &minor));
+				glCall(glGetIntegerv(GL_MINOR_VERSION, &minor));
 				version = (float)major + minor / 10.0f;
 			}
 			return version;

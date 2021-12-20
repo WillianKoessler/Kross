@@ -24,6 +24,7 @@ project "Editor"
 		"../%{IncludeDir.glm}",
 		"../%{IncludeDir.stb_image}",
 		"../%{IncludeDir.ImGui}",
+		"../%{IncludeDir.ImGuizmo}",
 	}
 
 	links

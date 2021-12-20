@@ -41,9 +41,9 @@ namespace Kross {
 		{
 			s_RendererAPI->DrawIndexed(va);
 		}
-		inline static void DrawIndexed(const Scope<VertexArray>& va, bool drawPoints = false)
+		inline static void DrawIndexed(const Scope<VertexArray>& va, uint32_t indexCount, bool drawPoints = false)
 		{
-			s_RendererAPI->DrawIndexed(va, drawPoints);
+			s_RendererAPI->DrawIndexed(va, indexCount, drawPoints);
 		}
 		inline static void OnWindowResize(uint32_t width, uint32_t height)
 		{

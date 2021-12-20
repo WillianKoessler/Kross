@@ -1,20 +1,19 @@
 #pragma once
 
-#include "Panel.h"
-#include "EntityProperties.h"
+#include "Kross/Core/Resource.h"
 
 namespace Kross {
-	class SceneHierarchy : public Panel
+	class SceneHierarchy : public Resource
 	{
 	public:
-		SceneHierarchy(const Ref<Scene>& scene);
-		virtual ~SceneHierarchy() override;
-		void SetContext(const Ref<Scene> &scene);
-		virtual void Show(double ts) override;
+		SceneHierarchy(Scene &scene);
+		void Show();
+		void SetContext(Scene &scene) { p_Scene = &scene; }
 	private:
 		void DrawEntityNode(Entity &entity);
 	private:
-		Ref<Scene> p_Scene;
+		Scene *p_Scene;
 		Entity m_Clipboard;
+		uint32_t m_Flags;
 	};
 }

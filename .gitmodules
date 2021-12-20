@@ -18,6 +18,6 @@
 	path = KROSS/vendor/imgui
 	url = https://github.com/williankoessler/imgui.git
 	branch = docking
-[submodule "Kross/vendor/ImGuizmo"]
-	path = Kross/vendor/ImGuizmo
+[submodule "KROSS/vendor/ImGuizmo"]
+	path = KROSS/vendor/ImGuizmo
 	url = https://github.com/thecherno/imguizmo.git

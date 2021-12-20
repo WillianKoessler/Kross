@@ -10,6 +10,8 @@
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 
+#include "ImGuizmo.h"
+
 namespace Kross {
 
 	ImGuiLayer::ImGuiLayer()
@@ -78,7 +80,7 @@ namespace Kross {
 
 	void ImGuiLayer::OnEvent(Event &e)
 	{
-		if (!IsPassingEvents()) {
+		if (m_bBlockEvents) {
 			ImGuiIO &io = ImGui::GetIO();
 			e.handled |= e.IsInCategory(EventCategoryMouse) && io.WantCaptureMouse;
 			e.handled |= e.IsInCategory(EventCategoryKeyboard) && io.WantCaptureKeyboard;
@@ -86,7 +88,7 @@ namespace Kross {
 	}
 
 
-	void ImGuiLayer::OnImGuiRender(double ts)
+	void ImGuiLayer::OnGuiRender(double ts)
 	{
 	}
 
@@ -96,6 +98,7 @@ namespace Kross {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+		ImGuizmo::BeginFrame();
 	}
 
 	void ImGuiLayer::End()

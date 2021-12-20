@@ -13,7 +13,8 @@ namespace Kross::OpenGL::Buffer {
 		virtual void Bind() const override;
 		virtual void unBind() const override;
 
-		virtual void upload(const void* data, size_t size) const override;
+		virtual void Upload(const void* data, size_t size) const override;
+		virtual void Clear() const override;
 
 		virtual void SetLayout(const Kross::Buffer::Layout& layout) override;
 		virtual const Kross::Buffer::Layout& GetLayout() const override { return m_Layout; }

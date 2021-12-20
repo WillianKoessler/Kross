@@ -26,8 +26,7 @@ namespace Kross::OpenGL::Texture {
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-		} else
-		{
+		} else {
 			glCall(glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID));
 
 			glCall(glTextureStorage2D(m_RendererID, 1, GL_RGB8, m_unWidth, m_unHeight));
@@ -41,7 +40,7 @@ namespace Kross::OpenGL::Texture {
 		else KROSS_WARN("Texture '{0}' NOT created. There were no data.", GetName());
 		KROSS_INFO("'{0}' Constructed", GetName());
 	}
-	T2D::T2D(const char *name, const char* path)
+	T2D::T2D(const char *name, const char *path)
 		: m_strPath(path), m_unDataFormat(0), m_unInternalFormat(0), m_CurrentSlot(IncSlot())
 	{
 		if (!strcmp(name, "Unnamed_Resource") || !strcmp(name, "")) SetName(FileName(path));

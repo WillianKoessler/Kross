@@ -94,19 +94,22 @@
 #endif
 
 #ifdef KROSS_DEBUG
-#if defined(KROSS_PLATFORM_WINDOWS)
-#define KROSS_DEBUGBREAK() __debugbreak()
-#elif defined(KROSS_PLATFORM_LINUX)
-#include <signal.h>
-#define KROSS_DEBUGBREAK() raise(SIGTRAP)
-#else
-#error "Platform doesn't support debugbreak yet!"
-#endif
-#define KROSS_ENABLE_ASSERTS
+	#if defined(KROSS_PLATFORM_WINDOWS)
+		#define KROSS_DEBUGBREAK() __debugbreak()
+	#elif defined(KROSS_PLATFORM_LINUX)
+		#include <signal.h>
+		#define KROSS_DEBUGBREAK() raise(SIGTRAP)
+	#else
+		#error "Platform doesn't support debugbreak yet!"
+	#endif
+	
+	#ifndef KROSS_ENABLE_ASSERTS
+		#define KROSS_ENABLE_ASSERTS
+	#endif
 #elif KROSS_FATAL_BREAK
-#define KROSS_DEBUGBREAK() assert(false);
+	#define KROSS_DEBUGBREAK() assert(false);
 #else
-#define KROSS_DEBUGBREAK()
+	#define KROSS_DEBUGBREAK()
 #endif
 
 #define KROSS_EXPAND_MACRO(x) x
@@ -121,10 +124,7 @@ namespace Kross {
 
 	template<class T> using Ref = std::shared_ptr<T>;
 	template<class T, class ... Args>
-	constexpr Ref<T> makeRef(Args&& ... args) {
-		printf("\nRef Created: %s\n", typeid(T).name());
-		return std::make_shared<T>(std::forward<Args>(args)...);
-	}
+	constexpr Ref<T> makeRef(Args&& ... args) { return std::make_shared<T>(std::forward<Args>(args)...); }
 
 	template<class T> using Scope = std::unique_ptr<T>;
 	template<class T, class ... Args>
@@ -199,6 +199,9 @@ namespace Kross {
 #else
 #define KROSS_ASSERT(...)
 #endif
+
+
+#define KROSS_NOT_IMPLEMENTED KROSS_ASSERT(false, __FUNCSIG__ " Not Implemented")
 
 namespace Kross {
 	template<typename genType>

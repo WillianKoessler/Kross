@@ -11,12 +11,12 @@ namespace Kross {
 		template<typename Component>
 		Component *GetImpl()
 		{
-
+			KROSS_NOT_IMPLEMENTED;
 		}
 	public:
 		Entity() = default;
-		Entity(uint32_t id, const Scene *scene)
-			: m_ID((entt::entity)id), p_Scene(const_cast<Scene *>(scene))
+		Entity(entt::entity id, const Scene *scene)
+			: m_ID(id), p_Scene(const_cast<Scene *>(scene))
 		{
 			KROSS_ASSERT(p_Scene != nullptr, "Invalid Scene pointer. (No valid Scene was found)");
 		}
@@ -31,14 +31,14 @@ namespace Kross {
 			return (int)p_Scene->m_Registry.all_of<Components...>(m_ID);
 		}
 
-		template<typename Component>
-		Component *Get()
+		template<typename...Component>
+		auto Get()
 		{
 			static bool validation = true;
 			static constexpr char *msg = "Entity (ID = '{0}') does not have specified component.";
-			if (!Validate(&validation, Has<Component>(), msg, (uint32_t)m_ID))
-				return nullptr;
-			return &p_Scene->m_Registry.get<Component>(m_ID);
+			//if (Validate(&validation, Has<Component...>(), msg, (uint32_t)m_ID))
+				return p_Scene->m_Registry.try_get<Component...>(m_ID);
+			//return nullptr;
 		}
 
 		template<typename Component, typename...Args>
@@ -65,7 +65,6 @@ namespace Kross {
 		operator bool() const { return m_ID != entt::null; }
 		operator uint32_t() const { return (uint32_t)m_ID; }
 		operator entt::entity() const { return m_ID; }
-		operator void *() const { return (void *)(uintptr_t)m_ID; }
 		bool operator==(const Entity &other) const { return p_Scene == other.p_Scene && m_ID == other.m_ID; }
 		bool operator!=(const Entity &other) const { return p_Scene != other.p_Scene && m_ID != other.m_ID; }
 	private:

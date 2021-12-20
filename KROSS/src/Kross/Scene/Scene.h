@@ -4,6 +4,7 @@
 #include "entt.hpp"
 #include "Kross/Renderer/Cameras/Camera.h"
 #include "Kross/Renderer/Cameras/EditorCamera.h"
+#include "Kross/Util/PlatformUtils.h"
 
 namespace Kross {
 	class Entity;
@@ -11,8 +12,25 @@ namespace Kross {
 	class Scene
 	{
 	public:
-		Scene(const char* name);
+		Scene();
+		Scene(const char *name);
+		//Scene(const Scene& other) = default;
+		//Scene(Scene &&other) = default;
+		//Scene &operator=(Scene &&other) = default;
+		Scene &operator=(const Scene &other);
 		~Scene();
+
+
+		const char *GetName() const { return m_strName; }
+		void SetName(const char *name);
+
+		void SaveScene();
+		void SaveScene(const File &file);
+		void LoadScene();
+
+		void Select(Entity &);
+		Entity Selected() const;
+		void ClearSelection();
 
 		Entity CreateEntity(const char *Tag);
 		Entity CreateEntity(Entity e);
@@ -20,32 +38,32 @@ namespace Kross {
 		void DestroyEntity(Entity e);
 		void Clear();
 
-#ifdef KROSS_DLL
-		struct Entities
+		std::vector<Entity> GetAllEntities() // TODO: create Kross's Vector class
 		{
-			uintptr_t data;
-			uint64_t size;
-			uint32_t step;
-		};
-		Entities GetAllEntities();
-#else
-		std::vector<Entity> GetAllEntities();
-#endif
+			std::vector<Entity> pool;
+			m_Registry.each([&pool, this](auto &id) {pool.emplace_back(id, this); });
+			return pool;
+		}
+
 		void SetPrimaryCamera(const Entity &entity);
 		Entity GetCurrentCamera() const;
 
-		void OnUpdateEditor(double ts, const Camera::Editor& camera);
+		void OnUpdateEditor(double ts, const Camera::Editor &camera);
 		void OnUpdateRuntime(double ts);
-		void OnViewportResize(const glm::vec2& size);
+		void OnViewportResize(const glm::vec2 &size);
+
 	private:
 		void OnComponentAdded(Entity e, uint64_t componentID);
+
 	private:
+		std::vector<std::string> m_namePool; // TODO: create Kross's Vector and String classes
 		entt::registry m_Registry;
-		entt::entity m_PrimaryCameraID = entt::null;
+		char *m_strName = nullptr;
+		entt::entity m_PrimaryCameraID = entt::null, m_Selection = entt::null;
 		glm::vec2 m_ViewportSize;
+		File file;
 
 		friend class Entity;
 		friend class SceneSerializer;
-		friend class SceneHierarchy;
 	};
 }

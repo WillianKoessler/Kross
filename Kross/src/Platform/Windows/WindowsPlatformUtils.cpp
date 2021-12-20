@@ -9,31 +9,60 @@
 #include "Kross/Core/Application.h"
 
 namespace Kross {
+	File::File(const char *filepath)
+	{
+		if (filepath && strcmp(filepath, "")!=0) {
+			pathSize = strlen(filepath) + 1;
+			path = new char[pathSize];
+			strcpy_s(path, pathSize, filepath);
+
+			std::string sPath = path, sName, sExt;
+			size_t slash = sPath.find_last_of("/\\");
+			slash = slash != std::string::npos ? slash + 1 : 0;
+			size_t dot = sPath.find_last_of('.');
+
+			sName = sPath.substr(slash, dot == std::string::npos ? 0 : dot - slash);
+			nameSize = sName.size() + 1;
+			name = new char[nameSize];
+			memset(name, 0, nameSize);
+			if(nameSize > 1) strcpy_s(name, nameSize, sName.c_str());
+
+			if (dot != std::string::npos) {
+				sExt = sPath.substr(dot, std::string::npos);
+				extensionSize = sExt.size() + 1;
+				extension = new char[extensionSize];
+				memset(extension, 0, extensionSize);
+				if(extensionSize > 1) strcpy_s(extension, extensionSize, sExt.c_str());
+			}
+		} else {
+			KROSS_ERROR("Attempt to create File object with invalid filepath");
+		}
+	}
+
+	//void File::Mount(uint32_t size)
+	//{
+	//	if (!path) { KROSS_ERROR("Attempt to mount file from without filepath"); }
+	//	name = new char[size];
+	//	extension = new char[size];
+	//	std::string sPath = path, sName, sExt;
+	//	size_t slash = sPath.find_last_of("/\\") + 1;
+	//	size_t dot = sPath.find_last_of('.');
+	//	if (dot != std::string::npos) {
+	//		sName = sPath.substr(slash, dot - slash);
+	//		sName = sPath.substr(dot);
+	//		strcpy_s(name, size, sName.c_str());
+	//		strcpy_s(extension, size, sExt.c_str());
+	//	} else {
+	//		sName = sPath.substr(slash);
+	//		strcpy_s(name, size, sName.c_str());
+	//	}
+	//}
 	File FileDialog::SaveFile(const char *filter)
 	{
 		OPENFILENAMEA ofn;
 		const size_t nSize = 128;
-		File file{ new char[nSize], new char[nSize] };
-		memset(const_cast<char*>(file.name), 0, nSize);
-		memset(const_cast<char*>(file.path), 0, nSize);
-		ZeroMemory(&ofn, sizeof(OPENFILENAMEA));
-		ofn.lStructSize = sizeof(OPENFILENAMEA);
-		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow *)Application::Get().GetWindow().GetNativeWindow());
-		ofn.lpstrFile = (LPSTR)file.path;
-		ofn.lpstrFileTitle = (LPSTR)file.name;
-		ofn.nMaxFile = nSize;
-		ofn.lpstrFilter = filter;
-		ofn.nFilterIndex = 1;
-		ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-		GetSaveFileNameA(&ofn);
-		return file;
-	}
-
-	File FileDialog::OpenFile(const char *filter)
-	{
-		OPENFILENAMEA ofn;
-		const size_t nSize = 128;
-		char *filepath = new char[nSize];
+		CHAR filepath[nSize] = { 0 };
+		File file;
 		ZeroMemory(&ofn, sizeof(OPENFILENAMEA));
 		ofn.lStructSize = sizeof(OPENFILENAMEA);
 		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow *)Application::Get().GetWindow().GetNativeWindow());
@@ -42,25 +71,27 @@ namespace Kross {
 		ofn.lpstrFilter = filter;
 		ofn.nFilterIndex = 1;
 		ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
-		if (GetOpenFileNameA(&ofn)) {
-			std::string path = filepath, name = "", ext = "";
-			File file{ new char[nSize], filepath, new char[nSize] };
-			memset(const_cast<char *>(file.name), 0, nSize);
-			memset(const_cast<char *>(file.extension), 0, nSize);
-			size_t slash = path.find_last_of("/\\") + 1;
-			size_t dot = path.find_last_of('.');
-			if (dot != std::string::npos) {
-				name = path.substr(slash, dot - slash);
-				ext = path.substr(dot);
-				strcpy_s(const_cast<char *>(file.name), nSize, name.c_str());
-				strcpy_s(const_cast<char *>(file.extension), nSize, ext.c_str());
-			} else {
-				name = path.substr(slash);
-				strcpy_s(const_cast<char *>(file.name), nSize, name.c_str());
-			}
-			KROSS_TRACE("Opening file:\n\tNamed : '{0}'\n\tPath : '{1}'\n\tExtension : '{2}'", file.name, file.path, file.extension);
-			return file;
-		}
+		if (GetSaveFileNameA(&ofn))
+			file = File(filepath);
+		return file;
+	}
+
+	File FileDialog::OpenFile(const char *filter)
+	{
+		OPENFILENAMEA ofn;
+		const size_t nSize = 128;
+		CHAR filepath[nSize] = { 0 };
+		ZeroMemory(&ofn, sizeof(OPENFILENAMEA));
+		ofn.lStructSize = sizeof(OPENFILENAMEA);
+		ofn.hwndOwner = glfwGetWin32Window((GLFWwindow *)Application::Get().GetWindow().GetNativeWindow());
+		ofn.lpstrFile = filepath;
+		ofn.nMaxFile = nSize;
+		ofn.lpstrFilter = filter;
+		ofn.lpstrTitle = "Open File";
+		ofn.nFilterIndex = 1;
+		ofn.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
+		if (GetSaveFileNameA(&ofn)) 
+			return File(filepath);
 		return File{};
 	}
 }

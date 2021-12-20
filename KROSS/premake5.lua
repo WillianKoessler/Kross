@@ -19,12 +19,15 @@
 			"vendor/stb_image/**.cpp",
 			"vendor/glm/glm/**.hpp",
 			"vendor/glm/glm/**.inl",
+			"vendor/ImGuizmo/ImGuizmo.h",
+			"vendor/ImGuizmo/ImGuizmo.cpp",
 		}
 
 		defines
 		{
 			"KROSS_BUILD",
 			"KROSS_GLAD",
+			"KROSS_DEBUG",
 			"KROSS_FATAL_BREAK",
 			"KROSS_ENABLE_ASSERTS",
 			"YAML_CPP_STATIC_DEFINE"
@@ -43,6 +46,7 @@
 			"%{IncludeDir.stb_image}",	
 			"%{IncludeDir.spdlog}",	
 			"%{IncludeDir.entt}",		
+			"%{IncludeDir.ImGuizmo}",		
 			"%{IncludeDir.yaml}",		
 
 
@@ -68,6 +72,9 @@
 		-- postbuildcommands {
 		-- 	"copy /Y \"$(TargetDir)$(ProjectName).dll\" \"$(SolutionDir)bin\\%{outputdir}\\barebones\""
 		--   }
+
+		filter "files:vendor/ImGuizmo/**.cpp"
+			flags { "NoPCH" }
 
 		filter "system:windows"
 			systemversion "latest"

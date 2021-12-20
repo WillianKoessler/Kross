@@ -25,6 +25,9 @@
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\Editor_pch.cpp" />
+    <ClCompile Include="src\Panels\Dockspace.cpp">
+      <Filter>Panels</Filter>
+    </ClCompile>
     <ClCompile Include="src\Panels\EntityProperties.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
@@ -37,8 +40,9 @@
     <ClCompile Include="src\Panels\SceneHierarchy.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
+    <ClCompile Include="src\Panels\Viewport.cpp">
+      <Filter>Panels</Filter>
+    </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Dockspace.cpp" />
-    <ClCompile Include="src\Viewport.cpp" />
   </ItemGroup>
 </Project>

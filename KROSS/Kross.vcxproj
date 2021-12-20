@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;YAML_CPP_STATIC_DEFINE;KROSS_PLATFORM_WINDOWS;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;vendor\serializer\yaml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;vendor\ImGuizmo;vendor\serializer\yaml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -98,8 +98,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;YAML_CPP_STATIC_DEFINE;KROSS_PLATFORM_WINDOWS;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;vendor\serializer\yaml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_DEBUG;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;YAML_CPP_STATIC_DEFINE;KROSS_PLATFORM_WINDOWS;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;vendor\ImGuizmo;vendor\serializer\yaml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -123,8 +123,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Kross_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;YAML_CPP_STATIC_DEFINE;KROSS_PLATFORM_WINDOWS;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;vendor\serializer\yaml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>KROSS_BUILD;KROSS_GLAD;KROSS_DEBUG;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;YAML_CPP_STATIC_DEFINE;KROSS_PLATFORM_WINDOWS;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>vendor;src;vendor\GLFW\include;vendor\Glad\include;vendor\imgui;vendor\glm;vendor\stb_image;vendor\spdlog\include;vendor\entt;vendor\ImGuizmo;vendor\serializer\yaml\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -211,6 +211,7 @@
     <ClInclude Include="src\Kross\imgui\ImGuiLayer.h" />
     <ClInclude Include="src\Kross_pch.h" />
     <ClInclude Include="src\Platform\Windows\Win_Windows.h" />
+    <ClInclude Include="vendor\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="vendor\glm\glm\detail\_fixes.hpp" />
@@ -667,7 +668,6 @@
     <ClCompile Include="src\Kross\Scene\Scene.cpp" />
     <ClCompile Include="src\Kross\Scene\SceneCamera.cpp" />
     <ClCompile Include="src\Kross\Scene\SceneSerializer.cpp" />
-    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
     <ClCompile Include="src\Kross\Util\Util.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Kross\imgui\ImGuiLayer.cpp" />
@@ -676,6 +676,10 @@
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\Win_Windows.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowInput.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsPlatformUtils.cpp" />
+    <ClCompile Include="vendor\ImGuizmo\ImGuizmo.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>

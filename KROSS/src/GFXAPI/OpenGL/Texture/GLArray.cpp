@@ -23,7 +23,7 @@ namespace Kross::OpenGL::Texture {
 				glTex[i] = stack[i].get()->GetID() * stack[i].validate();
 			glCall(glBindTextures((GLuint)slot, (GLsizei)stack.size(), (GLuint *)glTex));
 		} else {
-			KROSS_ERROR("Not implemented.");
+			KROSS_NOT_IMPLEMENTED;
 		}
 	}
 	const int T2DArray::Get(const Ref<Kross::Texture::T2D>& texture)

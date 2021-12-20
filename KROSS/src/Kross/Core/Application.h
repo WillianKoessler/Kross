@@ -33,7 +33,7 @@ namespace Kross {
 
 		void OnEvent(Event& e);
 		void SetDarkTheme() const { m_ImGuiLayer->SetDarkTheme(); }
-		const Ref<Layer> &GetGUILayer() { return m_ImGuiLayer; }
+		const Ref<ImGuiLayer> &GetGUILayer() { return m_ImGuiLayer; }
 		void PushLayer(const Ref<Layer>& layer);
 		void PushLayer(const std::initializer_list<Ref<Layer>>& list);
 		void PushOverlay(const Ref<Layer>& layer);

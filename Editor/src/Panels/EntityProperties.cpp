@@ -1,6 +1,7 @@
 #include "Editor_pch.h"
-#include "Kross/Util/Util.h"
 #include "EntityProperties.h"
+#include "Panel.h"
+#include "Kross/Util/Util.h"
 #include <glm/glm/gtc/type_ptr.hpp>
 static bool debug = false;
 static constexpr float x = 0.838096f, o = 0.161903f;
@@ -119,8 +120,7 @@ namespace Kross {
 			SameLine(0.0f, 0.0f);
 			PushItemWidth(dragWidth);
 			PushColor(colors[i] * o, ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
-			DragFloat("", &vec[i], speed, .0f, .0f, GetFloatFormat(speed).c_str());
-			value_changed |= IsItemFocused();
+			value_changed |= DragFloat("", &vec[i], speed, .0f, .0f, GetFloatFormat(speed).c_str());
 
 			PopColor(3);
 			PopItemWidth();
@@ -149,8 +149,7 @@ namespace Kross {
 			PushItemWidth(dragWidth);
 			int val = (int)(values[i] * 255.f);
 			PushColor(colors[i] * values[i] * (i != 3 ? x : o), ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
-			DragInt("", &val, 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp); SameLine(0.0f, 0.0f);
-			value_changed |= IsItemFocused();
+			value_changed |= DragInt("", &val, 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp); SameLine(0.0f, 0.0f);
 			PopColor(3);
 			values[i] = val / 255.f;
 			PopID(); // pop 5 4 3 2
@@ -170,8 +169,8 @@ namespace Kross {
 		return value_changed;
 	}
 
-	template<typename Component>
-	static bool DrawComponent(const std::string &label, Entity entity, bool removable, bool(*show)(Scene *, const std::string &, Component *))
+	template<typename Component, typename Func>
+	static bool DrawComponent(const std::string &label, Entity entity, bool removable, Func show)
 	{
 		bool used = false;
 		if (!entity.GetScene()) return used;
@@ -208,7 +207,7 @@ namespace Kross {
 				ImGui::TableSetupColumn(("##" + label + "_Label").c_str(), ImGuiTableColumnFlags_WidthFixed, 100.0f);
 				ImGui::TableSetupColumn(("##" + label + "_Value").c_str(), ImGuiTableColumnFlags_WidthStretch, ImGui::GetContentRegionAvail().x);
 				ImGui::TableNextRow(); ImGui::TableNextColumn();
-				used = show(const_cast<Scene *>(entity.GetScene()), "##" + label, entity.Get<Component>());
+				used = show(entity.Get<Component>());
 				ImGui::EndTable();
 				ImGui::TreePop();
 			}
@@ -218,38 +217,39 @@ namespace Kross {
 		}
 		return used;
 	}
-	EntityProperties::EntityProperties(const Ref<Scene> &scene)
-		: p_Scene(scene)
+	EntityProperties::EntityProperties(Scene &scene)
+		: p_Scene(&scene)
 	{
 		m_strName = "Properties Panel";
+		m_Flags = 0;
+		if (!p_Scene) KROSS_WARN("Scene provided is null");
 		KROSS_INFO("Panel '{0}' Constructed", m_strName);
 	}
 
-	void EntityProperties::Show(double ts)
+	void EntityProperties::Show()
 	{
-		if (!Manager().s_bPropertiesInspector) return;
+		if (!Panel::Manager().s_bPropertiesInspector) return;
 
-		if (ImGui::Begin(m_strName, &Panel::Manager().s_bPropertiesInspector))
+		if (ImGui::Begin(m_strName, &Panel::Manager().s_bPropertiesInspector, m_Flags))
 		{
-			if (s_Selection) {
-				if (s_Selection.Has<TagComponent>() == 1) {
-					bool hasTransform = s_Selection.Has<TransformComponent>() == 1;
-					bool hasSprite = s_Selection.Has<SpriteComponent>() == 1;
-					bool hasCamera = s_Selection.Has<CameraComponent>() == 1;
+			if (p_Scene->Selected()) {
+				if (p_Scene->Selected().Has<TagComponent>() == 1) {
+					bool hasTransform = p_Scene->Selected().Has<TransformComponent>() == 1;
+					bool hasSprite = p_Scene->Selected().Has<SpriteComponent>() == 1;
+					bool hasCamera = p_Scene->Selected().Has<CameraComponent>() == 1;
 					bool hasAll = hasTransform && hasSprite && hasCamera;
 
 					float buttonWidth = 0.0f;
-					if (!hasAll) buttonWidth = ImGui::CalcTextSize("Add Component__").x;
-					{
-						auto cmp = s_Selection.Get<TagComponent>();
-						char buffer[TagComponent::limit];
-						memset(buffer, 0, TagComponent::limit);
-						strcpy_s(buffer, TagComponent::limit, cmp->Get());
-						ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
-						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
-						if (ImGui::InputText("##Tag", buffer, TagComponent::limit, flags))
-							cmp->Set(buffer);
-					}
+					if (!hasAll)buttonWidth = ImGui::CalcTextSize("Add Component__").x;
+
+					auto cmp = p_Scene->Selected().Get<TagComponent>();
+					char buffer[TagComponent::limit];
+					memset(buffer, 0, TagComponent::limit);
+					strcpy_s(buffer, TagComponent::limit, cmp->Get());
+					ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue;
+					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth);
+					if (ImGui::InputText("##Tag", buffer, TagComponent::limit, flags))
+						cmp->Set(buffer);
 
 
 					if (!hasAll) {
@@ -258,44 +258,57 @@ namespace Kross {
 						if (ImGui::Button("Add Component"))
 							ImGui::OpenPopup("Add_Component_Popup");
 						if (ImGui::BeginPopup("Add_Component_Popup")) {
-							if (!hasTransform && ImGui::MenuItem("Transform")) { s_Selection.Add<TransformComponent>(); ImGui::CloseCurrentPopup(); }
-							if (!hasSprite && ImGui::MenuItem("Sprite")) { s_Selection.Add<SpriteComponent>(); ImGui::CloseCurrentPopup(); }
-							if (!hasCamera && ImGui::MenuItem("Camera")) { s_Selection.Add<CameraComponent>(); ImGui::CloseCurrentPopup(); }
+							if (!hasTransform && ImGui::MenuItem("Transform")) { p_Scene->Selected().Add<TransformComponent>(); ImGui::CloseCurrentPopup(); }
+							if (!hasSprite && ImGui::MenuItem("Sprite")) { p_Scene->Selected().Add<SpriteComponent>(); ImGui::CloseCurrentPopup(); }
+							if (!hasCamera && ImGui::MenuItem("Camera")) { p_Scene->Selected().Add<CameraComponent>(); ImGui::CloseCurrentPopup(); }
 							ImGui::EndPopup();
 						}
 					}
 				}
-				DrawEntity(s_Selection);
+				DrawEntity(p_Scene->Selected());
 			}
 		}
 		ImGui::End();
 	}
 	void EntityProperties::DrawEntity(Entity &entity)
 	{
+		bool used = false;
 		if (entity && entity.GetScene()) {
-			bool used = false;
-			used |= DrawComponent<TransformComponent>("Transform", entity, true, [](Scene *scene, const std::string &id, TransformComponent *cmp) {
+			used |= DrawComponent<TransformComponent>("Transform", entity, true, [this](TransformComponent *cmp) {
 				bool active = false;
 				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();
 				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.01f); ImGui::TableNextColumn();
 				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.01f, 1.0f);
 				return active;
 				});
-			used |= DrawComponent<SpriteComponent>("Sprite", entity, true, [](Scene *scene, const std::string &id, SpriteComponent *cmp) {
-				ImGui::Text("Tint"); ImGui::TableNextColumn(); return DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint));
+			used |= DrawComponent<SpriteComponent>("Sprite", entity, true, [this](SpriteComponent *cmp) {
+				ImGui::Text("Tint"); ImGui::TableNextColumn(); bool active = DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint)); //ImGui::TableNextColumn();
+				//ImGui::Text("Texture"); ImGui::TableNextColumn();
+				//if (ImGui::Button(cmp->texture ? cmp->texture->GetName() : "New Texture")) {
+				//	File file = FileDialog::OpenFile("PNG Files (*.png)\0*.png\0");
+				//	if (file) cmp->texture = Stack<Texture::T2D>::Get(file.name, file.path);
+				//}
+				//if (cmp->texture) {
+				//	ImGui::SameLine();
+				//	if (ImGui::Button("Reset")) {
+				//		Stack<Texture::T2D>::Del(cmp->texture->GetName());
+				//		cmp->texture = nullptr;
+				//	}
+				//}
+				return active;
 				});
-			used |= DrawComponent<CameraComponent>("Camera", entity, true, [](Scene *scene, const std::string &id, CameraComponent *cmp) {
+			used |= DrawComponent<CameraComponent>("Camera", entity, true, [this](CameraComponent *cmp) {
 				bool used = false;
 				SceneCamera &camera = cmp->camera;
-				Entity activeCamera = scene->GetCurrentCamera();
+				Entity activeCamera = p_Scene->GetCurrentCamera();
 				{
 					ImGui::Text("Active Camera: "); ImGui::TableNextColumn();
 
-					if (s_Selection) {
-						bool disable = s_Selection.Has<TagComponent, TransformComponent>() != 1;
+					if (p_Scene->Selected()) {
+						bool disable = p_Scene->Selected().Has<TagComponent, TransformComponent>() != 1;
 						ImGui::BeginDisabled(disable);
 						if (ImGui::Button("SET##Activate Camera"))
-							scene->SetPrimaryCamera(s_Selection);
+							p_Scene->SetPrimaryCamera(p_Scene->Selected());
 						ImGui::EndDisabled();
 						if (disable) {
 							ImGui::SameLine();
@@ -338,14 +351,11 @@ namespace Kross {
 								float fNear = camera.GetNearClip();
 								float fFar = camera.GetFarClip();
 								ImGui::Text("OrthoSize: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##OrthographicOrthoSize: ", &fSize, 0.1f)) camera.SetOrthoSize(fSize); ImGui::TableNextColumn();
-								used |= ImGui::IsItemFocused();
+								if (used |= ImGui::DragFloat("##OrthographicOrthoSize: ", &fSize, 0.1f)) camera.SetOrthoSize(fSize); ImGui::TableNextColumn();
 								ImGui::Text("NearClip: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##OrthographicNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear); ImGui::TableNextColumn();
-								//used |= ImGui::IsItemFocused();
+								if (used |= ImGui::DragFloat("##OrthographicNearClip: ", &fNear, 0.1f)) camera.SetNearClip(fNear); ImGui::TableNextColumn();
 								ImGui::Text("FarClip: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##OrthographicFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar); ImGui::TableNextColumn();
-								used |= ImGui::IsItemFocused();
+								if (used |= ImGui::DragFloat("##OrthographicFarClip: ", &fFar, 0.1f)) camera.SetFarClip(fFar); ImGui::TableNextColumn();
 								break;
 							}
 						case SceneCamera::ProjectionType::Perspective:
@@ -354,14 +364,11 @@ namespace Kross {
 								float fNear = camera.GetNearClip();
 								float fFar = camera.GetFarClip();
 								ImGui::Text("FOV: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##PerspectiveFOV: ", &fFOV, 0.1f, 1.0f, 179.0f, "%.1f")) camera.SetPerspVerticalFOV(glm::radians(fFOV)); ImGui::TableNextColumn();
-								used |= ImGui::IsItemFocused();
+								if (used |= ImGui::DragFloat("##PerspectiveFOV: ", &fFOV, 0.1f, 1.0f, 179.0f, "%.1f")) camera.SetPerspVerticalFOV(glm::radians(fFOV)); ImGui::TableNextColumn();
 								ImGui::Text("NearClip: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##PerspectiveNearClip: ", &fNear, 0.1f, 0.1f, 10000.0f, GetFloatFormat(fNear).c_str())) camera.SetNearClip(fNear); ImGui::TableNextColumn();
-								used |= ImGui::IsItemFocused();
+								if (used |= ImGui::DragFloat("##PerspectiveNearClip: ", &fNear, 0.1f, 0.1f, 10000.0f, GetFloatFormat(fNear).c_str())) camera.SetNearClip(fNear); ImGui::TableNextColumn();
 								ImGui::Text("FarClip: "); ImGui::TableNextColumn();
-								if (ImGui::DragFloat("##PerspectiveFarClip: ", &fFar, 0.1f, 0.1f, 10000.0f, "%.1f")) camera.SetFarClip(fFar); ImGui::TableNextColumn();
-								used |= ImGui::IsItemFocused();
+								if (used |= ImGui::DragFloat("##PerspectiveFarClip: ", &fFar, 0.1f, 0.1f, 10000.0f, "%.1f")) camera.SetFarClip(fFar); ImGui::TableNextColumn();
 								break;
 							}
 					}
@@ -372,13 +379,16 @@ namespace Kross {
 				}
 				return used;
 				});
-			if (Input::IsMouseButtonHeld(MouseButton::Left)) {
-				setFlag(ImGuiConfigFlags_NoMouse, used);
-				Application::Get().GetWindow().CursorEnabled(!used);
-			} else {
-				setFlag(ImGuiConfigFlags_NoMouse, false);
-				Application::Get().GetWindow().CursorEnabled(true);
-			}
+		}
+		static bool disable = true;
+		if (Input::IsMouseButtonHeld(MouseButton::Left)) {
+			if (used) disable = true;
+			Panel::setFlag(ImGuiConfigFlags_NoMouse, disable);
+			Application::Get().GetWindow().CursorEnabled(!disable);
+		} else {
+			if (!used) disable = false;
+			Panel::setFlag(ImGuiConfigFlags_NoMouse, disable);
+			Application::Get().GetWindow().CursorEnabled(!disable);
 		}
 	}
 }

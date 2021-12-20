@@ -94,7 +94,7 @@ namespace Kross {
 			if(!m_bMinimized) {
 				KROSS_PROFILE_SCOPE("LayerStack ImGuiRender");
 				for (auto &layer : m_pLayerStack) {
-					layer->OnImGuiRender(ts);
+					layer->OnGuiRender(ts);
 				}
 			}
 			m_ImGuiLayer->End();

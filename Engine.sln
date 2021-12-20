@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31919.166
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio Version 16
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B47FB121-20EC-6C1C-E9DF-047A550B8F84}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -18,9 +16,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glad", "Kross\vendor\Glad\G
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "Kross\vendor\imgui\ImGui.vcxproj", "{C0FF640D-2C14-8DBE-F595-301E616989EF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yaml-cpp", "Kross\vendor\serializer\yaml\yaml-cpp.vcxproj", "{88F1A057-74BE-FB62-9DD7-E90A890331F1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kross", "Kross\Kross.vcxproj", "{97988C0D-03AD-B4BE-CC2E-581E3802B1EF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yaml-cpp", "Kross\vendor\serializer\yaml\yaml-cpp.vcxproj", "{88F1A057-74BE-FB62-9DD7-E90A890331F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,18 +51,18 @@ Global
 		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Dist|x64.Build.0 = Dist|x64
 		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Release|x64.ActiveCfg = Release|x64
 		{C0FF640D-2C14-8DBE-F595-301E616989EF}.Release|x64.Build.0 = Release|x64
-		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Debug|x64.ActiveCfg = Debug|x64
-		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Debug|x64.Build.0 = Debug|x64
-		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Dist|x64.ActiveCfg = Dist|x64
-		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Dist|x64.Build.0 = Dist|x64
-		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Release|x64.ActiveCfg = Release|x64
-		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Release|x64.Build.0 = Release|x64
 		{97988C0D-03AD-B4BE-CC2E-581E3802B1EF}.Debug|x64.ActiveCfg = Debug|x64
 		{97988C0D-03AD-B4BE-CC2E-581E3802B1EF}.Debug|x64.Build.0 = Debug|x64
 		{97988C0D-03AD-B4BE-CC2E-581E3802B1EF}.Dist|x64.ActiveCfg = Dist|x64
 		{97988C0D-03AD-B4BE-CC2E-581E3802B1EF}.Dist|x64.Build.0 = Dist|x64
 		{97988C0D-03AD-B4BE-CC2E-581E3802B1EF}.Release|x64.ActiveCfg = Release|x64
 		{97988C0D-03AD-B4BE-CC2E-581E3802B1EF}.Release|x64.Build.0 = Release|x64
+		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Debug|x64.ActiveCfg = Debug|x64
+		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Debug|x64.Build.0 = Debug|x64
+		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Dist|x64.ActiveCfg = Dist|x64
+		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Dist|x64.Build.0 = Dist|x64
+		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Release|x64.ActiveCfg = Release|x64
+		{88F1A057-74BE-FB62-9DD7-E90A890331F1}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,10 +71,7 @@ Global
 		{154B857C-0182-860D-AA6E-6C109684020F} = {53E47842-3FC8-3998-A828-34EB942B241A}
 		{BDD6857C-A90D-870D-52FA-6C103E10030F} = {53E47842-3FC8-3998-A828-34EB942B241A}
 		{C0FF640D-2C14-8DBE-F595-301E616989EF} = {53E47842-3FC8-3998-A828-34EB942B241A}
-		{88F1A057-74BE-FB62-9DD7-E90A890331F1} = {53E47842-3FC8-3998-A828-34EB942B241A}
 		{97988C0D-03AD-B4BE-CC2E-581E3802B1EF} = {53E47842-3FC8-3998-A828-34EB942B241A}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F7F73ED6-314F-4EB5-81A6-9F6EB007FF83}
+		{88F1A057-74BE-FB62-9DD7-E90A890331F1} = {53E47842-3FC8-3998-A828-34EB942B241A}
 	EndGlobalSection
 EndGlobal

@@ -97,50 +97,66 @@ namespace Kross::OpenGL {
 
 	void VertexArray::AddVertex(const Ref<Kross::Buffer::Vertex>& vertex)
 	{
+		KROSS_ASSERT(vertex->GetLayout().GetElements().size(), "Vertex Buffer has no layout");
 		KROSS_PROFILE_FUNC();
-		this->Bind();
+		
+		Bind();
 		vertex->Bind();
-
-		if (vertex->GetLayout().GetElements().size() == 0)
-			KROSS_WARN("Vertex Buffer has no layout");
-
-		uint32_t index = 0;
-		Buffer::Layout layout = vertex->GetLayout();
-		if ((layout.begin()->Type == Buffer::ShaderDataType::Int) ||
-			(layout.begin()->Type == Buffer::ShaderDataType::Int2) ||
-			(layout.begin()->Type == Buffer::ShaderDataType::Int3) ||
-			(layout.begin()->Type == Buffer::ShaderDataType::uInt) ||
-			(layout.begin()->Type == Buffer::ShaderDataType::uInt2) ||
-			(layout.begin()->Type == Buffer::ShaderDataType::uInt3))
-		{
-			for (const Buffer::Element& element : layout)
-			{
-				glCall(glEnableVertexAttribArray(index));
-				glCall(glVertexAttribIPointer(
-					index,
-					element.GetComponentCount(),
-					convertion_to_GLTYPE(element.Type),
-					layout.GetStride(),
-					(const void*)element.OffSet
-				));
-				index++;
+		const auto &layout = vertex->GetLayout();
+		for(auto &element : layout) switch (element.Type) {
+				case Buffer::ShaderDataType::Float:
+				case Buffer::ShaderDataType::Float2:
+				case Buffer::ShaderDataType::Float3:
+				case Buffer::ShaderDataType::Float4:
+					{
+						glEnableVertexAttribArray(m_VertexBufferIndex);
+						glVertexAttribPointer(
+							m_VertexBufferIndex,
+							element.GetComponentCount(),
+							convertion_to_GLTYPE(element.Type),
+							element.Normalized ? GL_TRUE : GL_FALSE,
+							layout.GetStride(),
+							(const void *)element.OffSet
+						);
+						m_VertexBufferIndex++;
+						break;
+					}
+				case Buffer::ShaderDataType::Int:
+				case Buffer::ShaderDataType::Int2:
+				case Buffer::ShaderDataType::Int3:
+				case Buffer::ShaderDataType::Int4:
+				case Buffer::ShaderDataType::Bool:
+					{
+						glEnableVertexAttribArray(m_VertexBufferIndex);
+						glVertexAttribIPointer(m_VertexBufferIndex,
+							element.GetComponentCount(),
+							convertion_to_GLTYPE(element.Type),
+							layout.GetStride(),
+							(const void *)element.OffSet);
+						m_VertexBufferIndex++;
+						break;
+					}
+				case Buffer::ShaderDataType::Mat3:
+				case Buffer::ShaderDataType::Mat4:
+					{
+						uint8_t count = element.GetComponentCount();
+						for (uint8_t i = 0; i < count; i++)
+						{
+							glEnableVertexAttribArray(m_VertexBufferIndex);
+							glVertexAttribPointer(m_VertexBufferIndex,
+								count,
+								convertion_to_GLTYPE(element.Type),
+								element.Normalized ? GL_TRUE : GL_FALSE,
+								layout.GetStride(),
+								(const void *)(element.OffSet + sizeof(float) * count * i));
+							glVertexAttribDivisor(m_VertexBufferIndex, 1);
+							m_VertexBufferIndex++;
+						}
+						break;
+					}
+				default:
+					KROSS_ASSERT(false, "Unknown ShaderDataType!");
 			}
-		} else {
-			for (const Buffer::Element& element : layout)
-			{
-				glCall(glEnableVertexAttribArray(index));
-				glCall(glVertexAttribPointer(
-					index,
-					element.GetComponentCount(),
-					convertion_to_GLTYPE(element.Type),
-					element.Normalized,
-					layout.GetStride(),
-					(const void*)element.OffSet
-				));
-				index++;
-			}
-		}
-
 		m_vecVertex.push_back(vertex);
 		KROSS_TRACE("Vertex Buffer Added");
 	}
@@ -153,6 +169,4 @@ namespace Kross::OpenGL {
 		m_Index = index;
 		KROSS_TRACE("Index Buffer Setted");
 	}
-
-
 }

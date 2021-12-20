@@ -118,7 +118,8 @@ namespace Kross::Buffer {
 		virtual void Bind() const = 0;
 		virtual void unBind() const = 0;
 
-		virtual void upload(const void* data, size_t size) const = 0;
+		virtual void Upload(const void* data, size_t size) const = 0;
+		virtual void Clear() const = 0;
 
 		virtual void SetLayout(const Layout& layout) = 0;
 		virtual const Layout& GetLayout() const = 0;

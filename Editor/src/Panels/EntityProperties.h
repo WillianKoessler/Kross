@@ -1,15 +1,18 @@
 #pragma once
 
-#include "Panel.h"
+#include "Kross/Core/Resource.h"
 
 namespace Kross {
-	class EntityProperties : public Panel
+	class EntityProperties : public Resource
 	{
 	public:
-		EntityProperties(const Ref<Scene>& scene);
-		virtual void Show(double ts) override;
+		EntityProperties(Scene &scene);
+		void Show();
+		void SetContext(Scene &scene) { p_Scene = &scene; };
+	private:
 		void DrawEntity(Entity &entity);
 	private:
-		Ref<Scene> p_Scene;
+		Scene *p_Scene;
+		uint32_t m_Flags;
 	};
 }

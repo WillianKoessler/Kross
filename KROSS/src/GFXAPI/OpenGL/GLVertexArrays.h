@@ -21,6 +21,7 @@ namespace Kross::OpenGL {
 		virtual const std::vector<Ref<Buffer::Vertex>>& GetVertex() { return m_vecVertex; }
 		virtual const Ref<Buffer::Index>& GetIndex() { return m_Index; }
 	private:
+		uint32_t m_VertexBufferIndex = 0;
 		std::vector<Ref<Buffer::Vertex>> m_vecVertex;
 		Ref<Buffer::Index> m_Index;
 		uint32_t m_RendererID;

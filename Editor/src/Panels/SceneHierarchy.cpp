@@ -1,33 +1,26 @@
 #include "Editor_pch.h"
 #include "SceneHierarchy.h"
+#include "Panel.h"
 
 namespace Kross {
-	SceneHierarchy::SceneHierarchy(const Ref<Scene> &scene)
-		: p_Scene(scene)
+	SceneHierarchy::SceneHierarchy(Scene &scene)
+		: p_Scene(&scene)
 	{
 		m_strName = "Scene Inspector";
-		m_Flags |= ImGuiWindowFlags_AlwaysAutoResize;
-		if (!scene) KROSS_WARN("Scene supplied is nullptr");
+		m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_Popup;
+		if (!p_Scene) KROSS_WARN("Scene supplied is nullptr");
 		KROSS_INFO("Panel '{0}' Constructed", m_strName);
 	}
-	SceneHierarchy::~SceneHierarchy()
+	void SceneHierarchy::Show()
 	{
-		p_Scene.reset();
-	}
-	void SceneHierarchy::SetContext(const Ref<Scene> &scene)
-	{
-		p_Scene = scene;
-	}
-	void SceneHierarchy::Show(double ts)
-	{
-		if (!Manager().s_bSceneHierarchy) return;
-		if (ImGui::Begin(m_strName, &Manager().s_bSceneHierarchy) && p_Scene)
+		if (!Panel::Manager().s_bSceneHierarchy) return;
+		if (ImGui::Begin(m_strName, &Panel::Manager().s_bSceneHierarchy) && p_Scene)
 		{
 			auto all = p_Scene->GetAllEntities();
 			for (Entity &entity : all) DrawEntityNode(entity);
 
 			if (Input::IsMouseButtonPressed(MouseButton::Left) && ImGui::IsWindowHovered())
-				s_Selection = {};
+				p_Scene->ClearSelection();
 
 			if (ImGui::BeginPopupContextWindow("SceneHierarchy_Popup", 1, false))
 			{
@@ -36,9 +29,9 @@ namespace Kross {
 			}
 
 			if (Input::IsKeyHeld(Key::LeftControl)) {
-				if (s_Selection)
+				if (p_Scene->Selected())
 					if (Input::IsKeyPressed(Key::C))
-						m_Clipboard = s_Selection;
+						m_Clipboard = p_Scene->Selected();
 				if (Input::IsKeyPressed(Key::V)) {
 					if (m_Clipboard)
 						p_Scene->CreateEntity(m_Clipboard);
@@ -51,21 +44,25 @@ namespace Kross {
 	{
 		if (entity.Has<TagComponent>() == 1) {
 			auto tc = entity.Get<TagComponent>();
-			ImGuiTreeNodeFlags flags = (s_Selection == entity) ? ImGuiTreeNodeFlags_Selected : 0;
+			ImGuiTreeNodeFlags flags = (p_Scene->Selected() == entity) ? ImGuiTreeNodeFlags_Selected : 0;
 			flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc->Get()), flags, tc->Get());
-			if (ImGui::IsItemClicked()) s_Selection = entity;
+			bool opened = ImGui::TreeNodeEx((const void *)(uint64_t)ImGui::GetID(tc->Get()), flags, "%s (id: %lu)", tc->Get(), (uint32_t)entity);
+			if (ImGui::IsItemClicked()) p_Scene->Select(entity);
 			bool markForDelete = false;
+
+			if (entity == p_Scene->Selected() && Input::IsKeyPressed(Key::Delete))
+				markForDelete = true;
+
 			if (ImGui::BeginPopupContextItem()) {
 				if (ImGui::MenuItem("Delete Entity"))
 					markForDelete = true;
 				ImGui::EndPopup();
 			}
+
 			if (opened)
 				ImGui::TreePop();
 
 			if (markForDelete) {
-				if (s_Selection == entity) s_Selection = {};
 				if (m_Clipboard == entity) m_Clipboard = {};
 				p_Scene->DestroyEntity(entity);
 			}

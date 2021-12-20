@@ -15,7 +15,7 @@ namespace Kross {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(double fElapsedTime) {}
-		virtual void OnImGuiRender(double fElapsedTime) {}
+		virtual void OnGuiRender(double fElapsedTime) {}
 		virtual void OnEvent(class Event& event) {}
 	};
 }

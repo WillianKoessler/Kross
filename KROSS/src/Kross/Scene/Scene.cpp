@@ -2,31 +2,103 @@
 #include "Scene.h"
 #include "Components.h"
 #include "Entity.h"
+#include "SceneSerializer.h"
 #include "Kross/Renderer/Renderer2D.h"
 #include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
 #include "Kross/Renderer/Cameras/Cameras/Perspective.h"
+#include "Kross/Core/Input.h"
 
 namespace Kross {
+	Scene::Scene()
+	{
+		SetName("Unnamed");
+		KROSS_INFO("Scene Constructed");
+	}
 	Scene::Scene(const char *name)
 	{
+		SetName(name);
+		KROSS_INFO("Scene '{0}' Constructed", m_strName);
+	}
+	Scene &Scene::operator=(const Scene &other)
+	{
+		SetName(other.m_strName);
+		m_namePool = other.m_namePool;
 		m_Registry = entt::registry();
-		KROSS_INFO("Scene Constructed");
+		m_PrimaryCameraID = entt::null;
+		m_Selection = entt::null;
+		m_ViewportSize = other.m_ViewportSize;
+		file = other.file;
+
+		KROSS_INFO("Scene '{0}' Assigned", m_strName);
+		return *this;
 	}
 	Scene::~Scene()
 	{
-		m_Registry.view<NativeScriptComponent>().each(
-			[](auto entity, auto &cmp) { if (cmp.m_Instance) { cmp.m_Instance->OnDestroy(); cmp.Destroy(&cmp); }}
-		);
-		m_Registry.view<TagComponent>().each(
-			[](auto entity, auto &cmp) { cmp.Set(nullptr); }
-		);
-		KROSS_INFO("Scene Destructed");
+		Clear();
+		if (m_strName) {
+			KROSS_INFO("Scene '{0}' Destructed", m_strName);
+			delete m_strName;
+		} else {
+			KROSS_INFO("Unnamed Scene Destructed");
+		}
+	}
+	
+	void Scene::SetName(const char *name)
+	{
+		if (name != nullptr) {
+			if (m_strName != nullptr) {
+				if (strcmp(name, m_strName) == 0) return;
+				delete m_strName;
+			}
+			size_t size = strlen(name) + 1;
+			m_strName = new char[size];
+			memset(m_strName, 0, size);
+			strcpy_s(m_strName, size, name);
+		} else {
+			if (m_strName) delete m_strName;
+		}
 	}
 
+	void Scene::SaveScene()
+	{
+		SceneSerializer ss(this);
+		if (file) ss.Serialize(file);
+		else {
+			file = FileDialog::SaveFile("Kross Scene (.kross)\0*.kross\0\0");
+			if (file) ss.Serialize(file);
+			else KROSS_WARN("Scene was not saved");
+		}
+	}
+	void Scene::SaveScene(const File &to_file)
+	{
+		SceneSerializer ss(this);
+		if (!to_file) return;
+		file = to_file;
+		SaveScene();
+	}
+	void Scene::LoadScene()
+	{
+		SceneSerializer ss(this);
+		file = FileDialog::OpenFile("Kross Scene (.kross)\0*.kross\0\0");
+		if (file) ss.Deserialize(file);
+		else KROSS_WARN("Scene was not loaded");
+	}
+	void Scene::Select(Entity &e)
+	{
+		if (e) m_Selection = e;
+	}
+	Entity Scene::Selected() const
+	{
+		return Entity{ m_Selection, this };
+	}
+	void Scene::ClearSelection()
+	{
+		m_Selection = entt::null;
+	}
 	Entity Scene::CreateEntity(const char *name)
 	{
-		Entity entity{ (uint32_t)m_Registry.create(), this };
-		const char *tag = entity.Add<TagComponent>(name)->Get();
+		Entity entity{ m_Registry.create(), this };
+		const char *tag = entity.Add<TagComponent>(name, &m_namePool)->Get();
 		return entity;
 	}
 
@@ -41,7 +113,7 @@ namespace Kross {
 	}
 	Entity Scene::CreateEntity(Entity e)
 	{
-		Entity entity{ (uint32_t)m_Registry.create(), this };
+		Entity entity{ m_Registry.create(), this };
 		copyTo<TagComponent>(entity, e);
 		copyTo<TransformComponent>(entity, e);
 		copyTo<SpriteComponent>(entity, e);
@@ -58,11 +130,12 @@ namespace Kross {
 			if (!strcmp(view.get(e)._Myfirst._Val, name)) pool.push_back(e);
 		if (pool.size() > 1) KROSS_ERROR("More than one entity shares the same Tagname");
 		if (pool.empty()) { KROSS_ERROR("There is no entity with that Tagname"); return Entity(); }
-		return Entity((uint32_t)pool.front(), this);
+		return Entity{ pool.front(), this };
 	}
 	void Scene::DestroyEntity(Entity e)
 	{
 		if (e) {
+			ClearSelection();
 			if (e.Has<TagComponent>())
 				e.Get<TagComponent>()->Set(nullptr);
 			m_Registry.destroy(e);
@@ -70,33 +143,18 @@ namespace Kross {
 	}
 	void Scene::Clear()
 	{
-		m_Registry.each([&](auto &id) {
-			if (m_Registry.any_of<TagComponent>(id))
-				m_Registry.get<TagComponent>(id).Set(nullptr);
-			m_Registry.destroy(id);
-			});
+		ClearSelection();
+		m_Registry.view<NativeScriptComponent>().each(
+			[](auto entity, auto &cmp) { if (cmp.m_Instance) { cmp.m_Instance->OnDestroy(); cmp.Destroy(&cmp); }}
+		);
+		m_Registry.view<TagComponent>().each(
+			[this](auto entity, auto &cmp) { cmp.Set(nullptr); m_Registry.destroy(entity);}
+		);
+
+		m_Registry.clear();
+		//m_Registry = entt::registry();
 	}
 
-	/*
-	*	TODO: put it in Header file so it separates Kross's heap from Client's heap,
-	*	and uses the corresponding heap to create and return an array with all entities
-	*/
-#ifdef KROSS_DLL 
-	Scene::Entities Scene::GetAllEntities()
-	{
-		static std::vector<Entity> pool;
-		pool = std::vector<Entity>();
-		m_Registry.each([&](auto &id) { pool.emplace_back((uint32_t)id, this); });
-		return Entities{ (uintptr_t)pool.data(), pool.size(), sizeof(Entity) };
-	}
-#else
-	std::vector<Entity> Scene::GetAllEntities()
-	{
-		std::vector<Entity> pool;
-		m_Registry.each([&pool, this](auto &id) {pool.emplace_back((uint32_t)id, this); });
-		return pool;
-	}
-#endif
 	void Scene::SetPrimaryCamera(const Entity &entity)
 	{
 		if (entity.p_Scene != this) { KROSS_WARN("Trying to set a Primary Camera with entity from another Scene."); return; }
@@ -108,26 +166,20 @@ namespace Kross {
 	}
 	Entity Scene::GetCurrentCamera() const
 	{
-		return Entity{ (uint32_t)m_PrimaryCameraID, this };
+		return Entity{ m_PrimaryCameraID, this };
 	}
 	void Scene::OnUpdateEditor(double ts, const Camera::Editor &camera)
 	{
-		Renderer2D::ResetStats();
+		//Renderer2D::ResetStats();
 		Renderer2D::Begin(camera);
-		{
-			// Render Sprites
-			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
-			for (auto entity : group)
-			{
-				auto [tranform, sprite] = group.get(entity);
-				Renderer2D::BatchQuad(tranform, sprite.tint, sprite.texture);
-			}
-		}
+		auto view = m_Registry.view<TransformComponent, SpriteComponent>();
+		for (auto [entity, transform, sprite] : view.each())
+			Renderer2D::BatchQuad(transform, sprite.tint);
 		Renderer2D::End();
 	}
 	void Scene::OnUpdateRuntime(double ts)
 	{
-		Entity primaryCamera((uint32_t)m_PrimaryCameraID, this);
+		Entity primaryCamera{ m_PrimaryCameraID, this };
 		int valid = primaryCamera.Has<TransformComponent, CameraComponent>();
 
 		static bool validated = false;
@@ -137,28 +189,23 @@ namespace Kross {
 		m_Registry.view<NativeScriptComponent>().each([=](auto entity, auto &cmp) {
 			if (!cmp.m_Instance) {
 				cmp.m_Instance = cmp.Instantiate();
-				cmp.m_Instance->m_Entity = Entity((uint32_t)entity, this);
+				cmp.m_Instance->m_Entity = Entity{ entity, this };
 				cmp.m_Instance->OnCreate();
 			}
 			cmp.m_Instance->OnUpdate(ts);
 			});
 
-		//m_Registry.get<CameraComponent, TransformComponent>(m_PrimaryCameraID);
 		auto camera = primaryCamera.Get<CameraComponent>();
 		auto transform = primaryCamera.Get<TransformComponent>();
-		Renderer2D::ResetStats();
-		Renderer2D::Begin(*camera, *transform);
-		{
-			// Render Sprites
-			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteComponent>);
+		//Renderer2D::ResetStats();
+		// Render Sprites
+		//Renderer2D::Begin(*camera, *transform);
+		//auto group = m_Registry.group<TransformComponent, SpriteComponent>();
 
-			for (auto entity : group)
-			{
-				auto [tranform, sprite] = group.get(entity);
-				Renderer2D::BatchQuad(tranform, sprite.tint, sprite.texture);
-			}
-		}
-		Renderer2D::End();
+		//for (auto [entity, transform, sprite] : group.each()) {
+		//	Renderer2D::BatchQuad(transform, sprite.tint);
+		//}
+		//Renderer2D::End();
 
 	}
 
@@ -178,4 +225,4 @@ namespace Kross {
 		} else if (componentID == typeid(NativeScriptComponent).hash_code()) {
 		}
 	}
-	}
+}

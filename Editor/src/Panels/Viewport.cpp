@@ -18,7 +18,8 @@ namespace Kross {
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 			ImGui::Begin("Viewport", &Panel::Manager().s_bViewport, m_Flags);
 
-			PassEvents(ImGui::IsWindowFocused() && ImGui::IsWindowHovered());
+			//PassEvents(ImGui::IsWindowFocused() && ImGui::IsWindowHovered());
+			Application::Get().GetGUILayer()->BlockEvents(!(ImGui::IsWindowFocused() && ImGui::IsWindowHovered()));
 
 			if (ImGui::BeginMenuBar())
 			{
@@ -35,15 +36,16 @@ namespace Kross {
 
 			if (m_ViewportSize != glmViewportSize && ImGuiViewportPanelSize.x > 0.0f && ImGuiViewportPanelSize.y > 0.0f) {
 				m_ViewportSize = glmViewportSize;
-				m_Scene->OnViewportResize(m_ViewportSize);
+				m_Scene.OnViewportResize(m_ViewportSize);
 			}
 
 			ImGui::Image(
-				(void *)(uintptr_t)m_Frame->GetColorAttachmentID(),
+				reinterpret_cast<void*>((uintptr_t)m_Frame->GetColorAttachmentID()),
 				ImGuiViewportPanelSize,
 				ImVec2(0.0f, 1.0f),
 				ImVec2(1.0f, 0.0f)
 			);
+
 			ImGui::PopStyleVar(3);
 			ImGui::End();
 		}

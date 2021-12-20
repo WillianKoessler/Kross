@@ -17,12 +17,9 @@ namespace Kross {
 
 	void LayerStack::PropagateEvent(Event &e)
 	{
-		for (auto layer = rbegin(); layer != rend(); ++layer)
-		{
-			if (e.handled) break;
+		for (auto layer = rbegin(); !((layer == rend()) || (e.handled)); ++layer)
 			if ((*layer)->IsPassingEvents())
 				(*layer)->OnEvent(e);
-		}
 	}
 
 	void LayerStack::PushLayer(const Ref<Layer> &layer)
