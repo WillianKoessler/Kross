@@ -1,4 +1,5 @@
 #include <Kross_pch.h>
+#include "Kross/Core/Stack.h"
 #include "SceneSerializer.h"
 #include "Entity.h"
 #include "Components.h"
@@ -100,6 +101,14 @@ namespace Kross {
 			out << BeginMap;
 
 			out << YAML::Key << "Tint" << Value << e.Get<SpriteComponent>()->tint;
+			const char *name = e.Get<SpriteComponent>()->texture->GetName();
+			const char *path = e.Get<SpriteComponent>()->texture->GetPath();
+			if (path != nullptr && name != nullptr) {
+				out << YAML::Key << "Texture" << BeginMap;
+				if(name != nullptr) out << YAML::Key << "Name" << Value << std::string(name);
+				if(path != nullptr) out << YAML::Key << "Path" << Value << std::string(path);
+				out << EndMap;
+			}
 
 			out << EndMap;
 		}
@@ -207,6 +216,16 @@ namespace Kross {
 				if (sprite) {
 					auto cmp = newEntity.Add<SpriteComponent>();
 					cmp->tint = sprite["Tint"].as<glm::vec4>();
+					auto hasTexture = sprite["Texture"];
+					if (hasTexture) {
+						std::string name, path;
+						auto hasName = sprite["Name"];
+						if (hasName) name = hasName.as<std::string>();
+						auto hasPath = sprite["Path"];
+						if (hasPath) path = hasPath.as<std::string>();
+						//TODO: Use Stack to manage textures
+						
+					}
 				}
 
 				auto cameraNode = entity["CameraComponent"];

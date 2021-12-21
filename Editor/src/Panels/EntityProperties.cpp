@@ -289,7 +289,7 @@ namespace Kross {
 				if (cmp->texture) {
 					ImGui::SameLine();
 					if (ImGui::Button("Reset")) {
-						Stack<Texture::T2D>::Del(cmp->texture->GetName());
+						//or cmp->texture.~shared_ptr(); ?
 						cmp->texture = nullptr;
 					}
 				}
