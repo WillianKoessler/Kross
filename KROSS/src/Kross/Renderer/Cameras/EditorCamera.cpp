@@ -25,8 +25,7 @@ namespace Kross::Camera {
 		// m_Yaw = m_Pitch = 0.0f; // Lock the camera's rotation
 		m_Position = CalculatePosition();
 		static constexpr glm::mat4 mat4(1.0f);
-		glm::quat orientation = GetOrientation();
-		m_ViewMat = glm::inverse(glm::translate(mat4, m_Position) * glm::toMat4(orientation));
+		m_ViewMat = glm::inverse(glm::translate(mat4, m_Position) * glm::toMat4(GetOrientation()));
 	}
 	std::pair<float, float> Editor::PanSpeed() const
 	{
@@ -60,8 +59,6 @@ namespace Kross::Camera {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<MouseScrolledEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseScroll));
 		dispatcher.Dispatch<MouseMovedEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseMoved));
-		dispatcher.Dispatch<MouseButtonHeldEvent>(KROSS_BIND_EVENT_FN(Editor::OnMouseClicked));
-		dispatcher.Dispatch<KeyHeldEvent>(KROSS_BIND_EVENT_FN(Editor::OnKeyHeld));
 	}
 	bool Editor::OnMouseMoved(MouseMovedEvent &e)
 	{
@@ -81,19 +78,6 @@ namespace Kross::Camera {
 		float delta = e.GetYOffSet() * 0.1f;
 		MouseZoom(delta);
 		UpdateView();
-		return false;
-	}
-	bool Editor::OnMouseClicked(MouseButtonHeldEvent &e)
-	{
-		KROSS_TRACE("held");
-		m_bMouseMiddle = e.GetMouseButton() == (int)MouseButton::Middle;
-		return false;
-	}
-	bool Editor::OnKeyHeld(KeyHeldEvent &e)
-	{
-		int code = e.GetKeyCode();
-		m_bLeftCtrl = code == (int)Key::LeftControl;
-		m_bLeftShift = code == (int)Key::LeftShift;
 		return false;
 	}
 	void Editor::MousePan(const glm::vec2 &delta)

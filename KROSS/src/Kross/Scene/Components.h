@@ -9,6 +9,8 @@
 #include "Kross/Renderer/Textures/Textures.h"
 #include "ScriptableEntity.h"
 
+#include <glm/glm/gtx/quaternion.hpp>
+
 
 namespace Kross {
 	struct TagComponent
@@ -45,9 +47,10 @@ namespace Kross {
 		{
 			return (
 				glm::translate(const_mat4, Position) *
-				(glm::rotate(const_mat4, glm::radians(Rotation.x), { 1.0f, 0.0f, 0.0f }) *
-				glm::rotate(const_mat4, glm::radians(Rotation.y), { 0.0f, 1.0f, 0.0f }) *
-				glm::rotate(const_mat4, glm::radians(Rotation.z), { 0.0f, 0.0f, 1.0f })) *
+				glm::toMat4(glm::quat(Rotation)) *
+				//(glm::rotate(const_mat4, glm::radians(Rotation.x), { 1.0f, 0.0f, 0.0f }) *
+				//glm::rotate(const_mat4, glm::radians(Rotation.y), { 0.0f, 1.0f, 0.0f }) *
+				//glm::rotate(const_mat4, glm::radians(Rotation.z), { 0.0f, 0.0f, 1.0f })) *
 				glm::scale(const_mat4, Scale)
 				);
 		}
@@ -56,14 +59,12 @@ namespace Kross {
 	struct SpriteComponent
 	{
 		glm::vec4 tint = glm::vec4(1.0f);
-		//Ref<Texture::T2D> texture = nullptr;
+		Ref<Texture::T2D> texture = nullptr;
 
 		SpriteComponent() = default;
 		SpriteComponent(const SpriteComponent &) = default;
-		SpriteComponent(const glm::vec4 &tintColor)
-			: tint(tintColor) {}
-		//SpriteComponent(const glm::vec4 &tintColor, const Ref<Texture::T2D>& spriteTexture = nullptr)
-		//	: tint(tintColor), texture(spriteTexture) {}
+		SpriteComponent(const glm::vec4 &tintColor, const Ref<Texture::T2D>& spriteTexture = nullptr)
+			: tint(tintColor), texture(spriteTexture) {}
 	};
 
 	struct CameraComponent

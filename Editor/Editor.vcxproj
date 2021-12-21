@@ -76,7 +76,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Editor_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;KROSS_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;assets\scripts\native;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;..\Kross\vendor\stb_image;..\Kross\vendor\imgui;..\Kross\vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -94,7 +95,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Editor_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;KROSS_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;assets\scripts\native;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;..\Kross\vendor\stb_image;..\Kross\vendor\imgui;..\Kross\vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -115,7 +117,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Editor_pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>KROSS_PLATFORM_WINDOWS;KROSS_FATAL_BREAK;KROSS_ENABLE_ASSERTS;KROSS_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;assets\scripts\native;..\Kross\src;..\Kross\vendor;..\Kross\vendor\spdlog\include;..\Kross\vendor\entt;..\Kross\vendor\glm;..\Kross\vendor\stb_image;..\Kross\vendor\imgui;..\Kross\vendor\ImGuizmo;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -145,13 +148,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
-    <ClCompile Include="src\Editor_pch.cpp" />
+    <ClCompile Include="src\Editor_pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Panels\Dockspace.cpp" />
     <ClCompile Include="src\Panels\EntityProperties.cpp" />
     <ClCompile Include="src\Panels\Panel.cpp" />
     <ClCompile Include="src\Panels\RendererStats.cpp" />
     <ClCompile Include="src\Panels\SceneHierarchy.cpp" />
-    <ClCompile Include="src\Panels\Viewport.cpp" />
+    <ClCompile Include="src\Panels\Viewport\Guizmo.cpp" />
+    <ClCompile Include="src\Panels\Viewport\Viewport.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

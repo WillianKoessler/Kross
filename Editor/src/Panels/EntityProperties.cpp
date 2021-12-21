@@ -2,7 +2,9 @@
 #include "EntityProperties.h"
 #include "Panel.h"
 #include "Kross/Util/Util.h"
+
 #include <glm/glm/gtc/type_ptr.hpp>
+
 static bool debug = false;
 static constexpr float x = 0.838096f, o = 0.161903f;
 static constexpr glm::vec4 colors[4] = {
@@ -26,7 +28,6 @@ namespace Kross {
 	{
 		ImGui::PopStyleColor(count);
 	}
-	// turns 1234.1234f into "%.4f"
 	static const std::string GetFloatFormat(float val1, float val2, uint8_t max = 6, uint8_t min = 1)
 	{
 		static std::string buffer;
@@ -85,7 +86,6 @@ namespace Kross {
 		}
 		return "%." + std::to_string(std::clamp<int>(size - discount, _min, _max)) + "f";
 	}
-	// turns 1234.1234f into 0.0001f
 	static float GetSpeed(float value, float limit = 0.00001f)
 	{
 		if (value == 0.0f) return 0.1f;
@@ -98,7 +98,6 @@ namespace Kross {
 		if (speed < limit) return limit;
 		else return speed;
 	}
-
 	static bool DrawScalarN(const char *id, float *vec, uint8_t n, float reset_value, float speed)
 	{
 		using namespace ImGui;
@@ -120,8 +119,8 @@ namespace Kross {
 			SameLine(0.0f, 0.0f);
 			PushItemWidth(dragWidth);
 			PushColor(colors[i] * o, ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
-			value_changed |= DragFloat("", &vec[i], speed, .0f, .0f, GetFloatFormat(speed).c_str());
-
+			DragFloat("", &vec[i], speed, .0f, .0f, GetFloatFormat(speed).c_str(), ImGuiSliderFlags_FixedMouse);
+			value_changed |= IsItemActive();
 			PopColor(3);
 			PopItemWidth();
 			PopID();
@@ -129,12 +128,10 @@ namespace Kross {
 		PopID();
 		return value_changed;
 	}
-
 	static bool DrawVec3(const char *id, glm::vec3 &vec, float speed = 0.1f, float reset_value = 0.0f)
 	{
 		return DrawScalarN(id, glm::value_ptr(vec), 3, reset_value, speed);
 	}
-
 	static bool DrawColorControl(const char *id, float *values)
 	{
 		using namespace ImGui;
@@ -149,7 +146,8 @@ namespace Kross {
 			PushItemWidth(dragWidth);
 			int val = (int)(values[i] * 255.f);
 			PushColor(colors[i] * values[i] * (i != 3 ? x : o), ImGuiCol_FrameBg, ImGuiCol_FrameBgHovered, ImGuiCol_FrameBgActive);
-			value_changed |= DragInt("", &val, 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp); SameLine(0.0f, 0.0f);
+			DragInt("", &val, 1, 0, 255, (channel[i] + ": %d").c_str(), ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_FixedMouse); SameLine(0.0f, 0.0f);
+			value_changed |= IsItemActive();
 			PopColor(3);
 			values[i] = val / 255.f;
 			PopID(); // pop 5 4 3 2
@@ -168,7 +166,6 @@ namespace Kross {
 		PopID(); // pop 1
 		return value_changed;
 	}
-
 	template<typename Component, typename Func>
 	static bool DrawComponent(const std::string &label, Entity entity, bool removable, Func show)
 	{
@@ -225,7 +222,6 @@ namespace Kross {
 		if (!p_Scene) KROSS_WARN("Scene provided is null");
 		KROSS_INFO("Panel '{0}' Constructed", m_strName);
 	}
-
 	void EntityProperties::Show()
 	{
 		if (!Panel::Manager().s_bPropertiesInspector) return;
@@ -272,32 +268,34 @@ namespace Kross {
 	}
 	void EntityProperties::DrawEntity(Entity &entity)
 	{
-		bool used = false;
+		bool active = false;
 		if (entity && entity.GetScene()) {
-			used |= DrawComponent<TransformComponent>("Transform", entity, true, [this](TransformComponent *cmp) {
+			active |= DrawComponent<TransformComponent>("Transform", entity, true, [this](TransformComponent *cmp) {
 				bool active = false;
+				glm::vec3 rotation = glm::degrees(cmp->Rotation);
 				ImGui::Text("Position:"); ImGui::TableNextColumn(); active |= DrawVec3("##Position", cmp->Position, 0.01f); ImGui::TableNextColumn();
-				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", cmp->Rotation, 0.01f); ImGui::TableNextColumn();
+				ImGui::Text("Rotation:"); ImGui::TableNextColumn(); active |= DrawVec3("##Rotation", rotation, 0.01f); ImGui::TableNextColumn();
 				ImGui::Text("Scale:");    ImGui::TableNextColumn(); active |= DrawVec3("##Scale", cmp->Scale, 0.01f, 1.0f);
+				cmp->Rotation = glm::radians(rotation);
 				return active;
 				});
-			used |= DrawComponent<SpriteComponent>("Sprite", entity, true, [this](SpriteComponent *cmp) {
-				ImGui::Text("Tint"); ImGui::TableNextColumn(); bool active = DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint)); //ImGui::TableNextColumn();
-				//ImGui::Text("Texture"); ImGui::TableNextColumn();
-				//if (ImGui::Button(cmp->texture ? cmp->texture->GetName() : "New Texture")) {
-				//	File file = FileDialog::OpenFile("PNG Files (*.png)\0*.png\0");
-				//	if (file) cmp->texture = Stack<Texture::T2D>::Get(file.name, file.path);
-				//}
-				//if (cmp->texture) {
-				//	ImGui::SameLine();
-				//	if (ImGui::Button("Reset")) {
-				//		Stack<Texture::T2D>::Del(cmp->texture->GetName());
-				//		cmp->texture = nullptr;
-				//	}
-				//}
+			active |= DrawComponent<SpriteComponent>("Sprite", entity, true, [this](SpriteComponent *cmp) {
+				ImGui::Text("Tint"); ImGui::TableNextColumn(); bool active = DrawColorControl("Sprite_Tint", glm::value_ptr(cmp->tint)); ImGui::TableNextColumn();
+				ImGui::Text("Texture"); ImGui::TableNextColumn();
+				if (ImGui::Button(cmp->texture ? cmp->texture->GetName() : "New Texture")) {
+					File file = FileDialog::OpenFile("PNG Files (*.png)\0*.png\0");
+					if (file) cmp->texture = Stack<Texture::T2D>::Get(file.name, file.path);
+				}
+				if (cmp->texture) {
+					ImGui::SameLine();
+					if (ImGui::Button("Reset")) {
+						Stack<Texture::T2D>::Del(cmp->texture->GetName());
+						cmp->texture = nullptr;
+					}
+				}
 				return active;
 				});
-			used |= DrawComponent<CameraComponent>("Camera", entity, true, [this](CameraComponent *cmp) {
+			active |= DrawComponent<CameraComponent>("Camera", entity, true, [this](CameraComponent *cmp) {
 				bool used = false;
 				SceneCamera &camera = cmp->camera;
 				Entity activeCamera = p_Scene->GetCurrentCamera();
@@ -316,11 +314,21 @@ namespace Kross {
 						}
 						ImGui::SameLine();
 					}
-
+					ImGui::Text("(Current: "); ImGui::SameLine(0.0f, 0.0f);
 					if (activeCamera) {
-						if (activeCamera.Has<TagComponent>() == 1) ImGui::Text("(Current: %s)", activeCamera.Get<TagComponent>()->Get());
-						else ImGui::Text("(Current: %d)", (uint32_t)activeCamera);
-					} else ImGui::Text("(Current: null)");
+						if (activeCamera == p_Scene->Selected()) {
+							ImGui::Text("this");
+						} else {
+							if (activeCamera.Has<TagComponent>() == 1) {
+								ImGui::Text("%s", activeCamera.Get<TagComponent>()->Get());
+							} else {
+								ImGui::Text("%d", (uint32_t)activeCamera);
+							}
+						}
+					} else {
+						ImGui::Text("null");
+					}
+					ImGui::SameLine(0.0f, 0.0f); ImGui::Text(")");
 					ImGui::TableNextColumn();
 				}
 				{
@@ -380,15 +388,7 @@ namespace Kross {
 				return used;
 				});
 		}
-		static bool disable = true;
-		if (Input::IsMouseButtonHeld(MouseButton::Left)) {
-			if (used) disable = true;
-			Panel::setFlag(ImGuiConfigFlags_NoMouse, disable);
-			Application::Get().GetWindow().CursorEnabled(!disable);
-		} else {
-			if (!used) disable = false;
-			Panel::setFlag(ImGuiConfigFlags_NoMouse, disable);
-			Application::Get().GetWindow().CursorEnabled(!disable);
-		}
+
+		Application::Get().GetWindow().CursorEnabled(!(Input::IsMouseButtonHeld(MouseButton::Left) && active));
 	}
 }

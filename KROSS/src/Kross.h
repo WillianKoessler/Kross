@@ -5,6 +5,9 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "imgui.h"
+#include "ImGuizmo.h"
+
 
 #include "Kross/Core/Core.h"
 #include "Kross/Core/Application.h"
@@ -17,8 +20,6 @@
 
 #include "Kross/Events/KeyCodes.h"
 #include "Kross/Events/MouseButtonCodes.h"
-
-#include "imgui/imgui.h"
 
 #include "Kross/Scene/Scene.h"
 #include "Kross/Scene/Components.h"

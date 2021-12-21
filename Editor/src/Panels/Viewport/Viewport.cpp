@@ -1,4 +1,4 @@
-#include "Kross_pch.h"
+#include "Editor_pch.h"
 #include "EditorLayer.h"
 #include "Panels/Panel.h"
 
@@ -18,8 +18,7 @@ namespace Kross {
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 			ImGui::Begin("Viewport", &Panel::Manager().s_bViewport, m_Flags);
 
-			//PassEvents(ImGui::IsWindowFocused() && ImGui::IsWindowHovered());
-			Application::Get().GetGUILayer()->BlockEvents(!(ImGui::IsWindowFocused() && ImGui::IsWindowHovered()));
+			Application::Get().GetGUILayer()->BlockEvents(!ImGui::IsWindowFocused() && !ImGui::IsWindowHovered());
 
 			if (ImGui::BeginMenuBar())
 			{
@@ -45,6 +44,8 @@ namespace Kross {
 				ImVec2(0.0f, 1.0f),
 				ImVec2(1.0f, 0.0f)
 			);
+
+			ShowGuizmo();
 
 			ImGui::PopStyleVar(3);
 			ImGui::End();

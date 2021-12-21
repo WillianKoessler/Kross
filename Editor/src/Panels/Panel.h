@@ -48,7 +48,7 @@ namespace Kross {
 
 		virtual void Show(double ts) = 0;
 
-		static void setFlag(ImGuiConfigFlags flag, bool value) { value ? ImGui::GetIO().ConfigFlags |= flag : ImGui::GetIO().ConfigFlags &= ~flag; }
+		static void setConfigFlag(ImGuiConfigFlags flag, bool value) { value ? ImGui::GetIO().ConfigFlags |= flag : ImGui::GetIO().ConfigFlags &= ~flag; }
 
 		static PanelManager &Manager() { return s_Manager; }
 		static AppSettings &AppManager() { return s_AppManager; }

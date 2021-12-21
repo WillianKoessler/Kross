@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-
+#include "KeyCodes.h"
 #include <sstream>
 
 namespace Kross {
@@ -9,7 +9,7 @@ namespace Kross {
 	{
 	public:
 		inline int GetKeyCode() const { return m_nKeyCode; }
-
+		inline Key GetKey() const { return (Key)m_nKeyCode; }
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
 		int m_nKeyCode = -1;

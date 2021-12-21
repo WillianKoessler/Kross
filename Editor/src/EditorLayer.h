@@ -1,7 +1,10 @@
 #pragma once
-#include "Kross.h"
-
-//#include "Panels/Panel.h"
+#include "Kross/Core/Core.h"
+#include "Kross/Core/Layer.h"
+#include "Kross/Events/Event.h"
+#include "Kross/Events/KeyEvent.h"
+#include "Kross/Scene/Scene.h"
+#include "Kross/Renderer/Cameras/EditorCamera.h"
 
 namespace Kross {
 	class DockSpace;
@@ -15,6 +18,7 @@ namespace Kross {
 		Scene m_Scene;
 		Camera::Editor m_Camera;
 		glm::vec2 m_ViewportSize;
+		int m_GuizmoType = -1;
 
 		RendererStats *rendererStats = nullptr;
 		SceneHierarchy *sceneHierarchy = nullptr;
@@ -29,6 +33,7 @@ namespace Kross {
 		virtual void OnEvent(Event& e) override;
 		void Dockspace();
 		void Viewport();
+		void ShowGuizmo();
 		bool OnKeyPressed(KeyPressedEvent &e);
 	};
 }

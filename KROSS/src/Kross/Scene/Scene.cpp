@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "SceneSerializer.h"
 #include "Kross/Renderer/Renderer2D.h"
+#include "Kross/Renderer/RendererCommands.h"
 #include "Kross/Renderer/Cameras/Cameras/Orthographic.h"
 #include "Kross/Renderer/Cameras/Cameras/Perspective.h"
 #include "Kross/Core/Input.h"
@@ -170,11 +171,12 @@ namespace Kross {
 	}
 	void Scene::OnUpdateEditor(double ts, const Camera::Editor &camera)
 	{
-		//Renderer2D::ResetStats();
+		RenderCommand::Clear();
+		Renderer2D::ResetStats();
 		Renderer2D::Begin(camera);
 		auto view = m_Registry.view<TransformComponent, SpriteComponent>();
 		for (auto [entity, transform, sprite] : view.each())
-			Renderer2D::BatchQuad(transform, sprite.tint);
+			Renderer2D::BatchQuad(transform, sprite.tint, sprite.texture);
 		Renderer2D::End();
 	}
 	void Scene::OnUpdateRuntime(double ts)
@@ -197,16 +199,15 @@ namespace Kross {
 
 		auto camera = primaryCamera.Get<CameraComponent>();
 		auto transform = primaryCamera.Get<TransformComponent>();
-		//Renderer2D::ResetStats();
-		// Render Sprites
-		//Renderer2D::Begin(*camera, *transform);
-		//auto group = m_Registry.group<TransformComponent, SpriteComponent>();
+		Renderer2D::ResetStats();
+		RenderCommand::Clear();
+		Renderer2D::Begin(*camera, *transform);
+		auto group = m_Registry.group<TransformComponent, SpriteComponent>();
 
-		//for (auto [entity, transform, sprite] : group.each()) {
-		//	Renderer2D::BatchQuad(transform, sprite.tint);
-		//}
-		//Renderer2D::End();
-
+		for (auto [entity, transform, sprite] : group.each()) {
+			Renderer2D::BatchQuad(transform, sprite.tint, sprite.texture);
+		}
+		Renderer2D::End();
 	}
 
 	void Scene::OnViewportResize(const glm::vec2 &size)

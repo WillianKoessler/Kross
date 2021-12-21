@@ -4,6 +4,9 @@
     <Filter Include="Panels">
       <UniqueIdentifier>{A80D95C9-94AF-BF9F-7D6A-D3F369AB46F0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Panels\Viewport">
+      <UniqueIdentifier>{D7D55DD9-4361-CB9D-4C72-4E92B87C279E}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
@@ -40,8 +43,11 @@
     <ClCompile Include="src\Panels\SceneHierarchy.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
-    <ClCompile Include="src\Panels\Viewport.cpp">
-      <Filter>Panels</Filter>
+    <ClCompile Include="src\Panels\Viewport\Guizmo.cpp">
+      <Filter>Panels\Viewport</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Panels\Viewport\Viewport.cpp">
+      <Filter>Panels\Viewport</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>

@@ -1,52 +1,7 @@
 Scene: Untitled
 ActiveCameraID: 4294967295
 Entities:
-  - Entity: 6
-    TagComponent:
-      Tag: top
-    TransformComponent:
-      Position: [0, 0.5, 0]
-      Rotation: [-90, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteComponent:
-      Tint: [0, 1, 1, 1]
   - Entity: 5
-    TagComponent:
-      Tag: bottom
-    TransformComponent:
-      Position: [0, -0.5, 0]
-      Rotation: [90, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteComponent:
-      Tint: [1, 0, 1, 1]
-  - Entity: 4
-    TagComponent:
-      Tag: left
-    TransformComponent:
-      Position: [-0.5, 0, 0]
-      Rotation: [0, 270, 0]
-      Scale: [1, 1, 1]
-    SpriteComponent:
-      Tint: [1, 1, 0, 1]
-  - Entity: 3
-    TagComponent:
-      Tag: back
-    TransformComponent:
-      Position: [0, 0, -0.5]
-      Rotation: [0, 180, 0]
-      Scale: [1, 1, 1]
-    SpriteComponent:
-      Tint: [0, 0, 1, 1]
-  - Entity: 2
-    TagComponent:
-      Tag: right
-    TransformComponent:
-      Position: [0.5, 0, 0]
-      Rotation: [0, 90, 0]
-      Scale: [1, 1, 1]
-    SpriteComponent:
-      Tint: [0, 1, 0, 1]
-  - Entity: 1
     TagComponent:
       Tag: front
     TransformComponent:
@@ -55,3 +10,48 @@ Entities:
       Scale: [1, 1, 1]
     SpriteComponent:
       Tint: [1, 0, 0, 1]
+  - Entity: 4
+    TagComponent:
+      Tag: right
+    TransformComponent:
+      Position: [0.5, 0, 0]
+      Rotation: [0, 1.57079637, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Tint: [0, 1, 0, 1]
+  - Entity: 3
+    TagComponent:
+      Tag: back
+    TransformComponent:
+      Position: [0, 0, -0.5]
+      Rotation: [-3.14159226, 0, -3.14159226]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Tint: [0, 0, 1, 1]
+  - Entity: 2
+    TagComponent:
+      Tag: left
+    TransformComponent:
+      Position: [-0.5, 0, 0]
+      Rotation: [1.07022652e-06, -1.57079637, -8.31913496e-07]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Tint: [1, 1, 0, 1]
+  - Entity: 1
+    TagComponent:
+      Tag: bottom
+    TransformComponent:
+      Position: [0, -0.5, 0]
+      Rotation: [1.57079637, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Tint: [1, 0, 1, 1]
+  - Entity: 0
+    TagComponent:
+      Tag: top
+    TransformComponent:
+      Position: [0, 0.499615759, 0.00356058008]
+      Rotation: [-1.57079637, -3.7252903e-09, -7.13734405e-09]
+      Scale: [1, 0.999998093, 0.999997497]
+    SpriteComponent:
+      Tint: [0, 1, 1, 1]

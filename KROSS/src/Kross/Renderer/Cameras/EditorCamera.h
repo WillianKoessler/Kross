@@ -26,6 +26,7 @@ namespace Kross::Camera {
 		inline void SetViewportSize(const glm::vec2& size) { m_ViewportWidth = size.x; m_ViewportHeight = size.y; UpdateProj(); }
 
 		const glm::mat4 &GetProjMat() const { return m_ProjMat; }
+		glm::mat4 &GetViewMat() { return m_ViewMat; }
 		const glm::mat4 &GetViewMat() const { return m_ViewMat; }
 		glm::mat4 GetVPM() const { return m_ProjMat * m_ViewMat; }
 
@@ -43,8 +44,6 @@ namespace Kross::Camera {
 
 		bool OnMouseMoved(MouseMovedEvent &e);
 		bool OnMouseScroll(MouseScrolledEvent &e);
-		bool OnMouseClicked(MouseButtonHeldEvent &e);
-		bool OnKeyHeld(KeyHeldEvent &e);
 
 		void MousePan(const glm::vec2 &delta);
 		void MouseRotate(const glm::vec2 &delta);

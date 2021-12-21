@@ -75,55 +75,55 @@ namespace Kross {
 	{
 		using namespace YAML;
 		out << BeginMap;
-		out << Key << "Entity" << Value << (uint32_t)e;
+		out << YAML::Key << "Entity" << Value << (uint32_t)e;
 		if (e.Has<TagComponent>() == 1) {
-			out << Key << "TagComponent";
+			out << YAML::Key << "TagComponent";
 			out << BeginMap;
 
-			out << Key << "Tag" << Value << e.Get<TagComponent>()->Get();
+			out << YAML::Key << "Tag" << Value << e.Get<TagComponent>()->Get();
 
 			out << EndMap;
 		}
 		if (e.Has<TransformComponent>() == 1) {
-			out << Key << "TransformComponent";
+			out << YAML::Key << "TransformComponent";
 			out << BeginMap;
 
 			auto transform = e.Get<TransformComponent>();
-			out << Key << "Position" << Value << transform->Position;
-			out << Key << "Rotation" << Value << transform->Rotation;
-			out << Key << "Scale" << Value << transform->Scale;
+			out << YAML::Key << "Position" << Value << transform->Position;
+			out << YAML::Key << "Rotation" << Value << transform->Rotation;
+			out << YAML::Key << "Scale" << Value << transform->Scale;
 
 			out << EndMap;
 		}
 		if (e.Has<SpriteComponent>() == 1) {
-			out << Key << "SpriteComponent";
+			out << YAML::Key << "SpriteComponent";
 			out << BeginMap;
 
-			out << Key << "Tint" << Value << e.Get<SpriteComponent>()->tint;
+			out << YAML::Key << "Tint" << Value << e.Get<SpriteComponent>()->tint;
 
 			out << EndMap;
 		}
 		if (e.Has<CameraComponent>() == 1) {
-			out << Key << "CameraComponent";
+			out << YAML::Key << "CameraComponent";
 			{
 				out << BeginMap; // <CameraComponent>
 				auto component = e.Get<CameraComponent>();
 				auto sceneCamera = component->camera;
 				{
 					auto previous = sceneCamera.GetProjType();
-					out << Key << "Camera" << Value << BeginMap; // <Camera>
-					out << Key << "ProjectionType" << Value << (int)sceneCamera.GetProjType();
+					out << YAML::Key << "Camera" << Value << BeginMap; // <Camera>
+					out << YAML::Key << "ProjectionType" << Value << (int)sceneCamera.GetProjType();
 					sceneCamera.SetProjType(SceneCamera::ProjectionType::Perspective);
-					out << Key << "PerspectiveFOV" << Value << sceneCamera.GetPerspVerticalFOV();
-					out << Key << "PerspectiveNear" << Value << sceneCamera.GetNearClip();
-					out << Key << "PerspectiveFar" << Value << sceneCamera.GetFarClip();
+					out << YAML::Key << "PerspectiveFOV" << Value << sceneCamera.GetPerspVerticalFOV();
+					out << YAML::Key << "PerspectiveNear" << Value << sceneCamera.GetNearClip();
+					out << YAML::Key << "PerspectiveFar" << Value << sceneCamera.GetFarClip();
 					sceneCamera.SetProjType(SceneCamera::ProjectionType::Orthographic);
-					out << Key << "OrthographicSize" << Value << sceneCamera.OrthoSize();
-					out << Key << "OrthographicNear" << Value << sceneCamera.GetNearClip();
-					out << Key << "OrthographicFar" << Value << sceneCamera.GetFarClip();
+					out << YAML::Key << "OrthographicSize" << Value << sceneCamera.OrthoSize();
+					out << YAML::Key << "OrthographicNear" << Value << sceneCamera.GetNearClip();
+					out << YAML::Key << "OrthographicFar" << Value << sceneCamera.GetFarClip();
 					out << EndMap; // </Camera>
 				}
-				out << Key << "FixedAspectRatio" << Value << component->fixedAspectRatio;
+				out << YAML::Key << "FixedAspectRatio" << Value << component->fixedAspectRatio;
 				out << EndMap; // </CameraComponent>
 			}
 		}
@@ -145,9 +145,9 @@ namespace Kross {
 		using namespace YAML;
 		Emitter out;
 		out << BeginMap;
-		out << Key << "Scene" << Value << scene->m_strName;
-		out << Key << "ActiveCameraID" << Value << (uint32_t)scene->m_PrimaryCameraID;
-		out << Key << "Entities" << BeginSeq;
+		out << YAML::Key << "Scene" << Value << scene->m_strName;
+		out << YAML::Key << "ActiveCameraID" << Value << (uint32_t)scene->m_PrimaryCameraID;
+		out << YAML::Key << "Entities" << BeginSeq;
 		scene->m_Registry.each([&](auto &e) {
 			Entity entity{ e, scene };
 			if (!entity) return;

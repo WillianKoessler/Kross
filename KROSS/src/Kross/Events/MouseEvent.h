@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Event.h"
-
+#include "MouseButtonCodes.h"
 #include <sstream>
 
 namespace Kross {
@@ -52,7 +52,7 @@ namespace Kross {
 	class KAPI MouseButtonEvent : public Event
 	{
 	public:
-		inline int GetMouseButton() const { return m_nButton; }
+		inline MouseButton GetMouseButton() const { return (MouseButton)m_nButton; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	protected:
