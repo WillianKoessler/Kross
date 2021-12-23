@@ -1,0 +1,15 @@
+Scene: main
+ActiveCameraID: 4294967295
+Entities:
+  - Entity: 0
+    TagComponent:
+      Tag: New Entity
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteComponent:
+      Tint: [1, 1, 1, 1]
+      Texture:
+        Name: cage_mamma
+        Path: C:\dev\langs\C++\Kross\Editor\assets\textures\cage_mamma.png

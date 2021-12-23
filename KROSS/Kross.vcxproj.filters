@@ -22,6 +22,9 @@
     <Filter Include="src\Kross\Events">
       <UniqueIdentifier>{127BDC27-FE73-FB79-27A6-E0FE13FEDA85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Kross\Math">
+      <UniqueIdentifier>{8790EB8F-735E-DF95-5CF2-4FBC485FBBFA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Kross\Renderer">
       <UniqueIdentifier>{5496E287-407A-A3DD-A9DA-9D3095DD8D5F}</UniqueIdentifier>
     </Filter>
@@ -170,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="src\Kross\Events\MouseEvent.h">
       <Filter>src\Kross\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Kross\Math\Math.h">
+      <Filter>src\Kross\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\Kross\Renderer\Buffer.h">
       <Filter>src\Kross\Renderer</Filter>
@@ -1536,7 +1542,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Kross\Math\Math.h" />
+    <ClInclude Include="src\Kross\Events\ActionManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\GFXAPI\OpenGL\GLBuffers.cpp">
@@ -1589,6 +1595,9 @@
     </ClCompile>
     <ClCompile Include="src\Kross\Core\Window.cpp">
       <Filter>src\Kross\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Kross\Math\Math.cpp">
+      <Filter>src\Kross\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Kross\Renderer\Buffer.cpp">
       <Filter>src\Kross\Renderer</Filter>
@@ -1680,6 +1689,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Kross\Math\Math.cpp" />
+    <ClCompile Include="src\Kross\Events\ActionManager.cpp" />
   </ItemGroup>
 </Project>

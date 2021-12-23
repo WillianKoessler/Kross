@@ -24,33 +24,18 @@ namespace Kross {
 			glm::mat4 &cameraView = m_Camera.GetViewMat();
 
 			auto cmp = m_Scene.Selected().Get<TransformComponent>();
-			glm::mat4 transform;
-			ImGuizmo::RecomposeMatrixFromComponents(
-				glm::value_ptr(cmp->Position),
-				glm::value_ptr(cmp->Rotation),
-				glm::value_ptr(cmp->Scale),
-				glm::value_ptr(transform)
-			);
-			//glm::mat4 transform = (glm::mat4)(*cmp);
+			glm::mat4 transform = (glm::mat4)(*cmp);
 
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj),
 				(ImGuizmo::OPERATION)m_GuizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
 			if (ImGuizmo::IsUsing()) {
-				glm::vec3 rotation;
-				ImGuizmo::DecomposeMatrixToComponents(
-					glm::value_ptr(transform),
-					glm::value_ptr(cmp->Position),
-					glm::value_ptr(rotation),
-					glm::value_ptr(cmp->Scale)
-				);
-				cmp->Rotation += rotation - cmp->Rotation;
-				//Math::DecomposeTransform(transform, translation, rotation, scale);
-				//glm::vec3 deltaRotation = rotation - cmp->Rotation;
-				//
-				//cmp->Position = translation;
-				//cmp->Rotation += deltaRotation;
-				//cmp->Scale = scale;
+				glm::vec3 translation, rotation, scale;
+				Math::DecomposeTransform(transform, translation, rotation, scale);
+				glm::vec3 deltaRotation = rotation - cmp->Rotation;
+				cmp->Position = translation;
+				cmp->Rotation += deltaRotation;
+				cmp->Scale = scale;
 			}
 		}
 	}

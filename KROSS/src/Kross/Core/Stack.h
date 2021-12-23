@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kross/Core/Core.h"
+#include "Kross/Util/Util.h"
 #include <string>
 #include <algorithm>
 #include <vector>
@@ -48,6 +49,13 @@ namespace Kross {
 		};
 
 	public:
+		static Ref<T> Load(const char *path)
+		{
+			if (path == nullptr) return false;
+			const char *key = FileName(path);
+			const auto i = location(key);
+			return _Get(key, path);
+		}
 		static const bool Add(const Ref<T> &resource)
 		{
 			if (resource.get() == nullptr || resource == nullptr) {
@@ -56,14 +64,11 @@ namespace Kross {
 			}
 
 			const auto i = location(resource->GetName());
-			if (valid(resource->GetName(), i)) {
-				KROSS_WARN("Resource already exists in stack.");
-				return false;
-			} else {
+			if (!valid(resource->GetName(), i)) {
 				stack.emplace(i, resource->GetName(), resource);
-				KROSS_TRACE("Resource named '{0}' added to the Stack.", resource->GetName());
 				return true;
 			}
+			return false;
 		}
 		static const bool Del(const char *key)
 		{
@@ -92,7 +97,7 @@ namespace Kross {
 				if (valid(k, i)) return i->resource;
 				else if (filepath && strcmp(filepath, "") != 0) return stack.emplace(i, k, T::CreateRef(k, filepath), filepath)->resource;
 				else KROSS_WARN("\n\tT={0}\n\tResource named '{1}' has a not valid filepath, therefore, it could not be loaded.\n\tEntries are:\n{2}", typeid(T).name(), k, Entry::GetTable());
-			} else KROSS_WARN("\n\tT={0}\n\tKEY is empty, and because of it, resource could not be loaded to Stack.\n\tEntries are:\n{1}", typeid(T).name(), Entry::GetTable());
+			} //else KROSS_WARN("\n\tT={0}\n\tKEY is empty, and because of it, resource could not be loaded to Stack.\n\tEntries are:\n{1}", typeid(T).name(), Entry::GetTable());
 			return nullptr;
 		}
 		static auto location(const char *key) { return std::lower_bound(stack.begin(), stack.end(), key); }

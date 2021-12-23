@@ -6,6 +6,7 @@ namespace Kross {
 	using Code = uint16_t;
 	enum class Key
 	{
+		None				= 0,
 		Space				= 32,
 		Apostrophe			= 39,	/* ' */
 		Comma				= 44,	/* , */
@@ -135,6 +136,10 @@ namespace Kross {
 		RightAlt			= 346,
 		RightSuper			= 347,
 
-		Menu = 348,
+		Shift				= 340 | 344,
+		Control				= 341 | 345,
+		Alt					= 342 | 346,
+		Super				= 343 | 347,
+		//Menu = 348,
 	};
 }

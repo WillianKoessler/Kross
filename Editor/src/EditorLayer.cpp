@@ -25,6 +25,15 @@ namespace Kross {
 		rendererStats = new RendererStats();
 		sceneHierarchy = new SceneHierarchy(m_Scene);
 		entityProperties = new EntityProperties(m_Scene);
+
+		ActionManager::RegisterAction("NewScene", Key::Control, Key::N, "Resets the Scene to a new one.");
+		ActionManager::RegisterAction("OpenScene", Key::Control, Key::O, "Load a Scene from a file.");
+		ActionManager::RegisterAction("SaveScene", Key::Control, Key::S, "Save the Scene to the file that is already open.");
+		ActionManager::RegisterAction("SaveSceneAs", Key::Shift, Key::Control, Key::S, "Save the Scene to a file.");
+		ActionManager::RegisterKeyAction("SelectionTool", Key::Q);
+		ActionManager::RegisterKeyAction("TranslationTool", Key::W);
+		ActionManager::RegisterKeyAction("RotationTool", Key::E);
+		ActionManager::RegisterKeyAction("ScaleTool", Key::R);
 	}
 	void EditorLayer::OnDetach()
 	{
@@ -37,6 +46,37 @@ namespace Kross {
 	void EditorLayer::OnUpdate(double ts)
 	{
 		if (!Panel::Manager().s_bDockspace) Application::Get().OnEvent(WindowCloseEvent());
+
+		if (ActionManager::IsActionPerformed("NewScene")) {
+			m_Scene = Scene("main");
+			sceneHierarchy->SetContext(m_Scene);
+			entityProperties->SetContext(m_Scene);
+		}
+		if (ActionManager::IsActionPerformed("OpenScene")) {
+			m_Scene = Scene();
+			sceneHierarchy->SetContext(m_Scene);
+			entityProperties->SetContext(m_Scene);
+			m_Scene.LoadScene();
+		}
+		if (ActionManager::IsActionPerformed("SaveScene")) {
+			m_Scene.SaveScene();
+		}
+		if (ActionManager::IsActionPerformed("SaveSceneAs")) {
+			m_Scene.SaveScene(FileDialog::SaveFile("Kross Scene (.kross)\0*.kross\0\0"));
+		}
+		if (ActionManager::IsActionPerformed("SelectionTool")) {
+			m_GuizmoType = -1;
+		}
+		if (ActionManager::IsActionPerformed("TranslationTool")) {
+			m_GuizmoType = ImGuizmo::TRANSLATE;
+		}
+		if (ActionManager::IsActionPerformed("RotationTool")) {
+			m_GuizmoType = ImGuizmo::ROTATE;
+		}
+		if (ActionManager::IsActionPerformed("ScaleTool")) {
+			m_GuizmoType = ImGuizmo::SCALE;
+		}
+
 		m_Frame->Resize(m_ViewportSize);
 		m_Camera.SetViewportSize(m_ViewportSize);
 
@@ -65,30 +105,5 @@ namespace Kross {
 	void EditorLayer::OnEvent(Event &e)
 	{
 		if (Panel::AppManager().s_bEditorCamera) m_Camera.OnEvent(e);
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<KeyPressedEvent>(KROSS_BIND_EVENT_FN(EditorLayer::OnKeyPressed));
-	}
-
-	bool Kross::EditorLayer::OnKeyPressed(KeyPressedEvent &e)
-	{
-		auto newScene = [&]() { m_Scene = Scene("main"); sceneHierarchy->SetContext(m_Scene); entityProperties->SetContext(m_Scene); };
-		bool ctrl = Input::IsKeyHeld(Key::LeftControl) || Input::IsKeyHeld(Key::RightControl);
-		bool shift = Input::IsKeyHeld(Key::LeftShift) || Input::IsKeyHeld(Key::RightShift);
-		bool alt = Input::IsKeyHeld(Key::LeftAlt) || Input::IsKeyHeld(Key::RightAlt);
-		switch (e.GetKey()) {
-			default: break;
-			case Key::O: { if (ctrl) { newScene(); m_Scene.LoadScene(); } KROSS_TRACE("Ctrl+O"); break; }
-			case Key::N: { if (ctrl) newScene(); KROSS_TRACE("CTRL+N"); break; }
-			case Key::S: { 
-					if (ctrl && shift) { m_Scene.SaveScene(FileDialog::SaveFile("Kross Scene (.kross)\0*.kross\0\0")); KROSS_TRACE("CTRL+SHIFT+S"); }
-					else if (ctrl) { m_Scene.SaveScene(); KROSS_TRACE("CTRL+S"); }
-					break;
-				}
-			case Key::Q: { m_GuizmoType = -1; break; }
-			case Key::W: { m_GuizmoType = ImGuizmo::TRANSLATE; break; }
-			case Key::E: { m_GuizmoType = ImGuizmo::ROTATE; break; }
-			case Key::R: { m_GuizmoType = ImGuizmo::SCALE; break; }
-		}
-		return false;
 	}
 }

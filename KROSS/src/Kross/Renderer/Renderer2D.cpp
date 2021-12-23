@@ -10,8 +10,6 @@
 #include "VertexArray.h"
 #include "Textures/Array.h"
 
-#include "Kross/Core/Input.h"
-
 static constexpr size_t MaxQuadCount = 512;
 static constexpr size_t MaxVertexCount = MaxQuadCount * 4;
 static constexpr size_t MaxIndexCount = MaxQuadCount * 6;
@@ -180,13 +178,13 @@ namespace Kross {
 		data->shader->SetMat4("u_ViewProjection", camera.GetVPM());
 		BatchBegin();
 	}
-	void Renderer2D::Begin(const CameraComponent &camera, const TransformComponent &transform)
+	void Renderer2D::Begin(const SceneCamera &camera, const glm::mat4 &transform)
 	{
 		KROSS_PROFILE_FUNC();
 		if (!s_bSceneBegan) s_bSceneBegan = true;
 		else KROSS_WARN("Calling {0} without calling Renderer2D::End(void). Overriding previous scene!", __FUNCTION__);
 		data->shader->Bind();
-		data->shader->SetMat4("u_ViewProjection", camera.camera.GetProjMat() * glm::inverse((glm::mat4)transform));
+		data->shader->SetMat4("u_ViewProjection", camera.GetProjMat() * glm::inverse(transform));
 		BatchBegin();
 	}
 	void Renderer2D::Begin(Ref<Camera::Camera> &camera)
@@ -229,18 +227,7 @@ namespace Kross {
 	{
 		if (!s_bBatch) { KROSS_WARN("Ending a non initiated batch"); return; }
 		s_bBatch = false;
-
-
-		if (Input::IsKeyPressed(Key::Space)) {
-			KROSS_TRACE("Printing buffer: ");
-			for (uint32_t i = 0; i < data->quadIndex; i++)
-				data->myBuffer[i].print(i);
-		}
-
 		Flush();
-
-		//data->vb->Clear();
-		//memset(data->myBuffer, 0, sizeof(data->myBuffer));
 	}
 	void Renderer2D::End()
 	{

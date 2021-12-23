@@ -105,8 +105,8 @@ namespace Kross {
 			const char *path = e.Get<SpriteComponent>()->texture->GetPath();
 			if (path != nullptr && name != nullptr) {
 				out << YAML::Key << "Texture" << BeginMap;
-				if(name != nullptr) out << YAML::Key << "Name" << Value << std::string(name);
-				if(path != nullptr) out << YAML::Key << "Path" << Value << std::string(path);
+				if (name != nullptr) out << YAML::Key << "Name" << Value << std::string(name);
+				if (path != nullptr) out << YAML::Key << "Path" << Value << std::string(path);
 				out << EndMap;
 			}
 
@@ -219,15 +219,18 @@ namespace Kross {
 					auto hasTexture = sprite["Texture"];
 					if (hasTexture) {
 						std::string name, path;
-						auto hasName = sprite["Name"];
+						auto hasName = hasTexture["Name"];
 						if (hasName) name = hasName.as<std::string>();
-						auto hasPath = sprite["Path"];
+						auto hasPath = hasTexture["Path"];
 						if (hasPath) path = hasPath.as<std::string>();
-						//TODO: Use Stack to manage textures
-						
+						if (hasName && hasPath)
+							cmp->texture = Stack<Texture::T2D>::Get(name.c_str(), path.c_str());
+						else if (hasName && !hasPath)
+							cmp->texture = Stack<Texture::T2D>::Get(name.c_str());
+						else if (!hasName && hasPath)
+							cmp->texture = Stack<Texture::T2D>::Load(path.c_str());
 					}
 				}
-
 				auto cameraNode = entity["CameraComponent"];
 				if (cameraNode) {
 					auto cmp = newEntity.Add<CameraComponent>();

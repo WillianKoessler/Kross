@@ -54,20 +54,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>bin\Debug-windows-x86_64\Kross\</OutDir>
-    <IntDir>bin-int\Debug-windows-x86_64\Kross\</IntDir>
+    <OutDir>..\bin\Debug-windows-x86_64\Kross\</OutDir>
+    <IntDir>..\bin-int\Debug-windows-x86_64\Kross\</IntDir>
     <TargetName>Kross</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>bin\Release-windows-x86_64\Kross\</OutDir>
-    <IntDir>bin-int\Release-windows-x86_64\Kross\</IntDir>
+    <OutDir>..\bin\Release-windows-x86_64\Kross\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\Kross\</IntDir>
     <TargetName>Kross</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
-    <OutDir>bin\Dist-windows-x86_64\Kross\</OutDir>
-    <IntDir>bin-int\Dist-windows-x86_64\Kross\</IntDir>
+    <OutDir>..\bin\Dist-windows-x86_64\Kross\</OutDir>
+    <IntDir>..\bin-int\Dist-windows-x86_64\Kross\</IntDir>
     <TargetName>Kross</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
@@ -144,7 +144,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Kross\Math\Math.h" />
+    <ClInclude Include="src\Kross\Events\ActionManager.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLBuffers.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLContext.h" />
     <ClInclude Include="src\GFXAPI\OpenGL\GLErrors.h" />
@@ -174,6 +174,7 @@
     <ClInclude Include="src\Kross\Events\KeyEvent.h" />
     <ClInclude Include="src\Kross\Events\MouseButtonCodes.h" />
     <ClInclude Include="src\Kross\Events\MouseEvent.h" />
+    <ClInclude Include="src\Kross\Math\Math.h" />
     <ClInclude Include="src\Kross\Renderer\Buffer.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Camera.h" />
     <ClInclude Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.h" />
@@ -631,7 +632,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Kross\Math\Math.cpp" />
+    <ClCompile Include="src\Kross\Events\ActionManager.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLBuffers.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLContext.cpp" />
     <ClCompile Include="src\GFXAPI\OpenGL\GLErrors.cpp" />
@@ -649,6 +650,7 @@
     <ClCompile Include="src\Kross\Core\Stack.cpp" />
     <ClCompile Include="src\Kross\Core\Timestep.cpp" />
     <ClCompile Include="src\Kross\Core\Window.cpp" />
+    <ClCompile Include="src\Kross\Math\Math.cpp" />
     <ClCompile Include="src\Kross\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Orthographic.cpp" />
     <ClCompile Include="src\Kross\Renderer\Cameras\Cameras\Perspective.cpp" />

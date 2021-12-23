@@ -9,6 +9,8 @@
 #include "Kross/Renderer/Textures/Textures.h"
 #include "Kross/Core/Resource.h"
 
+#include "Kross/Events/ActionManager.h"
+
 namespace Kross {
 
 	Application* Application::s_Instance = nullptr;
@@ -73,6 +75,8 @@ namespace Kross {
 		dispatcher.Dispatch<WindowCloseEvent>(KROSS_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(KROSS_BIND_EVENT_FN(Application::OnWindowResize));
 		m_pLayerStack.PropagateEvent(e);
+		if(e.GetEventType() == KeyPressedEvent::GetStaticType())
+			ActionManager::PoolEvent(*(KeyPressedEvent*)&e);
 	}
 
 	void Application::Run()
@@ -99,6 +103,7 @@ namespace Kross {
 			}
 			m_ImGuiLayer->End();
 
+			ActionManager::CheckActions();
 			m_pWindow->OnUpdate();
 		}
 		KROSS_TRACE("-----------------------RUNTIME ENDED-----------------------");
