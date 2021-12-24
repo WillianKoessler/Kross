@@ -13,7 +13,9 @@ namespace Kross {
 
 	void EditorLayer::OnAttach()
 	{
-		RenderCommand::SetClear(*(glm::vec4 *)&ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
+		auto &bg = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+		glm::vec4 color(bg.x, bg.y, bg.z, bg.w);
+		RenderCommand::SetClear(color);
 
 		FrameBuffer::Specification specs;
 		specs.AttachmentsSpecs = { FrameBuffer::Texture::Format::RGBA8, FrameBuffer::Texture::Format::Depth };
@@ -53,35 +55,7 @@ namespace Kross {
 	{
 		if (!Panel::Manager().s_bDockspace) Application::Get().OnEvent(WindowCloseEvent());
 
-		if (ActionManager::IsActionPerformed("NewScene")) {
-			m_Scene = Scene("main");
-			sceneHierarchy->SetContext(m_Scene);
-			entityProperties->SetContext(m_Scene);
-		}
-		if (ActionManager::IsActionPerformed("OpenScene")) {
-			m_Scene = Scene();
-			sceneHierarchy->SetContext(m_Scene);
-			entityProperties->SetContext(m_Scene);
-			m_Scene.LoadScene();
-		}
-		if (ActionManager::IsActionPerformed("SaveScene")) {
-			m_Scene.SaveScene();
-		}
-		if (ActionManager::IsActionPerformed("SaveSceneAs")) {
-			m_Scene.SaveScene(FileDialog::SaveFile("Kross Scene (.kross)\0*.kross\0\0"));
-		}
-		if (ActionManager::IsActionPerformed("SelectionTool")) {
-			m_GuizmoType = -1;
-		}
-		if (ActionManager::IsActionPerformed("TranslationTool")) {
-			m_GuizmoType = ImGuizmo::TRANSLATE;
-		}
-		if (ActionManager::IsActionPerformed("RotationTool")) {
-			m_GuizmoType = ImGuizmo::ROTATE;
-		}
-		if (ActionManager::IsActionPerformed("ScaleTool")) {
-			m_GuizmoType = ImGuizmo::SCALE;
-		}
+		Actions();
 
 		m_Frame->Resize(m_ViewportSize);
 		m_Camera.SetViewportSize(m_ViewportSize);

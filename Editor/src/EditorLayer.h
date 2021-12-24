@@ -34,5 +34,6 @@ namespace Kross {
 		void Dockspace();
 		void Viewport();
 		void ShowGuizmo();
+		void Actions();
 	};
 }

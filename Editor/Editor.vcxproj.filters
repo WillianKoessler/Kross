@@ -28,7 +28,7 @@
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\Editor_pch.cpp" />
-    <ClCompile Include="src\Panels\Dockspace.cpp">
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Dockspace.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
     <ClCompile Include="src\Panels\EntityProperties.cpp">
@@ -44,7 +44,8 @@
       <Filter>Panels</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Panels\Viewport\Guizmo.cpp" />
-    <ClCompile Include="src\Panels\Viewport\Viewport.cpp" />
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Guizmo.cpp" />
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Viewport.cpp" />
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Actions.cpp" />
   </ItemGroup>
 </Project>

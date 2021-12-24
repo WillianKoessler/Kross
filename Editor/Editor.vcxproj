@@ -151,14 +151,15 @@
     <ClCompile Include="src\Editor_pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Panels\Dockspace.cpp" />
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Dockspace.cpp" />
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Actions.cpp" />
     <ClCompile Include="src\Panels\EntityProperties.cpp" />
     <ClCompile Include="src\Panels\Panel.cpp" />
     <ClCompile Include="src\Panels\RendererStats.cpp" />
     <ClCompile Include="src\Panels\SceneHierarchy.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Panels\Viewport\Guizmo.cpp" />
-    <ClCompile Include="src\Panels\Viewport\Viewport.cpp" />
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Guizmo.cpp" />
+    <ClCompile Include="src\Panels\EditorLayerFuncs\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Kross\Kross.vcxproj">
