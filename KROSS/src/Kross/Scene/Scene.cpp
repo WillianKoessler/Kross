@@ -201,7 +201,7 @@ namespace Kross {
 		auto transform = primaryCamera.Get<TransformComponent>();
 		Renderer2D::ResetStats();
 		RenderCommand::Clear();
-		Renderer2D::Begin(*camera, *transform);
+		Renderer2D::Begin(camera->camera, *transform);
 		auto group = m_Registry.group<TransformComponent, SpriteComponent>();
 
 		for (auto [entity, transform, sprite] : group.each()) {

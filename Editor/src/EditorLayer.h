@@ -34,6 +34,5 @@ namespace Kross {
 		void Dockspace();
 		void Viewport();
 		void ShowGuizmo();
-		bool OnKeyPressed(KeyPressedEvent &e);
 	};
 }

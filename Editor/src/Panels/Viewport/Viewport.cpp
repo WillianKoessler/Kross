@@ -39,7 +39,7 @@ namespace Kross {
 			}
 
 			ImGui::Image(
-				reinterpret_cast<void*>((uintptr_t)m_Frame->GetColorAttachmentID()),
+				reinterpret_cast<void*>((uintptr_t)m_Frame->GetColorAttachmentID(0)),
 				ImGuiViewportPanelSize,
 				ImVec2(0.0f, 1.0f),
 				ImVec2(1.0f, 0.0f)

@@ -15,7 +15,13 @@ namespace Kross {
 	{
 		RenderCommand::SetClear(*(glm::vec4 *)&ImGui::GetStyle().Colors[ImGuiCol_WindowBg]);
 
-		m_Frame = FrameBuffer::CreateRef("EditorLayer_Framebuffer", { 800, 600, 1, false });
+		FrameBuffer::Specification specs;
+		specs.AttachmentsSpecs = { FrameBuffer::Texture::Format::RGBA8, FrameBuffer::Texture::Format::Depth };
+		specs.Width = 800;
+		specs.Height = 600;
+		specs.Samples = 1;
+		specs.SwapChainTarget = false;
+		m_Frame = FrameBuffer::CreateRef("EditorLayer_Framebuffer", specs);
 
 		Stack<Texture::T2D>::Get("cherno", "assets/textures/ChernoLogo.png");
 		Stack<Texture::T2D>::Get("ck", "assets/textures/CheckerBoard.png");

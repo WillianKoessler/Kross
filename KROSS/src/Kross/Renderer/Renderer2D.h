@@ -2,10 +2,10 @@
 
 #include "Cameras/Camera.h"
 #include "Cameras/EditorCamera.h"
+#include "Kross/Scene/SceneCamera.h"
 #include "Textures/Textures.h"
 #include "Textures/Atlas.h"
 #include "Shaders.h"
-#include "Kross/Scene/Components.h"
 
 namespace Kross {
 	struct QuadParams;
@@ -36,7 +36,7 @@ namespace Kross {
 		static void Shutdown();
 
 		static void Begin(const Camera::Editor& camera);
-		static void Begin(const CameraComponent& camera, const TransformComponent& transform);
+		static void Begin(const SceneCamera& camera, const glm::mat4& transform);
 		static void Begin(Ref<Camera::Camera>& camera);
 		static void End();
 

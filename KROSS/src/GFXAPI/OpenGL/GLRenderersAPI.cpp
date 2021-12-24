@@ -10,17 +10,6 @@ namespace Kross::OpenGL {
 		glCall(glEnable(GL_BLEND));
 		glCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		glCall(glEnable(GL_DEPTH_TEST));
-
-		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(glDebugMessage, nullptr);
-		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_FALSE);
-
-#ifdef KROSS_DEBUG
-#endif
-		//glCall(glDepthFunc(GL_LESS));
-		//glCall(glDepthFunc(GL_GREATER));
-		//glCall(glDepthMask(GL_FALSE));
 	}
 	void RendererAPI::Clear() const {
 		glCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));

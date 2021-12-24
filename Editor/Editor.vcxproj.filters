@@ -43,12 +43,8 @@
     <ClCompile Include="src\Panels\SceneHierarchy.cpp">
       <Filter>Panels</Filter>
     </ClCompile>
-    <ClCompile Include="src\Panels\Viewport\Guizmo.cpp">
-      <Filter>Panels\Viewport</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Panels\Viewport\Viewport.cpp">
-      <Filter>Panels\Viewport</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Panels\Viewport\Guizmo.cpp" />
+    <ClCompile Include="src\Panels\Viewport\Viewport.cpp" />
   </ItemGroup>
 </Project>

@@ -6,11 +6,8 @@ namespace Kross::OpenGL
 {
 	class FrameBuffer : public Kross::FrameBuffer
 	{
-		uint32_t m_RendererID;
-		uint32_t m_ColorAttachment, m_DepthAttachment;
-		FrameBufferSpec m_Specification;
 	public:
-		FrameBuffer(const char* name, const FrameBufferSpec& specs);
+		FrameBuffer(const char* name, const Specification & specs);
 		virtual ~FrameBuffer();
 
 		virtual void Bind() const override;
@@ -20,14 +17,25 @@ namespace Kross::OpenGL
 		virtual void Resize(uint32_t width, uint32_t height) override;
 
 		virtual uint32_t GetID() const override { return m_RendererID; }
-		virtual uint32_t GetDepthAttachmentID() const override { return m_DepthAttachment; }
-		virtual uint32_t GetColorAttachmentID() const override { return m_ColorAttachment; }
+		virtual uint32_t GetDepthAttachmentID() const override { return m_DepthAttID; }
+		virtual uint32_t GetColorAttachmentID(uint32_t index) const override { KROSS_ASSERT(index < m_ColorAttIDs.size()); return m_ColorAttIDs[index]; }
 
 		virtual void Invalidate() override;
 
-		virtual const FrameBufferSpec& GetSpecs() const override { return m_Specification; }
+		virtual const Specification & GetSpecs() const override { return m_Specs; }
 
 	private:
-		bool Delete();
+		void Delete();
+
+	private:
+		uint32_t m_RendererID;
+		uint32_t m_MaxWidth, m_MaxHeight;
+		Specification m_Specs;
+		
+		std::vector<Kross::FrameBuffer::Texture::Spec> m_ColorAttSpecs;
+		std::vector<uint32_t> m_ColorAttIDs;
+
+		Kross::FrameBuffer::Texture::Spec m_DepthAttSpec;
+		uint32_t m_DepthAttID;
 	};
 }

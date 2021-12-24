@@ -18,7 +18,7 @@ namespace Kross::OpenGL {
 		virtual void SwapBuffers() override;
 		virtual void UpdateViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
 
-		static const float GetVersion();
+//		static const float GetVersion();
 	private:
 		Window* m_Window;
 		static bool initialized;
