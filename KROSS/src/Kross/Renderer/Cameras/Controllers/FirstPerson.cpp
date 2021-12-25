@@ -15,16 +15,9 @@ namespace Kross::Camera3D {
 	{
 		if (camera) KROSS_WARN("WARNING: Overriding previous camera");
 		camera = makeRef<Camera::Perspective>(aspectRatio, fov);
-		static const char *a = "_Controller";
 		std::string strname(cname);
-		strname += "_Controller";
-		m_strName = new char[strname.size()];
-		memcpy((void*)m_strName, strname.data(), strname.size());
-
-		//forward = glm::vec3(0.0f, 0.0f, 1.0f);
-		//right = glm::vec3(1.0f, 0.0f, 0.0f);
-		//up = glm::vec3(0.0f, 1.0f, 0.0f);
-		KROSS_INFO("'{0}' Constructed", m_strName);
+		SetName((strname + "_Controller").c_str());
+		KROSS_INFO("'{0}' Constructed", GetName());
 	}
 
 	FirstPerson::FirstPerson(const char* name, Ref<Camera::Camera> cam, float fov)
@@ -32,17 +25,17 @@ namespace Kross::Camera3D {
 	{
 		if (camera) KROSS_WARN("WARNING: Overriding previous Camera");
 		camera = cam;
-		m_strName = name;
+		SetName(name);
 		//forward = glm::vec3(0.0f, 0.0f, 1.0f);
 		//right = glm::vec3(1.0f, 0.0f, 0.0f);
 		//up = glm::vec3(0.0f, 1.0f, 0.0f);
-		KROSS_INFO("'{0}' Constructed", m_strName);
+		KROSS_INFO("'{0}' Constructed", GetName());
 	}
 
 	void FirstPerson::OnUpdate(double ts)
 	{
-		KROSS_PROFILE_FUNC();
-		KROSS_ERROR("Not implemented");
+		KROSS_NOT_IMPLEMENTED;
+		//KROSS_PROFILE_FUNC();
 		//if (Input::IsKeyReleased(Key::Space))
 		//	m_bCursorEnabled = !m_bCursorEnabled;
 
@@ -97,7 +90,7 @@ namespace Kross::Camera3D {
 	void FirstPerson::Zoom(float val) {}
 	bool FirstPerson::OnWindowResized(WindowResizeEvent& e)
 	{
-		KROSS_ERROR("Not Implemented");
+		KROSS_NOT_IMPLEMENTED;
 		//KROSS_PROFILE_FUNC();
 		//float ar = (float)e.GetWidth() / (float)e.GetHeight();
 		//camera->SetProjMat(m_fFOV, ar, 0.01f, 1000.0f);

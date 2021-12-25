@@ -217,16 +217,16 @@ namespace Kross {
 	EntityProperties::EntityProperties(Scene &scene)
 		: p_Scene(&scene)
 	{
-		m_strName = "Properties Panel";
+		SetName("Properties Panel");
 		m_Flags = 0;
 		if (!p_Scene) KROSS_WARN("Scene provided is null");
-		KROSS_INFO("Panel '{0}' Constructed", m_strName);
+		KROSS_INFO("Panel '{0}' Constructed", GetName());
 	}
 	void EntityProperties::Show()
 	{
 		if (!Panel::Manager().s_bPropertiesInspector) return;
 
-		if (ImGui::Begin(m_strName, &Panel::Manager().s_bPropertiesInspector, m_Flags))
+		if (ImGui::Begin(GetName(), &Panel::Manager().s_bPropertiesInspector, m_Flags))
 		{
 			if (p_Scene->Selected()) {
 				if (p_Scene->Selected().Has<TagComponent>() == 1) {

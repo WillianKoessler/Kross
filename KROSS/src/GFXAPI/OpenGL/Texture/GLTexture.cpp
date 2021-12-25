@@ -14,7 +14,7 @@ namespace Kross::OpenGL::Texture {
 	}
 
 	T2D::T2D(const char *name, uint32_t width, uint32_t height, uint8_t *data)
-		: m_strPath(""), m_unWidth(width), m_unHeight(height), m_CurrentSlot(IncSlot()), m_unInternalFormat(GL_RGBA8), m_unDataFormat(GL_RGBA)
+		: m_unWidth(width), m_unHeight(height), m_CurrentSlot(IncSlot()), m_unInternalFormat(GL_RGBA8), m_unDataFormat(GL_RGBA)
 	{
 		SetName(name);
 		glCall(glGenTextures(1, &m_RendererID));

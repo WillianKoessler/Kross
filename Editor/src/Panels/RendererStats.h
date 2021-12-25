@@ -1,9 +1,8 @@
 #pragma once
-#include "Panel.h"
 
 namespace Kross {
 	constexpr int plotsize = 128;
-    class RendererStats : public Panel
+    class RendererStats : public Resource
     {
 		bool pause_frame_plot_animation = false;
 		const char* frame_plot_options[2] = { "Frames per Second", "Elapsed Time" };
@@ -17,6 +16,6 @@ namespace Kross {
         RendererStats();
         ~RendererStats();
 
-        virtual void Show(double ts) override;
+        void Show(double ts);
     };
 }

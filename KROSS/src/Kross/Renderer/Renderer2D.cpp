@@ -30,6 +30,8 @@ namespace Kross {
 		glm::vec4 color = glm::vec4(1.0f);
 		glm::vec2 texCoord = glm::vec2(0.0f);
 		float texIndex = -1.0f;
+
+		int entityID = -1;
 		void print() const {
 			printf("\tVertex([%.2f, %.2f, %.2f], [%.2f, %.2f, %.2f, %.2f], [%.2f, %.2f], [%.2f])\n",
 				pos.x, pos.y, pos.z,
@@ -113,7 +115,8 @@ namespace Kross {
 			{ Buffer::ShaderDataType::Float3, "a_Position" },
 			{ Buffer::ShaderDataType::Float4, "a_Color"},
 			{ Buffer::ShaderDataType::Float2, "a_TexCoord" },
-			{ Buffer::ShaderDataType::Float,  "a_TexIndex"}
+			{ Buffer::ShaderDataType::Float,  "a_TexIndex"},
+			{ Buffer::ShaderDataType::Int,  "a_ID"}
 			});
 		data->va->AddVertex(data->vb);
 
@@ -308,7 +311,7 @@ namespace Kross {
 		//data->quadIndex++;
 		//data->rendererStats.QuadCount++;
 	}
-	void Renderer2D::BatchQuad(const glm::mat4 &transform, const glm::vec4 &color, const Ref<Texture::T2D>& sprite)
+	void Renderer2D::BatchQuad(const glm::mat4 &transform, const glm::vec4 &color, const Ref<Texture::T2D>& sprite, int id)
 	{
 		KROSS_PROFILE_FUNC();
 		if (!s_bBatch) return;
@@ -333,6 +336,7 @@ namespace Kross {
 			quad->v[i].color = color;
 			quad->v[i].texIndex = tex;
 			quad->v[i].texCoord = texCoords[i];
+			quad->v[i].entityID = id;
 		}
 		data->readHead++;
 

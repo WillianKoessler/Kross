@@ -32,7 +32,7 @@ namespace Kross::OpenGL::Texture {
 		{
 			auto i = location(texture->GetID());
 			if (i != stack.end() && texture->GetID() == i->get()->GetID()) return (int)(i - stack.begin());
-			KROSS_WARN("Texture '{0}' was not found.", texture->GetName());
+			KROSS_WARN("Texture '{0}' was not found in '{1}' Array.", texture->GetName(), GetName());
 			Add(texture);
 			return Get(texture);
 		}
@@ -41,7 +41,7 @@ namespace Kross::OpenGL::Texture {
 	}
 	void T2DArray::Add(const Ref<Kross::Texture::T2D> texture)
 	{
-		if (stack.size() >= _size) { KROSS_WARN("Texture Array reached maximum capacity. Ignoring new textures."); return; }
+		if (stack.size() >= _size) { KROSS_WARN("Texture Array '{0}' reached maximum capacity. Ignoring new textures.", GetName()); return; }
 		if (texture)
 		{
 			auto i = location(texture->GetID());

@@ -6,15 +6,15 @@ namespace Kross {
 	SceneHierarchy::SceneHierarchy(Scene &scene)
 		: p_Scene(&scene)
 	{
-		m_strName = "Scene Inspector";
-		m_Flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_Popup;
+		SetName("Scene Inspector");
+		m_Flags = ImGuiWindowFlags_MenuBar;
 		if (!p_Scene) KROSS_WARN("Scene supplied is nullptr");
-		KROSS_INFO("Panel '{0}' Constructed", m_strName);
+		KROSS_INFO("Panel '{0}' Constructed", GetName());
 	}
 	void SceneHierarchy::Show()
 	{
 		if (!Panel::Manager().s_bSceneHierarchy) return;
-		if (ImGui::Begin(m_strName, &Panel::Manager().s_bSceneHierarchy) && p_Scene)
+		if (ImGui::Begin(GetName(), &Panel::Manager().s_bSceneHierarchy) && p_Scene)
 		{
 			auto all = p_Scene->GetAllEntities();
 			for (Entity &entity : all) DrawEntityNode(entity);

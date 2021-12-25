@@ -18,7 +18,7 @@ namespace Kross {
 		RenderCommand::SetClear(color);
 
 		FrameBuffer::Specification specs;
-		specs.AttachmentsSpecs = { FrameBuffer::Texture::Format::RGBA8, FrameBuffer::Texture::Format::Depth };
+		specs.AttachmentsSpecs = { FrameBuffer::Texture::Format::RGBA8, FrameBuffer::Texture::Format::INT, FrameBuffer::Texture::Format::Depth };
 		specs.Width = 800;
 		specs.Height = 600;
 		specs.Samples = 1;
@@ -42,6 +42,8 @@ namespace Kross {
 		ActionManager::RegisterKeyAction("TranslationTool", Key::W);
 		ActionManager::RegisterKeyAction("RotationTool", Key::E);
 		ActionManager::RegisterKeyAction("ScaleTool", Key::R);
+
+		Application::Get().GetWindow().SetVSync(false);
 	}
 	void EditorLayer::OnDetach()
 	{
@@ -61,12 +63,16 @@ namespace Kross {
 		m_Camera.SetViewportSize(m_ViewportSize);
 
 		m_Frame->Bind();
+		RenderCommand::Clear();
+		m_Frame->ClearColorAttachment(1, -1);
+
 		if (Panel::AppManager().s_bEditorCamera) {
 			m_Camera.OnUpdate(ts);
 			m_Scene.OnUpdateEditor(ts, m_Camera);
 		} else {
 			m_Scene.OnUpdateRuntime(ts);
 		}
+
 		m_Frame->unBind();
 	}
 
@@ -85,5 +91,26 @@ namespace Kross {
 	void EditorLayer::OnEvent(Event &e)
 	{
 		if (Panel::AppManager().s_bEditorCamera) m_Camera.OnEvent(e);
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<MouseButtonPressedEvent>(KROSS_BIND_EVENT_FN(EditorLayer::OnMouseClick));
+	}
+	bool EditorLayer::OnMouseClick(MouseButtonPressedEvent &e)
+	{
+		if (!ImGuizmo::IsOver() && e.GetMouseButton() == MouseButton::Left) {
+			auto [mx, my] = ImGui::GetMousePos();
+			mx -= m_ViewportMinBound.x;
+			my -= m_ViewportMinBound.y;
+			glm::vec2 viewportSize = m_ViewportMaxBound - m_ViewportMinBound;
+			my = viewportSize.y - my;
+			int mouseX = (int)mx;
+			int mouseY = (int)my;
+			if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
+				m_Frame->Bind();
+				int id = m_Frame->ReadPixel(1, mouseX, mouseY);
+				m_Frame->unBind();
+				m_Scene.Select(id >= 0 ? Entity((entt::entity)id, &m_Scene) : Entity());
+			}
+		}
+		return false;
 	}
 }

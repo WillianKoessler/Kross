@@ -19,6 +19,9 @@ namespace Kross::OpenGL
 		virtual uint32_t GetID() const override { return m_RendererID; }
 		virtual uint32_t GetDepthAttachmentID() const override { return m_DepthAttID; }
 		virtual uint32_t GetColorAttachmentID(uint32_t index) const override { KROSS_ASSERT(index < m_ColorAttIDs.size()); return m_ColorAttIDs[index]; }
+		virtual void ClearColorAttachment(uint32_t index, int value) const override;
+
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) const override;
 
 		virtual void Invalidate() override;
 

@@ -1,12 +1,14 @@
 #version 440 core
 
-layout(location = 0) out vec4 color;
+layout (location = 0) out vec4 color;
+layout (location = 1) out int id;
 
 uniform sampler2D u_Textures[32];
 
 in vec4 v_Color;
 in vec2 v_texCoord;
-in float v_TexIndex;
+in flat float v_TexIndex;
+in flat int v_ID;
 
 void main()
 {
@@ -47,4 +49,5 @@ void main()
 		case 31: texColor *= texture(u_Textures[31], v_texCoord) * v_Color; break;
 	}
 	color = texColor;
+	id = v_ID; // EntityID placeholder
 }

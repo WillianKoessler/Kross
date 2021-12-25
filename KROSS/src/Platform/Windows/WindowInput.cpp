@@ -5,10 +5,6 @@
 #include "Kross/Core/Application.h"
 #include <GLFW/glfw3.h>
 
-#define check(key) \
-(glfwGetKey(static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow()), (int)Key::Left##key) |\
-glfwGetKey(static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow()), (int)Key::Right##))
-
 namespace Kross {
 	glm::vec2 Input::GetMousePosition()
 	{
@@ -43,14 +39,33 @@ namespace Kross {
 		static Input::KeyState keys[maxKeys] = { Input::KeyState::NOT_PRESSED };
 		static bool s_bOldKeys[maxKeys] = { false };
 		static bool s_bKeys[maxKeys] = { false };
-
+		GLFWwindow *wnd = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
 		int code = (int)key;
-		int nState = 0;
-		if (key == Key::Control) nState = check(Control);
-		else if (key == Key::Shift) nState = check(Shift);
-		else if (key == Key::Alt) nState = check(Alt);
-		else if (key == Key::Super) nState = check(Super);
-		else nState = glfwGetKey(static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow()), code);
+		int left = 0, right = 0;
+
+		switch (key) {
+			case Key::Control:
+				left = glfwGetKey(wnd, (int)Key::LeftControl);
+				right = glfwGetKey(wnd, (int)Key::RightControl);
+				break;
+			case Key::Shift:
+				left = glfwGetKey(wnd, (int)Key::LeftShift);
+				right = glfwGetKey(wnd, (int)Key::RightShift);
+				break;
+			case Key::Alt:
+				left = glfwGetKey(wnd, (int)Key::LeftAlt);
+				right = glfwGetKey(wnd, (int)Key::RightAlt);
+				break;
+			case Key::Super:
+				left = glfwGetKey(wnd, (int)Key::LeftSuper);
+				right = glfwGetKey(wnd, (int)Key::RightSuper);
+				break;
+			default:
+				left = glfwGetKey(wnd, (int)key);
+		}
+
+		bool nState = bool(left) || bool(right);
+		
 		Input::KeyState &now = keys[code];
 		bool &state = s_bKeys[code];
 		bool &oldState = s_bOldKeys[code];

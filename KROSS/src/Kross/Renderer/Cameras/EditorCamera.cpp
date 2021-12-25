@@ -66,10 +66,10 @@ namespace Kross::Camera {
 		m_Delta = (m_MousePosition - m_InitialMousePosition) * 0.003f;
 		m_InitialMousePosition = m_MousePosition;
 
-		if (Input::IsMouseButtonHeld(MouseButton::Middle))
-			if (Input::IsKeyHeld(Key::LeftShift)) MousePan(m_Delta);
-			else if (Input::IsKeyHeld(Key::LeftControl)) MouseZoom(m_Delta.y);
-			else MouseRotate(m_Delta);
+		//if (Input::IsMouseButtonHeld(MouseButton::Middle))
+		if (Input::IsKeyHeld(Key::Shift)) MousePan(m_Delta);
+		else if (Input::IsKeyHeld(Key::Control)) MouseZoom(m_Delta.y);
+		else if (Input::IsKeyHeld(Key::Alt)) MouseRotate(m_Delta);
 
 		return false;
 	}

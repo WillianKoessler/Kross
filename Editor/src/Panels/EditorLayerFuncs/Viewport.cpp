@@ -18,7 +18,7 @@ namespace Kross {
 			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 			ImGui::Begin("Viewport", &Panel::Manager().s_bViewport, m_Flags);
 
-			Application::Get().GetGUILayer()->BlockEvents(!ImGui::IsWindowFocused() && !ImGui::IsWindowHovered());
+			Application::Get().GetGUILayer()->BlockEvents(!ImGui::IsWindowHovered());
 
 			if (ImGui::BeginMenuBar())
 			{
@@ -29,6 +29,12 @@ namespace Kross {
 				}
 				ImGui::EndMenuBar();
 			}
+
+			auto viewportMin = ImGui::GetWindowContentRegionMin();
+			auto viewportMax = ImGui::GetWindowContentRegionMax();
+			auto offset = ImGui::GetWindowPos();
+			m_ViewportMinBound = { viewportMin.x + offset.x, viewportMin.y + offset.y };
+			m_ViewportMaxBound = { viewportMax.x + offset.x, viewportMax.y + offset.y };
 
 			ImVec2 ImGuiViewportPanelSize = ImGui::GetContentRegionAvail();
 			glm::vec2 glmViewportSize = { ImGuiViewportPanelSize.x, ImGuiViewportPanelSize.y };

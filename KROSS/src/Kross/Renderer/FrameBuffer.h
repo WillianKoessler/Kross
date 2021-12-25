@@ -13,6 +13,17 @@ namespace Kross {
 			enum class Format
 			{
 				None = 0,
+				
+				//Integer Formats
+				INT,
+				INT2,
+				INT3,
+				INT4,
+				UINT,
+				UINT2,
+				UINT3,
+				UINT4,
+
 
 				//Color Formats
 				RGB8,
@@ -66,6 +77,9 @@ namespace Kross {
 		virtual uint32_t GetID() const = 0;
 		virtual uint32_t GetDepthAttachmentID() const = 0;
 		virtual uint32_t GetColorAttachmentID(uint32_t index) const = 0;
+		virtual void ClearColorAttachment(uint32_t index, int value) const = 0;
+
+		virtual int ReadPixel(uint32_t attachmentIndex, int x, int y) const = 0;
 
 		virtual void Invalidate() = 0;
 

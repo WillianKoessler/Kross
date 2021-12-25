@@ -1,12 +1,13 @@
 #include "Editor_pch.h"
 #include "RendererStats.h"
+#include "Panel.h"
 
 namespace Kross {
 	RendererStats::RendererStats()
 		: frames(new float[plotsize])
 	{
-		m_strName = "Renderer Status";
-		KROSS_INFO("Panel '{0}' Constructed", m_strName);
+		SetName("Renderer Status");
+		KROSS_INFO("Panel '{0}' Constructed", GetName());
 	}
 	RendererStats::~RendererStats()
 	{
@@ -15,7 +16,7 @@ namespace Kross {
 	}
 	void RendererStats::Show(double ts)
 	{
-		if (!Manager().s_bRendererStats) return;
+		if (!Panel::Manager().s_bRendererStats) return;
 
 		float f = 0.0f;
 		if (plot_type == 0) f = (float)(0.1 / ts);
@@ -37,14 +38,14 @@ namespace Kross {
 		if (frame_count++ % rate_tick == 0) { FrameRate = framerate_buffer / rate_tick; framerate_buffer = 0; }
 
 
-		std::string title(m_strName);
+		std::string title(GetName());
 		char buf[64];
 		if(plot_type == 0) sprintf_s(buf, " | FPS: %.1f###StatusTitle", FrameRate);
 		else if(plot_type == 1) sprintf_s(buf, " | Elapsed: %.4lf###StatusTitle", ts);
 		title += buf;
-		if (ImGui::Begin(title.c_str(), &Manager().s_bRendererStats, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
+		if (ImGui::Begin(title.c_str(), &Panel::Manager().s_bRendererStats, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
 		{
-			ImGui::Combo("mode", &plot_type, frame_plot_options, 2); ImGui::SameLine(); ShowHelperMarker(
+			ImGui::Combo("mode", &plot_type, frame_plot_options, 2); ImGui::SameLine(); Panel::ShowHelperMarker(
 				"Select what plot type you want."
 				"Frames per Second mode, or FPS, is the number of how many frames the application can push out in a single second."
 				"Elapsed Time mode, is the plot of how many milisseconds has passed since the last frame was drawn."

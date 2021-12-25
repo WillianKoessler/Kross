@@ -12,6 +12,7 @@ namespace Kross {
 			bool s_bViewport = true;
 			bool s_bSceneHierarchy = true;
 			bool s_bPropertiesInspector = true;
+			bool s_bContentBrowser = true;
 
 			bool s_bFullscreen;
 		} s_Manager;

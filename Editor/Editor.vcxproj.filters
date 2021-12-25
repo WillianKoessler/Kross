@@ -24,6 +24,7 @@
     <ClInclude Include="src\Panels\SceneHierarchy.h">
       <Filter>Panels</Filter>
     </ClInclude>
+    <ClInclude Include="src\Panels\ContentBrowser.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
@@ -47,5 +48,6 @@
     <ClCompile Include="src\Panels\EditorLayerFuncs\Guizmo.cpp" />
     <ClCompile Include="src\Panels\EditorLayerFuncs\Viewport.cpp" />
     <ClCompile Include="src\Panels\EditorLayerFuncs\Actions.cpp" />
+    <ClCompile Include="src\Panels\ContentBrowser.cpp" />
   </ItemGroup>
 </Project>

@@ -19,10 +19,10 @@ namespace Kross::OpenGL {
 	}
 	void RendererAPI::SetClear(const unsigned int color) const {
 		glCall(glClearColor(
-			(((color & 0xff000000) >> 24) / 256.0f),
-			(((color & 0x00ff0000) >> 16) / 256.0f),
-			(((color & 0x0000ff00) >> 8) / 256.0f),
-			(((color & 0x000000ff)) / 256.0f)
+			(((color & 0xff000000) >> 24) / 255.0f),
+			(((color & 0x00ff0000) >> 16) / 255.0f),
+			(((color & 0x0000ff00) >> 8) / 255.0f),
+			(((color & 0x000000ff)) / 255.0f)
 		));
 	}
 	void RendererAPI::DrawArrays(const Ref<VertexArray>& va) const {

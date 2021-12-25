@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Panels\ContentBrowser.h" />
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Editor_pch.h" />
     <ClInclude Include="src\Panels.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="src\Panels\SceneHierarchy.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Panels\ContentBrowser.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\Editor_pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>

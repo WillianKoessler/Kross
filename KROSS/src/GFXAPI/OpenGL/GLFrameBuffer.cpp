@@ -15,13 +15,13 @@ namespace Util {
 	{
 		glCall(glBindTexture(TextureTarget(multiSampled), id));
 	}
-	static void AttachColorTexture(uint32_t id, int samples, uint32_t format, uint32_t width, uint32_t height, int index)
+	static void AttachColorTexture(uint32_t id, int samples, uint32_t internalFormat, uint32_t format, uint32_t width, uint32_t height, int index)
 	{
 		bool multiSample = samples > 1;
 		if (multiSample) {
-			glCall(glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE));
+			glCall(glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE));
 		} else {
-			glCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			glCall(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 			glCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
@@ -54,6 +54,15 @@ namespace Util {
 			case Kross::FrameBuffer::Texture::Format::Depth24Stencil8: return true;
 		}
 		return false;
+	}
+	static GLenum TextureFormatToGL(Kross::FrameBuffer::Texture::Format fmt)
+	{
+		switch (fmt) {
+			case Kross::FrameBuffer::Texture::Format::RGBA8: return GL_RGBA8;
+			case Kross::FrameBuffer::Texture::Format::INT: return GL_RED_INTEGER;
+		}
+		KROSS_ASSERT(false);
+		return 0;
 	}
 }
 
@@ -113,6 +122,24 @@ namespace Kross::OpenGL {
 		Invalidate();
 	}
 
+	void FrameBuffer::ClearColorAttachment(uint32_t index, int value) const
+	{
+		KROSS_ASSERT(index < m_ColorAttIDs.size());
+		auto &spec = m_ColorAttSpecs[index];
+		glCall(glClearTexImage(m_ColorAttIDs[index], 0,
+			Util::TextureFormatToGL(spec.m_Format), GL_INT, &value));
+	}
+
+	int FrameBuffer::ReadPixel(uint32_t attachmentIndex, int x, int y) const
+	{
+		KROSS_ASSERT(attachmentIndex < m_ColorAttIDs.size());
+
+		glCall(glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex));
+		int pixel = -1;
+		glCall(glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixel));
+		return pixel;
+	}
+
 	void FrameBuffer::Invalidate()
 	{
 		Delete();
@@ -129,7 +156,10 @@ namespace Kross::OpenGL {
 				Util::BindTexture(multiSample, m_ColorAttIDs[i]);
 				switch (m_ColorAttSpecs[i].m_Format) {
 					case Texture::Format::RGBA8:
-						Util::AttachColorTexture(m_ColorAttIDs[i], m_Specs.Samples, GL_RGBA8, m_Specs.Width, m_Specs.Height, i);
+						Util::AttachColorTexture(m_ColorAttIDs[i], m_Specs.Samples, GL_RGBA8, GL_RGBA, m_Specs.Width, m_Specs.Height, i);
+						break;
+					case Texture::Format::INT:
+						Util::AttachColorTexture(m_ColorAttIDs[i], m_Specs.Samples, GL_R32I ,GL_RED_INTEGER, m_Specs.Width, m_Specs.Height, i);
 						break;
 				}
 			}
@@ -155,16 +185,16 @@ namespace Kross::OpenGL {
 		glCall(framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER));
 		switch (framebufferStatus)
 		{
-			case GL_FRAMEBUFFER_UNDEFINED:						KROSS_ERROR("The specified framebuffer is the default read or draw framebuffer, but the default framebuffer does not exist. '{0}' ({1})", m_strName, m_RendererID); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:			KROSS_ERROR("Some of the framebuffer's attachment points are incomplete. '{0}' ({1})", m_strName, m_RendererID); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:	KROSS_ERROR("The framebuffer does not have at least one image attached to it. '{0}' ({1})", m_strName, m_RendererID); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:			KROSS_ERROR("The value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for any color attachment point(s) named by GL_DRAW_BUFFERi. '{0}' ({1})", m_strName, m_RendererID); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:			KROSS_ERROR("GL_READ_BUFFER is not GL_NONE and the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for the color attachment point named by GL_READ_BUFFER. '{0}' ({1})", m_strName, m_RendererID); break;
-			case GL_FRAMEBUFFER_UNSUPPORTED:					KROSS_ERROR("The combination of internal formats of the attached images violates an implementation - dependent set of restrictions. '{0}' ({1})", m_strName, m_RendererID); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:			KROSS_ERROR("The value of GL_RENDERBUFFER_SAMPLES is not the same for all attached renderbuffers; if the value of GL_TEXTURE_SAMPLES is the not same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_RENDERBUFFER_SAMPLES does not match the value of GL_TEXTURE_SAMPLES. Or the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures. '{0}' ({1})", m_strName, m_RendererID); break;
-			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:		KROSS_ERROR("One of the framebuffer's attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target. '{0}' ({1})", m_strName, m_RendererID); break;
+			case GL_FRAMEBUFFER_UNDEFINED:						KROSS_ERROR("The specified framebuffer is the default read or draw framebuffer, but the default framebuffer does not exist. '{0}' ({1})", GetName(), m_RendererID); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:			KROSS_ERROR("Some of the framebuffer's attachment points are incomplete. '{0}' ({1})", GetName(), m_RendererID); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:	KROSS_ERROR("The framebuffer does not have at least one image attached to it. '{0}' ({1})", GetName(), m_RendererID); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:			KROSS_ERROR("The value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for any color attachment point(s) named by GL_DRAW_BUFFERi. '{0}' ({1})", GetName(), m_RendererID); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:			KROSS_ERROR("GL_READ_BUFFER is not GL_NONE and the value of GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE is GL_NONE for the color attachment point named by GL_READ_BUFFER. '{0}' ({1})", GetName(), m_RendererID); break;
+			case GL_FRAMEBUFFER_UNSUPPORTED:					KROSS_ERROR("The combination of internal formats of the attached images violates an implementation - dependent set of restrictions. '{0}' ({1})", GetName(), m_RendererID); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:			KROSS_ERROR("The value of GL_RENDERBUFFER_SAMPLES is not the same for all attached renderbuffers; if the value of GL_TEXTURE_SAMPLES is the not same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_RENDERBUFFER_SAMPLES does not match the value of GL_TEXTURE_SAMPLES. Or the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not the same for all attached textures; or , if the attached images are a mix of renderbuffersand textures, the value of GL_TEXTURE_FIXED_SAMPLE_LOCATIONS is not GL_TRUE for all attached textures. '{0}' ({1})", GetName(), m_RendererID); break;
+			case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:		KROSS_ERROR("One of the framebuffer's attachment is layered, and any populated attachment is not layered, or if all populated color attachments are not from textures of the same target. '{0}' ({1})", GetName(), m_RendererID); break;
 			case GL_FRAMEBUFFER_COMPLETE:						break;
-			default:											KROSS_ERROR("Unknown Error. ErrorID={2} '{0}' ({1})", m_strName, m_RendererID, framebufferStatus); break;
+			default:											KROSS_ERROR("Unknown Error. ErrorID={2} '{0}' ({1})", GetName(), m_RendererID, framebufferStatus); break;
 		}
 		if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) Delete();
 		glCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
