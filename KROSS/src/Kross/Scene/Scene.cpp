@@ -81,12 +81,13 @@ namespace Kross {
 	{
 		SceneSerializer ss(this);
 		file = FileDialog::OpenFile("Kross Scene (.kross)\0*.kross\0\0");
+		//file = File("C:\\dev\\langs\\C++\\Kross\\Editor\\assets\\scenes\\3D.kross");
 		if (file) ss.Deserialize(file);
 		else KROSS_WARN("Scene was not loaded");
 	}
 	void Scene::Select(Entity &e)
 	{
-		if (e) m_Selection = e;
+		m_Selection = e;
 	}
 	Entity Scene::Selected() const
 	{
@@ -171,12 +172,11 @@ namespace Kross {
 	}
 	void Scene::OnUpdateEditor(double ts, const Camera::Editor &camera)
 	{
-		RenderCommand::Clear();
 		Renderer2D::ResetStats();
 		Renderer2D::Begin(camera);
 		auto view = m_Registry.view<TransformComponent, SpriteComponent>();
 		for (auto [entity, transform, sprite] : view.each())
-			Renderer2D::BatchQuad(transform, sprite.tint, sprite.texture);
+			Renderer2D::BatchQuad(transform, sprite.tint, sprite.texture, (int)entity);
 		Renderer2D::End();
 	}
 	void Scene::OnUpdateRuntime(double ts)
@@ -200,12 +200,11 @@ namespace Kross {
 		auto camera = primaryCamera.Get<CameraComponent>();
 		auto transform = primaryCamera.Get<TransformComponent>();
 		Renderer2D::ResetStats();
-		RenderCommand::Clear();
 		Renderer2D::Begin(camera->camera, *transform);
 		auto group = m_Registry.group<TransformComponent, SpriteComponent>();
 
 		for (auto [entity, transform, sprite] : group.each()) {
-			Renderer2D::BatchQuad(transform, sprite.tint, sprite.texture);
+			Renderer2D::BatchQuad(transform, sprite.tint, sprite.texture, (int)entity);
 		}
 		Renderer2D::End();
 	}
