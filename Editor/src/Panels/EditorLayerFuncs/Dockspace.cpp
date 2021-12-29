@@ -72,6 +72,7 @@ namespace Kross {
 				ImGui::MenuItem("Status", NULL, &Panel::Manager().s_bRendererStats);
 				ImGui::MenuItem("Scene Hierarchy", NULL, &Panel::Manager().s_bSceneHierarchy);
 				ImGui::MenuItem("Entity Inspector", NULL, &Panel::Manager().s_bPropertiesInspector);
+				ImGui::MenuItem("Content Browser", NULL, &Panel::Manager().s_bContentBrowser);
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Settings"))

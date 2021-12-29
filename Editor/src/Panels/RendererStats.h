@@ -1,9 +1,9 @@
 #pragma once
 
 namespace Kross {
-	constexpr int plotsize = 128;
     class RendererStats : public Resource
     {
+		int plotsize = 128;
 		bool pause_frame_plot_animation = false;
 		const char* frame_plot_options[2] = { "Frames per Second", "Elapsed Time" };
 		int plot_type = 0;

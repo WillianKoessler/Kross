@@ -33,6 +33,7 @@ namespace Kross {
 		rendererStats = new RendererStats();
 		sceneHierarchy = new SceneHierarchy(m_Scene);
 		entityProperties = new EntityProperties(m_Scene);
+		contentBrowser = new ContentBrowser();
 
 		ActionManager::RegisterAction("NewScene", Key::Control, Key::N, "Resets the Scene to a new one.");
 		ActionManager::RegisterAction("OpenScene", Key::Control, Key::O, "Load a Scene from a file.");
@@ -43,13 +44,14 @@ namespace Kross {
 		ActionManager::RegisterKeyAction("RotationTool", Key::E);
 		ActionManager::RegisterKeyAction("ScaleTool", Key::R);
 
-		Application::Get().GetWindow().SetVSync(false);
+		//Application::Get().GetWindow().SetVSync(false);
 	}
 	void EditorLayer::OnDetach()
 	{
 		delete rendererStats;
 		delete sceneHierarchy;
 		delete entityProperties;
+		delete contentBrowser;
 		m_Frame->unBind();
 	}
 
@@ -82,6 +84,7 @@ namespace Kross {
 		rendererStats->Show(ts);
 		sceneHierarchy->Show();
 		entityProperties->Show();
+		contentBrowser->Show();
 		Panel::setConfigFlag(ImGuiConfigFlags_ViewportsEnable, Panel::AppManager().s_bViewportEnabled);
 		Panel::setConfigFlag(ImGuiConfigFlags_NavEnableKeyboard, Panel::AppManager().s_bKeyboardEnabled);
 		Panel::setConfigFlag(ImGuiConfigFlags_NavEnableGamepad, Panel::AppManager().s_bGamepadEnabled);

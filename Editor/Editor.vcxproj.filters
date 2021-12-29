@@ -25,6 +25,8 @@
       <Filter>Panels</Filter>
     </ClInclude>
     <ClInclude Include="src\Panels\ContentBrowser.h" />
+    <ClInclude Include="src\Panels\IconsData\FolderIconTexture.h" />
+    <ClInclude Include="src\Panels\IconsData\FileIconTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorLayer.cpp" />
@@ -49,5 +51,7 @@
     <ClCompile Include="src\Panels\EditorLayerFuncs\Viewport.cpp" />
     <ClCompile Include="src\Panels\EditorLayerFuncs\Actions.cpp" />
     <ClCompile Include="src\Panels\ContentBrowser.cpp" />
+    <ClCompile Include="src\Panels\IconsData\FolderIconTexture.cpp" />
+    <ClCompile Include="src\Panels\IconsData\FileIconTexture.cpp" />
   </ItemGroup>
 </Project>

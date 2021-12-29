@@ -32,7 +32,7 @@ namespace Kross::OpenGL::Texture {
 		{
 			auto i = location(texture->GetID());
 			if (i != stack.end() && texture->GetID() == i->get()->GetID()) return (int)(i - stack.begin());
-			KROSS_WARN("Texture '{0}' was not found in '{1}' Array.", texture->GetName(), GetName());
+			KROSS_WARN("Texture was not found in '{0}' Array.", GetName());
 			Add(texture);
 			return Get(texture);
 		}

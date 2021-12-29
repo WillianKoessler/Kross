@@ -11,6 +11,7 @@ namespace Kross {
 	class RendererStats;
 	class SceneHierarchy;
 	class EntityProperties;
+	class ContentBrowser;
 	class EditorLayer final : public Layer
 	{
 		Ref<Texture::T2D> m_Placeholder;
@@ -25,6 +26,7 @@ namespace Kross {
 		RendererStats *rendererStats = nullptr;
 		SceneHierarchy *sceneHierarchy = nullptr;
 		EntityProperties *entityProperties = nullptr;
+		ContentBrowser *contentBrowser = nullptr;
 	public:
 		EditorLayer();
 

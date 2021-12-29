@@ -155,7 +155,7 @@ namespace Kross {
 
 		unsigned char *white = new unsigned char[4]{ 255 };
 
-		Stack<Texture::T2D>::Add(data->whiteTex = Texture::T2D::CreateRef("blank", 1, 1, white));
+		Stack<Texture::T2D>::Add(data->whiteTex = Texture::T2D::CreateRef("blank", 1, 1, Texture::T2D::DataFormat::UNSIGNED_BYTE, Texture::T2D::Channels::RGBA8, (const void*)white));
 		data->texArray->Get(Stack<Texture::T2D>::Get("blank"));
 
 		delete[] indices;

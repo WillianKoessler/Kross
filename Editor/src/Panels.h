@@ -3,3 +3,4 @@
 #include "Panels/SceneHierarchy.h"
 #include "Panels/EntityProperties.h"
 #include "Panels/RendererStats.h"
+#include "Panels/ContentBrowser.h"
