@@ -9,7 +9,7 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteComponent:
-      Tint: [1, 0, 0, 1]
+      Tint: [0.686274529, 0.686274529, 0.686274529, 1]
   - Entity: 4
     TagComponent:
       Tag: right
@@ -18,7 +18,7 @@ Entities:
       Rotation: [0, 1.57079637, 0]
       Scale: [1, 1, 1]
     SpriteComponent:
-      Tint: [0, 1, 0, 1]
+      Tint: [0.588235319, 0.588235319, 0.588235319, 1]
   - Entity: 3
     TagComponent:
       Tag: back
@@ -27,7 +27,7 @@ Entities:
       Rotation: [-3.14159226, 0, -3.14159226]
       Scale: [1, 1, 1]
     SpriteComponent:
-      Tint: [0, 0, 1, 1]
+      Tint: [0.686274529, 0.686274529, 0.686274529, 1]
   - Entity: 2
     TagComponent:
       Tag: left
@@ -36,7 +36,7 @@ Entities:
       Rotation: [1.07022652e-06, -1.57079637, -8.31913496e-07]
       Scale: [1, 1, 1]
     SpriteComponent:
-      Tint: [1, 1, 0, 1]
+      Tint: [0.588235319, 0.588235319, 0.588235319, 1]
   - Entity: 1
     TagComponent:
       Tag: bottom
@@ -45,7 +45,7 @@ Entities:
       Rotation: [1.57079637, 0, 0]
       Scale: [1, 1, 1]
     SpriteComponent:
-      Tint: [1, 0, 1, 1]
+      Tint: [0.490196079, 0.490196079, 0.490196079, 1]
   - Entity: 0
     TagComponent:
       Tag: top
@@ -54,4 +54,4 @@ Entities:
       Rotation: [-1.57079637, -3.7252903e-09, -7.13734405e-09]
       Scale: [1, 0.999998093, 0.999997497]
     SpriteComponent:
-      Tint: [0, 1, 1, 1]
+      Tint: [0.784313738, 0.784313738, 0.784313738, 1]

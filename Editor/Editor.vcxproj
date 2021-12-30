@@ -138,8 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Panels\IconsData\FileIconTexture.h" />
-    <ClInclude Include="src\Panels\IconsData\FolderIconTexture.h" />
+    <ClInclude Include="src\Panels\IconsData\File\FileIconTexture.h" />
+    <ClInclude Include="src\Panels\IconsData\Folder\FolderIconTexture.h" />
     <ClInclude Include="src\Panels\ContentBrowser.h" />
     <ClInclude Include="src\EditorLayer.h" />
     <ClInclude Include="src\Editor_pch.h" />
@@ -150,15 +150,14 @@
     <ClInclude Include="src\Panels\SceneHierarchy.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Panels\IconsData\FileIconTexture.cpp" />
-    <ClCompile Include="src\Panels\IconsData\FolderIconTexture.cpp" />
+    <ClCompile Include="src\Panels\IconsData\File\FileIconTexture.cpp" />
+    <ClCompile Include="src\Panels\IconsData\Folder\FolderIconTexture.cpp" />
     <ClCompile Include="src\Panels\ContentBrowser.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
     <ClCompile Include="src\Editor_pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Panels\EditorLayerFuncs\Dockspace.cpp" />
-    <ClCompile Include="src\Panels\EditorLayerFuncs\Actions.cpp" />
     <ClCompile Include="src\Panels\EntityProperties.cpp" />
     <ClCompile Include="src\Panels\Panel.cpp" />
     <ClCompile Include="src\Panels\RendererStats.cpp" />

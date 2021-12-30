@@ -77,7 +77,10 @@ namespace Kross {
 			}
 			if (ImGui::BeginMenu("Settings"))
 			{
-				if (ImGui::MenuItem("Style", NULL)) pop = "Style Editor\\none";
+				if (ImGui::MenuItem("Style", NULL)) {
+					ImGuiStyle ref = ImGui::GetStyle();
+					ImGui::ShowStyleEditor(&ref);
+				}
 				ImGui::Separator();
 				Panel::ShowHelperMarker("Enables or Disable FullScreen mode."); ImGui::SameLine();
 				ImGui::MenuItem("Fullscreen", NULL, &Panel::Manager().s_bFullscreen);
@@ -92,7 +95,7 @@ namespace Kross {
 			}
 			if (ImGui::BeginMenu("Help"))
 			{
-				if (ImGui::MenuItem("Show Help", NULL)) pop = "Show Help\\none";
+				if (ImGui::MenuItem("Show Help", NULL)) pop = "Show Help\\Kross Engine (Dec 2021)";
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -113,12 +116,10 @@ namespace Kross {
 		}
 		if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
 			ImGui::Text(message.c_str());
-			ImGui::PushItemWidth(-ImGui::GetWindowSize().x / 2);
 			if (ImGui::Button("OK", ImVec2(50, 0))) {
 				ImGui::CloseCurrentPopup();
 				pop = "none\\none";
 			}
-			ImGui::PopItemWidth();
 			ImGui::EndPopup();
 		}
 		ImGui::End();

@@ -101,13 +101,17 @@ namespace Kross {
 			out << BeginMap;
 
 			out << YAML::Key << "Tint" << Value << e.Get<SpriteComponent>()->tint;
-			const char *name = e.Get<SpriteComponent>()->texture->GetName();
-			const char *path = e.Get<SpriteComponent>()->texture->GetPath();
-			if (path != nullptr && name != nullptr) {
-				out << YAML::Key << "Texture" << BeginMap;
-				if (name != nullptr) out << YAML::Key << "Name" << Value << std::string(name);
-				if (path != nullptr) out << YAML::Key << "Path" << Value << std::string(path);
-				out << EndMap;
+			auto texture = e.Get<SpriteComponent>()->texture;
+			if (texture)
+			{
+				const char *name = texture->GetName();
+				const char *path = texture->GetPath();
+				if (path != nullptr && name != nullptr) {
+					out << YAML::Key << "Texture" << BeginMap;
+					if (name != nullptr) out << YAML::Key << "Name" << Value << std::string(name);
+					if (path != nullptr) out << YAML::Key << "Path" << Value << std::string(path);
+					out << EndMap;
+				}
 			}
 
 			out << EndMap;
@@ -180,6 +184,9 @@ namespace Kross {
 		}
 		KROSS_ASSERT((m_pScene || m_Scene) && !(m_pScene && m_Scene), "Ambiguity found. Cannot have both pointers.");
 		std::ifstream fileData(file.path);
+		if (!fileData.is_open()) {
+			KROSS_ERROR("File '{0}' could not be opened.", file.name);
+		}
 		std::stringstream ss;
 		ss << fileData.rdbuf();
 

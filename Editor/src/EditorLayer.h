@@ -18,9 +18,9 @@ namespace Kross {
 		Ref<FrameBuffer> m_Frame;
 		Scene m_Scene;
 		Camera::Editor m_Camera;
-		glm::vec2 m_ViewportSize;
-		glm::vec2 m_ViewportMinBound;
-		glm::vec2 m_ViewportMaxBound;
+		glm::vec2 m_ViewportSize = glm::vec2(0.0f);
+		glm::vec2 m_ViewportMinBound = glm::vec2(0.0f);
+		glm::vec2 m_ViewportMaxBound = glm::vec2(0.0f);
 		int m_GuizmoType = -1;
 
 		RendererStats *rendererStats = nullptr;
@@ -34,11 +34,10 @@ namespace Kross {
 		virtual void OnDetach() override;
 		virtual void OnUpdate(double) override;
 		virtual void OnGuiRender(double) override;
-		virtual void OnEvent(Event& e) override;
-		bool OnMouseClick(MouseButtonPressedEvent & e);
+		virtual void OnEvent(Event &e) override;
+		bool OnMouseClick(MouseButtonPressedEvent &e);
 		void Dockspace();
 		void Viewport();
 		void ShowGuizmo();
-		void Actions();
 	};
 }

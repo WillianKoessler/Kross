@@ -43,15 +43,20 @@ namespace Kross {
 
 	const char *FileName(const char *cpath)
 	{
+		if (cpath == nullptr) return nullptr;
 		std::string path(cpath);
+
 		size_t slash = path.find_last_of("/\\");
 		slash = (slash != std::string::npos) ? slash + 1 : 0;
 		size_t dot = path.find_last_of(".");
+
 		std::string name = path.substr(slash, dot);
-		size_t count = name.length();
-		char *ptr = new char[count ];
-		memset(ptr, 0, count);
-		memcpy_s(ptr, count, name.c_str(), count);
+
+		size_t count = name.size();
+
+		char *ptr = new char[count + 1];
+		memcpy(ptr, name.c_str(), count);
+		ptr[count] = '\0';
 		return ptr;
 	}
 

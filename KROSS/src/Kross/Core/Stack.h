@@ -51,8 +51,9 @@ namespace Kross {
 	public:
 		static Ref<T> Load(const char *path)
 		{
-			if (path == nullptr) return false;
+			if (path == nullptr) return nullptr;
 			const char *key = FileName(path);
+			if (key == nullptr) return nullptr;
 			const auto i = location(key);
 			return _Get(key, path);
 		}
@@ -79,7 +80,7 @@ namespace Kross {
 				KROSS_TRACE("Resource named '{0}' deleted from the Stack.", key);
 				return true;
 			}
-			KROSS_WARN("{0}\n	T= {1}\n Resource named '{2}' was not found, and because of it, could not be deleted.\nEntries are:\n{3}", typeid(T).name(), key, Entry::GetTable());
+			KROSS_WARN("T= {0}\n Resource named '{1}' was not found, and because of it, could not be deleted.\nEntries are:\n{2}", typeid(T).name(), key, Entry::GetTable());
 			return false;
 		}
 		static const Ref<T> Get(const char *key) { return _Get(key, nullptr); }

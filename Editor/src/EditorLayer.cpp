@@ -35,16 +35,20 @@ namespace Kross {
 		entityProperties = new EntityProperties(m_Scene);
 		contentBrowser = new ContentBrowser();
 
-		ActionManager::RegisterAction("NewScene", Key::Control, Key::N, "Resets the Scene to a new one.");
-		ActionManager::RegisterAction("OpenScene", Key::Control, Key::O, "Load a Scene from a file.");
-		ActionManager::RegisterAction("SaveScene", Key::Control, Key::S, "Save the Scene to the file that is already open.");
-		ActionManager::RegisterAction("SaveSceneAs", Key::Shift, Key::Control, Key::S, "Save the Scene to a file.");
-		ActionManager::RegisterKeyAction("SelectionTool", Key::Q);
-		ActionManager::RegisterKeyAction("TranslationTool", Key::W);
-		ActionManager::RegisterKeyAction("RotationTool", Key::E);
-		ActionManager::RegisterKeyAction("ScaleTool", Key::R);
-
-		//Application::Get().GetWindow().SetVSync(false);
+		ActionManager::RegisterAction("NewScene", Key::Control, Key::N, [&](const void* data, size_t size) { m_Scene = Scene("main"); sceneHierarchy->SetContext(m_Scene); entityProperties->SetContext(m_Scene); }, "Resets the Scene to a new one.");
+		ActionManager::RegisterAction("OpenScene", Key::Control, Key::O, [&](const void* data, size_t size) {
+			printf("OpenScene Action Performed\n");
+			m_Scene = Scene();
+			sceneHierarchy->SetContext(m_Scene);
+			entityProperties->SetContext(m_Scene);
+			m_Scene.LoadScene((const char*)data);
+			}, "Load a Scene from a file.");
+		ActionManager::RegisterAction("SaveScene", Key::Control, Key::S, [&](const void* data, size_t size) { m_Scene.SaveScene(); }, "Save the Scene to the file that is already open.");
+		ActionManager::RegisterAction("SaveSceneAs", Key::Shift, Key::Control, Key::S, [&](const void* data, size_t size) { m_Scene.SaveScene(FileDialog::SaveFile("Kross Scene (.kross)\0*.kross\0\0")); }, "Save the Scene to a file.");
+		ActionManager::RegisterKeyAction("SelectionTool", Key::Q, [&](const void* data, size_t size) { m_GuizmoType = -1; });
+		ActionManager::RegisterKeyAction("TranslationTool", Key::W, [&](const void* data, size_t size) { m_GuizmoType = ImGuizmo::TRANSLATE; });
+		ActionManager::RegisterKeyAction("RotationTool", Key::E, [&](const void* data, size_t size) { m_GuizmoType = ImGuizmo::ROTATE; });
+		ActionManager::RegisterKeyAction("ScaleTool", Key::R, [&](const void* data, size_t size) { m_GuizmoType = ImGuizmo::SCALE; });
 	}
 	void EditorLayer::OnDetach()
 	{
@@ -58,8 +62,6 @@ namespace Kross {
 	void EditorLayer::OnUpdate(double ts)
 	{
 		if (!Panel::Manager().s_bDockspace) Application::Get().OnEvent(WindowCloseEvent());
-
-		Actions();
 
 		m_Frame->Resize(m_ViewportSize);
 		m_Camera.SetViewportSize(m_ViewportSize);

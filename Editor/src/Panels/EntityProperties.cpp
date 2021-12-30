@@ -286,11 +286,15 @@ namespace Kross {
 					File file = FileDialog::OpenFile("PNG Files (*.png)\0*.png\0");
 					if (file) cmp->texture = Stack<Texture::T2D>::Get(file.name, file.path);
 				}
+				if (ImGui::BeginDragDropTarget()) {
+					if (auto payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+						cmp->texture = Stack<Texture::T2D>::Load((const char *)payload->Data);
+					ImGui::EndDragDropTarget();
+				}
 				if (cmp->texture) {
 					ImGui::SameLine();
 					if (ImGui::Button("Reset")) {
-						//or cmp->texture.~shared_ptr(); ?
-						cmp->texture = nullptr;
+						cmp->texture.reset();
 					}
 				}
 				return active;

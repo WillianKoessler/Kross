@@ -103,7 +103,7 @@ namespace Kross {
 			}
 			m_ImGuiLayer->End();
 
-			ActionManager::CheckActions();
+			ActionManager::PoolActions();
 			m_pWindow->OnUpdate();
 		}
 		KROSS_TRACE("-----------------------RUNTIME ENDED-----------------------");

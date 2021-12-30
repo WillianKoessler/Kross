@@ -14,9 +14,6 @@ namespace Kross {
 	public:
 		Scene();
 		Scene(const char *name);
-		//Scene(const Scene& other) = default;
-		//Scene(Scene &&other) = default;
-		//Scene &operator=(Scene &&other) = default;
 		Scene &operator=(const Scene &other);
 		~Scene();
 
@@ -27,6 +24,7 @@ namespace Kross {
 		void SaveScene();
 		void SaveScene(const File &file);
 		void LoadScene();
+		void LoadScene(const File &file);
 
 		void Select(Entity &);
 		Entity Selected() const;

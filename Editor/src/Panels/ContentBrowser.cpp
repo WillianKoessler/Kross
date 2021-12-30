@@ -2,8 +2,8 @@
 #include "ContentBrowser.h"
 #include "Panel.h"
 #include <fstream>
-#include "IconsData/FolderIconTexture.h"
-#include "IconsData/FileIconTexture.h"
+#include "IconsData/Folder/FolderIconTexture.h"
+#include "IconsData/File/FileIconTexture.h"
 
 static bool borders = false;
 static const std::filesystem::path s_AssetsPath("assets");
@@ -26,10 +26,17 @@ namespace Kross {
 			return "FileIcon";
 		return "blank";
 	}
-	static bool DrawIcon(const Ref<Texture::T2D> &texture, const std::string &name, float scale, ImVec4 color)
+	static bool DrawIcon(const Ref<Texture::T2D> &texture, const std::string &name, float scale, ImVec4 color, bool activation)
 	{
-		auto i = location(name);
-		if (i == cache.end()) cache.emplace(i, name);
+		{
+			auto file = Stack<Texture::T2D>::Get("FileIcon");
+			auto folder = Stack<Texture::T2D>::Get("FolderIcon");
+			if (texture != file && texture != folder) {
+				auto i = location(name);
+				if (i == cache.end())
+					cache.emplace(i, name);
+			}
+		}
 
 		ImTextureID texID = (void *)(uintptr_t)texture->GetID();
 		float ratio = texture->GetWidth() / (float)texture->GetHeight();
@@ -43,6 +50,7 @@ namespace Kross {
 			imgSize.y = imgScale;
 			imgSize.x = imgScale / ratio;
 		}
+
 		std::string text = "";
 		{
 			float w = 0;
@@ -55,14 +63,14 @@ namespace Kross {
 				text += name[i];
 			}
 		}
-		ImVec2 txtSize = ImGui::CalcTextSize(text.c_str());
 
-		ImVec2 totalSize = { scale, scale + txtSize.y};
+		ImVec2 txtSize = { ImGui::CalcTextSize(text.c_str()).x, std::count(text.begin(), text.end(), '\n') * ImGui::GetFontSize() };
 
 		std::string id = "##" + name;
 
 		bool selected = false;
 		bool result = false;
+		bool hovered = false;
 
 		ImGuiTableFlags tableFlags =
 			ImGuiTableFlags_NoPadInnerX | ImGuiTableFlags_NoPadOuterX |
@@ -74,17 +82,18 @@ namespace Kross {
 		ImGui::TableNextRow(); ImGui::TableNextColumn();
 		{
 			ImGui::Selectable(id.c_str(), selected, ImGuiSelectableFlags_AllowItemOverlap, {
-				totalSize.x - ImGui::GetStyle().ItemSpacing.x * 2.0f,
+				scale - ImGui::GetStyle().ItemSpacing.x * 2.0f,
 				scale
 				});
-			if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenOverlapped) && ImGui::GetIO().MouseClicked[0])
-				result = true;
+			hovered = ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenOverlapped);
+			result = hovered && activation;
+
 			ImGui::SameLine(FLT_MIN, 0.0f);
 			{
 				ImGui::BeginTable(id.c_str(), 1, tableFlags);
 				ImGui::TableNextRow(); ImGui::TableNextColumn();
-				if (ratio > 1.0f) ImGui::Dummy({ 0.0f, (imgScale - imgSize.y) - ImGui::GetStyle().ItemSpacing.y});
-				ImVec2 hRemain = { (totalSize.x - imgSize.x) / 2.0f, imgSize.y };
+				if (ratio > 1.0f) ImGui::Dummy({ 0.0f, (imgScale - imgSize.y) - ImGui::GetStyle().ItemSpacing.y });
+				ImVec2 hRemain = { (scale - imgSize.x) / 2.0f, imgSize.y };
 
 				ImGui::Dummy(hRemain);
 				ImGui::SameLine(0.0f, 0.0f);
@@ -101,8 +110,16 @@ namespace Kross {
 				ImGui::Dummy(hRemain);
 
 				ImGui::TableNextColumn();
-				ImGui::Dummy({ (totalSize.x - txtSize.x) / 2.0f, 1.0f }); ImGui::SameLine(0.0f, 0.0f);
-				ImGui::Text("%s", text.c_str());
+				ImGui::Dummy({ (scale - txtSize.x) / 2.0f, 1.0f }); ImGui::SameLine(0.0f, 0.0f);
+
+				std::string display;
+				if (hovered) display = text;
+				else {
+					size_t breakLine = text.find_first_of('\n');
+					if (breakLine != std::string::npos) display = text.substr(0, breakLine - 3) + "...";
+					else display = text;
+				}
+				ImGui::Text("%s", display.c_str());
 				ImGui::EndTable();
 			}
 		}
@@ -110,39 +127,89 @@ namespace Kross {
 		ImGui::PopID();
 		return result;
 	}
-	static bool DrawIcon(const std::string &textureName, const std::string &name, float size)
+	static bool DrawIcon(const std::string &textureName, const std::string &name, float size, bool activation)
 	{
-		return DrawIcon(Stack<Texture::T2D>::Get(textureName.c_str()), name, size, { -1.0f, -1.0f, -1.0f, -1.0f });
+		return DrawIcon(Stack<Texture::T2D>::Get(textureName.c_str()), name, size, { -1.0f, -1.0f, -1.0f, -1.0f }, activation);
 	}
 	ContentBrowser::ContentBrowser()
-		: m_Flags(0), m_CurrentDirectory(s_AssetsPath), iconScale(128)
+		: m_CurrentDirectory(s_AssetsPath)
 	{
+		m_Flags |= ImGuiWindowFlags_MenuBar;
 		SetName("FileSystem");
 		Stack<Texture::T2D>::Add(FolderIconTexture::Create());
 		Stack<Texture::T2D>::Add(FileIconTexture::Create());
 	}
+
+	class PopUpData
+	{
+	public:
+		bool show = false;
+		std::string title = "";
+		std::string message = "";
+		uint8_t button = 0;
+		const void *myData = nullptr;
+		size_t size = 0;
+		std::function<void(const void *, size_t)> func;
+
+		PopUpData() = default;
+		PopUpData(const char *title, const char *msg, uint8_t button, const void *data, size_t size)
+			: show(true), title(title), message(msg), button(button), size(size)
+		{
+			void *d = malloc(size);
+			memcpy_s(d, size, data, size);
+			myData = d;
+		}
+	};
+
 	void ContentBrowser::Show()
 	{
-		if (!Panel::Manager().s_bContentBrowser) {
-			for (auto &key : cache) Stack<Texture::T2D>::Del(key.c_str());
-			cache.clear();
-			return;
-		}
+		enum Button { OK = 0b0001, YES = 0b0010, NO = 0b0100, CANCEL = 0b1000, };
+		static PopUpData popup;
 
-		iconScale = std::clamp<float>(iconScale, 64.0f, 512.0f);
+		static bool clearCache = false;
+		if (clearCache) {
+			clearCache = false;
+			for (auto &key : cache)
+				Stack<Texture::T2D>::Del(key.c_str());
+			cache.clear();
+		}
+		if (!Panel::Manager().s_bContentBrowser)
+			return;
+
+		ImGuiIO &io = ImGui::GetIO();
+		iconScale = std::clamp<int>(iconScale, iconScaleMin, iconScaleMax);
+		static constexpr const int mBtn = 0;
+		io.MouseDoubleClickTime = doubleClickTiming;
+
+		bool click = io.MouseClicked[mBtn];
+		bool doubleClick = io.MouseDoubleClicked[mBtn];
 
 		ImGui::Begin(GetName(), &Panel::Manager().s_bContentBrowser, m_Flags);
-
-		if (m_CurrentDirectory != std::filesystem::path(s_AssetsPath)) {
-			if (ImGui::Button("<<")) {
+		{
+			ImGui::BeginMenuBar();
+			if (ImGui::MenuItem("<<", nullptr, nullptr, m_CurrentDirectory != std::filesystem::path(s_AssetsPath))) {
 				m_CurrentDirectory = m_CurrentDirectory.parent_path();
+				clearCache = true;
 				KROSS_TRACE("{0}", m_CurrentDirectory.string().c_str());
 			}
+			std::string path = m_CurrentDirectory.string();
+			std::string reconstructed = "";
+			size_t div = 0;
+			while (div != std::string::npos) {
+				div = path.find_first_of('\\');
+				std::string subPath = path.substr(0, div);
+				reconstructed += subPath + "\\";
+				if (ImGui::MenuItem(subPath.c_str())) {
+					m_CurrentDirectory = std::filesystem::path(reconstructed);
+				}
+				path = path.substr(div + 1);
+			}
+			ImGui::EndMenuBar();
 		}
-		int columns = (int)std::floor(std::abs(ImGui::GetContentRegionAvail().x / iconScale));
+		int columns = std::abs((int)ImGui::GetContentRegionAvail().x / iconScale);
 		auto flags = ImGuiTableFlags_NoHostExtendX | ImGuiTableFlags_SizingStretchSame | (borders ? ImGuiTableFlags_Borders : 0);
 		columns = std::clamp<int>(columns, 1, 64);
-		if (!ImGui::BeginTable(GetName(), columns, flags, ImGui::GetContentRegionAvail(), iconScale)) {
+		if (!ImGui::BeginTable(GetName(), columns, flags, ImGui::GetContentRegionAvail(), (float)iconScale)) {
 			ImGui::End();
 			return;
 		}
@@ -157,25 +224,71 @@ namespace Kross {
 			std::string name = FileName(it.path().string());
 			std::string ext = filename.extension().string();
 			if (it.is_directory()) {
-				if (DrawIcon("FolderIcon", filename.string(), iconScale)) {
+				if (DrawIcon("FolderIcon", filename.string(), (float)iconScale, click)) {
 					m_CurrentDirectory /= filename;
+					clearCache = true;
 					KROSS_TRACE("{0}", m_CurrentDirectory.string().c_str());
 				}
 			} else {
 				std::string img = GetIconByTypeExtension(ext);
-				if (img == "Image")
-					DrawIcon(
-					Stack<Texture::T2D>::Get(filename.string().c_str(), absolute.c_str()),
-					filename.string().c_str(),
-					iconScale,
-					{ 1.0f, 1.0f, 1.0f, 1.0f }
-				);
-				else
-					DrawIcon(GetIconByTypeExtension(ext), filename.string(), iconScale);
+				if (img == "Image") {
+					DrawIcon(Stack<Texture::T2D>::Get(filename.string().c_str(), absolute.c_str()), filename.string().c_str(), (float)iconScale, { 1.0f, 1.0f, 1.0f, 1.0f }, doubleClick);
+					if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+						ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", absolute.c_str(), absolute.length() * sizeof(absolute.c_str()), ImGuiCond_Once);
+						ImGui::EndDragDropSource();
+					}
+
+				} else {
+					if (DrawIcon(GetIconByTypeExtension(ext), filename.string(), (float)iconScale, doubleClick)) {
+						if (ext == ".kross") {
+							popup = PopUpData("Open Scene", "Load this Scene file?", YES | NO, absolute.c_str(), absolute.size());
+							popup.func = [](const void *data, size_t size) { ActionManager::TriggerAction("OpenScene", data, size); };
+						}
+					}
+				}
+			}
+		}
+
+		if (ImGui::BeginPopupContextWindow("Settings", ImGuiPopupFlags_MouseButtonRight)) {
+			ImGui::BeginTable("##ContentBrowserContexMenuSettings", 2);
+			ImGui::TableSetupColumn("##Labels", ImGuiTableColumnFlags_WidthFixed, 32.0f);
+			ImGui::TableSetupColumn("##Labels", ImGuiTableColumnFlags_WidthStretch);
+			ImGui::TableNextRow();
+			ImGui::TableNextColumn();
+			ImGui::Text("Scale");
+			ImGui::TableNextColumn();
+			ImGui::PushItemWidth(256);
+			ImGui::SliderInt("##IconSize", &iconScale, iconScaleMin, iconScaleMax);
+			ImGui::PopItemWidth();
+			ImGui::TableNextColumn();
+			ImGui::EndTable();
+			ImGui::EndPopup();
+		}
+		{
+			if (popup.show) {
+				ImGui::OpenPopup(popup.title.c_str());
+				ImGui::SetNextWindowPos({ Application::Get().GetWindow().GetWidth() * 0.5f, Application::Get().GetWindow().GetHeight() * 0.5f }, 0, { 0.5f, 0.5f });
+			}
+			if (ImGui::BeginPopupModal(popup.title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove)) {
+				ImGui::Text(popup.message.c_str());
+				ImGui::Dummy({ 1, 1 });
+				ImVec2 buttonSize = { 50, ImGui::GetFontSize() + ImGui::GetStyle().ItemSpacing.y * 2.0f };
+				bool shouldClose = false;
+				if (popup.button & OK) { ImGui::SameLine(); if (ImGui::Button("OK", buttonSize)) { shouldClose = true; } }
+				if (popup.button & YES) { ImGui::SameLine(); if (ImGui::Button("Yes", buttonSize)) { popup.func(popup.myData, popup.size); shouldClose = true; } }
+				if (popup.button & NO) { ImGui::SameLine(); if (ImGui::Button("No", buttonSize)) { shouldClose = true; } }
+				if (popup.button & CANCEL) { ImGui::SameLine(); if (ImGui::Button("Cancel", buttonSize)) { shouldClose = true; } }
+				if (shouldClose) {
+					ImGui::CloseCurrentPopup();
+					popup = PopUpData();
+				}
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::EndTable();
 		ImGui::End();
 	}
-
+	void ContentBrowser::Settings()
+	{
+	}
 }

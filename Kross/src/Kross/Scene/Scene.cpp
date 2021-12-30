@@ -81,7 +81,12 @@ namespace Kross {
 	{
 		SceneSerializer ss(this);
 		file = FileDialog::OpenFile("Kross Scene (.kross)\0*.kross\0\0");
-		//file = File("C:\\dev\\langs\\C++\\Kross\\Editor\\assets\\scenes\\3D.kross");
+		if (file) ss.Deserialize(file);
+		else KROSS_WARN("Scene was not loaded");
+	}
+	void Scene::LoadScene(const File &file)
+	{
+		SceneSerializer ss(this);
 		if (file) ss.Deserialize(file);
 		else KROSS_WARN("Scene was not loaded");
 	}
